@@ -2,21 +2,32 @@
 <feature
       id="de.schenk.jrtrace.feature"
       label="JRTrace Eclipse Plugins"
-      version="1.1.0.qualifier"
+      version="0.1.0.qualifier"
       provider-name="Christian Schenk"
       plugin="de.schenk.jrtrace.ui"
       ws="win32">
 
-   <description>
+   <description url="https://github.com/ChristianPSchenk/JRTrace">
       JRTrace is a debugging tool which allows to connect to any running
 java and install logging code to view variables at method entry
 points or for other events.
    </description>
 
-   <copyright>
+   <copyright url="http://www.apache.org/licenses/LICENSE-2.0">
       JRTrace Eclipse Addons Copyright
 --------------------------------
-Public Domain.
+Copyright 2014 Christian Schenk
+Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+or implied.
+See the License for the specific language governing permissions
+and
+limitations under the License.
 The Feature contains third party module:
 a) ASM Bytecode Manipulation Libraries
 b) Groovy
@@ -217,10 +228,23 @@ by reason of your accepting any such warranty or additional liability.
 END OF TERMS AND CONDITIONS
    </copyright>
 
-   <license url="Unclear">
+   <license url="http://www.apache.org/licenses/LICENSE-2.0">
       JRTrace 
 --------------------------------
-This tool is provided under the terms of the Apache License 2.0.
+Copyright 2014 Christian Schenk
+
+Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
 
 
 The Feature contains third party module:
@@ -430,6 +454,10 @@ by reason of your accepting any such warranty or additional liability.
 END OF TERMS AND CONDITIONS
    </license>
 
+   <url>
+      <discovery label="JRTrace at GitHub" url="https://github.com/ChristianPSchenk/JRTrace"/>
+   </url>
+
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
@@ -467,7 +495,7 @@ END OF TERMS AND CONDITIONS
          id="de.schenk.jrtrace.helperlib"
          download-size="0"
          install-size="0"
-         version="1.1.0.qualifier"/>
+         version="1.1.1.qualifier"/>
 
    <plugin
          id="de.schenk.jrtrace.jdk.init"
@@ -480,20 +508,20 @@ END OF TERMS AND CONDITIONS
          id="de.schenk.jrtrace.service"
          download-size="0"
          install-size="0"
-         version="1.1.0.qualifier"/>
+         version="1.1.1.qualifier"/>
 
    <plugin
          id="de.schenk.jrtrace.ui"
          download-size="0"
          install-size="0"
-         version="1.1.0.qualifier"
+         version="1.1.1.qualifier"
          unpack="false"/>
 
    <plugin
          id="de.schenk.jrtrace.help"
          download-size="0"
          install-size="0"
-         version="1.0.2.qualifier"
+         version="1.0.3.qualifier"
          unpack="false"/>
 
    <plugin
