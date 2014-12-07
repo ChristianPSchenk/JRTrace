@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Core Services for JRTrace
+Bundle-SymbolicName: de.schenk.jrtrace.service
+Bundle-Version: 1.1.0.qualifier
+Bundle-Vendor: Christian Schenk
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.eclipse.osgi,
+ de.schenk.jrtrace.helperlib,
+ de.schenk.jrtrace.helperagent,
+ de.schenk.jrtrace.jdk.init,
+ de.schenk.toolsjar
+Export-Package: de.schenk.jrtrace.service,
+ de.schenk.jrtrace.service.internal;x-friends:="de.schenk.jrtrace.service.test"
+Import-Package: com.sun.jdi,
+ org.eclipse.core.runtime
+Eclipse-BundleShape: dir
+Bundle-Activator: de.schenk.jrtrace.service.bundle.JRTraceServiceActivator
+Bundle-ActivationPolicy: lazy
+ 

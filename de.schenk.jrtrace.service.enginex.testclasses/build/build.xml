@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<!-- Configuration of the Ant build system to generate a Jar file --> 
+<project name="EngineXTestJarCreation" default="CreateEngineXTestJar">
+  <target name="CreateEngineXTestJar" description="Create a jar wih the Enginextestclasses">
+        <jar jarfile="lib\EngineXTests.jar" basedir="bin"  />
+  </target>
+</project>
+

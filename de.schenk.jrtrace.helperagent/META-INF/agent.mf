@@ -1,0 +1,7 @@
+Premain-Class: de.schenk.jrtrace.helperagent.AgentStarter
+Agent-Class: de.schenk.jrtrace.helperagent.AgentStarter
+Can-Retransform-Classes: true
+Can-Redefine-Classes: true
+
+
+

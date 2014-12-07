@@ -1,0 +1,12 @@
+RULE say do it rule 2
+
+CLASS TestProcess
+
+METHOD doit
+HELPER de.schenk.jrtrace.helperlib.HelperLib
+AT ENTRY
+IF true
+
+DO trace("doit")
+
+ENDRULE

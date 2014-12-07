@@ -1,0 +1,368 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>JRTrace Help</title>
+</head>
+
+<body style="font-family:sans-serif">
+<h1>JRTrace</h1>
+JTrace (Java Runtime Trace) is a set of Eclipse Plugins for your Development Environment that helps to insert tracing and other code into running java virtual machines.
+
+<p>
+<b>Careful: JRTrace is invasive: it instruments the code and it is easy to inject wrong code that spoils application logic!</b>
+</p>
+
+<h2>Prerequisites</h2>
+The features of this plugin set will work properly only if the following requirements are fulfilled:
+
+<ul>
+<li>Platform is Windows</li>
+<li>The JVM used to run the JRTrace plugins is Oracle JDK 7 or later (JDK, not JRE!)</li>
+<li>Target VM also needs to be an Oracle VM 7 or later (JRE, JDK doesn't matter for the target...)</li>
+<li>The JDK version that runs JRTrace must be at least the version of the target JVM</li>
+
+
+
+</ul>
+
+<h2>Introduction</h2>
+
+<p>
+The Use Case: You have a huge java application that is running already and you just
+ want to have a quick peek at the return value of some method and a short trace statement in another, because there is this tiny
+  little problem that needs solving...
+ </p>
+ <p>
+The Problem: the application is huge and takes long to start, or it cannot be stopped (because it's a server) or if you can restart
+it you don't know how to pass in the right parameters to the JVM to load a debug client. And if you can debug, maybe this is not sufficient
+because after all what you need is tracing and for that you also need the source code, but you need the source code of this particular
+product and if you want to modify the code you need to compile the classes, replace the classes in the productive system, or start the application under the debugger control so
+you can do hot code replace. Then you want to know why the same problem was not there in that other version of your huge application
+and you need the new code and basically include again the same tracing code. Later you need to get rid of the tracing code, make it possible to enable/disable it or store it
+somewere else to inject it in the same code later again.
+</p>  
+<p>
+The Solution: at least for Windows and Oracle JVM this JRTrace Add-On for Eclipse can help.
+You can select an arbitrary class and method and instruct JRTrace to add tracing, inspect variables, print the stacktrace. The basic 
+features are pretty easy to use, but the tool allows for nearly everything...
+
+
+</p>
+
+<h2>Getting Started: a Simple Tutorial...</h2>
+ 
+ <h3>Installation</h3>
+ 
+ Install the JRTrace Eclipse Plugins Feature from the update site, done.
+ 
+ <h3>Create an Application</h3>
+ <p>
+ 
+ JRTrace inserts tracing and logging logic into running applications. For testing purposes
+ just create a Java application with one main class. For this example the following application
+ should be running, which just prints some message every second.
+ </p>
+ 
+ <p>
+ In this tutorial it will be demonstrated how the calls to the <code>doit</code> method can be traced using JRTrace.
+ </p>
+ 
+<pre>
+package testproject;
+
+public class Main {
+	public static void main(String[] args)  {
+		for(int i=0;i<1000;i++)
+		{
+			doit(i);
+		}
+	}
+	public static void doit(int i) 
+	{
+		System.out.println(String.format("doing it %d",i));
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		// do nothing
+		}
+	}
+}
+ </pre>
+ 
+ <h3>Create a JRTrace Project</h3>
+ 
+ <img src="pics/project1.png"></img>
+ 
+ <p>
+ Create a JRTrace project using the "File -> New -> Project" menu. Just finish using 
+ the default settings. 
+ </p>
+ 
+ <h3>Create a JRTrace rule class</h3>
+ 
+ The actual tracing code is defined via JRTrace Rules which are annotated java classes. For this example
+ replace the auto-generated example with this class:
+
+<pre> 
+package de.schenk.jrtrace.libs;
+
+import de.schenk.jrtrace.helperlib.HelperLib;
+import de.schenk.jrtrace.annotations.XClass;
+import de.schenk.jrtrace.annotations.XMethod;
+
+@XClass (classes="testproject.Main")
+public class SampleHelperLib extends HelperLib
+{
+	@XMethod(names="doit")
+	public void showHelp()
+	{
+		System.out.println("I'm here.");
+		traceStack();
+	}
+}
+</pre>
+<p>
+Basically this class tell JRTrace to print "I'm here" whenever the application enters the  method "doit" in the
+class "testpackage.Main". The <code>traceStack()</code> call will also print the current stack to the console.
+
+</p>
+<p>
+Just refer to the javadoc of the <code>de.schenk.jrtrace.annotations</code> package for a full overview on the features.
+Basically you can execute method on enter or exit of methods, use regular expressions to match class- and methodname, 
+inject the values of fields, call arguments and the return value into the tracing method and even execute the tracing
+code in the scope of different classloaders.
+</p> 
+ 
+ <h3>Create and Start the JRTrace Launch Configuration</h3>
+ <p> 
+ To insert this rule we need to connect to the target process. Create a new JRTrace Debug Configuration and use the following settings:
+ </p>
+ <img src="pics/launch1.png"></img>
+ 
+ 
+ <p>On <code>Debug</code> JRTrace will be launched with these parameters. JRTrace identifies the project to connect to based on the process description line, which usually contains the Main class that was started (<code>testproject.Main</code> in this case).
+ JRTrace will use the selected <code>exampleJRTraceProject</code>. 
+ </p>
+ <p>
+ JRTrace will create a new console which will automatically capture the output and error streams of the application under test. 
+ In addition the console will show the output from the injected rules.
+ In addition there will be a running debug shown in the Debug view from which it is possible to terminate the session or reconnect.
+ </p>
+ <img src="pics/target1.png"></img>
+ 
+ <p>
+ Finally to deploy all JRTrace classes in the tracing project to the target application the project needs to be selected and the "Deploy JRTrace project" button <img src="pics/upload_java_16.gif"></img> needs to be pressed.
+ 
+ </p>
+ 
+ <p>For this example ths content of the JRTrace console will look like this: </p>
+ <pre>
+doing it 176
+I'm here
+Stack trace for thread main
+testproject.Main.doit(Main.java:-1)
+testproject.Main.main(Main.java:7)
+doing it 177
+I'm here
+Stack trace for thread main
+testproject.Main.doit(Main.java:-1)
+testproject.Main.main(Main.java:7)
+ </pre>
+ <h3>Incremental Work</h3>
+ <p>
+ JRTrace classes can be changed and redeployed. Change the code and add for example: 
+ </p>
+ <pre>
+ throw new RuntimeException("done");
+ </pre>
+ <p> Then save the file and redeploy it to the target. This will cause the target VM to throw a <code>RuntimeException</code> and will
+ thus terminate the target process</p>
+ 
+ 
+ 
+<h2>Users Guide</h2>
+
+
+
+<h3>Launch Options</h3>
+
+<h4>Target Process Selection</h4>
+
+The JRTrace launch configuration provides several options to select the process to connect to.
+
+<ul>
+<li>
+Enter or select a process ID. If a process ID is selected the launch will try to connect to this and only this PID.
+</li>
+<li>
+Enter a substring of the process description in the "Identify Text" field. Check the "Select PID" button to see the descriptions of all
+currently running processes. Upon launch, JRTrace will find all processes containing this text and connect if there is exactly one. 
+</li>
+<li>
+If the auto connect checkbox is enabled, JRTrace will begin the launch and poll for new JVMs. It will connect to the first java process that is launched on the machine after 
+starting the debug session.
+</li>
+<li>
+If the auto upload checkbox is enabled, JRTrace will automatically 
+upload the project connected to the launch configuration and deploy it as JRTrace project into the target.
+ 
+</li>
+</ul>
+
+<h4>Associating a Project with a JRTrace Launch</h4>
+
+It is generally recommended to associate a project with a launch. This project can be used to
+store the classes that are related to the task at hand, e.g. tracing a specific functionality.
+
+ <p>
+ When using groovy scripts from e.g. the inspect command, a project relative path is required which always 
+ uses the associated project as root.
+ </p>
+
+
+<h3>JRTrace Commands</h3>
+<h4>Deploy JRTrace project</h4>
+
+<p>The <img src="pics/upload_java_16.gif"/>-menu/toolbar will deploy the selected java project into the target 
+application. This will effectively remove all previously deployed JRTrace classes from the target and replace them with the contents of the selected project.
+
+</p>
+<h4>Execute a Groovy Script</h4>
+
+<p>The <img src="pics/run_groovy_16.gif"/>-menu/toolbar allows to run a groovy script on the target JVM. 
+It will be active only when selecting a <code>groovy</code> file.</p>
+<p>
+The Run Groovy-wizard will ask for a fully qualified classname to execute the script. This classname will be used
+to obtain the classloader for the script. If no classname is specified, the root classloader will be used. This allows access
+to java only. However when specifying a different classloader, the script will have access to all classes in the scope of this
+classloader. 
+</p>  
+<p>Example:</p>
+<pre>
+import org.eclipse.core.runtime.adaptor.EclipseStarter
+import org.osgi.framework.Bundle
+Bundle b=EclipseStarter.getSystemBundleContext().installBundle("file:/c:/temp/plugins/de.schenk.sample.handler_1.0.0.201410101949.jar");
+b.start()
+</pre>
+<p>The above groovy example will install and
+start the plugin referenced in <code>installBundle</code> (Use <code>org.osgi.framework.Bundle</code> for the class to obtain the classloader from).
+</p> 
+
+ 
+
+<h3>Extended Rule Helper: HelperLib</h3>
+
+<p>
+The JRTrace Eclipse Plugins come with an extension of the default jrtrace Helper which provides 
+some useful methods. Include this library with
+</p>
+<pre>
+HELPER de.schenk.jrtrace.helperlib.HelperLib
+</pre>
+<p>The <code>HelperLib</code> provdes the  <code>inspect</code> and <code>groovy</code> statements.
+
+
+<h4>inspect</h4>
+<p>
+The inspect method reflectively dumps the contents of an arbitrary object by recursively 
+printing and following all properties and references. The simplest use is to call
+<code>inspect(object)</code>. This will dump the first 3 hierarchies of an object. See the javadoc of the HelperLib class
+it will detail the other parameters.
+<pre>
+inpect(Object o,int depth,String toStringClass, String excludeFields, boolean includeStatics,String detailFormatter)
+</pre>
+<code>o</code>: the object to inspect</br>
+<code>depth</code>: the recursion depth how deep to follow the object</br>
+<code>toStringClasses</code>: a comma separated list of classnames (not necessarily qualified). If encountering classes of this type, toString() is used on the value</br>
+<code>excludeFields</code>: a comma separated list of field names. Fields with these names will not be followed</br>
+<code>includeStatics</code>: will include static fields in the inspection</br>
+<code>detailFormatter</code>: use a groovy script to format a specific field. This argument
+has to be of the format 'fieldname=groovyscriptname.groovy[,fieldname2=groovyscriptname2.groovy]'.
+Whenever inspect encounters a field with the specified name, it will invoke the groovy script and pass the value of the field
+as argument (arg0).
+
+</p>
+<h4>groovy</h4>
+<p>
+The coding possibilities in the <code>RULE</code> expressions are very limited. In particular referring to classes of the application is limited (rules by default can only
+access the root class loader classes, which are the java classes and the jrtrace helpers). The various <code>groovy</code>
+methods provide the option to run a groovy script in the scope of any classloader. 
+</p>
+<pre>groovy(String expression,Object arguments...)</pre>
+<p>
+The above simple syntax will use the classloader of the <code>RULE</code> class to execute the script. Effectively therefore the access to all classes from this scope is possible.
+
+</p>
+
+<p>
+All <code>groovy</code> methods exist in a second variant that takes a classloader as the first parameter. Using these gives the developer full control on the available classes. This is particularly
+important in J2EE or Osgi applications in which several 100 classloaders can exist.
+</p>
+
+
+Options to provide the classloader are either providing it yourself or just using <code>getClassLoader</code> to use the classloader of any class known by its fully qualified name.
+Note that if the same class was loaded by different classloaders, as of now, just the first one will be used. 
+</p>
+<pre>com.company.package.TheClass.class.getClassLoader()</pre>
+<pre>getClassLoader("fully.qualified.class.Name")</pre>
+
+<p>All groovy calls take up to 4 additional arguments for the scripts. Numbers sometimes need to be boxed in an object by using the helper function box: e.g. box(1) or box(5.5). The arguments are referenced 
+with variables <code>arg0</code> to </code>arg3</code>.</p>
+<pre>
+groovyScript([classloader,]filename,arg0,arg1,arg2,arg3);
+</pre>
+<p>
+<code>groovyScript</code> does the same as <code>groovy</code> but expects a project relative filename as first parameter.
+Using this it is possible to write arbitrary complex scripts, e.g.:
+</p>
+<pre>
+def test=new Test()
+return "yuhuu:"+test.call().toString()
+class Test 
+{
+static def x=5
+def call() { x=x+1; return x; }
+}
+</pre>
+<p>This example would provide a counter that counts the number of invocations of the rule.</p>
+
+
+<h2>Remarks on Techniques and Design</h2>
+
+<h3>How to obtain the JDK tools.jar</h3>
+
+To connect to a remote VM and install agents the VirtualMachine class is required, which is part of the tools.jar of the JDK.
+This is not easily accessible in Eclipse unless special boot parameters etc. are used.
+The workaround is this:
+A wrapper bundle (com.sun.tools) was prepared and exports the packages in tools.jar
+Since it is legally problematic to ship the tools.jar, it is removed from the plugin
+To get it, the plugin structure is such that the jdkinit plugin is activate before the com.sun.tools and will copy the tools.jar from the current jdk to the 
+expected location in com.sun.tools.
+This works only if the jrtrace tool is run with a JDK! 
+
+<h3>ClassLoader Topics</h3>
+
+All JRTrace classes are loaded using a special classloader. This JRTrace classloader will first try to look up classes in the JRTrace classes and then delegate to the parent
+classloader. Therefore all JRTrace classes will be able to access all other JRTrace classes and by default will have the boot classloader as parent classloader. However using annotations it is possible to use the classloader of the target class
+as a parent classloader, or even to specify a class that will be used to identify the classloader.
+
+For example assume that you want to instrument all calls to <code>IResourceChangeListener</code>s in an Eclipse application. By default the injected code will not be able to access any class
+of the <code>org.eclipse.core.resources</code> plugins. However by specifying <code>classloaderpolicy=XClassLoaderPolicy.NAMED, classloadername=org.eclipse.core.resources.ResourcesPlugin</code> the 
+JRTrace code will be loaded using a classloader that delegates (uses as a parent...) to the same classloader that loaded the <code>ResourcesPlugin</code> class. Thus effectively
+all classes from the Eclipse Resources plugin are available and can be used in the instrumentation.
+
+Note that it is also possible to specify <code>XClassLoaderPolicy.TARGET</code>. In this case, the injected code is loaded with the same classloader as a parent as the code
+into which it gets injected. Note that in this particular case, the same class might be injected into code that with different classloaders. In this case, several instances of the
+corresponding injected JRTrace class might be available in the JVM. Be careful in such cases: static fields will only be valid in the scope of a classloader.
+
+<h2>FAQ</h2>
+
+<h3>Unsupported Class Version</h3>
+ If a helper library is compiled on Java 8 or higher and jrtrace injects it into a running Java 7, this will result in the <code>UnsupportedClassVersionError</code>.
+ Ensure that all your helper libraries are compiled for java 7 compliance. If jrtrace runs on Java 8, ensure that the java settings for the helper libraries are set to produce
+ Java 7 class files.
+ 
+</body>
+</html>

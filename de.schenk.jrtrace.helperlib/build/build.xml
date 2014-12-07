@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<!-- Configuration of the Ant build system to generate a Jar file --> 
+<project name="HelperLib" default="CreateJar">
+  <target name="CreateJar" description="Create the customized helper">
+        <jar jarfile="lib\HelperLib.jar" basedir="bin"  />
+  </target>
+</project>
+

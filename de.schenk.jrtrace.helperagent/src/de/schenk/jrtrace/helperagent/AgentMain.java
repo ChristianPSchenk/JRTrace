@@ -1,0 +1,150 @@
+/**
+ * (c) 2014 by Christian Schenk
+ **/
+package de.schenk.jrtrace.helperagent;
+
+import java.io.IOException;
+import java.io.PrintStream;
+import java.lang.instrument.Instrumentation;
+
+import de.schenk.enginex.helper.EngineXHelper;
+import de.schenk.jrtrace.helperlib.GroovyUtil;
+import de.schenk.jrtrace.helperlib.HelperLib;
+import de.schenk.jrtrace.helperlib.TraceReceiver;
+import de.schenk.jrtrace.helperlib.TraceSender;
+import de.schenk.jrtrace.helperlib.TraceService;
+
+public class AgentMain {
+
+	/*
+	 * The message codes the Agent sends
+	 */
+
+	public static final String AGENT_PORT = "PORT";
+
+	/**
+	 * Code to run a groovy script in the target machine
+	 */
+	public static final int AGENT_COMMAND_RUNGROOVY = 2;
+
+	public static final int AGENT_COMMAND_RUNJAVA = 3;
+
+	/** stops the listener for commands, resets standard out/err to normal */
+	public static final int AGENT_COMMAND_STOPAGENT = 1;
+
+	/**
+	 * installs an XClass class
+	 */
+	public static final int AGENT_COMMAND_INSTALLENGINEXCLASS = 4;
+	public static final int AGENT_COMMAND_INSTALL_BOOT_JAR = 5;
+	public static final int AGENT_COMMAND_SETENV = 6;
+
+	public static final String AGENT_READY = "READY";
+
+	public static AgentMain theAgent = null;
+
+	private static Instrumentation instrumentation;
+
+	public AgentMain() {
+
+	}
+
+	/**
+	 * check if the agent is still active (not null), if yes: stop it. start the
+	 * new agent.
+	 * 
+	 * @param args
+	 * 
+	 * @param inst
+	 */
+	public static void launch(int port, Instrumentation inst) {
+
+		TraceSender sender = new TraceSender(port);
+		TraceService.setSender(sender);
+		HelperLib.setInstrumentation(inst);
+		AgentMain.instrumentation = inst;
+		if (theAgent != null) {
+			theAgent.stop();
+			theAgent = null;
+		}
+		if (theAgent == null) {
+			theAgent = new AgentMain();
+			theAgent.start();
+
+		}
+	}
+
+	private PrintStream stdout;
+	private PrintStream stderr;
+	private TraceReceiver commandReceiver;
+
+	private EngineXClassFileTransformer enginextransformer;
+
+	private void start() {
+
+		stdout = System.out;
+		stderr = System.err;
+		System.setOut(new PrintStream(new RedirectingOutputStream(System.out)));
+		System.setErr(new PrintStream(new RedirectingOutputStream(System.err,
+				TraceSender.TRACECLIENT_STDERR_ID)));
+
+		commandReceiver = new TraceReceiver();
+		try {
+			commandReceiver.start();
+		} catch (IOException e) {
+
+			throw new RuntimeException(
+					"Error starting the command receiver of the Helper Agent. Agent install failed",
+					e);
+
+		}
+
+		int serverPort = commandReceiver.getServerPort();
+		TraceService.getInstance().failSafeSend(
+				TraceSender.TRACECLIENT_AGENT_ID,
+				String.format("%s %d", AGENT_PORT, serverPort));
+		enginextransformer = new EngineXClassFileTransformer();
+		instrumentation.addTransformer(enginextransformer, true);
+
+		commandReceiver.addListener(AGENT_COMMAND_RUNGROOVY,
+				new RunGroovyListener());
+		commandReceiver.addListener(AGENT_COMMAND_RUNJAVA,
+				new RunJavaListener());
+		commandReceiver.addListener(AGENT_COMMAND_INSTALLENGINEXCLASS,
+				new InstallEngineXListener());
+		commandReceiver.addListener(AGENT_COMMAND_SETENV,
+				new SetEnvironmentVariableListener());
+		commandReceiver.addListener(AGENT_COMMAND_INSTALL_BOOT_JAR,
+				new AddToBootClassPathListener(instrumentation));
+		commandReceiver.addListener(AGENT_COMMAND_STOPAGENT,
+				new StopAgentListener(this));
+
+		TraceService.getInstance().failSafeSend(
+				TraceSender.TRACECLIENT_AGENT_ID, AGENT_READY);
+	}
+
+	/**
+	 * stop all agent threads/activities/redirections
+	 */
+	public void stop() {
+
+		EngineXHelper.clearEngineX();
+		instrumentation.removeTransformer(enginextransformer);
+		try {
+
+			System.setErr(stderr);
+			System.setOut(stdout);
+			commandReceiver.stop();
+
+			GroovyUtil.clearScriptCache();
+
+			TraceService.getInstance().failSafeSend(
+					TraceSender.TRACECLIENT_AGENT_STOPPED_ID, "STOPPED");
+		} catch (IOException e) {
+			throw new RuntimeException();
+		} finally {
+
+			theAgent = null;
+		}
+	}
+}

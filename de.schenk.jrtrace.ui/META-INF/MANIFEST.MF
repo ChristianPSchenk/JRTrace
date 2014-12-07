@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JRTrace Ui
+Bundle-SymbolicName: de.schenk.jrtrace.ui;singleton:=true
+Bundle-Version: 1.1.0.qualifier
+Bundle-Vendor: Christian Schenk
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.debug.core,
+ org.eclipse.debug.ui,
+ de.schenk.jrtrace.service,
+ org.eclipse.core.expressions,
+ org.eclipse.ui.console,
+ org.eclipse.core.runtime,
+ org.eclipse.swt,
+ org.eclipse.core.resources,
+ de.schenk.jrtrace.helperlib,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
+ org.eclipse.jdt.launching,
+ org.eclipse.core.commands,
+ org.eclipse.ui.workbench,
+ org.eclipse.ui.editors
+Import-Package: org.eclipse.core.runtime
+Bundle-Activator: de.schenk.jrtrace.ui.Activator
+Export-Package: de.schenk.jrtrace.ui,
+ de.schenk.jrtrace.ui.debug
+Bundle-ActivationPolicy: lazy
