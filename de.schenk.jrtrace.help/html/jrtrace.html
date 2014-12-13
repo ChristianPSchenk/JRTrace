@@ -357,8 +357,18 @@ Note that it is also possible to specify <code>XClassLoaderPolicy.TARGET</code>.
 into which it gets injected. Note that in this particular case, the same class might be injected into code that with different classloaders. In this case, several instances of the
 corresponding injected JRTrace class might be available in the JVM. Be careful in such cases: static fields will only be valid in the scope of a classloader.
 
-<h2>FAQ</h2>
+<h2>FAQ / Known Issues</h2>
 
+<h3>Internal Error (jvmtiRedefineClasses.cpp:489), pid=####, tid=####
+#  Error: ShouldNotReachHere()</h3>
+
+In some cases I observed that the target vm terminated when uploading the JRTrace instrumentation. This was the error:
+<pre>
+# Internal Error (jvmtiRedefineClasses.cpp:489), pid=####, tid=###
+#  Error: ShouldNotReachHere()
+</pre>
+This is a JDK bug <a href="https://bugs.openjdk.java.net/browse/JDK-8035150">JDK-8035150</a> and resolved in Java 1.8.0_b4. Try running your application with a 
+more recent java version.
 <h3>Unsupported Class Version</h3>
  If a helper library is compiled on Java 8 or higher and jrtrace injects it into a running Java 7, this will result in the <code>UnsupportedClassVersionError</code>.
  Ensure that all your helper libraries are compiled for java 7 compliance. If jrtrace runs on Java 8, ensure that the java settings for the helper libraries are set to produce

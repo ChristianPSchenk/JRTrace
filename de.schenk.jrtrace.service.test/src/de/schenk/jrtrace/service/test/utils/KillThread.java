@@ -42,6 +42,7 @@ public class KillThread extends Thread {
 			clientSocket.receive(receivePacket);
 			isKilled = true;
 			threadToKill.interrupt();
+			System.out.println("Testprocess successfully killed");
 			clientSocket.close();
 		} catch (UnknownHostException e) {
 			message = e.getMessage();

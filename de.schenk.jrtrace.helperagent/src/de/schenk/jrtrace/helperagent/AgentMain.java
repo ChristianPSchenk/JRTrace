@@ -38,7 +38,7 @@ public class AgentMain {
 	public static final int AGENT_COMMAND_INSTALLENGINEXCLASS = 4;
 	public static final int AGENT_COMMAND_INSTALL_BOOT_JAR = 5;
 	public static final int AGENT_COMMAND_SETENV = 6;
-
+	public static final int AGENT_CONNECT = 7;
 	public static final String AGENT_READY = "READY";
 
 	public static AgentMain theAgent = null;
@@ -59,17 +59,15 @@ public class AgentMain {
 	 */
 	public static void launch(int port, Instrumentation inst) {
 
-		TraceSender sender = new TraceSender(port);
-		TraceService.setSender(sender);
 		HelperLib.setInstrumentation(inst);
 		AgentMain.instrumentation = inst;
 		if (theAgent != null) {
-			theAgent.stop();
+			theAgent.stop(false);
 			theAgent = null;
 		}
 		if (theAgent == null) {
 			theAgent = new AgentMain();
-			theAgent.start();
+			theAgent.start(port);
 
 		}
 	}
@@ -80,15 +78,10 @@ public class AgentMain {
 
 	private EngineXClassFileTransformer enginextransformer;
 
-	private void start() {
+	private void start(int port) {
 
-		stdout = System.out;
-		stderr = System.err;
-		System.setOut(new PrintStream(new RedirectingOutputStream(System.out)));
-		System.setErr(new PrintStream(new RedirectingOutputStream(System.err,
-				TraceSender.TRACECLIENT_STDERR_ID)));
-
-		commandReceiver = new TraceReceiver();
+		commandReceiver = new TraceReceiver(port);
+		commandReceiver.setDaemon();
 		try {
 			commandReceiver.start();
 		} catch (IOException e) {
@@ -99,13 +92,11 @@ public class AgentMain {
 
 		}
 
-		int serverPort = commandReceiver.getServerPort();
-		TraceService.getInstance().failSafeSend(
-				TraceSender.TRACECLIENT_AGENT_ID,
-				String.format("%s %d", AGENT_PORT, serverPort));
 		enginextransformer = new EngineXClassFileTransformer();
 		instrumentation.addTransformer(enginextransformer, true);
 
+		commandReceiver
+				.addListener(AGENT_CONNECT, new RunConnectListener(this));
 		commandReceiver.addListener(AGENT_COMMAND_RUNGROOVY,
 				new RunGroovyListener());
 		commandReceiver.addListener(AGENT_COMMAND_RUNJAVA,
@@ -119,22 +110,41 @@ public class AgentMain {
 		commandReceiver.addListener(AGENT_COMMAND_STOPAGENT,
 				new StopAgentListener(this));
 
-		TraceService.getInstance().failSafeSend(
-				TraceSender.TRACECLIENT_AGENT_ID, AGENT_READY);
+	}
+
+	public void redirectStandardOut(boolean enable) {
+		if (enable) {
+			stdout = System.out;
+			stderr = System.err;
+			System.setOut(new PrintStream(new RedirectingOutputStream(
+					System.out)));
+			System.setErr(new PrintStream(new RedirectingOutputStream(
+					System.err, TraceSender.TRACECLIENT_STDERR_ID)));
+		} else {
+			System.setOut(stdout);
+			System.setErr(stderr);
+		}
 	}
 
 	/**
 	 * stop all agent threads/activities/redirections
+	 * 
+	 * @param disconnect
+	 *            : true: only disconnect, false: disable the command listener
+	 *            as well / agent shutdown
 	 */
-	public void stop() {
+	public void stop(boolean disconnect) {
 
+		System.out.println(String.format("Agent.stop(%b)", disconnect));
 		EngineXHelper.clearEngineX();
-		instrumentation.removeTransformer(enginextransformer);
+
 		try {
 
-			System.setErr(stderr);
-			System.setOut(stdout);
-			commandReceiver.stop();
+			redirectStandardOut(false);
+			if (!disconnect) {
+				commandReceiver.stop();
+				instrumentation.removeTransformer(enginextransformer);
+			}
 
 			GroovyUtil.clearScriptCache();
 

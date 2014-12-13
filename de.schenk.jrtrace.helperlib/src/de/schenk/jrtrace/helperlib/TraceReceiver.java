@@ -1,6 +1,6 @@
 /**
-* (c) 2014 by Christian Schenk
-**/
+ * (c) 2014 by Christian Schenk
+ **/
 package de.schenk.jrtrace.helperlib;
 
 import java.io.DataInputStream;
@@ -13,6 +13,14 @@ import java.util.HashSet;
 
 public class TraceReceiver {
 
+	public TraceReceiver(int port) {
+		this.port = port;
+	}
+
+	public TraceReceiver() {
+		this.port = 0;
+	}
+
 	public void stop() throws IOException {
 		synchronized (listener) {
 			listener.clear();
@@ -20,6 +28,8 @@ public class TraceReceiver {
 
 		server.close();
 	}
+
+	int port = 0;
 
 	public class TraceReceiverThread extends Thread {
 		@Override
@@ -88,8 +98,9 @@ public class TraceReceiver {
 	 * @return the port of the receiver, -1 in case of an error
 	 */
 	public void start() throws IOException {
-		server = new ServerSocket(0);
+		server = new ServerSocket(port);
 		receiverThread = new TraceReceiverThread();
+		receiverThread.setDaemon(daemon);
 		receiverThread.setName(String.format(
 				"JRTrace Trace Receiver on port %d", server.getLocalPort()));
 		receiverThread.start();
@@ -105,6 +116,7 @@ public class TraceReceiver {
 	}
 
 	HashMap<Integer, HashSet<IJRTraceClientListener>> listener = new HashMap<Integer, HashSet<IJRTraceClientListener>>();
+	private boolean daemon;
 
 	public void removeListener(IJRTraceClientListener iJRTraceClientListener) {
 		removeListener(TraceSender.TRACECLIENT_STDOUT_ID,
@@ -140,6 +152,15 @@ public class TraceReceiver {
 			if (lsts != null)
 				lsts.remove(theListener);
 		}
+
+	}
+
+	/**
+	 * if called before starting the receiver the receiving thread will be a
+	 * daemon thread
+	 */
+	public void setDaemon() {
+		this.daemon = true;
 
 	}
 }

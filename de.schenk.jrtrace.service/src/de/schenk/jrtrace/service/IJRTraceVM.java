@@ -44,11 +44,6 @@ public interface IJRTraceVM {
 	public boolean installJar(String jar);
 
 	/**
-	 * loads the byte man agent into the (attached) target virtual machine
-	 */
-	boolean loadJRTraceAgent(boolean verbose, boolean debug);
-
-	/**
 	 * The last exception that occured (e.g. after an unsuccessful, return code
 	 * false call) The exception will not be cleared after a successful call to
 	 * another function.

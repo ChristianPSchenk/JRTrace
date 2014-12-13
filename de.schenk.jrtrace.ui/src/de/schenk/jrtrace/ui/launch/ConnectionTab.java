@@ -10,6 +10,9 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -24,6 +27,7 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 import de.schenk.jrtrace.service.JRTraceControllerService;
+import de.schenk.jrtrace.service.JarLocator;
 
 public class ConnectionTab extends AbstractLaunchConfigurationTab {
 
@@ -34,21 +38,247 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 	public static final String BM_TEXT_IDENT = "textident";
 	public static final String BM_PROJECT_IDENT = "project";
 	public static final String BM_AUTOCONNECT = "autoconnect";
+	public static final String BM_UPLOADAGENT = "uploadagent";
+	public static final String BM_UPLOADAGENT_PORT = "uploadagentport";
 	private Text pidText;
 	private Text identifyText;
 	private Text rulesProjectName;
+
+	private Button uploadAgent;
 
 	private Button verboseButton;
 	private Button debugButton;
 	private Button autoconnectButton;
 	private Button autouploadButton;
+	private Button connectAgent;
+	private Text portText;
+	private Button pidSelectButton;
+	private Button agentInfoText;
 
 	@Override
 	public void createControl(final Composite parent) {
-		Composite box = new Composite(parent, SWT.FILL);
+		final Composite box = new Composite(parent, SWT.FILL);
 		GridLayout gl = new GridLayout(3, false);
 		box.setLayout(gl);
+		createUploadAgentButton(box);
+		createIdentifyByTextText(box);
+		createPIDText(box);
 
+		createConnectAgentButton(box);
+		createPortText(box);
+
+		createSelectProject(box);
+		createAutoUploadCheckBox(box);
+		createAutoConnectCheckBox(box);
+		createVerboseCheckbox(box);
+		createDebugCheckbox(box);
+		setControl(box);
+
+		connectAgent.setSelection(!uploadAgent.getSelection());
+		updateUI();
+
+	}
+
+	private void createDebugCheckbox(final Composite box) {
+		{
+			Label l = new Label(box, SWT.NONE);
+			l.setText("Debug:");
+			debugButton = new Button(box, SWT.CHECK);
+			GridData gd2 = new GridData();
+			gd2.horizontalSpan = 2;
+			debugButton.setLayoutData(gd2);
+			debugButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+
+					setDirty();
+				}
+			});
+
+		}
+	}
+
+	private void createVerboseCheckbox(final Composite box) {
+		{
+			Label l = new Label(box, SWT.NONE);
+			l.setText("Verbose:");
+			verboseButton = new Button(box, SWT.CHECK);
+			GridData gd2 = new GridData();
+			gd2.horizontalSpan = 2;
+			verboseButton.setLayoutData(gd2);
+			verboseButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+
+					setDirty();
+				}
+			});
+
+		}
+	}
+
+	private void createAutoConnectCheckBox(final Composite box) {
+		{
+			Label l = new Label(box, SWT.NONE);
+			l.setText("Autoconnect:");
+			l.setToolTipText("If autoconnect is enabled, the launch will block until a new java process is launched and then connect to this process.");
+			autoconnectButton = new Button(box, SWT.CHECK);
+			GridData gd2 = new GridData();
+			gd2.horizontalSpan = 2;
+			autoconnectButton.setLayoutData(gd2);
+			autoconnectButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+
+					setDirty();
+				}
+			});
+
+		}
+	}
+
+	private void createAutoUploadCheckBox(final Composite box) {
+		{
+			Label l = new Label(box, SWT.NONE);
+			l.setText("Auto-Upload:");
+			l.setToolTipText("If Auto-Upload is enabled, the project will automatically be deployed as JRTrace project into the target VM.");
+			autouploadButton = new Button(box, SWT.CHECK);
+			GridData gd2 = new GridData();
+			gd2.horizontalSpan = 2;
+			autouploadButton.setLayoutData(gd2);
+			autouploadButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+
+					setDirty();
+				}
+			});
+
+		}
+	}
+
+	private void createSelectProject(final Composite box) {
+		{
+			Label l = new Label(box, SWT.NONE);
+			l.setText("Rules/Helper Project:");
+			rulesProjectName = new Text(box, SWT.BORDER);
+			GridData gd2 = new GridData();
+			gd2.grabExcessHorizontalSpace = true;
+			gd2.horizontalAlignment = SWT.FILL;
+			rulesProjectName.setLayoutData(gd2);
+			rulesProjectName.addModifyListener(new ModifyListener() {
+
+				@Override
+				public void modifyText(ModifyEvent e) {
+					setDirty();
+
+				}
+			});
+			Button selectRules = new Button(box, SWT.NONE);
+			selectRules.setText("Select Project");
+			selectRules
+					.setToolTipText("Rules (*.btml) files from the selected project are automatically synchronized with the target connected to the project. I.e. changes of rules are reflected immediately.");
+			selectRules.addSelectionListener(new SelectionAdapter() {
+
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					ElementListSelectionDialog selectRules = new ElementListSelectionDialog(
+							box.getShell(), new WorkbenchLabelProvider());
+					selectRules.setElements(ResourcesPlugin.getWorkspace()
+							.getRoot().getProjects(0));
+					selectRules.setTitle("Rules and Helper Project Selection");
+					selectRules
+							.setMessage("Select the project that will hold the rules and helper jar files that you need for this launch configuration.");
+					selectRules.setMultipleSelection(false);
+					selectRules.open();
+
+					Object project = selectRules.getFirstResult();
+					if (project != null) {
+						IProject theProject = (IProject) project;
+						rulesProjectName.setText(theProject.getName());
+						setDirty();
+					}
+				}
+			});
+		}
+	}
+
+	private void createPortText(final Composite box) {
+		{
+			Label pidLabel = new Label(box, SWT.NONE);
+			pidLabel.setText("Port:");
+			pidLabel.setToolTipText("The process id of the JVM to connect to. If this is specified, it will be used. If it is not specified, the identify text or the auto connect feature will be used.");
+			portText = new Text(box, SWT.NONE | SWT.BORDER);
+			GridData gd = new GridData();
+			gd.horizontalSpan = 2;
+			gd.grabExcessHorizontalSpace = true;
+			gd.horizontalAlignment = SWT.FILL;
+			portText.setLayoutData(gd);
+			portText.addModifyListener(new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent e) {
+					setDirty();
+				}
+			});
+
+			{
+				Label agentInfoLabel = new Label(box, SWT.NONE);
+				agentInfoLabel.setText("Copy java parameters:");
+
+				agentInfoText = new Button(box, SWT.NONE);
+				agentInfoText.setText("Copy Java Parameters");
+				agentInfoText.setToolTipText(getAgentInfoLabel());
+				GridData gd2 = new GridData();
+				gd2.horizontalSpan = 2;
+				agentInfoText.setLayoutData(gd2);
+				agentInfoText.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						Clipboard cp = new Clipboard(box.getDisplay());
+						TextTransfer t = TextTransfer.getInstance();
+						cp.setContents(new Object[] { getAgentInfoLabel() },
+								new Transfer[] { t });
+					}
+
+				});
+			}
+		}
+	}
+
+	private void createPIDText(final Composite box) {
+		{
+			Label pidLabel = new Label(box, SWT.NONE);
+			pidLabel.setText("PID:");
+			pidLabel.setToolTipText("The process id of the JVM to connect to. If this is specified, it will be used. If it is not specified, the identify text or the auto connect feature will be used.");
+			pidText = new Text(box, SWT.NONE | SWT.BORDER);
+			GridData gd = new GridData();
+			gd.grabExcessHorizontalSpace = true;
+			gd.horizontalAlignment = SWT.FILL;
+			pidText.setLayoutData(gd);
+			pidText.addModifyListener(new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent e) {
+					setDirty();
+				}
+			});
+
+			pidSelectButton = new Button(box, SWT.NONE);
+			pidSelectButton.setText("Select");
+			pidSelectButton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					PIDSelectionDialog pidDialog = new PIDSelectionDialog();
+					pidDialog.setVMs(JRTraceControllerService.getInstance()
+							.getVMs());
+					pidDialog.show(box.getShell());
+					pidText.setText(pidDialog.getPID());
+					setDirty();
+				}
+			});
+		}
+	}
+
+	private void createIdentifyByTextText(final Composite box) {
 		{
 			Label description = new Label(box, SWT.NONE);
 			description.setText("Identify Process by Text:");
@@ -72,149 +302,83 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 			identifyText.addModifyListener(mod);
 
 		}
+	}
+
+	private void createUploadAgentButton(final Composite box) {
 		{
-			Label pidLabel = new Label(box, SWT.NONE);
-			pidLabel.setText("PID:");
-			pidLabel.setToolTipText("The process id of the JVM to connect to. If this is specified, it will be used. If it is not specified, the identify text or the auto connect feature will be used.");
-			pidText = new Text(box, SWT.NONE | SWT.BORDER);
+
+			uploadAgent = new Button(box, SWT.RADIO);
+			uploadAgent.setText("Upload JRTrace Agent");
 			GridData gd = new GridData();
+			gd.horizontalSpan = 2;
 			gd.grabExcessHorizontalSpace = true;
 			gd.horizontalAlignment = SWT.FILL;
-			pidText.setLayoutData(gd);
-			pidText.addModifyListener(new ModifyListener() {
-				@Override
-				public void modifyText(ModifyEvent e) {
-					setDirty();
-				}
-			});
+			uploadAgent.setLayoutData(gd);
 
-			Button pidSelectButton = new Button(box, SWT.NONE);
-			pidSelectButton.addSelectionListener(new SelectionAdapter() {
+			SelectionAdapter sel = new SelectionAdapter() {
+
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					PIDSelectionDialog pidDialog = new PIDSelectionDialog();
-					pidDialog.setVMs(JRTraceControllerService.getInstance()
-							.getVMs());
-					pidDialog.show(parent.getShell());
-					pidText.setText(pidDialog.getPID());
+
+					connectAgent.setSelection(!uploadAgent.getSelection());
 					setDirty();
+
 				}
-			});
-			pidSelectButton.setText("Select");
+			};
 
-			{
-				Label l = new Label(box, SWT.NONE);
-				l.setText("Rules/Helper Project:");
-				rulesProjectName = new Text(box, SWT.BORDER);
-				GridData gd2 = new GridData();
-				gd2.grabExcessHorizontalSpace = true;
-				gd2.horizontalAlignment = SWT.FILL;
-				rulesProjectName.setLayoutData(gd2);
-				rulesProjectName.addModifyListener(new ModifyListener() {
+			uploadAgent.addSelectionListener(sel);
 
-					@Override
-					public void modifyText(ModifyEvent e) {
-						setDirty();
+			Label description = new Label(box, SWT.NONE);
+			description.setText("Requires JDK for Dev Env    ");
+			description
+					.setToolTipText("Select the target machine based on the process id. This option works without special startup parameters for the target process but requires the JDK for the development environment");
 
-					}
-				});
-				Button selectRules = new Button(box, SWT.NONE);
-				selectRules.setText("Select Project");
-				selectRules
-						.setToolTipText("Rules (*.btml) files from the selected project are automatically synchronized with the target connected to the project. I.e. changes of rules are reflected immediately.");
-				selectRules.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						ElementListSelectionDialog selectRules = new ElementListSelectionDialog(
-								parent.getShell(), new WorkbenchLabelProvider());
-						selectRules.setElements(ResourcesPlugin.getWorkspace()
-								.getRoot().getProjects(0));
-						selectRules
-								.setTitle("Rules and Helper Project Selection");
-						selectRules
-								.setMessage("Select the project that will hold the rules and helper jar files that you need for this launch configuration.");
-						selectRules.setMultipleSelection(false);
-						selectRules.open();
-
-						Object project = selectRules.getFirstResult();
-						if (project != null) {
-							IProject theProject = (IProject) project;
-							rulesProjectName.setText(theProject.getName());
-							setDirty();
-						}
-					}
-				});
-			}
-			{
-				Label l = new Label(box, SWT.NONE);
-				l.setText("Auto-Upload:");
-				l.setToolTipText("If Auto-Upload is enabled, the project will automatically be deployed as JRTrace project into the target VM.");
-				autouploadButton = new Button(box, SWT.CHECK);
-				GridData gd2 = new GridData();
-				gd2.horizontalSpan = 2;
-				autouploadButton.setLayoutData(gd2);
-				autouploadButton.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-
-						setDirty();
-					}
-				});
-
-			}
-			{
-				Label l = new Label(box, SWT.NONE);
-				l.setText("Autoconnect:");
-				l.setToolTipText("If autoconnect is enabled, the launch will block until a new java process is launched and then connect to this process.");
-				autoconnectButton = new Button(box, SWT.CHECK);
-				GridData gd2 = new GridData();
-				gd2.horizontalSpan = 2;
-				autoconnectButton.setLayoutData(gd2);
-				autoconnectButton.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-
-						setDirty();
-					}
-				});
-
-			}
-			{
-				Label l = new Label(box, SWT.NONE);
-				l.setText("Verbose:");
-				verboseButton = new Button(box, SWT.CHECK);
-				GridData gd2 = new GridData();
-				gd2.horizontalSpan = 2;
-				verboseButton.setLayoutData(gd2);
-				verboseButton.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-
-						setDirty();
-					}
-				});
-
-			}
-			{
-				Label l = new Label(box, SWT.NONE);
-				l.setText("Debug:");
-				debugButton = new Button(box, SWT.CHECK);
-				GridData gd2 = new GridData();
-				gd2.horizontalSpan = 2;
-				debugButton.setLayoutData(gd2);
-				debugButton.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-
-						setDirty();
-					}
-				});
-
-			}
 		}
-		setControl(box);
+	}
 
+	private void createConnectAgentButton(final Composite box) {
+		{
+
+			connectAgent = new Button(box, SWT.RADIO);
+			connectAgent.setText("Connect JRTrace Agent");
+			GridData gd = new GridData();
+			gd.horizontalSpan = 2;
+			gd.grabExcessHorizontalSpace = true;
+			gd.horizontalAlignment = SWT.FILL;
+			connectAgent.setLayoutData(gd);
+			SelectionAdapter sel = new SelectionAdapter() {
+
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					uploadAgent.setSelection(!connectAgent.getSelection());
+					setDirty();
+					updateUI();
+				}
+			};
+			connectAgent.addSelectionListener(sel);
+
+			Label description = new Label(box, SWT.NONE);
+			description.setText("No JDK required");
+
+		}
+	}
+
+	protected void updateUI() {
+		boolean upload = uploadAgent.getSelection();
+
+		identifyText.setEnabled(upload);
+		pidText.setEnabled(upload);
+		pidSelectButton.setEnabled(upload);
+		portText.setEnabled(!upload);
+
+	}
+
+	private String getAgentInfoLabel() {
+
+		return String.format("-javaagent:%s=port=%s,bootjar=%s", JarLocator
+				.getJRTraceHelperAgent(),
+				portText.getText().isEmpty() ? "<port>" : portText.getText(),
+				JarLocator.getHelperLibJar());
 	}
 
 	@Override
@@ -226,10 +390,14 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 		configuration.setAttribute(BM_AUTOUPLOAD, false);
 		configuration.setAttribute(BM_AUTOCONNECT, false);
 		configuration.setAttribute(BM_VERBOSE, false);
+		configuration.setAttribute(BM_UPLOADAGENT, true);
+		configuration.setAttribute(BM_UPLOADAGENT_PORT, 0);
+
 	}
 
 	private void setDirty() {
 		setDirty(true);
+		updateUI();
 		getLaunchConfigurationDialog().updateButtons();
 	}
 
@@ -250,11 +418,19 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 					BM_AUTOUPLOAD, false));
 			verboseButton.setSelection(configuration.getAttribute(BM_VERBOSE,
 					false));
+			uploadAgent.setSelection(configuration.getAttribute(BM_UPLOADAGENT,
+					true));
+			connectAgent.setSelection(!configuration.getAttribute(
+					BM_UPLOADAGENT, true));
+			int port = configuration.getAttribute(BM_UPLOADAGENT_PORT, 0);
+			if (port != 0)
+				portText.setText(String.format("%d", port));
 		} catch (CoreException e) {
 			throw new RuntimeException(
 					"Problem in ConnectionTab.intializeFrom", e);
 		}
 
+		updateUI();
 	}
 
 	@Override
@@ -270,6 +446,14 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 		configuration.setAttribute(BM_AUTOCONNECT,
 				autoconnectButton.getSelection());
 		configuration.setAttribute(BM_DEBUG, debugButton.getSelection());
+		configuration.setAttribute(BM_UPLOADAGENT, uploadAgent.getSelection());
+		int port = 0;
+		try {
+			port = Integer.parseInt(portText.getText());
+		} catch (NumberFormatException e) {
+			// do nothing
+		}
+		configuration.setAttribute(BM_UPLOADAGENT_PORT, port);
 
 	}
 

@@ -20,9 +20,14 @@ public class JarLocator {
 				"/groovylib/groovy-all-2.3.6-indy.jar");
 	}
 
-	static public String getHelperLibJar() throws URISyntaxException,
-			IOException {
-		return getFile("de.schenk.jrtrace.helperlib", "/lib/HelperLib.jar");
+	static public String getHelperLibJar() {
+		try {
+			return getFile("de.schenk.jrtrace.helperlib", "/lib/HelperLib.jar");
+		} catch (URISyntaxException | IOException e) {
+			throw new RuntimeException(
+					"Exception while trying to get the file for HelperLib.jar",
+					e);
+		}
 	}
 
 	static public String getFile(String bundleId, String jarpath)
@@ -37,10 +42,15 @@ public class JarLocator {
 		return pathString.replace("file:/", "");
 	}
 
-	static public String getJRTraceHelperAgent() throws URISyntaxException,
-			IOException {
+	static public String getJRTraceHelperAgent() {
 
-		return getFile("de.schenk.jrtrace.helperagent", "/lib/HelperAgent.jar");
+		try {
+			return getFile("de.schenk.jrtrace.helperagent",
+					"/lib/HelperAgent.jar");
+		} catch (URISyntaxException | IOException e) {
+			throw new RuntimeException(
+					"Problem obtaining the File URI for HelperAgent.jar");
+		}
 	}
 
 	public static String getHelperLibSource() throws URISyntaxException,

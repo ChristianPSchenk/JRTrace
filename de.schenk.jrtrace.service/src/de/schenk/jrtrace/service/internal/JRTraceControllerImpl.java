@@ -9,8 +9,8 @@ import java.util.List;
 import com.sun.tools.attach.VirtualMachine;
 import com.sun.tools.attach.VirtualMachineDescriptor;
 
-import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.IJRTraceVM;
+import de.schenk.jrtrace.service.JRTraceController;
 
 public class JRTraceControllerImpl implements JRTraceController {
 	@Override
@@ -50,9 +50,14 @@ public class JRTraceControllerImpl implements JRTraceController {
 	@Override
 	public IJRTraceVM getMachine(String pid) {
 
-		JRTraceVMImpl theMachine = new JRTraceVMImpl(pid);
+		IJRTraceVM theMachine = new JRTraceVMImpl(pid);
 
 		return theMachine;
 
+	}
+
+	@Override
+	public IJRTraceVM getMachine(int port) {
+		return new JRTraceConnectingImpl(port);
 	}
 }

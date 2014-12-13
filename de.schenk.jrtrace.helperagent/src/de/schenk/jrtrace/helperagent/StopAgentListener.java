@@ -1,6 +1,6 @@
 /**
-* (c) 2014 by Christian Schenk
-**/
+ * (c) 2014 by Christian Schenk
+ **/
 package de.schenk.jrtrace.helperagent;
 
 import de.schenk.jrtrace.helperlib.IJRTraceClientListener;
@@ -15,7 +15,12 @@ public class StopAgentListener implements IJRTraceClientListener {
 
 	@Override
 	public void messageReceived(String clientSentence) {
-		theAgent.stop();
+		boolean disc = false;
+		if ("true".equals(clientSentence))
+			disc = true;
+
+		theAgent.stop(disc);
+
 	}
 
 }

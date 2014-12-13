@@ -1,6 +1,6 @@
 /**
-* (c) 2014 by Christian Schenk
-**/
+ * (c) 2014 by Christian Schenk
+ **/
 package de.schenk.jrtrace.service.internal;
 
 import java.util.concurrent.BrokenBarrierException;
@@ -11,10 +11,10 @@ import de.schenk.jrtrace.helperlib.IJRTraceClientListener;
 
 public class HelperAgentMessageReceiver implements IJRTraceClientListener {
 
-	private JRTraceVMImpl vm;
+	private AbstractVM vm;
 	private CyclicBarrier readySignal;
 
-	public HelperAgentMessageReceiver(JRTraceVMImpl JRTraceVMImpl,
+	public HelperAgentMessageReceiver(AbstractVM JRTraceVMImpl,
 			CyclicBarrier agentReadyBarrier) {
 		vm = JRTraceVMImpl;
 		readySignal = agentReadyBarrier;

@@ -54,9 +54,7 @@ public class JRTraceControllerTest {
 
 		IJRTraceVM mach = bmController.getMachine(vm.getId());
 		assertTrue(mach.attach());
-		boolean result = mach.loadJRTraceAgent(false, false);
 
-		assertTrue(result);
 		assertTrue(mach.detach());
 
 	}
@@ -68,10 +66,6 @@ public class JRTraceControllerTest {
 		IJRTraceVM mach = bmController.getMachine(vm.getId());
 		for (int i = 0; i < 2; i++) {
 			assertTrue(mach.attach());
-			boolean result = mach.loadJRTraceAgent(false, false);
-			;
-
-			assertTrue(result);
 			assertTrue(mach.detach());
 		}
 

@@ -1,6 +1,6 @@
 /**
-* (c) 2014 by Christian Schenk
-**/
+ * (c) 2014 by Christian Schenk
+ **/
 package de.schenk.jrtrace.enginex.testscripts;
 
 import static org.junit.Assert.assertFalse;
@@ -21,9 +21,9 @@ import org.junit.Test;
 import org.osgi.framework.Bundle;
 
 import de.schenk.jrtrace.helperlib.TraceSender;
+import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.JRTraceControllerService;
-import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.SynchronousWaitListener;
 import de.schenk.jrtrace.service.test.utils.JavaUtil;
 
@@ -49,7 +49,6 @@ public class EngineXLifeCycleTest {
 		pid = javaSplit[0];
 		machine = bmController.getMachine(pid);
 		assertTrue(machine.attach());
-		assertTrue(machine.loadJRTraceAgent(false, false));
 
 	}
 

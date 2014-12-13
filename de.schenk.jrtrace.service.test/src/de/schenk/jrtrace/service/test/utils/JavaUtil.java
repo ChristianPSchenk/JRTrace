@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
 import de.schenk.enginex.helper.EngineXNameUtil;
+import de.schenk.jrtrace.service.JarLocator;
 import de.schenk.jrtrace.service.internal.PortUtil;
 
 public class JavaUtil {
@@ -38,13 +39,51 @@ public class JavaUtil {
 		return t;
 	}
 
+	/**
+	 * launches the java process without any specific agent.
+	 * 
+	 */
 	public void launchJavaProcess() throws IOException, URISyntaxException,
 			InterruptedException {
+
+		launchJavaProcess("");
+	}
+
+	/**
+	 * launches the java test process with an agent listening on a free port
+	 * 
+	 * @return
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws InterruptedException
+	 * @returns the port with which the agent was started.
+	 */
+	public int launchJavaProcessWithAgent() throws IOException,
+			URISyntaxException, InterruptedException {
+		int freePort = PortUtil.getFreePort();
+		String agentPath = JarLocator.getJRTraceHelperAgent();
+		String bootjarPath = JarLocator.getHelperLibJar();
+		launchJavaProcess(String.format("-javaagent:%s=port=%d,bootjar=%s",
+				agentPath, freePort, bootjarPath));
+		return freePort;
+	}
+
+	/**
+	 * 
+	 * @param runAgent
+	 *            if true, passes the agent on the command line already
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws InterruptedException
+	 */
+	public void launchJavaProcess(String parameters) throws IOException,
+			URISyntaxException, InterruptedException {
 		String javaHome = System.getProperty("java.home");
 
 		String fullPath = getClassPathForClass(TestProcess.class);
 		ArrayList<String> commandParameters = new ArrayList<String>();
 		commandParameters.add(javaHome + "\\bin\\java.exe");
+		commandParameters.add(parameters);
 		commandParameters.add("-cp");
 		commandParameters.add(fullPath);
 		commandParameters.add(TestProcess.class.getName());

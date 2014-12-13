@@ -58,7 +58,6 @@ public class EngineXDetailsTest {
 		pid = javaSplit[0];
 		machine = bmController.getMachine(pid);
 		assertTrue(machine.attach());
-		assertTrue(machine.loadJRTraceAgent(false, false));
 
 		DoneListener doneListener = new DoneListener();
 
