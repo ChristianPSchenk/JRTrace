@@ -10,6 +10,7 @@ import com.sun.tools.attach.AgentLoadException;
 import com.sun.tools.attach.AttachNotSupportedException;
 import com.sun.tools.attach.VirtualMachine;
 
+import de.schenk.jrtrace.service.ICancelable;
 import de.schenk.jrtrace.service.JarLocator;
 
 public class JRTraceVMImpl extends AbstractVM {
@@ -28,7 +29,7 @@ public class JRTraceVMImpl extends AbstractVM {
 	 * @return true if successful, excception can be retrieved via
 	 *         getException() if not successful
 	 */
-	public boolean attach() {
+	public boolean attach(ICancelable stopper) {
 		boolean result = attachVM();
 		if (!result)
 			return result;
@@ -38,7 +39,7 @@ public class JRTraceVMImpl extends AbstractVM {
 			return false;
 
 		setTraceSenderPort(port);
-		return connectToAgent();
+		return connectToAgent(stopper);
 	}
 
 	private boolean attachVM() {

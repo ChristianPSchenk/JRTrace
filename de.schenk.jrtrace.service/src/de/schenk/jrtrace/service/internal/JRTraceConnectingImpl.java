@@ -1,5 +1,7 @@
 package de.schenk.jrtrace.service.internal;
 
+import de.schenk.jrtrace.service.ICancelable;
+
 public class JRTraceConnectingImpl extends AbstractVM {
 
 	private int port;
@@ -18,10 +20,10 @@ public class JRTraceConnectingImpl extends AbstractVM {
 	}
 
 	@Override
-	public boolean attach() {
+	public boolean attach(ICancelable stopper) {
 
 		setTraceSenderPort(port);
-		return connectToAgent();
+		return connectToAgent(stopper);
 
 	}
 

@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Display;
 
 import de.schenk.jrtrace.helperlib.HelperLibConstants;
 import de.schenk.jrtrace.service.IJRTraceVM;
+import de.schenk.jrtrace.service.ICancelable;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.JRTraceControllerService;
 import de.schenk.jrtrace.service.JarLocator;
@@ -51,18 +52,9 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 		int port;
 		port = launchconfig.getAttribute(ConnectionTab.BM_UPLOADAGENT_PORT, 0);
 
-		// if (launchconfig.getAttribute(ConnectionTab.BM_AUTOCONNECT, false)) {
-		// String startedProcess = waitForStartedProcess(monitor);
-		// if (monitor.isCanceled())
-		// throw new CoreException(Status.CANCEL_STATUS);
-		// if (startedProcess != null) {
-		// pid = startedProcess;
-		// }
-		// }
-
 		JRTraceController controller = JRTraceControllerService.getInstance();
 		final IJRTraceVM machine = controller.getMachine(port);
-		if (runTarget(launch, machine))
+		if (runTarget(launch, machine, monitor))
 			return;
 		showUnableToConnectDialog(String.format("Port:%d", port), machine);
 
@@ -70,13 +62,23 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 
 	}
 
-	private boolean runTarget(ILaunch launch, final IJRTraceVM machine)
-			throws CoreException {
+	private boolean runTarget(ILaunch launch, final IJRTraceVM machine,
+			final IProgressMonitor monitor) throws CoreException {
 		final String projectName = launch.getLaunchConfiguration()
 				.getAttribute(ConnectionTab.BM_PROJECT_IDENT, "");
 		IProject theProject = getProject(projectName);
 
-		if (machine.attach()) {
+		ICancelable stopper = new ICancelable() {
+
+			@Override
+			public boolean isCanceled() {
+
+				return monitor.isCanceled();
+			}
+
+		};
+
+		if (machine.attach(stopper)) {
 
 			if (prepareGroovy(machine, theProject)) {
 
@@ -129,7 +131,7 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 		JRTraceController controller = JRTraceControllerService.getInstance();
 		final IJRTraceVM machine = controller.getMachine(pid);
 
-		if (runTarget(launch, machine))
+		if (runTarget(launch, machine, monitor))
 			return;
 
 		showUnableToConnectDialog(pid, machine);

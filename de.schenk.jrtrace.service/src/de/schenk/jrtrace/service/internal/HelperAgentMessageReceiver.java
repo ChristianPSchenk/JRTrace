@@ -3,21 +3,27 @@
  **/
 package de.schenk.jrtrace.service.internal;
 
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
-
 import de.schenk.jrtrace.helperagent.AgentMain;
 import de.schenk.jrtrace.helperlib.IJRTraceClientListener;
 
 public class HelperAgentMessageReceiver implements IJRTraceClientListener {
 
 	private AbstractVM vm;
-	private CyclicBarrier readySignal;
+	private boolean ready = false;
+	private Thread notifyThread;
 
-	public HelperAgentMessageReceiver(AbstractVM JRTraceVMImpl,
-			CyclicBarrier agentReadyBarrier) {
+	/**
+	 * 
+	 * @param JRTraceVMImpl
+	 *            the machine for which the trace port needs to be set.
+	 * @param notify
+	 *            the thread that needs to be interrupted() if the READY message
+	 *            comes in.
+	 */
+	public HelperAgentMessageReceiver(AbstractVM JRTraceVMImpl, Thread notify) {
 		vm = JRTraceVMImpl;
-		readySignal = agentReadyBarrier;
+		notifyThread = notify;
+		ready = false;
 	}
 
 	@Override
@@ -29,12 +35,13 @@ public class HelperAgentMessageReceiver implements IJRTraceClientListener {
 			vm.setTraceSenderPort(port);
 		}
 		if (clientSentence.startsWith(AgentMain.AGENT_READY)) {
-			try {
-				readySignal.await();
-			} catch (InterruptedException | BrokenBarrierException e) {
-				throw new RuntimeException(
-						"Barrierbroken while waiting for agent to respond.", e);
-			}
+			System.out.println("Ready received");
+			ready = true;
+			notifyThread.interrupt();
 		}
+	}
+
+	public boolean readyReceived() {
+		return ready;
 	}
 }

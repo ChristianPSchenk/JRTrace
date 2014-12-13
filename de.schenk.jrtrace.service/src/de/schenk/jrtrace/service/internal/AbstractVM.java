@@ -4,15 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import de.schenk.jrtrace.helperagent.AgentMain;
 import de.schenk.jrtrace.helperlib.IJRTraceClientListener;
 import de.schenk.jrtrace.helperlib.TraceReceiver;
 import de.schenk.jrtrace.helperlib.TraceSender;
+import de.schenk.jrtrace.service.ICancelable;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.SynchronousWaitListener;
 
@@ -120,36 +117,48 @@ abstract public class AbstractVM implements IJRTraceVM {
 	/**
 	 * loads the jrtrace agent onto the vm. Checks whether the agent is loaded
 	 * already and doesn't load it in this case.
+	 * 
+	 * @param stopper
 	 */
-	protected boolean connectToAgent() {
+	protected boolean connectToAgent(ICancelable stopper) {
 
 		if (!registerTraceListener())
 			return false;
 
-		CyclicBarrier agentReadyBarrier = new CyclicBarrier(2);
-
+		final boolean connected[] = new boolean[1];
+		connected[0] = false;
+		HelperAgentMessageReceiver helperAgentMessageReceiver = new HelperAgentMessageReceiver(
+				this, Thread.currentThread());
 		receiver.addListener(TraceSender.TRACECLIENT_AGENT_ID,
-				new HelperAgentMessageReceiver(this, agentReadyBarrier));
+				helperAgentMessageReceiver);
+		while (!helperAgentMessageReceiver.readyReceived()) {
+			helperAgentSender.sendToServer(
+					String.format("%d", receiver.getServerPort()),
+					AgentMain.AGENT_CONNECT);
 
-		helperAgentSender.sendToServer(
-				String.format("%d", receiver.getServerPort()),
-				AgentMain.AGENT_CONNECT);
+			try {
+				System.out.println("Waiting for ready");
+				Thread.sleep(500);
 
-		try {
-			agentReadyBarrier.await(10000, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			lastException = e;
-			return false;
-		} catch (BrokenBarrierException e) {
-			lastException = e;
-			return false;
-		} catch (TimeoutException e) {
-			lastException = e;
-			return false;
+			} catch (InterruptedException e) {
+				// next attempt
+			}
+			if (stopper != null && stopper.isCanceled()) {
+				lastException = new Exception(
+						"Connecting to target machine stopped.");
+				return false;
+			}
+
 		}
-
+		receiver.removeListener(TraceSender.TRACECLIENT_AGENT_ID,
+				helperAgentMessageReceiver);
 		return true;
 
+	}
+
+	@Override
+	public boolean attach() {
+		return attach(null);
 	}
 
 	protected boolean registerTraceListener() {

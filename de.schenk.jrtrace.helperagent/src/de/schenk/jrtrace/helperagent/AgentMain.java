@@ -78,7 +78,7 @@ public class AgentMain {
 
 	private EngineXClassFileTransformer enginextransformer;
 
-	private void start(int port) {
+	synchronized private void start(int port) {
 
 		commandReceiver = new TraceReceiver(port);
 		commandReceiver.setDaemon();
@@ -91,9 +91,6 @@ public class AgentMain {
 					e);
 
 		}
-
-		enginextransformer = new EngineXClassFileTransformer();
-		instrumentation.addTransformer(enginextransformer, true);
 
 		commandReceiver
 				.addListener(AGENT_CONNECT, new RunConnectListener(this));
@@ -126,14 +123,46 @@ public class AgentMain {
 		}
 	}
 
+	synchronized public void connect(int senderPort) {
+
+		if (enginextransformer != null && TraceService.getInstance() != null
+				&& TraceService.getInstance().getPort() == senderPort)
+			return;
+
+		enginextransformer = new EngineXClassFileTransformer();
+		instrumentation.addTransformer(enginextransformer, true);
+
+		TraceSender sender = new TraceSender(senderPort);
+		TraceService.setSender(sender);
+		redirectStandardOut(true);
+		System.out.println(String.format(
+				" AgentMain connected and sending on (%d)", senderPort));
+		TraceService.getInstance().failSafeSend(
+				TraceSender.TRACECLIENT_AGENT_ID, AgentMain.AGENT_READY);
+	}
+
+	/**
+	 * disconnect the agent from the current connection
+	 */
+	public void disconnect() {
+		stop(true);
+	}
+
+	/**
+	 * shut down the agent
+	 */
+	public void stop() {
+		stop(false);
+	}
+
 	/**
 	 * stop all agent threads/activities/redirections
 	 * 
 	 * @param disconnect
-	 *            : true: only disconnect, false: disable the command listener
-	 *            as well / agent shutdown
+	 *            true: only disconnect, false: disable the command listener as
+	 *            well , the agent in this case effectively shut down
 	 */
-	public void stop(boolean disconnect) {
+	synchronized public void stop(boolean disconnect) {
 
 		System.out.println(String.format("Agent.stop(%b)", disconnect));
 		EngineXHelper.clearEngineX();
@@ -144,6 +173,7 @@ public class AgentMain {
 			if (!disconnect) {
 				commandReceiver.stop();
 				instrumentation.removeTransformer(enginextransformer);
+				enginextransformer = null;
 			}
 
 			GroovyUtil.clearScriptCache();

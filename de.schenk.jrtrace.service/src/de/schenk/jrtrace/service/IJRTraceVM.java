@@ -30,9 +30,11 @@ public interface IJRTraceVM {
 	 * Note: this call should be falled by a call to installJRTraceAgent, else
 	 * several options might not work
 	 * 
+	 * @param stopper
+	 *            if the user stops the attach process
 	 * @return error or not
 	 */
-	boolean attach();
+	boolean attach(ICancelable stopper);
 
 	/**
 	 * installs a new jar file into the target machine
@@ -94,5 +96,7 @@ public interface IJRTraceVM {
 	void installEngineXClass(String fileForClass);
 
 	void clearEngineX();
+
+	boolean attach();
 
 }

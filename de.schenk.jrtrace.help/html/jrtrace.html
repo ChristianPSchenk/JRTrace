@@ -129,7 +129,8 @@ class "testpackage.Main". The <code>traceStack()</code> call will also print the
 
 </p>
 <p>
-Just refer to the javadoc of the <code>de.schenk.jrtrace.annotations</code> package for a full overview on the features.
+Just refer to the <a href="javadoc\index.html">javadoc</a>
+ of the <code>de.schenk.jrtrace.annotations</code> package for a full overview on the features.
 Basically you can execute method on enter or exit of methods, use regular expressions to match class- and methodname, 
 inject the values of fields, call arguments and the return value into the tracing method and even execute the tracing
 code in the scope of different classloaders.
@@ -188,9 +189,25 @@ testproject.Main.main(Main.java:7)
 
 <h3>Launch Options</h3>
 
-<h4>Target Process Selection</h4>
+<p>
+There are two options provided to connect to a target machine:
+<ul>
+<li>
+By specifying the operating system process based on the process id or by a part of the text in its process description. If this option is used, JRTrace will require to
+run with a JDK and will upload the required JRTrace agent into the target process itself and connect to it.
+</li>
+<li>
+By launching the target JVM with parameters to include the JRTrace java agent and by specifying the port. JRTrace will then expect a running target machine JRTrace agent to which
+it can connect.
+</li>
+</ul>
 
-The JRTrace launch configuration provides several options to select the process to connect to.
+</p>
+
+<h4>Upload JRTrace Agent</h4>
+
+If the "Upload JRTrace Agent" checkbox is enabled, the following options can be used to specify the 
+target process to use:
 
 <ul>
 <li>
@@ -204,12 +221,28 @@ currently running processes. Upon launch, JRTrace will find all processes contai
 If the auto connect checkbox is enabled, JRTrace will begin the launch and poll for new JVMs. It will connect to the first java process that is launched on the machine after 
 starting the debug session.
 </li>
-<li>
+</ul>
+
+<h4>Connect JRTrace Agent</h4>
+
+<p>
+If the "Connect" option is selected, the target JVM in which the code is to be injected needs to be started with the proper
+arguments to include the JRTrace java agent into the target. The port will then specify the port on which the target machine is listening
+for connections.
+
+</p>
+<p>
+The "Copy Java Parameters" button will automatically copy the proper snippet including the port and the path to the two required jar files to the clipboard for your convenience.
+This snippet can be pasted into your start script. 
+
+</p>
+<h4>Auto Upload</h4>
+<p>
 If the auto upload checkbox is enabled, JRTrace will automatically 
 upload the project connected to the launch configuration and deploy it as JRTrace project into the target.
  
-</li>
-</ul>
+</p>
+
 
 <h4>Associating a Project with a JRTrace Launch</h4>
 
@@ -227,6 +260,7 @@ store the classes that are related to the task at hand, e.g. tracing a specific 
 
 <p>The <img src="pics/upload_java_16.gif"/>-menu/toolbar will deploy the selected java project into the target 
 application. This will effectively remove all previously deployed JRTrace classes from the target and replace them with the contents of the selected project.
+There is no restrictions on changes to the classes (e.g. including/removing static fields is always possible).
 
 </p>
 <h4>Execute a Groovy Script</h4>

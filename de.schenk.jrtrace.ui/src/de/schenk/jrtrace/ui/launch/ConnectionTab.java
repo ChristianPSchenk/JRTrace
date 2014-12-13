@@ -53,7 +53,7 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 	private Button connectAgent;
 	private Text portText;
 	private Button pidSelectButton;
-	private Button agentInfoText;
+	private Button copyJavaParameterButton;
 
 	@Override
 	public void createControl(final Composite parent) {
@@ -63,13 +63,14 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 		createUploadAgentButton(box);
 		createIdentifyByTextText(box);
 		createPIDText(box);
+		createAutoConnectCheckBox(box);
 
 		createConnectAgentButton(box);
 		createPortText(box);
 
 		createSelectProject(box);
 		createAutoUploadCheckBox(box);
-		createAutoConnectCheckBox(box);
+
 		createVerboseCheckbox(box);
 		createDebugCheckbox(box);
 		setControl(box);
@@ -121,7 +122,7 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 		{
 			Label l = new Label(box, SWT.NONE);
 			l.setText("Autoconnect:");
-			l.setToolTipText("If autoconnect is enabled, the launch will block until a new java process is launched and then connect to this process.");
+			l.setToolTipText("If autoconnect is enabled, the launch will poll until a new java process is launched that fits the search criteria and then connect to this process.");
 			autoconnectButton = new Button(box, SWT.CHECK);
 			GridData gd2 = new GridData();
 			gd2.horizontalSpan = 2;
@@ -225,22 +226,24 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 				Label agentInfoLabel = new Label(box, SWT.NONE);
 				agentInfoLabel.setText("Copy java parameters:");
 
-				agentInfoText = new Button(box, SWT.NONE);
-				agentInfoText.setText("Copy Java Parameters");
-				agentInfoText.setToolTipText(getAgentInfoLabel());
+				copyJavaParameterButton = new Button(box, SWT.NONE);
+				copyJavaParameterButton.setText("Copy Java Parameters");
+				copyJavaParameterButton.setToolTipText(getAgentInfoLabel());
 				GridData gd2 = new GridData();
 				gd2.horizontalSpan = 2;
-				agentInfoText.setLayoutData(gd2);
-				agentInfoText.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						Clipboard cp = new Clipboard(box.getDisplay());
-						TextTransfer t = TextTransfer.getInstance();
-						cp.setContents(new Object[] { getAgentInfoLabel() },
-								new Transfer[] { t });
-					}
+				copyJavaParameterButton.setLayoutData(gd2);
+				copyJavaParameterButton
+						.addSelectionListener(new SelectionAdapter() {
+							@Override
+							public void widgetSelected(SelectionEvent e) {
+								Clipboard cp = new Clipboard(box.getDisplay());
+								TextTransfer t = TextTransfer.getInstance();
+								cp.setContents(
+										new Object[] { getAgentInfoLabel() },
+										new Transfer[] { t });
+							}
 
-				});
+						});
 			}
 		}
 	}
@@ -369,7 +372,9 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 		identifyText.setEnabled(upload);
 		pidText.setEnabled(upload);
 		pidSelectButton.setEnabled(upload);
+		autoconnectButton.setEnabled(upload);
 		portText.setEnabled(!upload);
+		copyJavaParameterButton.setEnabled(!upload);
 
 	}
 
