@@ -19,10 +19,12 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 
 import de.schenk.jrtrace.helperlib.HelperLibConstants;
-import de.schenk.jrtrace.service.IJRTraceVM;
+import de.schenk.jrtrace.jdk.init.Activator;
 import de.schenk.jrtrace.service.ICancelable;
+import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.JRTraceControllerService;
 import de.schenk.jrtrace.service.JarLocator;
@@ -37,11 +39,33 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 		boolean upload = configuration.getAttribute(
 				ConnectionTab.BM_UPLOADAGENT, false);
 		if (upload) {
+			if (!Activator.hasJDK()) {
+				showNoJDKError();
+				throw new CoreException(Status.CANCEL_STATUS);
+			}
 			launchPID(launch, monitor);
 
 		} else {
 			launchPort(launch, monitor);
 		}
+
+	}
+
+	private void showNoJDKError() {
+		final String javahome = System.getProperty("java.home");
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				MessageDialog
+						.openError(
+								null,
+								"JRTrace: No JDK!",
+								"To trace a target java application without launching it with -javaagent:... parameters, the development environment needs to be launched using a JDK. No JDK at "
+										+ javahome + ".");
+
+			}
+		});
 
 	}
 

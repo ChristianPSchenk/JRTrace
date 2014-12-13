@@ -14,9 +14,6 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -31,6 +28,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends Plugin {
 
 	private static BundleContext context;
+	private static boolean hasJDK = false;
 
 	static BundleContext getContext() {
 		return context;
@@ -50,24 +48,7 @@ public class Activator extends Plugin {
 		File toolsjar = new File(javahome, "../lib/tools.jar");
 		if (!toolsjar.exists()) {
 
-			getLog().log(
-					new Status(Status.ERROR, "de.schenk.toolsjar", Status.OK,
-							"This bundle requires a JDK defined. Didn't find tools.jar at "
-									+ toolsjar.toString(), null));
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-
-				@Override
-				public void run() {
-					MessageDialog
-							.openError(
-									null,
-									"JRTrace: No JDK!",
-									"To trace a target java application without launching it with -javaagent:... parameters, the development environment needs to be launched using a JDK. No JDK at "
-											+ javahome + ".");
-
-				}
-			});
-
+			hasJDK = false;
 		} else {
 			String target = getJar("de.schenk.toolsjar", "lib");
 
@@ -79,8 +60,13 @@ public class Activator extends Plugin {
 					|| Files.size(source) != Files.size(targetPath))
 				Files.copy(source, targetPath,
 						StandardCopyOption.REPLACE_EXISTING);
+			hasJDK = true;
 		}
 
+	}
+
+	public static boolean hasJDK() {
+		return hasJDK;
 	}
 
 	/*
@@ -105,8 +91,4 @@ public class Activator extends Plugin {
 		return pathString.replace("file:/", "");
 	}
 
-	public void test() {
-		System.out.println("init");
-
-	}
 }

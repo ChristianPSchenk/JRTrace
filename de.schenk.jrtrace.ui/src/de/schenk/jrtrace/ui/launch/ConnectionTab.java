@@ -9,6 +9,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -17,6 +20,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -26,6 +30,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
+import de.schenk.jrtrace.jdk.init.Activator;
 import de.schenk.jrtrace.service.JRTraceControllerService;
 import de.schenk.jrtrace.service.JarLocator;
 
@@ -60,6 +65,10 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 		final Composite box = new Composite(parent, SWT.FILL);
 		GridLayout gl = new GridLayout(3, false);
 		box.setLayout(gl);
+
+		if (!Activator.hasJDK()) {
+			createNoJDKWarningText(box);
+		}
 		createUploadAgentButton(box);
 		createIdentifyByTextText(box);
 		createPIDText(box);
@@ -77,6 +86,24 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 
 		connectAgent.setSelection(!uploadAgent.getSelection());
 		updateUI();
+
+	}
+
+	private void createNoJDKWarningText(Composite parent) {
+		Label jdkLabel = new Label(parent, SWT.NONE);
+		jdkLabel.setText(" Upload Option requires JDK. JDK is not available!");
+		GridData gd = new GridData(SWT.FILL, SWT.FILL, false, false);
+		gd.horizontalSpan = 3;
+		gd.horizontalAlignment = SWT.RIGHT;
+		jdkLabel.setLayoutData(gd);
+
+		final ControlDecoration jdkLabelDecorator = new ControlDecoration(
+				jdkLabel, SWT.LEFT | SWT.CENTER);
+		FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
+				.getFieldDecoration(FieldDecorationRegistry.DEC_WARNING);
+		Image image = fieldDecoration.getImage();
+		jdkLabelDecorator.setImage(image);
+		jdkLabelDecorator.setDescriptionText("Pls enter only numeric fields");
 
 	}
 
