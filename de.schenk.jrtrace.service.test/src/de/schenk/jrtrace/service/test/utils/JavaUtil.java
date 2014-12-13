@@ -52,23 +52,28 @@ public class JavaUtil {
 	/**
 	 * launches the java test process with an agent listening on a free port
 	 * 
+	 * @param expectedCounter
+	 * 
 	 * @return
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 * @throws InterruptedException
 	 * @returns the port with which the agent was started.
 	 */
-	public int launchJavaProcessWithAgent() throws IOException,
-			URISyntaxException, InterruptedException {
+	public int launchJavaProcessWithAgent(int expectedCounter)
+			throws IOException, URISyntaxException, InterruptedException {
 		int freePort = PortUtil.getFreePort();
 		String agentPath = JarLocator.getJRTraceHelperAgent();
 		String bootjarPath = JarLocator.getHelperLibJar();
-		launchJavaProcess(String.format("-javaagent:%s=port=%d,bootjar=%s",
-				agentPath, freePort, bootjarPath));
+		String prop = String.format("-javaagent:%s=port=%d,bootjar=%s",
+				agentPath, freePort, bootjarPath);
+
+		launchJavaProcess(prop);
 		return freePort;
 	}
 
 	/**
+	 * 
 	 * 
 	 * @param runAgent
 	 *            if true, passes the agent on the command line already
@@ -96,6 +101,7 @@ public class JavaUtil {
 		javaProcess = processBuilder.start();
 
 		InputStream inputStream = javaProcess.getInputStream();
+
 		OutputStreamPrinter outputStreamPrinter = new OutputStreamPrinter(
 				inputStream);
 		outputStreamPrinter.start();
@@ -184,6 +190,13 @@ public class JavaUtil {
 		return fullPath;
 	}
 
+	/**
+	 * Sends a stop request to the TestProcess and waits for completion.
+	 * 
+	 * @return exit value of the process or -1 if the javaprocess didn't exist
+	 *         (was null).
+	 * @throws InterruptedException
+	 */
 	public void sendKillAndWaitForEnd() throws InterruptedException {
 
 		if (javaProcess != null) {
@@ -191,7 +204,7 @@ public class JavaUtil {
 				sendKillUDPPacket();
 
 				try {
-					javaProcess.exitValue();
+					int returnValue = javaProcess.exitValue();
 
 					break;
 				} catch (IllegalThreadStateException e) {

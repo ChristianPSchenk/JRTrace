@@ -30,6 +30,8 @@ public class TraceSender {
 	static public final int TRACECLIENT_ENGINEX_STATUS = 8;
 	static public final int TRACECLIENT_AGENT_STOPPED_ID = 9;
 
+	public static final int TRACECLIENT_TESTMESSAGES_ID = 10;
+
 	public boolean connectionLost() {
 		return failedBefore;
 	}

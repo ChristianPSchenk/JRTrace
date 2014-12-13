@@ -16,12 +16,25 @@ public class SynchronousWaitListener implements IJRTraceClientListener {
 	private int id;
 	private String msg;
 	private IJRTraceVM machine;
+	private String result = null;
 
-	public SynchronousWaitListener(IJRTraceVM machine, int id, String message) {
+	public String getResult() {
+		return result;
+	}
+
+	/**
+	 * Construct an object that waits for a message containing a certain
+	 * substring on id from the specified machine.
+	 * 
+	 * @param machine
+	 * @param id
+	 * @param substring
+	 */
+	public SynchronousWaitListener(IJRTraceVM machine, int id, String substring) {
 		barrier = new CyclicBarrier(2);
 
 		this.id = id;
-		this.msg = message;
+		this.msg = substring;
 		this.machine = machine;
 		machine.addClientListener(id, this);
 	}
@@ -49,6 +62,7 @@ public class SynchronousWaitListener implements IJRTraceClientListener {
 		try {
 			try {
 				if (clientSentence.contains(msg)) {
+					result = clientSentence;
 					barrier.await(10000, TimeUnit.SECONDS);
 				}
 

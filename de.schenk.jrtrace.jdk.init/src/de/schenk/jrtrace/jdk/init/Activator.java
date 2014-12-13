@@ -61,10 +61,9 @@ public class Activator extends Plugin {
 					MessageDialog
 							.openError(
 									null,
-									"No JDK!",
-									"The jrtrace plugins require that the product is started using a JDK. It wasn't possible to locate tools.jar in the installation "
-											+ javahome
-											+ ". Ensure that this tool starts with a JDK!");
+									"JRTrace: No JDK!",
+									"To trace a target java application without launching it with -javaagent:... parameters, the development environment needs to be launched using a JDK. No JDK at "
+											+ javahome + ".");
 
 				}
 			});
