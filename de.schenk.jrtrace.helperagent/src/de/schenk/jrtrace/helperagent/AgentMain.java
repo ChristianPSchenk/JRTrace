@@ -6,8 +6,24 @@ package de.schenk.jrtrace.helperagent;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.instrument.Instrumentation;
+import java.lang.management.ManagementFactory;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.HashMap;
+
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.MBeanRegistrationException;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.NotCompliantMBeanException;
+import javax.management.ObjectName;
+import javax.management.remote.JMXConnectorServer;
+import javax.management.remote.JMXConnectorServerFactory;
+import javax.management.remote.JMXServiceURL;
 
 import de.schenk.enginex.helper.EngineXHelper;
+import de.schenk.jrtrace.helperagent.internal.JRTraceMXBeanImpl;
 import de.schenk.jrtrace.helperlib.GroovyUtil;
 import de.schenk.jrtrace.helperlib.HelperLib;
 import de.schenk.jrtrace.helperlib.TraceReceiver;
@@ -16,11 +32,11 @@ import de.schenk.jrtrace.helperlib.TraceService;
 
 public class AgentMain {
 
+	public static final String MXBEAN_DOMAIN = "de.schenk.jrtrace";
+
 	/*
 	 * The message codes the Agent sends
 	 */
-
-	public static final String AGENT_PORT = "PORT";
 
 	/**
 	 * Code to run a groovy script in the target machine
@@ -32,13 +48,9 @@ public class AgentMain {
 	/** stops the listener for commands, resets standard out/err to normal */
 	public static final int AGENT_COMMAND_STOPAGENT = 1;
 
-	/**
-	 * installs an XClass class
-	 */
-	public static final int AGENT_COMMAND_INSTALLENGINEXCLASS = 4;
 	public static final int AGENT_COMMAND_INSTALL_BOOT_JAR = 5;
 	public static final int AGENT_COMMAND_SETENV = 6;
-	public static final int AGENT_CONNECT = 7;
+
 	public static final String AGENT_READY = "READY";
 
 	public static AgentMain theAgent = null;
@@ -70,6 +82,66 @@ public class AgentMain {
 			theAgent.start(port);
 
 		}
+
+	}
+
+	static JMXConnectorServer cs = null;
+	private static Registry mxbeanRegistry = null;
+
+	synchronized private void stopMXBeanServer() {
+		try {
+			cs.stop();
+
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	synchronized private void startMXBeanServer() {
+
+		HashMap<String, String> environment = new HashMap<String, String>();
+		environment.put("jmx.remote.x.daemon", "true");
+		environment.put("com.sun.management.jmxremote.port",
+				String.format("%d", 9999));
+		environment.put("com.sun.management.jmxremote.authenticate", "false");
+		environment.put("com.sun.management.jmxremote.ssl", "false");
+
+		try {
+
+			if (mxbeanRegistry == null) {
+
+				try {
+					mxbeanRegistry = LocateRegistry.getRegistry(9999);
+
+					// try to connect. In case of problem: createregistry.
+					String[] list = mxbeanRegistry.list();
+				} catch (RemoteException e) {
+
+					mxbeanRegistry = LocateRegistry.createRegistry(9999);
+				}
+
+			}
+
+			MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+			JMXServiceURL url = new JMXServiceURL(
+					"service:jmx:rmi:///jndi/rmi://:" + 9999 + "/jmxrmi");
+			cs = JMXConnectorServerFactory.newJMXConnectorServer(url,
+					environment, mbs);
+
+			cs.start();
+
+			ObjectName mxbeanName = new ObjectName(MXBEAN_DOMAIN
+					+ ":type=JRTRace");
+			JRTraceMXBean jrtraceBean = new JRTraceMXBeanImpl(this);
+			if (!mbs.isRegistered(mxbeanName)) {
+				mbs.registerMBean(jrtraceBean, mxbeanName);
+			}
+		} catch (MalformedObjectNameException | InstanceAlreadyExistsException
+				| MBeanRegistrationException | NotCompliantMBeanException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private PrintStream stdout;
@@ -79,6 +151,8 @@ public class AgentMain {
 	private EngineXClassFileTransformer enginextransformer;
 
 	synchronized private void start(int port) {
+
+		startMXBeanServer();
 
 		commandReceiver = new TraceReceiver(port);
 		commandReceiver.setDaemon();
@@ -92,14 +166,11 @@ public class AgentMain {
 
 		}
 
-		commandReceiver
-				.addListener(AGENT_CONNECT, new RunConnectListener(this));
 		commandReceiver.addListener(AGENT_COMMAND_RUNGROOVY,
 				new RunGroovyListener());
 		commandReceiver.addListener(AGENT_COMMAND_RUNJAVA,
 				new RunJavaListener());
-		commandReceiver.addListener(AGENT_COMMAND_INSTALLENGINEXCLASS,
-				new InstallEngineXListener());
+
 		commandReceiver.addListener(AGENT_COMMAND_SETENV,
 				new SetEnvironmentVariableListener());
 		commandReceiver.addListener(AGENT_COMMAND_INSTALL_BOOT_JAR,
@@ -124,11 +195,11 @@ public class AgentMain {
 	}
 
 	synchronized public void connect(int senderPort) {
-
+		System.out.println("connect");
 		if (enginextransformer != null && TraceService.getInstance() != null
 				&& TraceService.getInstance().getPort() == senderPort)
 			return;
-
+		System.out.println("connecting");
 		enginextransformer = new EngineXClassFileTransformer();
 		instrumentation.addTransformer(enginextransformer, true);
 
@@ -136,7 +207,7 @@ public class AgentMain {
 		TraceService.setSender(sender);
 		redirectStandardOut(true);
 		System.out.println(String.format(
-				" AgentMain connected and sending on (%d)", senderPort));
+				" AgentMain is connected and sending on (%d)", senderPort));
 		TraceService.getInstance().failSafeSend(
 				TraceSender.TRACECLIENT_AGENT_ID, AgentMain.AGENT_READY);
 	}
@@ -170,7 +241,9 @@ public class AgentMain {
 		try {
 
 			redirectStandardOut(false);
+
 			if (!disconnect) {
+				stopMXBeanServer();
 				commandReceiver.stop();
 				instrumentation.removeTransformer(enginextransformer);
 				enginextransformer = null;

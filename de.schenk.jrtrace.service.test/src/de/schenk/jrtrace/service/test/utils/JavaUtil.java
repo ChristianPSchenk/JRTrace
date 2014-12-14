@@ -60,8 +60,8 @@ public class JavaUtil {
 	 * @throws InterruptedException
 	 * @returns the port with which the agent was started.
 	 */
-	public int launchJavaProcessWithAgent(int expectedCounter)
-			throws IOException, URISyntaxException, InterruptedException {
+	public int launchJavaProcessWithAgent() throws IOException,
+			URISyntaxException, InterruptedException {
 		int freePort = PortUtil.getFreePort();
 		String agentPath = JarLocator.getJRTraceHelperAgent();
 		String bootjarPath = JarLocator.getHelperLibJar();

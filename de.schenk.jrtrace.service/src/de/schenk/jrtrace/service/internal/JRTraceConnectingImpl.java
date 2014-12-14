@@ -13,17 +13,15 @@ public class JRTraceConnectingImpl extends AbstractVM {
 	@Override
 	public boolean detach() {
 
-		stopSender(true);
-
-		return stopReceiver();
+		return stopConnection(true);
 
 	}
 
 	@Override
 	public boolean attach(ICancelable stopper) {
 
-		setTraceSenderPort(port);
-		return connectToAgent(stopper);
+		;
+		return connectToAgent(port, stopper);
 
 	}
 

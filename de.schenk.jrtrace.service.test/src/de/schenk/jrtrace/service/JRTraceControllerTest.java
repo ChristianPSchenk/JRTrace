@@ -65,7 +65,13 @@ public class JRTraceControllerTest {
 
 		IJRTraceVM mach = bmController.getMachine(vm.getId());
 		for (int i = 0; i < 2; i++) {
-			assertTrue(mach.attach());
+			System.out.println(i);
+			boolean erg = mach.attach();
+			if (!erg) {
+				mach.getLastError().printStackTrace();
+				fail(mach.getLastError().getMessage());
+			}
+
 			assertTrue(mach.detach());
 		}
 

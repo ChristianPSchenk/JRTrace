@@ -5,7 +5,20 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import javax.management.InstanceNotFoundException;
+import javax.management.IntrospectionException;
+import javax.management.JMX;
+import javax.management.MBeanInfo;
+import javax.management.MBeanServerConnection;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
+import javax.management.remote.JMXConnector;
+import javax.management.remote.JMXConnectorFactory;
+import javax.management.remote.JMXServiceURL;
+
 import de.schenk.jrtrace.helperagent.AgentMain;
+import de.schenk.jrtrace.helperagent.JRTraceMXBean;
 import de.schenk.jrtrace.helperlib.IJRTraceClientListener;
 import de.schenk.jrtrace.helperlib.TraceReceiver;
 import de.schenk.jrtrace.helperlib.TraceSender;
@@ -39,7 +52,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 		return result;
 	}
 
-	protected void setTraceSenderPort(int port) {
+	private void setTraceSenderPort(int port) {
 
 		helperAgentSender = new TraceSender(port);
 	}
@@ -50,7 +63,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 	 *            true: only disconnect, let the client continue to listen for
 	 *            new connections, false: shutdown the agent command listener
 	 */
-	protected void stopSender(boolean disconnect) {
+	private void stopSender(boolean disconnect) {
 		if (helperAgentSender != null) {
 			SynchronousWaitListener wait_for_stop = new SynchronousWaitListener(
 					this, TraceSender.TRACECLIENT_AGENT_STOPPED_ID, "STOPPED");
@@ -58,22 +71,6 @@ abstract public class AbstractVM implements IJRTraceVM {
 					AgentMain.AGENT_COMMAND_STOPAGENT);
 			wait_for_stop.waitForDone(10);
 		}
-	}
-
-	protected boolean stopReceiver() {
-		boolean result = true;
-		if (receiver != null) {
-			try {
-				receiver.stop();
-
-			} catch (Exception e) {
-
-				lastException = e;
-				result = false;
-
-			}
-		}
-		return result;
 	}
 
 	@Override
@@ -102,15 +99,14 @@ abstract public class AbstractVM implements IJRTraceVM {
 
 	@Override
 	public void installEngineXClass(String fileForClass) {
-		helperAgentSender.sendToServer(fileForClass,
-				AgentMain.AGENT_COMMAND_INSTALLENGINEXCLASS);
+		mbeanProxy.installEngineXClass(fileForClass);
 
 	}
 
 	@Override
 	public void clearEngineX() {
-		helperAgentSender.sendToServer("",
-				AgentMain.AGENT_COMMAND_INSTALLENGINEXCLASS);
+
+		mbeanProxy.installEngineXClass("");
 
 	}
 
@@ -118,9 +114,15 @@ abstract public class AbstractVM implements IJRTraceVM {
 	 * loads the jrtrace agent onto the vm. Checks whether the agent is loaded
 	 * already and doesn't load it in this case.
 	 * 
+	 * @param the
+	 *            port on which the server listens for commands.
 	 * @param stopper
 	 */
-	protected boolean connectToAgent(ICancelable stopper) {
+	protected boolean connectToAgent(int port, ICancelable stopper) {
+
+		setTraceSenderPort(port);
+
+		createMXBeanClientConnection();
 
 		if (!registerTraceListener())
 			return false;
@@ -132,9 +134,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 		receiver.addListener(TraceSender.TRACECLIENT_AGENT_ID,
 				helperAgentMessageReceiver);
 		while (!helperAgentMessageReceiver.readyReceived()) {
-			helperAgentSender.sendToServer(
-					String.format("%d", receiver.getServerPort()),
-					AgentMain.AGENT_CONNECT);
+			mbeanProxy.connect(receiver.getServerPort());
 
 			try {
 				System.out.println("Waiting for ready");
@@ -152,8 +152,82 @@ abstract public class AbstractVM implements IJRTraceVM {
 		}
 		receiver.removeListener(TraceSender.TRACECLIENT_AGENT_ID,
 				helperAgentMessageReceiver);
+
 		return true;
 
+	}
+
+	private MBeanInfo mxbeanServer;
+	JMXConnector jmxc;
+	MBeanServerConnection mxbeanConnection;
+	JRTraceMXBean mbeanProxy;
+
+	private void createMXBeanClientConnection() {
+		JMXServiceURL url;
+		Exception e = null;
+		for (int i = 0; i < 10; i++) {
+			try {
+				url = new JMXServiceURL(
+						"service:jmx:rmi:///jndi/rmi://:9999/jmxrmi");
+				jmxc = JMXConnectorFactory.connect(url, null);
+				mxbeanConnection = jmxc.getMBeanServerConnection();
+
+				ObjectName mbeanName = new ObjectName(AgentMain.MXBEAN_DOMAIN
+						+ ":type=JRTRace");
+				mxbeanServer = mxbeanConnection.getMBeanInfo(mbeanName);
+				mbeanProxy = (JRTraceMXBean) JMX.newMBeanProxy(
+						mxbeanConnection, mbeanName, JRTraceMXBean.class, true);
+				return;
+			} catch (IOException | InstanceNotFoundException
+					| IntrospectionException | MalformedObjectNameException
+					| ReflectionException e2) {
+				e = e2;
+			}
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e1) {
+				// do nothing
+			}
+		}
+
+		throw new RuntimeException("Connect failed after 10 tries", e);
+	}
+
+	private void stopMXBeanServerConnection() {
+
+		try {
+
+			jmxc.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Stop the communication with the client and disconnect
+	 * 
+	 * @param disconnectOnly
+	 *            if false, the agent will shut down the listener
+	 * @return true if successful
+	 */
+	protected boolean stopConnection(boolean disconnectOnly) {
+
+		stopMXBeanServerConnection();
+		stopSender(disconnectOnly);
+
+		boolean result = true;
+		if (receiver != null) {
+			try {
+				receiver.stop();
+
+			} catch (Exception e) {
+
+				lastException = e;
+				result = false;
+
+			}
+		}
+		return result;
 	}
 
 	@Override

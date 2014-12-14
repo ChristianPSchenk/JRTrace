@@ -112,6 +112,7 @@ public class EngineXHelper {
 
 			for (Class<?> m : modifiableClasses) {
 				try {
+					System.out.println("Retransform on: " + m.toString());
 					inst.retransformClasses(m);
 
 					// inst.retransformClasses(modifiableClasses

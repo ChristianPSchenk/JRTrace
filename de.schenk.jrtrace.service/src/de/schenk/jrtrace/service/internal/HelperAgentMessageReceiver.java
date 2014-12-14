@@ -28,12 +28,7 @@ public class HelperAgentMessageReceiver implements IJRTraceClientListener {
 
 	@Override
 	public void messageReceived(String clientSentence) {
-		if (clientSentence.startsWith(AgentMain.AGENT_PORT)) {
-			String portString = clientSentence.substring(AgentMain.AGENT_PORT
-					.length() + 1);
-			int port = Integer.parseInt(portString);
-			vm.setTraceSenderPort(port);
-		}
+
 		if (clientSentence.startsWith(AgentMain.AGENT_READY)) {
 			System.out.println("Ready received");
 			ready = true;

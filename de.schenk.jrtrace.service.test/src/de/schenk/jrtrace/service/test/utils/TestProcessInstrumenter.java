@@ -11,6 +11,7 @@ public class TestProcessInstrumenter {
 	@XMethod(names = "goin")
 	public void method() {
 
+		System.out.println("Hit: TestProcessInstrumenter");
 		TraceService.getInstance().failSafeSend(
 				TraceSender.TRACECLIENT_TESTMESSAGES_ID, "msg");
 	}

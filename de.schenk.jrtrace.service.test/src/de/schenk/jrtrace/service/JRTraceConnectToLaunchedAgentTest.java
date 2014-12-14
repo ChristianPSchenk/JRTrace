@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,14 +32,13 @@ public class JRTraceConnectToLaunchedAgentTest {
 	@Test
 	public void testConnectToVM() throws Exception {
 
-		port = javaUtil.launchJavaProcessWithAgent(10);
+		port = javaUtil.launchJavaProcessWithAgent();
 		IJRTraceVM theMachine = bmController.getMachine(port);
 
 		SynchronousWaitListener waiter = attachToMachineAndInstallTestProcessInstrumenter(theMachine);
 		waiter.waitForDone(10);
 		assertNotNull("msg", waiter.getResult());
 		assertTrue(theMachine.detach());
-		javaUtil.sendKillAndWaitForEnd();
 
 	}
 
@@ -60,7 +60,7 @@ public class JRTraceConnectToLaunchedAgentTest {
 	@Test
 	public void testConnectTwiceInARow() throws Exception {
 
-		port = javaUtil.launchJavaProcessWithAgent(0);
+		port = javaUtil.launchJavaProcessWithAgent();
 		IJRTraceVM mach = bmController.getMachine(port);
 
 		assertTrue(mach.attach());
@@ -73,8 +73,11 @@ public class JRTraceConnectToLaunchedAgentTest {
 		assertEquals("msg", waiter.getResult());
 		assertTrue(mach.detach());
 
-		javaUtil.sendKillAndWaitForEnd();
+	}
 
+	@After
+	public void tearDown() throws Exception {
+		javaUtil.sendKillAndWaitForEnd();
 	}
 
 }

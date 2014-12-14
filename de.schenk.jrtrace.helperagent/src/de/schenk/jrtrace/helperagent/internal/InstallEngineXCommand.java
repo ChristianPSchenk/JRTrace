@@ -1,7 +1,7 @@
 /**
  * (c) 2014 by Christian Schenk
  **/
-package de.schenk.jrtrace.helperagent;
+package de.schenk.jrtrace.helperagent.internal;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,29 +17,29 @@ import java.util.jar.JarFile;
 
 import de.schenk.enginex.helper.EngineXHelper;
 import de.schenk.enginex.helper.EngineXMetadata;
-import de.schenk.jrtrace.helperlib.IJRTraceClientListener;
+import de.schenk.jrtrace.helperagent.EngineXAnnotationReader;
 import de.schenk.jrtrace.helperlib.TraceSender;
 import de.schenk.jrtrace.helperlib.TraceService;
 
-public class InstallEngineXListener implements IJRTraceClientListener {
+public class InstallEngineXCommand {
 
 	EngineXAnnotationReader annotationReader = new EngineXAnnotationReader();
 
-	public InstallEngineXListener() {
+	public InstallEngineXCommand() {
 
 	}
 
-	@Override
-	public void messageReceived(String clientSentence) {
-		if (clientSentence.isEmpty()) {
+	public void installEngineX(String classOrJarFilePath) {
+
+		if (classOrJarFilePath.isEmpty()) {
 			EngineXHelper.clearEngineX();
 
 		} else {
-			if (clientSentence.endsWith(".jar")) {
-				addEngineXJar(clientSentence);
+			if (classOrJarFilePath.endsWith(".jar")) {
+				addEngineXJar(classOrJarFilePath);
 			} else {
 
-				addEngineXFile(clientSentence);
+				addEngineXFile(classOrJarFilePath);
 			}
 		}
 		TraceService.getInstance().failSafeSend(

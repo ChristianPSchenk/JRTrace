@@ -38,8 +38,7 @@ public class JRTraceVMImpl extends AbstractVM {
 		if (port == -1)
 			return false;
 
-		setTraceSenderPort(port);
-		return connectToAgent(stopper);
+		return connectToAgent(port, stopper);
 	}
 
 	private boolean attachVM() {
@@ -83,16 +82,8 @@ public class JRTraceVMImpl extends AbstractVM {
 
 	public boolean detach() {
 		boolean result = true;
-		try {
 
-		} catch (Exception e1) {
-			lastException = e1;
-			result = false;
-		}
-
-		stopSender(false);
-
-		result = stopReceiver();
+		result = stopConnection(false);
 		if (!detachVM()) {
 			result = false;
 		}
