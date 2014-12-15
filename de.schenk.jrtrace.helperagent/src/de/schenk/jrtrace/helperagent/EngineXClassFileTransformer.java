@@ -25,7 +25,7 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 	public byte[] transform(ClassLoader classLoader, String className,
 			Class<?> classObject, ProtectionDomain protectionDomain,
 			byte[] classBytes) throws IllegalClassFormatException {
-		System.out.println(className);
+
 		byte[] oldBytes = classBytes;
 		try {
 
@@ -68,7 +68,7 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 			if (transformed) {
 				EngineXHelper.setTransformed(className, classLoader);
 			}
-			if (transformed) {
+			if (false) {
 				if (className != null) {
 					System.out.println("writing " + className);
 					FileOutputStream fileOutputStream = new FileOutputStream(

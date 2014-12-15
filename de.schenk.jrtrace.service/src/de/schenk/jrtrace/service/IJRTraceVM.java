@@ -6,7 +6,7 @@ package de.schenk.jrtrace.service;
 import java.io.File;
 import java.util.Properties;
 
-import de.schenk.jrtrace.helperlib.IJRTraceClientListener;
+import javax.management.NotificationListener;
 
 /**
  * 
@@ -54,18 +54,6 @@ public interface IJRTraceVM {
 	 */
 	Exception getLastError();
 
-	/**
-	 * Install a listener to which the trace output from the client will be sent
-	 * 
-	 * @param id
-	 *            TraceClient....
-	 * @param iJRTraceClientListener
-	 *            the listener
-	 */
-	void addClientListener(int id, IJRTraceClientListener iJRTraceClientListener);
-
-	void removeClientListener(int id, IJRTraceClientListener theListener);
-
 	String getPID();
 
 	/*
@@ -98,5 +86,11 @@ public interface IJRTraceVM {
 	void clearEngineX();
 
 	boolean attach();
+
+	void addClientListener(String notifyStdout,
+			NotificationListener streamReceiver);
+
+	void removeClientListener(String notifyStderr,
+			NotificationListener errorstreamReceiver);
 
 }

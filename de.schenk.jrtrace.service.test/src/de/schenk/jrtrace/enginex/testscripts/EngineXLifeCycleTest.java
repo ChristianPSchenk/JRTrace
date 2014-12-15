@@ -20,11 +20,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 
-import de.schenk.jrtrace.helperlib.TraceSender;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.JRTraceControllerService;
-import de.schenk.jrtrace.service.SynchronousWaitListener;
 import de.schenk.jrtrace.service.test.utils.JavaUtil;
 
 public class EngineXLifeCycleTest {
@@ -78,7 +76,6 @@ public class EngineXLifeCycleTest {
 				.replace("file:/", "");
 
 		machine.installEngineXClass(fullPath);
-		doneListener.waitForDone();
 
 		Job c = new Job("test") {
 
@@ -106,7 +103,6 @@ public class EngineXLifeCycleTest {
 		String fullPath = FileLocator.resolve(fileURL).toURI().toASCIIString()
 				.replace("file:/", "");
 		machine.installEngineXClass(fullPath);
-		doneListener.waitForDone();
 
 		InstrumentedClass2 c = new InstrumentedClass2();
 		c.doit();
@@ -140,7 +136,6 @@ public class EngineXLifeCycleTest {
 		String fullPath = FileLocator.resolve(fileURL).toURI().toASCIIString()
 				.replace("file:/", "");
 		machine.installEngineXClass(fullPath);
-		doneListener.waitForDone();
 
 		// InstrumentedClass is not loaded yet after installing the enginex
 		// script.
@@ -153,7 +148,7 @@ public class EngineXLifeCycleTest {
 		InstrumentedClass.x = false;
 		DoneListener doneListener2 = createDoneListener();
 		machine.clearEngineX();
-		doneListener2.waitForDone();
+
 		c.doit();
 		assertFalse(c.getResult());
 
@@ -161,16 +156,10 @@ public class EngineXLifeCycleTest {
 		InstrumentedClass c2 = new InstrumentedClass();
 		DoneListener doneListener3 = createDoneListener();
 		machine.installEngineXClass(fullPath);
-		doneListener3.waitForDone();
+
 		c2.doit();
 		assertTrue(c2.getResult());
 
-	}
-
-	class DoneListener extends SynchronousWaitListener {
-		public DoneListener() {
-			super(machine, TraceSender.TRACECLIENT_ENGINEX_STATUS, "DONE");
-		}
 	}
 
 	public DoneListener createDoneListener() {

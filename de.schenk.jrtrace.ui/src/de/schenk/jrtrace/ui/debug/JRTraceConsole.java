@@ -1,11 +1,14 @@
 /**
-* (c) 2014 by Christian Schenk
-**/
+ * (c) 2014 by Christian Schenk
+ **/
 package de.schenk.jrtrace.ui.debug;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import javax.management.Notification;
+import javax.management.NotificationListener;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -15,8 +18,7 @@ import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
-import de.schenk.jrtrace.helperlib.IJRTraceClientListener;
-import de.schenk.jrtrace.helperlib.TraceSender;
+import de.schenk.jrtrace.helperlib.NotificationConstants;
 import de.schenk.jrtrace.service.IJRTraceVM;
 
 public class JRTraceConsole {
@@ -63,14 +65,14 @@ public class JRTraceConsole {
 		errorstreamReceiver = new StreamReceiver(errorstream);
 		stream.println("=== JRTrace Console on " + title + " ===");
 
-		machine.addClientListener(TraceSender.TRACECLIENT_STDOUT_ID,
+		machine.addClientListener(NotificationConstants.NOTIFY_STDOUT,
 				streamReceiver);
-		machine.addClientListener(TraceSender.TRACECLIENT_STDERR_ID,
+		machine.addClientListener(NotificationConstants.NOTIFY_STDERR,
 				errorstreamReceiver);
 
 	}
 
-	class StreamReceiver implements IJRTraceClientListener {
+	class StreamReceiver implements NotificationListener {
 		private MessageConsoleStream stream;
 
 		public StreamReceiver(MessageConsoleStream theStream) {
@@ -78,12 +80,16 @@ public class JRTraceConsole {
 		}
 
 		@Override
-		public void messageReceived(String clientSentence) {
-			if (stream != null && !stream.isClosed()) {
-				try {
-					stream.write(clientSentence.getBytes());
-				} catch (IOException e) {
-					e.printStackTrace();
+		public void handleNotification(Notification notification,
+				Object handback) {
+			String clientSentence = notification.getMessage();
+			if (clientSentence != null) {
+				if (stream != null && !stream.isClosed()) {
+					try {
+						stream.write(clientSentence.getBytes());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 
@@ -92,9 +98,9 @@ public class JRTraceConsole {
 	}
 
 	public boolean stop() {
-		machine.removeClientListener(TraceSender.TRACECLIENT_STDOUT_ID,
+		machine.removeClientListener(NotificationConstants.NOTIFY_STDOUT,
 				streamReceiver);
-		machine.removeClientListener(TraceSender.TRACECLIENT_STDERR_ID,
+		machine.removeClientListener(NotificationConstants.NOTIFY_STDERR,
 				errorstreamReceiver);
 		if (stream != null) {
 

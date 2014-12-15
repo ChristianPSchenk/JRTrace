@@ -11,6 +11,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashMap;
+import java.util.jar.JarFile;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanRegistrationException;
@@ -26,9 +27,7 @@ import de.schenk.enginex.helper.EngineXHelper;
 import de.schenk.jrtrace.helperagent.internal.JRTraceMXBeanImpl;
 import de.schenk.jrtrace.helperlib.GroovyUtil;
 import de.schenk.jrtrace.helperlib.HelperLib;
-import de.schenk.jrtrace.helperlib.TraceReceiver;
-import de.schenk.jrtrace.helperlib.TraceSender;
-import de.schenk.jrtrace.helperlib.TraceService;
+import de.schenk.jrtrace.helperlib.NotificationConstants;
 
 public class AgentMain {
 
@@ -38,24 +37,13 @@ public class AgentMain {
 	 * The message codes the Agent sends
 	 */
 
-	/**
-	 * Code to run a groovy script in the target machine
-	 */
-	public static final int AGENT_COMMAND_RUNGROOVY = 2;
-
-	public static final int AGENT_COMMAND_RUNJAVA = 3;
-
-	/** stops the listener for commands, resets standard out/err to normal */
-	public static final int AGENT_COMMAND_STOPAGENT = 1;
-
-	public static final int AGENT_COMMAND_INSTALL_BOOT_JAR = 5;
-	public static final int AGENT_COMMAND_SETENV = 6;
-
 	public static final String AGENT_READY = "READY";
 
 	public static AgentMain theAgent = null;
 
 	private static Instrumentation instrumentation;
+
+	private JRTraceMXBeanImpl jrtraceBean;
 
 	public AgentMain() {
 
@@ -70,7 +58,7 @@ public class AgentMain {
 	 * @param inst
 	 */
 	public static void launch(int port, Instrumentation inst) {
-
+		System.out.println(String.format("Agent launch on port %d", port));
 		HelperLib.setInstrumentation(inst);
 		AgentMain.instrumentation = inst;
 		if (theAgent != null) {
@@ -89,16 +77,21 @@ public class AgentMain {
 	private static Registry mxbeanRegistry = null;
 
 	synchronized private void stopMXBeanServer() {
+		long a = System.nanoTime();
 		try {
 			cs.stop();
 
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+		long b = System.nanoTime();
+		System.out.println(String.format("MXBean started in %d ms",
+				(b - a) / 1000 / 1000));
 	}
 
 	synchronized private void startMXBeanServer() {
 
+		long a = System.nanoTime();
 		HashMap<String, String> environment = new HashMap<String, String>();
 		environment.put("jmx.remote.x.daemon", "true");
 		environment.put("com.sun.management.jmxremote.port",
@@ -132,7 +125,7 @@ public class AgentMain {
 
 			ObjectName mxbeanName = new ObjectName(MXBEAN_DOMAIN
 					+ ":type=JRTRace");
-			JRTraceMXBean jrtraceBean = new JRTraceMXBeanImpl(this);
+			jrtraceBean = new JRTraceMXBeanImpl(this);
 			if (!mbs.isRegistered(mxbeanName)) {
 				mbs.registerMBean(jrtraceBean, mxbeanName);
 			}
@@ -142,74 +135,53 @@ public class AgentMain {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+		long b = System.nanoTime();
+		System.out.println(String.format("MXBean started in %d ms",
+				(b - a) / 1000 / 1000));
 	}
 
 	private PrintStream stdout;
 	private PrintStream stderr;
-	private TraceReceiver commandReceiver;
 
 	private EngineXClassFileTransformer enginextransformer;
+
+	private boolean stdout_isredirected = false;
 
 	synchronized private void start(int port) {
 
 		startMXBeanServer();
 
-		commandReceiver = new TraceReceiver(port);
-		commandReceiver.setDaemon();
-		try {
-			commandReceiver.start();
-		} catch (IOException e) {
-
-			throw new RuntimeException(
-					"Error starting the command receiver of the Helper Agent. Agent install failed",
-					e);
-
-		}
-
-		commandReceiver.addListener(AGENT_COMMAND_RUNGROOVY,
-				new RunGroovyListener());
-		commandReceiver.addListener(AGENT_COMMAND_RUNJAVA,
-				new RunJavaListener());
-
-		commandReceiver.addListener(AGENT_COMMAND_SETENV,
-				new SetEnvironmentVariableListener());
-		commandReceiver.addListener(AGENT_COMMAND_INSTALL_BOOT_JAR,
-				new AddToBootClassPathListener(instrumentation));
-		commandReceiver.addListener(AGENT_COMMAND_STOPAGENT,
-				new StopAgentListener(this));
-
 	}
 
-	public void redirectStandardOut(boolean enable) {
-		if (enable) {
+	synchronized public void redirectStandardOut(boolean enable) {
+		if (enable && !stdout_isredirected) {
+			stdout_isredirected = true;
 			stdout = System.out;
 			stderr = System.err;
 			System.setOut(new PrintStream(new RedirectingOutputStream(
-					System.out)));
+					jrtraceBean, System.out)));
 			System.setErr(new PrintStream(new RedirectingOutputStream(
-					System.err, TraceSender.TRACECLIENT_STDERR_ID)));
+					jrtraceBean, System.err,
+					NotificationConstants.NOTIFY_STDERR)));
 		} else {
-			System.setOut(stdout);
-			System.setErr(stderr);
+			if (enable == false && stdout_isredirected) {
+				stdout_isredirected = false;
+				System.setOut(stdout);
+				System.setErr(stderr);
+			}
 		}
 	}
 
-	synchronized public void connect(int senderPort) {
-		System.out.println("connect");
-		if (enginextransformer != null && TraceService.getInstance() != null
-				&& TraceService.getInstance().getPort() == senderPort)
+	synchronized public void connect() {
+
+		if (enginextransformer != null)
 			return;
-		System.out.println("connecting");
+
 		enginextransformer = new EngineXClassFileTransformer();
 		instrumentation.addTransformer(enginextransformer, true);
 
-		TraceSender sender = new TraceSender(senderPort);
-		TraceService.setSender(sender);
 		redirectStandardOut(true);
-		System.out.println(String.format(
-				" AgentMain is connected and sending on (%d)", senderPort));
-		TraceService.getInstance().failSafeSend(
-				TraceSender.TRACECLIENT_AGENT_ID, AgentMain.AGENT_READY);
+
 	}
 
 	/**
@@ -238,26 +210,25 @@ public class AgentMain {
 		System.out.println(String.format("Agent.stop(%b)", disconnect));
 		EngineXHelper.clearEngineX();
 
-		try {
+		redirectStandardOut(false);
 
-			redirectStandardOut(false);
+		if (enginextransformer != null)
+			instrumentation.removeTransformer(enginextransformer);
+		enginextransformer = null;
 
-			if (!disconnect) {
-				stopMXBeanServer();
-				commandReceiver.stop();
-				instrumentation.removeTransformer(enginextransformer);
-				enginextransformer = null;
-			}
+		GroovyUtil.clearScriptCache();
 
-			GroovyUtil.clearScriptCache();
+		theAgent = null;
 
-			TraceService.getInstance().failSafeSend(
-					TraceSender.TRACECLIENT_AGENT_STOPPED_ID, "STOPPED");
-		} catch (IOException e) {
-			throw new RuntimeException();
-		} finally {
+		if (!disconnect) {
+			stopMXBeanServer();
 
-			theAgent = null;
 		}
+
+	}
+
+	public void appendToBootstrapClassLoaderSearch(JarFile jarFile) {
+		instrumentation.appendToBootstrapClassLoaderSearch(jarFile);
+
 	}
 }

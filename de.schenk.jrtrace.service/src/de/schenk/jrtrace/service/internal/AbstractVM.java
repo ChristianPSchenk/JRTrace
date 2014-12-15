@@ -11,6 +11,7 @@ import javax.management.JMX;
 import javax.management.MBeanInfo;
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
+import javax.management.NotificationListener;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 import javax.management.remote.JMXConnector;
@@ -19,18 +20,10 @@ import javax.management.remote.JMXServiceURL;
 
 import de.schenk.jrtrace.helperagent.AgentMain;
 import de.schenk.jrtrace.helperagent.JRTraceMXBean;
-import de.schenk.jrtrace.helperlib.IJRTraceClientListener;
-import de.schenk.jrtrace.helperlib.TraceReceiver;
-import de.schenk.jrtrace.helperlib.TraceSender;
 import de.schenk.jrtrace.service.ICancelable;
 import de.schenk.jrtrace.service.IJRTraceVM;
-import de.schenk.jrtrace.service.SynchronousWaitListener;
 
 abstract public class AbstractVM implements IJRTraceVM {
-
-	protected TraceReceiver receiver;
-
-	protected TraceSender helperAgentSender;
 
 	/**
 	 * will hold the last exception that occured during calls
@@ -43,18 +36,10 @@ abstract public class AbstractVM implements IJRTraceVM {
 		Enumeration<Object> theKeys = p.keys();
 		while (theKeys.hasMoreElements()) {
 			String key = (String) theKeys.nextElement();
-			String value = p.getProperty(key);
-			if (!helperAgentSender.sendToServer(key + "=" + value,
-					AgentMain.AGENT_COMMAND_SETENV))
-				result = false;
+			mbeanProxy.setEnvironmentVariable(key, p.getProperty(key));
 		}
 
 		return result;
-	}
-
-	private void setTraceSenderPort(int port) {
-
-		helperAgentSender = new TraceSender(port);
 	}
 
 	/**
@@ -64,20 +49,15 @@ abstract public class AbstractVM implements IJRTraceVM {
 	 *            new connections, false: shutdown the agent command listener
 	 */
 	private void stopSender(boolean disconnect) {
-		if (helperAgentSender != null) {
-			SynchronousWaitListener wait_for_stop = new SynchronousWaitListener(
-					this, TraceSender.TRACECLIENT_AGENT_STOPPED_ID, "STOPPED");
-			helperAgentSender.sendToServer(String.format("%b", disconnect),
-					AgentMain.AGENT_COMMAND_STOPAGENT);
-			wait_for_stop.waitForDone(10);
+		if (mbeanProxy != null) {
+			mbeanProxy.stop(disconnect);
+			mbeanProxy = null;
 		}
 	}
 
 	@Override
 	public void runGroovy(String groovyOSPath, String className) {
-
-		helperAgentSender.sendToServer(className == null ? "" : className + ","
-				+ groovyOSPath, AgentMain.AGENT_COMMAND_RUNGROOVY);
+		mbeanProxy.runGroovy(className, groovyOSPath);
 	}
 
 	@Override
@@ -91,10 +71,8 @@ abstract public class AbstractVM implements IJRTraceVM {
 			throw new IllegalArgumentException(
 					"methodName has to be provided for runJava");
 
-		helperAgentSender
-				.sendToServer(jarFile + "," + theClassLoader + "," + className
-						+ "," + methodName, AgentMain.AGENT_COMMAND_RUNJAVA);
-
+		mbeanProxy.runJava(jarFile.toString(), theClassLoader, className,
+				methodName);
 	}
 
 	@Override
@@ -120,47 +98,21 @@ abstract public class AbstractVM implements IJRTraceVM {
 	 */
 	protected boolean connectToAgent(int port, ICancelable stopper) {
 
-		setTraceSenderPort(port);
-
 		createMXBeanClientConnection();
-
-		if (!registerTraceListener())
-			return false;
 
 		final boolean connected[] = new boolean[1];
 		connected[0] = false;
-		HelperAgentMessageReceiver helperAgentMessageReceiver = new HelperAgentMessageReceiver(
-				this, Thread.currentThread());
-		receiver.addListener(TraceSender.TRACECLIENT_AGENT_ID,
-				helperAgentMessageReceiver);
-		while (!helperAgentMessageReceiver.readyReceived()) {
-			mbeanProxy.connect(receiver.getServerPort());
 
-			try {
-				System.out.println("Waiting for ready");
-				Thread.sleep(500);
-
-			} catch (InterruptedException e) {
-				// next attempt
-			}
-			if (stopper != null && stopper.isCanceled()) {
-				lastException = new Exception(
-						"Connecting to target machine stopped.");
-				return false;
-			}
-
-		}
-		receiver.removeListener(TraceSender.TRACECLIENT_AGENT_ID,
-				helperAgentMessageReceiver);
+		mbeanProxy.connect();
 
 		return true;
 
 	}
 
-	private MBeanInfo mxbeanServer;
 	JMXConnector jmxc;
 	MBeanServerConnection mxbeanConnection;
 	JRTraceMXBean mbeanProxy;
+	private JRTraceBeanNotificationListener mxbeanListener;
 
 	private void createMXBeanClientConnection() {
 		JMXServiceURL url;
@@ -174,9 +126,14 @@ abstract public class AbstractVM implements IJRTraceVM {
 
 				ObjectName mbeanName = new ObjectName(AgentMain.MXBEAN_DOMAIN
 						+ ":type=JRTRace");
-				mxbeanServer = mxbeanConnection.getMBeanInfo(mbeanName);
+				MBeanInfo mxbeanServer = mxbeanConnection
+						.getMBeanInfo(mbeanName);
 				mbeanProxy = (JRTraceMXBean) JMX.newMBeanProxy(
 						mxbeanConnection, mbeanName, JRTraceMXBean.class, true);
+				mxbeanListener = new JRTraceBeanNotificationListener(this);
+				mxbeanConnection.addNotificationListener(mbeanName,
+						mxbeanListener, null, null);
+
 				return;
 			} catch (IOException | InstanceNotFoundException
 					| IntrospectionException | MalformedObjectNameException
@@ -212,22 +169,10 @@ abstract public class AbstractVM implements IJRTraceVM {
 	 */
 	protected boolean stopConnection(boolean disconnectOnly) {
 
-		stopMXBeanServerConnection();
 		stopSender(disconnectOnly);
+		stopMXBeanServerConnection();
 
-		boolean result = true;
-		if (receiver != null) {
-			try {
-				receiver.stop();
-
-			} catch (Exception e) {
-
-				lastException = e;
-				result = false;
-
-			}
-		}
-		return result;
+		return true;
 	}
 
 	@Override
@@ -235,20 +180,9 @@ abstract public class AbstractVM implements IJRTraceVM {
 		return attach(null);
 	}
 
-	protected boolean registerTraceListener() {
-		receiver = new TraceReceiver();
-		try {
-			receiver.start();
-		} catch (IOException e1) {
-			lastException = e1;
-			return false;
-		}
-		return true;
-	}
-
 	public boolean installJar(String jar) {
-		return helperAgentSender.sendToServer(jar,
-				AgentMain.AGENT_COMMAND_INSTALL_BOOT_JAR);
+		mbeanProxy.addToBootClassPath(jar);
+		return true;
 
 	}
 
@@ -258,15 +192,17 @@ abstract public class AbstractVM implements IJRTraceVM {
 	}
 
 	@Override
-	public void addClientListener(int id,
-			IJRTraceClientListener iJRTraceClientListener) {
-		receiver.addListener(id, iJRTraceClientListener);
+	public void addClientListener(String notifyId,
+			NotificationListener streamReceiver) {
+
+		mxbeanListener.addClientListener(notifyId, streamReceiver);
 
 	}
 
 	@Override
-	public void removeClientListener(int id, IJRTraceClientListener theListener) {
-		receiver.removeListener(id, theListener);
+	public void removeClientListener(String notifyId,
+			NotificationListener listener) {
+		mxbeanListener.removeClientListener(notifyId, listener);
 
 	}
 }

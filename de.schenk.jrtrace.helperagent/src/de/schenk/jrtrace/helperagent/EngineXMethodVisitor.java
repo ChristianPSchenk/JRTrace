@@ -235,9 +235,9 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 		Handle bootstrap = new Handle(Opcodes.H_INVOKESTATIC,
 				"de/schenk/enginex/helper/DynamicBinder", "bindEngineXMethods",
 				mt.toMethodDescriptorString());
-		System.out.println("including virtual dynamic for "
-				+ injectedMethod.getClassMetadata().getExternalClassName()
-				+ " " + injectedMethod.getMethodName());
+		// System.out.println("including virtual dynamic for "
+		// + injectedMethod.getClassMetadata().getExternalClassName()
+		// + " " + injectedMethod.getMethodName());
 		mv.visitInvokeDynamicInsn(injectedMethod.getMethodName(),
 				injectedMethod.getDescriptor(), bootstrap, injectedMethod
 						.getClassMetadata().getExternalClassName(),

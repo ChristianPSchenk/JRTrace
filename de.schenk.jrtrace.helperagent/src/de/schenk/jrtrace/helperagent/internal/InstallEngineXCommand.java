@@ -18,8 +18,6 @@ import java.util.jar.JarFile;
 import de.schenk.enginex.helper.EngineXHelper;
 import de.schenk.enginex.helper.EngineXMetadata;
 import de.schenk.jrtrace.helperagent.EngineXAnnotationReader;
-import de.schenk.jrtrace.helperlib.TraceSender;
-import de.schenk.jrtrace.helperlib.TraceService;
 
 public class InstallEngineXCommand {
 
@@ -42,8 +40,6 @@ public class InstallEngineXCommand {
 				addEngineXFile(classOrJarFilePath);
 			}
 		}
-		TraceService.getInstance().failSafeSend(
-				TraceSender.TRACECLIENT_ENGINEX_STATUS, "DONE");
 
 	}
 

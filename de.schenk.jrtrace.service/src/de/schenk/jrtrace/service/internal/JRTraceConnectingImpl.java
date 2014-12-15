@@ -20,7 +20,6 @@ public class JRTraceConnectingImpl extends AbstractVM {
 	@Override
 	public boolean attach(ICancelable stopper) {
 
-		;
 		return connectToAgent(port, stopper);
 
 	}

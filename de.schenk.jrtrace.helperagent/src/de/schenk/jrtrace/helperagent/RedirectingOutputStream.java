@@ -1,6 +1,6 @@
 /**
-* (c) 2014 by Christian Schenk
-**/
+ * (c) 2014 by Christian Schenk
+ **/
 package de.schenk.jrtrace.helperagent;
 
 import java.io.IOException;
@@ -8,21 +8,29 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.StringWriter;
 
-import de.schenk.jrtrace.helperlib.TraceSender;
-import de.schenk.jrtrace.helperlib.TraceService;
+import javax.management.Notification;
+
+import de.schenk.jrtrace.helperlib.NotificationConstants;
 
 public class RedirectingOutputStream extends OutputStream {
 
 	private PrintStream outPrinter;
 	private StringWriter internalWriter;
-	private int comId;
 
-	public RedirectingOutputStream(PrintStream out) {
+	private static long sequence = 0;
+	private INotificationSender bean;
+	private String comId;
 
-		this(out, TraceSender.TRACECLIENT_STDOUT_ID);
+	public RedirectingOutputStream(INotificationSender jrtraceBean,
+			PrintStream out) {
+
+		this(jrtraceBean, out, NotificationConstants.NOTIFY_STDOUT);
+
 	}
 
-	public RedirectingOutputStream(PrintStream out, int id) {
+	public RedirectingOutputStream(INotificationSender jrtraceBean,
+			PrintStream out, String id) {
+		this.bean = jrtraceBean;
 		comId = id;
 		outPrinter = out;
 		internalWriter = new StringWriter();
@@ -53,7 +61,9 @@ public class RedirectingOutputStream extends OutputStream {
 		if (!inSend) {
 			try {
 				inSend = true;
-				TraceService.getInstance().failSafeSend(comId, msg);
+
+				bean.sendMessage(new Notification(comId, bean.getClass()
+						.toString(), sequence++, msg));
 			} finally {
 				inSend = false;
 			}
@@ -62,5 +72,4 @@ public class RedirectingOutputStream extends OutputStream {
 		}
 		internalWriter.getBuffer().setLength(0);
 	}
-
 }

@@ -20,11 +20,9 @@ import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkEvent;
 
-import de.schenk.jrtrace.helperlib.TraceSender;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.JRTraceControllerService;
-import de.schenk.jrtrace.service.SynchronousWaitListener;
 
 /**
  * install the test enginex jar once , execute all tests and then detach.
@@ -33,12 +31,6 @@ import de.schenk.jrtrace.service.SynchronousWaitListener;
  *
  */
 public class EngineXDetailsTest {
-
-	class DoneListener extends SynchronousWaitListener {
-		public DoneListener() {
-			super(machine, TraceSender.TRACECLIENT_ENGINEX_STATUS, "DONE");
-		}
-	}
 
 	private JRTraceController bmController;
 	private String pid;
@@ -69,7 +61,6 @@ public class EngineXDetailsTest {
 		String fullPath = FileLocator.resolve(fileURL).toURI().toASCIIString()
 				.replace("file:/", "");
 		machine.installEngineXClass(fullPath);
-		doneListener.waitForDone();
 
 	}
 

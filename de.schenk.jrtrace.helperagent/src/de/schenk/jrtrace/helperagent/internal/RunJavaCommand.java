@@ -1,7 +1,7 @@
 /**
-* (c) 2014 by Christian Schenk
-**/
-package de.schenk.jrtrace.helperagent;
+ * (c) 2014 by Christian Schenk
+ **/
+package de.schenk.jrtrace.helperagent.internal;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -11,21 +11,11 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import de.schenk.jrtrace.helperlib.HelperLib;
-import de.schenk.jrtrace.helperlib.IJRTraceClientListener;
 
-public class RunJavaListener implements IJRTraceClientListener {
+public class RunJavaCommand {
 
-	@Override
-	public void messageReceived(String clientSentence) {
-		String[] args = clientSentence.split(",");
-		if (args.length != 4)
-			throw new RuntimeException(
-					"RunJava: expects 4 arguments separated with comma");
-		String pathToJar = args[0];
-		String referenceClassName = args[1];
-		String mainClass = args[2];
-		String mainMethod = args[3];
-
+	public void runJava(String pathToJar, String referenceClassName,
+			String mainClass, String mainMethod) {
 		URL u;
 		try {
 
