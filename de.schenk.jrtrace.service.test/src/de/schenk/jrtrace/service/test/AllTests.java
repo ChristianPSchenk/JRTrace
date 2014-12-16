@@ -13,14 +13,13 @@ import de.schenk.jrtrace.enginex.testscripts.EngineXLifeCycleTest;
 import de.schenk.jrtrace.helperlib.tests.InspectUtilTest;
 import de.schenk.jrtrace.service.JRTraceConnectToLaunchedAgentTest;
 import de.schenk.jrtrace.service.JRTraceControllerTest;
-import de.schenk.jrtrace.service.TraceReceiverTest;
 import de.schenk.jrtrace.service.test.utils.JavaUtilTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({ JRTraceConnectToLaunchedAgentTest.class,
 		EngineXAnnotationReaderTest.class, EngineXLifeCycleTest.class,
-		JRTraceControllerTest.class, TraceReceiverTest.class,
-		JavaUtilTest.class, InspectUtilTest.class, EngineXDetailsTest.class })
+		JRTraceControllerTest.class, JavaUtilTest.class, InspectUtilTest.class,
+		EngineXDetailsTest.class })
 public class AllTests {
 
 }

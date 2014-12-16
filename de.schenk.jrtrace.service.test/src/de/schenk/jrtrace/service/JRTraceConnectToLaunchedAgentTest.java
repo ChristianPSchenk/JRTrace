@@ -6,6 +6,7 @@ package de.schenk.jrtrace.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 
@@ -13,7 +14,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.schenk.jrtrace.helperlib.TraceSender;
 import de.schenk.jrtrace.service.test.utils.JavaUtil;
 import de.schenk.jrtrace.service.test.utils.TestUtils;
 
@@ -32,46 +32,80 @@ public class JRTraceConnectToLaunchedAgentTest {
 	@Test
 	public void testConnectToVM() throws Exception {
 
-		port = javaUtil.launchJavaProcessWithAgent();
+		File tempFile = File.createTempFile("abc", "def");
+		tempFile.deleteOnExit();
+		port = javaUtil.launchJavaProcessWithAgent(tempFile.getAbsolutePath());
 		IJRTraceVM theMachine = bmController.getMachine(port);
 
-		SynchronousWaitListener waiter = attachToMachineAndInstallTestProcessInstrumenter(theMachine);
-		waiter.waitForDone(10);
-		assertNotNull("msg", waiter.getResult());
+		attachToMachineAndInstallTestProcessInstrumenter(theMachine);
+
+		if (!waitForCorrectValueInFile(tempFile.getAbsolutePath(), 1, 10000))
+			fail("not the proper value");
+
 		assertTrue(theMachine.detach());
+
+		int x = JavaUtil.readIntegerFromFile(tempFile.getAbsolutePath());
+		assertEquals(1, x);
 
 	}
 
-	private SynchronousWaitListener attachToMachineAndInstallTestProcessInstrumenter(
+	private void attachToMachineAndInstallTestProcessInstrumenter(
 			IJRTraceVM theMachine) {
 		assertTrue(theMachine.attach());
 		assertNotNull(theMachine);
-
-		SynchronousWaitListener waiter = new SynchronousWaitListener(
-				theMachine, TraceSender.TRACECLIENT_TESTMESSAGES_ID, "msg");
 
 		File theClass = TestUtils
 				.getResource("bin/de/schenk/jrtrace/service/test/utils/TestProcessInstrumenter.class");
 
 		theMachine.installEngineXClass(theClass.getAbsolutePath());
-		return waiter;
+
 	}
 
 	@Test
 	public void testConnectTwiceInARow() throws Exception {
+		File tempFile = File.createTempFile("abc", "def");
+		tempFile.deleteOnExit();
 
-		port = javaUtil.launchJavaProcessWithAgent();
+		port = javaUtil.launchJavaProcessWithAgent(tempFile.getAbsolutePath());
 		IJRTraceVM mach = bmController.getMachine(port);
 
 		assertTrue(mach.attach());
 
 		assertTrue(mach.detach());
 
-		SynchronousWaitListener waiter = attachToMachineAndInstallTestProcessInstrumenter(mach);
+		attachToMachineAndInstallTestProcessInstrumenter(mach);
 
-		waiter.waitForDone(10);
-		assertEquals("msg", waiter.getResult());
+		if (!waitForCorrectValueInFile(tempFile.getAbsolutePath(), 1, 10000))
+			fail("not the proper value");
+
 		assertTrue(mach.detach());
+
+	}
+
+	/**
+	 * Wait for the value value to appear in the file absolutePath and fail
+	 * after timeout
+	 * 
+	 * @param absolutePath
+	 * @param value
+	 * @param timeout
+	 */
+	private boolean waitForCorrectValueInFile(String absolutePath, int value,
+			int timeout) throws Exception {
+
+		long starttime = System.currentTimeMillis();
+		while (starttime + 10000 > System.currentTimeMillis()) {
+			try {
+				int x = JavaUtil.readIntegerFromFile(absolutePath);
+				if (x == value)
+					return true;
+			} catch (Exception e) {
+				Thread.sleep(10);
+				continue;
+			}
+
+		}
+		return false;
 
 	}
 

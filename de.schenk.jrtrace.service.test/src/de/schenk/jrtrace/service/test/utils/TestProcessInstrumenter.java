@@ -1,18 +1,35 @@
 package de.schenk.jrtrace.service.test.utils;
 
-import de.schenk.jrtrace.annotations.XClass;
-import de.schenk.jrtrace.annotations.XMethod;
-import de.schenk.jrtrace.helperlib.TraceSender;
-import de.schenk.jrtrace.helperlib.TraceService;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-@XClass(classes = "de.schenk.jrtrace.service.test.utils.TestProcess2")
+import de.schenk.jrtrace.annotations.XClass;
+import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
+import de.schenk.jrtrace.annotations.XMethod;
+
+@XClass(classes = "de.schenk.jrtrace.service.test.utils.TestProcess2", classloaderpolicy = XClassLoaderPolicy.TARGET)
 public class TestProcessInstrumenter {
 
 	@XMethod(names = "goin")
 	public void method() {
+		int oldValue = TestProcess.value;
+		TestProcess.value = 1;
 
-		System.out.println("Hit: TestProcessInstrumenter");
-		TraceService.getInstance().failSafeSend(
-				TraceSender.TRACECLIENT_TESTMESSAGES_ID, "msg");
+		if (TestProcess.value != oldValue && TestProcess.filePath != null) {
+			System.out.print("Writing file!");
+			try {
+				File outputFile = new File(TestProcess.filePath);
+				FileOutputStream fos = new FileOutputStream(outputFile);
+
+				fos.write(String.format("%d", TestProcess.value).getBytes());
+				fos.close();
+
+			} catch (IOException e) {
+
+				e.printStackTrace();
+			}
+		}
+
 	}
 }

@@ -4,6 +4,8 @@
 package de.schenk.jrtrace.service.test.utils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.DatagramPacket;
@@ -46,13 +48,16 @@ public class JavaUtil {
 	public void launchJavaProcess() throws IOException, URISyntaxException,
 			InterruptedException {
 
-		launchJavaProcess("");
+		launchJavaProcess("", null);
 	}
 
 	/**
 	 * launches the java test process with an agent listening on a free port
 	 * 
-	 * @param expectedCounter
+	 * @param outputFileName
+	 *            : if, set the testprocess will write an outputfile to this
+	 *            location containing the value int
+	 * 
 	 * 
 	 * @return
 	 * @throws IOException
@@ -60,15 +65,15 @@ public class JavaUtil {
 	 * @throws InterruptedException
 	 * @returns the port with which the agent was started.
 	 */
-	public int launchJavaProcessWithAgent() throws IOException,
-			URISyntaxException, InterruptedException {
+	public int launchJavaProcessWithAgent(String outputFileName)
+			throws IOException, URISyntaxException, InterruptedException {
 		int freePort = PortUtil.getFreePort();
 		String agentPath = JarLocator.getJRTraceHelperAgent();
 		String bootjarPath = JarLocator.getHelperLibJar();
 		String prop = String.format("-javaagent:%s=port=%d,bootjar=%s",
 				agentPath, freePort, bootjarPath);
 
-		launchJavaProcess(prop);
+		launchJavaProcess(prop, outputFileName);
 		return freePort;
 	}
 
@@ -81,19 +86,22 @@ public class JavaUtil {
 	 * @throws URISyntaxException
 	 * @throws InterruptedException
 	 */
-	public void launchJavaProcess(String parameters) throws IOException,
-			URISyntaxException, InterruptedException {
+	public void launchJavaProcess(String parameters, String parameters2)
+			throws IOException, URISyntaxException, InterruptedException {
 		String javaHome = System.getProperty("java.home");
 
 		String fullPath = getClassPathForClass(TestProcess.class);
 		ArrayList<String> commandParameters = new ArrayList<String>();
 		commandParameters.add(javaHome + "\\bin\\java.exe");
 		commandParameters.add(parameters);
+
 		commandParameters.add("-cp");
 		commandParameters.add(fullPath);
 		commandParameters.add(TestProcess.class.getName());
 		obtainKillPort();
 		commandParameters.add(String.format("%d", killPort));
+		if (parameters2 != null)
+			commandParameters.add(parameters2);
 
 		ProcessBuilder processBuilder = new ProcessBuilder(commandParameters);
 		processBuilder.redirectErrorStream(true);
@@ -262,6 +270,24 @@ public class JavaUtil {
 		bos.flush();
 
 		return bos.toByteArray();
+	}
+
+	public static int readIntegerFromFile(String absolutePath) throws Exception {
+		File f = new File(absolutePath);
+		FileReader fr = new FileReader(f);
+		char[] chars = new char[500];
+		int length;
+
+		length = fr.read(chars);
+
+		String s = new String(chars, 0, length);
+		int i = Integer.parseInt(s);
+		return i;
+	}
+
+	public void waitForProcessExit(int i) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

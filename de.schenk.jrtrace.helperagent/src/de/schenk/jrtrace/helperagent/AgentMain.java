@@ -79,23 +79,25 @@ public class AgentMain {
 	synchronized private void stopMXBeanServer() {
 		long a = System.nanoTime();
 		try {
+			mxbeanRegistry = null;
 			cs.stop();
 
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
+			// ignore exceptions on close
 		}
 		long b = System.nanoTime();
 		System.out.println(String.format("MXBean started in %d ms",
 				(b - a) / 1000 / 1000));
 	}
 
-	synchronized private void startMXBeanServer() {
+	synchronized private void startMXBeanServer(int port) {
 
 		long a = System.nanoTime();
 		HashMap<String, String> environment = new HashMap<String, String>();
 		environment.put("jmx.remote.x.daemon", "true");
 		environment.put("com.sun.management.jmxremote.port",
-				String.format("%d", 9999));
+				String.format("%d", port));
 		environment.put("com.sun.management.jmxremote.authenticate", "false");
 		environment.put("com.sun.management.jmxremote.ssl", "false");
 
@@ -104,20 +106,20 @@ public class AgentMain {
 			if (mxbeanRegistry == null) {
 
 				try {
-					mxbeanRegistry = LocateRegistry.getRegistry(9999);
+					mxbeanRegistry = LocateRegistry.getRegistry(port);
 
 					// try to connect. In case of problem: createregistry.
 					String[] list = mxbeanRegistry.list();
 				} catch (RemoteException e) {
 
-					mxbeanRegistry = LocateRegistry.createRegistry(9999);
+					mxbeanRegistry = LocateRegistry.createRegistry(port);
 				}
 
 			}
 
 			MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 			JMXServiceURL url = new JMXServiceURL(
-					"service:jmx:rmi:///jndi/rmi://:" + 9999 + "/jmxrmi");
+					"service:jmx:rmi:///jndi/rmi://:" + port + "/jmxrmi");
 			cs = JMXConnectorServerFactory.newJMXConnectorServer(url,
 					environment, mbs);
 
@@ -149,7 +151,7 @@ public class AgentMain {
 
 	synchronized private void start(int port) {
 
-		startMXBeanServer();
+		startMXBeanServer(port);
 
 	}
 
@@ -173,7 +175,7 @@ public class AgentMain {
 	}
 
 	synchronized public void connect() {
-
+		System.out.println("AgentMain.connect()");
 		if (enginextransformer != null)
 			return;
 

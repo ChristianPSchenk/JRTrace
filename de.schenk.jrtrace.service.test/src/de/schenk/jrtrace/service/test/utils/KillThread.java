@@ -39,10 +39,14 @@ public class KillThread extends Thread {
 
 			DatagramPacket receivePacket = new DatagramPacket(receiveData,
 					receiveData.length);
+
 			clientSocket.receive(receivePacket);
+
 			isKilled = true;
 			threadToKill.interrupt();
+
 			System.out.println("Testprocess successfully killed");
+
 			clientSocket.close();
 		} catch (UnknownHostException e) {
 			message = e.getMessage();

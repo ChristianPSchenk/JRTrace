@@ -98,7 +98,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 	 */
 	protected boolean connectToAgent(int port, ICancelable stopper) {
 
-		createMXBeanClientConnection();
+		createMXBeanClientConnection(port);
 
 		final boolean connected[] = new boolean[1];
 		connected[0] = false;
@@ -114,13 +114,13 @@ abstract public class AbstractVM implements IJRTraceVM {
 	JRTraceMXBean mbeanProxy;
 	private JRTraceBeanNotificationListener mxbeanListener;
 
-	private void createMXBeanClientConnection() {
+	private void createMXBeanClientConnection(int port) {
 		JMXServiceURL url;
 		Exception e = null;
 		for (int i = 0; i < 10; i++) {
 			try {
-				url = new JMXServiceURL(
-						"service:jmx:rmi:///jndi/rmi://:9999/jmxrmi");
+				url = new JMXServiceURL(String.format(
+						"service:jmx:rmi:///jndi/rmi://:%d/jmxrmi", port));
 				jmxc = JMXConnectorFactory.connect(url, null);
 				mxbeanConnection = jmxc.getMBeanServerConnection();
 
