@@ -6,14 +6,11 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import javax.management.InstanceNotFoundException;
-import javax.management.IntrospectionException;
 import javax.management.JMX;
-import javax.management.MBeanInfo;
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
 import javax.management.NotificationListener;
 import javax.management.ObjectName;
-import javax.management.ReflectionException;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
@@ -126,8 +123,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 
 				ObjectName mbeanName = new ObjectName(AgentMain.MXBEAN_DOMAIN
 						+ ":type=JRTRace");
-				MBeanInfo mxbeanServer = mxbeanConnection
-						.getMBeanInfo(mbeanName);
+
 				mbeanProxy = (JRTraceMXBean) JMX.newMBeanProxy(
 						mxbeanConnection, mbeanName, JRTraceMXBean.class, true);
 				mxbeanListener = new JRTraceBeanNotificationListener(this);
@@ -136,8 +132,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 
 				return;
 			} catch (IOException | InstanceNotFoundException
-					| IntrospectionException | MalformedObjectNameException
-					| ReflectionException e2) {
+					| MalformedObjectNameException e2) {
 				e = e2;
 			}
 			try {

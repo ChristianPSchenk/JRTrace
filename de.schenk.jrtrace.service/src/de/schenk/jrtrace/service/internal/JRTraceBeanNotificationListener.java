@@ -20,6 +20,7 @@ public class JRTraceBeanNotificationListener implements NotificationListener {
 
 	@Override
 	public void handleNotification(Notification notification, Object object) {
+
 		String type = notification.getType();
 
 		Collection<NotificationListener> listenerCopy = new ArrayList<NotificationListener>();
@@ -43,7 +44,7 @@ public class JRTraceBeanNotificationListener implements NotificationListener {
 			col = new ArrayList<NotificationListener>();
 			listenerMap.put(notifyId, col);
 		}
-		col.add(streamReceiver);
+		col.remove(streamReceiver);
 
 	}
 
@@ -54,7 +55,7 @@ public class JRTraceBeanNotificationListener implements NotificationListener {
 			col = new ArrayList<NotificationListener>();
 			listenerMap.put(notifyId, col);
 		}
-		col.remove(streamReceiver);
+		col.add(streamReceiver);
 
 	}
 }

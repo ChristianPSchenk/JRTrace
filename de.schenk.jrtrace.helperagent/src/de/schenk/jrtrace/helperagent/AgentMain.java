@@ -45,6 +45,8 @@ public class AgentMain {
 
 	private JRTraceMXBeanImpl jrtraceBean;
 
+	private ObjectName mxbeanName;
+
 	public AgentMain() {
 
 	}
@@ -125,8 +127,7 @@ public class AgentMain {
 
 			cs.start();
 
-			ObjectName mxbeanName = new ObjectName(MXBEAN_DOMAIN
-					+ ":type=JRTRace");
+			mxbeanName = new ObjectName(MXBEAN_DOMAIN + ":type=JRTRace");
 			jrtraceBean = new JRTraceMXBeanImpl(this);
 			if (!mbs.isRegistered(mxbeanName)) {
 				mbs.registerMBean(jrtraceBean, mxbeanName);
@@ -232,5 +233,9 @@ public class AgentMain {
 	public void appendToBootstrapClassLoaderSearch(JarFile jarFile) {
 		instrumentation.appendToBootstrapClassLoaderSearch(jarFile);
 
+	}
+
+	public static AgentMain getAgentInstance() {
+		return theAgent;
 	}
 }

@@ -16,13 +16,11 @@ import de.schenk.jrtrace.helperlib.HelperLibConstants;
 public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 		JRTraceMXBean, INotificationSender {
 
-	private AgentMain agent;
+	transient private AgentMain agent;
 
 	public JRTraceMXBeanImpl(AgentMain agent) {
 		this.agent = agent;
 	}
-
-	InstallEngineXCommand installEngineXCommand = new InstallEngineXCommand();
 
 	@Override
 	public boolean connect() {
@@ -62,7 +60,7 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 
 	@Override
 	public void installEngineXClass(String classOrJarLocation) {
-		installEngineXCommand.installEngineX(classOrJarLocation);
+		new InstallEngineXCommand().installEngineX(classOrJarLocation);
 
 	}
 
