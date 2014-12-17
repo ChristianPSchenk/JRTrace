@@ -6,8 +6,9 @@ package de.schenk.enginex.helper;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.schenk.jrtrace.helperlib.HelperLib;
 import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
+import de.schenk.jrtrace.helperlib.HelperLib;
+import de.schenk.jrtrace.helperlib.JRLog;
 
 public class EngineXClassHolder {
 
@@ -41,7 +42,7 @@ public class EngineXClassHolder {
 
 				mainClass = enginexclassloader.loadClass(metadata
 						.getExternalClassName());
-				System.out.println("Loaded "
+				JRLog.debug("JRTrace class loaded: "
 						+ metadata.getExternalClassName()
 						+ " with classloader "
 						+ ((mainClass.getClassLoader() == null) ? "null"

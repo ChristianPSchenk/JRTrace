@@ -82,12 +82,12 @@ public class JRTraceVMImpl extends AbstractVM {
 
 	public boolean detach() {
 		boolean result = true;
-
+		boolean result2 = true;
 		result = stopConnection(false);
 		if (!detachVM()) {
-			result = false;
+			result2 = false;
 		}
-		return result;
+		return result & result2;
 
 	}
 

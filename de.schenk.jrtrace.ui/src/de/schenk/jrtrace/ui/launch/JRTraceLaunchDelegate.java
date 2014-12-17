@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 import de.schenk.jrtrace.helperlib.HelperLibConstants;
+import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.jdk.init.Activator;
 import de.schenk.jrtrace.service.ICancelable;
 import de.schenk.jrtrace.service.IJRTraceVM;
@@ -38,17 +39,24 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		boolean upload = configuration.getAttribute(
 				ConnectionTab.BM_UPLOADAGENT, false);
+		IJRTraceVM vm = null;
 		if (upload) {
 			if (!Activator.hasJDK()) {
 				showNoJDKError();
 				throw new CoreException(Status.CANCEL_STATUS);
 			}
-			launchPID(launch, monitor);
+			vm = launchPID(launch, monitor);
 
 		} else {
-			launchPort(launch, monitor);
+			vm = launchPort(launch, monitor);
 		}
 
+		int level = JRLog.ERROR;
+		if (configuration.getAttribute(ConnectionTab.BM_VERBOSE, false))
+			level = JRLog.VERBOSE;
+		if (configuration.getAttribute(ConnectionTab.BM_DEBUG, false))
+			level = JRLog.DEBUG;
+		vm.setLogLevel(level);
 	}
 
 	private void showNoJDKError() {
@@ -69,7 +77,7 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 
 	}
 
-	public void launchPort(ILaunch launch, IProgressMonitor monitor)
+	public IJRTraceVM launchPort(ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
 
 		ILaunchConfiguration launchconfig = launch.getLaunchConfiguration();
@@ -79,7 +87,7 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 		JRTraceController controller = JRTraceControllerService.getInstance();
 		final IJRTraceVM machine = controller.getMachine(port);
 		if (runTarget(launch, machine, monitor))
-			return;
+			return machine;
 		showUnableToConnectDialog(String.format("Port:%d", port), machine);
 
 		throw new CoreException(Status.CANCEL_STATUS);
@@ -120,7 +128,7 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 		return false;
 	}
 
-	public void launchPID(ILaunch launch, IProgressMonitor monitor)
+	public IJRTraceVM launchPID(ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
 
 		ILaunchConfiguration launchconfig = launch.getLaunchConfiguration();
@@ -156,7 +164,7 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 		final IJRTraceVM machine = controller.getMachine(pid);
 
 		if (runTarget(launch, machine, monitor))
-			return;
+			return machine;
 
 		showUnableToConnectDialog(pid, machine);
 

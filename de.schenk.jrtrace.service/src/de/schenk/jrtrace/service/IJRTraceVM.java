@@ -83,6 +83,8 @@ public interface IJRTraceVM {
 	 */
 	void installEngineXClass(String fileForClass);
 
+	void setLogLevel(int i);
+
 	void clearEngineX();
 
 	boolean attach();

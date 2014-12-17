@@ -12,6 +12,7 @@ import de.schenk.jrtrace.helperagent.JRTraceMXBean;
 import de.schenk.jrtrace.helperlib.GroovyUtil;
 import de.schenk.jrtrace.helperlib.HelperLib;
 import de.schenk.jrtrace.helperlib.HelperLibConstants;
+import de.schenk.jrtrace.helperlib.JRLog;
 
 public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 		JRTraceMXBean, INotificationSender {
@@ -86,6 +87,12 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 	@Override
 	public void sendMessage(Notification notification) {
 		this.sendNotification(notification);
+
+	}
+
+	@Override
+	public void setLogLevel(int level) {
+		JRLog.setLogLevel(level);
 
 	}
 

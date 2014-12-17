@@ -12,6 +12,7 @@ import java.util.List;
 
 import de.schenk.enginex.helper.EngineXHelper;
 import de.schenk.enginex.helper.EngineXMetadata;
+import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.objectweb.asm.ClassReader;
 import de.schenk.objectweb.asm.ClassVisitor;
 import de.schenk.objectweb.asm.ClassWriter;
@@ -53,7 +54,8 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 							"L" + className + ";").getClassName();
 					if (entry.mayMatchClassHierarchy(cname, superClass,
 							interfaces)) {
-						// System.out.println("Transforming:" + className);
+						JRLog.verbose("Applying rules to class:" + className);
+
 						byte[] returnBytes = applyEngineXClasses(classLoader,
 								entry, targetclass, classBytes, superClass);
 						if (returnBytes != null) {
@@ -68,27 +70,29 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 			if (transformed) {
 				EngineXHelper.setTransformed(className, classLoader);
 			}
-			if (false) {
+			if (JRLog.getLogLevel() == JRLog.DEBUG) {
 				if (className != null) {
-					System.out.println("writing " + className);
+					String tmpdir = System.getProperty("java.io.tmpdir");
+					JRLog.debug("Writing classbytes of " + className
+							+ " to tempdir " + tmpdir);
 					FileOutputStream fileOutputStream = new FileOutputStream(
-							"c:\\temp\\" + className.replace('/', '_')
+							tmpdir + "\\" + className.replace('/', '_')
 									+ "before.class");
 					fileOutputStream.write(oldBytes);
 					fileOutputStream.close();
 					FileOutputStream fileOutputStream2 = new FileOutputStream(
-							"c:\\temp\\" + className.replace('/', '_')
+							tmpdir + "\\" + className.replace('/', '_')
 									+ "after.class");
 					fileOutputStream2.write(classBytes);
 					fileOutputStream2.close();
 
-					System.out.println("wrote " + className);
+					JRLog.debug("Done writing classbytes for " + className);
 				}
 
 			}
 			return transformed ? classBytes : null;
 		} catch (Throwable e) {
-			System.out.println("Skipping Transformation of " + className
+			JRLog.error("Skipping Transformation of " + className
 					+ " due to runtime exception");
 			e.printStackTrace();
 			return null;

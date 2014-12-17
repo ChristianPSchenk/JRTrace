@@ -2,6 +2,7 @@ package de.schenk.jrtrace.service.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -28,6 +29,12 @@ abstract public class AbstractVM implements IJRTraceVM {
 	protected Exception lastException;
 
 	@Override
+	public void setLogLevel(int i) {
+
+		mbeanProxy.setLogLevel(i);
+	}
+
+	@Override
 	public boolean setSystemProperties(Properties p) {
 		boolean result = true;
 		Enumeration<Object> theKeys = p.keys();
@@ -45,11 +52,17 @@ abstract public class AbstractVM implements IJRTraceVM {
 	 *            true: only disconnect, let the client continue to listen for
 	 *            new connections, false: shutdown the agent command listener
 	 */
-	private void stopSender(boolean disconnect) {
+	private boolean stopSender(boolean disconnect) {
 		if (mbeanProxy != null) {
-			mbeanProxy.stop(disconnect);
+			try {
+				mbeanProxy.stop(disconnect);
+			} catch (UndeclaredThrowableException e) {
+				// when target has been shut down:
+				return false;
+			}
 			mbeanProxy = null;
 		}
+		return true;
 	}
 
 	@Override
@@ -145,14 +158,16 @@ abstract public class AbstractVM implements IJRTraceVM {
 		throw new RuntimeException("Connect failed after 10 tries", e);
 	}
 
-	private void stopMXBeanServerConnection() {
+	private boolean stopMXBeanServerConnection() {
 
 		try {
 
 			jmxc.close();
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			// do nothing
+			return false;
 		}
+		return true;
 	}
 
 	/**
@@ -164,10 +179,10 @@ abstract public class AbstractVM implements IJRTraceVM {
 	 */
 	protected boolean stopConnection(boolean disconnectOnly) {
 
-		stopSender(disconnectOnly);
-		stopMXBeanServerConnection();
+		boolean result1 = stopSender(disconnectOnly);
+		boolean result2 = stopMXBeanServerConnection();
 
-		return true;
+		return result1 & result2;
 	}
 
 	@Override

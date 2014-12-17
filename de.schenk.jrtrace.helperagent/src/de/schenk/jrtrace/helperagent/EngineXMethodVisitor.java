@@ -10,6 +10,7 @@ import java.lang.invoke.MethodType;
 import de.schenk.enginex.helper.EngineXMethodMetadata;
 import de.schenk.jrtrace.annotations.XLocation;
 import de.schenk.jrtrace.helperagent.FieldList.FieldEntry;
+import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.ReflectionUtil;
 import de.schenk.objectweb.asm.Handle;
 import de.schenk.objectweb.asm.MethodVisitor;
@@ -235,9 +236,9 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 		Handle bootstrap = new Handle(Opcodes.H_INVOKESTATIC,
 				"de/schenk/enginex/helper/DynamicBinder", "bindEngineXMethods",
 				mt.toMethodDescriptorString());
-		// System.out.println("including virtual dynamic for "
-		// + injectedMethod.getClassMetadata().getExternalClassName()
-		// + " " + injectedMethod.getMethodName());
+		JRLog.debug("Instrumenting "
+				+ injectedMethod.getClassMetadata().getExternalClassName()
+				+ " method:" + injectedMethod.getMethodName());
 		mv.visitInvokeDynamicInsn(injectedMethod.getMethodName(),
 				injectedMethod.getDescriptor(), bootstrap, injectedMethod
 						.getClassMetadata().getExternalClassName(),

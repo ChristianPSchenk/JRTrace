@@ -27,6 +27,7 @@ import de.schenk.enginex.helper.EngineXHelper;
 import de.schenk.jrtrace.helperagent.internal.JRTraceMXBeanImpl;
 import de.schenk.jrtrace.helperlib.GroovyUtil;
 import de.schenk.jrtrace.helperlib.HelperLib;
+import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.NotificationConstants;
 
 public class AgentMain {
@@ -60,7 +61,7 @@ public class AgentMain {
 	 * @param inst
 	 */
 	public static void launch(int port, Instrumentation inst) {
-		System.out.println(String.format("Agent launch on port %d", port));
+		JRLog.debug(String.format("JRTrace Agent launched port:%d", port));
 		HelperLib.setInstrumentation(inst);
 		AgentMain.instrumentation = inst;
 		if (theAgent != null) {
@@ -79,7 +80,7 @@ public class AgentMain {
 	private static Registry mxbeanRegistry = null;
 
 	synchronized private void stopMXBeanServer() {
-		long a = System.nanoTime();
+
 		try {
 			mxbeanRegistry = null;
 			cs.stop();
@@ -88,14 +89,11 @@ public class AgentMain {
 			e.printStackTrace();
 			// ignore exceptions on close
 		}
-		long b = System.nanoTime();
-		System.out.println(String.format("MXBean started in %d ms",
-				(b - a) / 1000 / 1000));
+
 	}
 
 	synchronized private void startMXBeanServer(int port) {
 
-		long a = System.nanoTime();
 		HashMap<String, String> environment = new HashMap<String, String>();
 		environment.put("jmx.remote.x.daemon", "true");
 		environment.put("com.sun.management.jmxremote.port",
@@ -138,9 +136,7 @@ public class AgentMain {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		long b = System.nanoTime();
-		System.out.println(String.format("MXBean started in %d ms",
-				(b - a) / 1000 / 1000));
+
 	}
 
 	private PrintStream stdout;
@@ -176,7 +172,7 @@ public class AgentMain {
 	}
 
 	synchronized public void connect() {
-		System.out.println("AgentMain.connect()");
+
 		if (enginextransformer != null)
 			return;
 
@@ -185,6 +181,7 @@ public class AgentMain {
 
 		redirectStandardOut(true);
 
+		JRLog.debug("AgentMain.connect() now connected");
 	}
 
 	/**
@@ -210,7 +207,7 @@ public class AgentMain {
 	 */
 	synchronized public void stop(boolean disconnect) {
 
-		System.out.println(String.format("Agent.stop(%b)", disconnect));
+		JRLog.debug(String.format("AgentMain.stop(disconnect:%b)", disconnect));
 		EngineXHelper.clearEngineX();
 
 		redirectStandardOut(false);

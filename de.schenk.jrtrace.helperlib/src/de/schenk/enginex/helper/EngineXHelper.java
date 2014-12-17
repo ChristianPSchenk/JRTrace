@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import de.schenk.jrtrace.helperlib.HelperLib;
+import de.schenk.jrtrace.helperlib.JRLog;
 
 public class EngineXHelper {
 
@@ -112,7 +113,7 @@ public class EngineXHelper {
 
 			for (Class<?> m : modifiableClasses) {
 				try {
-					System.out.println("Retransform on: " + m.toString());
+					JRLog.debug("Retransform on: " + m.toString());
 					inst.retransformClasses(m);
 
 					// inst.retransformClasses(modifiableClasses
@@ -120,8 +121,8 @@ public class EngineXHelper {
 				} catch (Throwable e) {
 					// just print an error on the console for now about not
 					// being instrumented
-					System.out.println("Error during retransform of "
-							+ m.toString() + " Not instrumented");
+					JRLog.error("Error during retransformation of "
+							+ m.toString() + ". Instrumentation failed.");
 					e.printStackTrace();
 
 				}
@@ -182,8 +183,7 @@ public class EngineXHelper {
 
 		if (objects.size() > 0) {
 			try {
-				System.out.println("Starting clear retransform..."
-						+ objects.toString());
+
 				HelperLib.getInstrumentation().retransformClasses(
 						objects.toArray(new Class<?>[objects.size()]));
 
@@ -191,7 +191,7 @@ public class EngineXHelper {
 				e.printStackTrace();
 
 			}
-			System.out.println("Done clear retransform...");
+			JRLog.debug("JRTrace transformations cleared (disabled)");
 		}
 
 	}

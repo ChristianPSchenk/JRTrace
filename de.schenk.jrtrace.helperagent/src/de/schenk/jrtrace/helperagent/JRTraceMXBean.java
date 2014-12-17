@@ -43,4 +43,11 @@ public interface JRTraceMXBean {
 	 */
 	public void runGroovy(String referenceClassName, String pathToGroovy);
 
+	/**
+	 * set the agents log level. Levels defined in JRLog constants.
+	 * 
+	 * @param level
+	 */
+	public void setLogLevel(int level);
+
 }
