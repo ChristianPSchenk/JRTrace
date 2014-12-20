@@ -159,7 +159,7 @@ public class EngineXMethodMetadata {
 	 *         in the transformation scope of this enginexmethod
 	 */
 	public boolean mayMatch(Class<?> theclass) {
-		Method[] methods = theclass.getMethods();
+		Method[] methods = theclass.getDeclaredMethods();
 		for (int i = 0; i < methods.length; i++) {
 			String name = methods[i].getName();
 			if (mayMatchMethodName(name)) {

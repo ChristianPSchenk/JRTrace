@@ -185,6 +185,7 @@ public class EngineXMetadata {
 	}
 
 	private boolean mayMatchMethods(Class<?> theclass) {
+
 		for (EngineXMethodMetadata method : methods) {
 
 			if (method.mayMatch(theclass)) {

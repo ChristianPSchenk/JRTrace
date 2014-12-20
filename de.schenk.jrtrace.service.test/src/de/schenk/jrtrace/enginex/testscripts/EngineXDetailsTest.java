@@ -276,6 +276,15 @@ public class EngineXDetailsTest {
 	}
 
 	@Test
+	public void test16privateMethodInstrumentation() throws Exception {
+
+		Test16 test16 = new Test16();
+		test16.test16();
+		assertTrue(Test16.success);
+
+	}
+
+	@Test
 	public void verifyErrorTest() throws Exception {
 		// just asserts that there is no exception while instrumenting
 		// the OpenResourceAction.class. (This uses the VerifyErrorScript rule

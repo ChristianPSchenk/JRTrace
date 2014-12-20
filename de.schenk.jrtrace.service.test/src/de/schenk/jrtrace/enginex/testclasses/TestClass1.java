@@ -8,7 +8,7 @@ public class TestClass1 {
 
 	}
 
-	public void doit2() {
+	private void doit2() {
 
 	}
 

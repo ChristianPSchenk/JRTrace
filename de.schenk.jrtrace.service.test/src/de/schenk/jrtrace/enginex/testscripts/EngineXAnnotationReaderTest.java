@@ -16,6 +16,10 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import de.schenk.enginex.helper.EngineXMetadata;
+import de.schenk.enginex.helper.EngineXMethodMetadata;
+import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
+import de.schenk.jrtrace.annotations.XLocation;
 import de.schenk.jrtrace.enginex.testclasses.Script1;
 import de.schenk.jrtrace.enginex.testclasses.Script2;
 import de.schenk.jrtrace.enginex.testclasses.TestClass1;
@@ -23,10 +27,6 @@ import de.schenk.jrtrace.enginex.testclasses.TestClass2;
 import de.schenk.jrtrace.enginex.testclasses.TestClass3;
 import de.schenk.jrtrace.helperagent.EngineXAnnotationReader;
 import de.schenk.jrtrace.service.test.utils.JavaUtil;
-import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
-import de.schenk.jrtrace.annotations.XLocation;
-import de.schenk.enginex.helper.EngineXMetadata;
-import de.schenk.enginex.helper.EngineXMethodMetadata;
 
 public class EngineXAnnotationReaderTest {
 
@@ -48,6 +48,15 @@ public class EngineXAnnotationReaderTest {
 		assertTrue(metadata.mayMatch(TestClass1.class));
 		assertFalse(metadata.mayMatch(TestClass2.class));
 		assertFalse(metadata.mayMatch(TestClass3.class));
+
+	}
+
+	@Test
+	public void testprivatemethod() throws Exception {
+		classBytes = new JavaUtil().getClassBytes(Script1.class);
+		EngineXAnnotationReader annoReader = new EngineXAnnotationReader();
+		EngineXMetadata metadata = annoReader.getMetaInformation(classBytes);
+		assertTrue(metadata.mayMatch(TestClass1.class));
 
 	}
 

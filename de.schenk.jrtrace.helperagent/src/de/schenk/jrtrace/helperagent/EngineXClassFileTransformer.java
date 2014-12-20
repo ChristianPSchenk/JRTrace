@@ -52,6 +52,7 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 				for (String targetclass : classes) {
 					String cname = className == null ? null : Type.getType(
 							"L" + className + ";").getClassName();
+
 					if (entry.mayMatchClassHierarchy(cname, superClass,
 							interfaces)) {
 						JRLog.verbose("Applying rules to class:" + className);
@@ -70,7 +71,7 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 			if (transformed) {
 				EngineXHelper.setTransformed(className, classLoader);
 			}
-			if (JRLog.getLogLevel() == JRLog.DEBUG) {
+			if (JRLog.getLogLevel() == JRLog.DEBUG && transformed) {
 				if (className != null) {
 					String tmpdir = System.getProperty("java.io.tmpdir");
 					JRLog.debug("Writing classbytes of " + className
