@@ -286,16 +286,20 @@ start the plugin referenced in <code>installBundle</code> (Use <code>org.osgi.fr
 
  
 
-<h3>Extended Rule Helper: HelperLib</h3>
+<h3>JRTrace Helper Class</h3>
 
 <p>
-The JRTrace Eclipse Plugins come with an extension of the default jrtrace Helper which provides 
-some useful methods. Include this library with
+The JRTrace class includes a small utility class that might be useful in some tracing use cases:
+<code>de.schenk.jrtrace.helperlib.HelperLib</code>
+To use the  utility methods extend from <code>HelperLib</code> and use them from your instrumentation code.
 </p>
-<pre>
-HELPER de.schenk.jrtrace.helperlib.HelperLib
-</pre>
-<p>The <code>HelperLib</code> provdes the  <code>inspect</code> and <code>groovy</code> statements.
+
+
+<h4>traceStack</h4>
+
+<code>traceStack</code> is a convenience method to write the current stack trace to the output.
+<code>traceStack(int depth)</code> will restrict the number of shown stack lines to the <code>depth</code>
+
 
 
 <h4>inspect</h4>
@@ -320,9 +324,7 @@ as argument (arg0).
 </p>
 <h4>groovy</h4>
 <p>
-The coding possibilities in the <code>RULE</code> expressions are very limited. In particular referring to classes of the application is limited (rules by default can only
-access the root class loader classes, which are the java classes and the jrtrace helpers). The various <code>groovy</code>
-methods provide the option to run a groovy script in the scope of any classloader. 
+The various <code>groovy</code> methods provide the option to run a groovy script in the scope of any classloader.  
 </p>
 <pre>groovy(String expression,Object arguments...)</pre>
 <p>

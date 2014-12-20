@@ -200,9 +200,13 @@ public class HelperLib {
 	}
 
 	public void traceStack() {
+		traceStack(Integer.MAX_VALUE);
+	}
+
+	public void traceStack(int depth) {
 		StackTraceElement[] trace = Thread.currentThread().getStackTrace();
-		for (int i = 0; i < trace.length; i++) {
-			System.out.println(trace.toString());
+		for (int i = 0; i < trace.length && i < depth; i++) {
+			System.out.println(trace[i].toString());
 		}
 	}
 
