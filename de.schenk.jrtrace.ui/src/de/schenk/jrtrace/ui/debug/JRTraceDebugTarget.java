@@ -35,7 +35,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 	private ILaunch launch;
 	private boolean isDisconnected = false;
 	private boolean isTerminated = false;
-	private JRTraceConsole JRTraceConsole;
+	private JRTraceConsoleConnector JRTraceConsole;
 	IProcess process;
 
 	public JRTraceDebugTarget(IJRTraceVM vm, ILaunch launch,
@@ -66,7 +66,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 	}
 
 	private void createConsole() {
-		JRTraceConsole = new JRTraceConsole(machine);
+		JRTraceConsole = new JRTraceConsoleConnector(machine);
 		JRTraceConsole.start();
 
 	}

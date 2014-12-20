@@ -275,5 +275,19 @@
       </variable>
    </sourceProvider>
 </extension>
+ <extension
+         point="org.eclipse.ui.console.consolePatternMatchListeners">
+      <consolePatternMatchListener
+            class="org.eclipse.jdt.internal.debug.ui.console.JavaConsoleTracker"
+            regex="\(\S*${java_extensions_regex}\S*\)"
+            qualifier="${java_extensions_regex}"
+            id="org.eclipse.jdt.debug.ui.JavaConsoleTracker">
+         <enablement>
+            <or>
+			 <instanceof value="de.schenk.jrtrace.ui.debug.JRTraceConsole"/>
+            </or>
+         </enablement>
+      </consolePatternMatchListener>
+      </extension>
 
 </plugin>

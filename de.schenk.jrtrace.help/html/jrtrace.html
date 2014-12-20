@@ -323,12 +323,14 @@ as argument (arg0).
 
 </p>
 <h4>groovy</h4>
+
 <p>
+
 The various <code>groovy</code> methods provide the option to run a groovy script in the scope of any classloader.  
 </p>
 <pre>groovy(String expression,Object arguments...)</pre>
 <p>
-The above simple syntax will use the classloader of the <code>RULE</code> class to execute the script. Effectively therefore the access to all classes from this scope is possible.
+The above simple syntax will use the classloader of the target class to execute the script. Effectively therefore the access to all classes from this scope is possible.
 
 </p>
 
@@ -362,7 +364,7 @@ static def x=5
 def call() { x=x+1; return x; }
 }
 </pre>
-<p>This example would provide a counter that counts the number of invocations of the rule.</p>
+<p>This example would provide a counter that counts the number of invocations.</p>
 
 
 <h2>Remarks on Techniques and Design</h2>
