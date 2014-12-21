@@ -2,7 +2,7 @@
 <feature
       id="de.schenk.jrtrace.feature"
       label="JRTrace Eclipse Plugins"
-      version="0.1.0.qualifier"
+      version="0.2.0.qualifier"
       provider-name="Christian Schenk"
       plugin="de.schenk.jrtrace.ui"
       ws="win32">
@@ -492,39 +492,39 @@ END OF TERMS AND CONDITIONS
          id="de.schenk.jrtrace.helperagent"
          download-size="0"
          install-size="0"
-         version="1.1.0.qualifier"/>
+         version="1.1.1.qualifier"/>
 
    <plugin
          id="de.schenk.jrtrace.helperlib"
          download-size="0"
          install-size="0"
-         version="1.1.1.qualifier"/>
+         version="1.1.2.qualifier"/>
 
    <plugin
          id="de.schenk.jrtrace.jdk.init"
          download-size="0"
          install-size="0"
-         version="1.0.2.qualifier"
+         version="1.0.3.qualifier"
          unpack="false"/>
 
    <plugin
          id="de.schenk.jrtrace.service"
          download-size="0"
          install-size="0"
-         version="1.1.1.qualifier"/>
+         version="1.1.2.qualifier"/>
 
    <plugin
          id="de.schenk.jrtrace.ui"
          download-size="0"
          install-size="0"
-         version="1.1.1.qualifier"
+         version="1.1.2.qualifier"
          unpack="false"/>
 
    <plugin
          id="de.schenk.jrtrace.help"
          download-size="0"
          install-size="0"
-         version="1.0.3.qualifier"
+         version="1.0.4.qualifier"
          unpack="false"/>
 
    <plugin

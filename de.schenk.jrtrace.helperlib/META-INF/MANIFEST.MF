@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JRTrace Helperlib
 Bundle-SymbolicName: de.schenk.jrtrace.helperlib
-Bundle-Version: 1.1.1.qualifier
+Bundle-Version: 1.1.2.qualifier
 Bundle-Activator: de.schenk.jrtrace.helperlib.Activator
 Bundle-Vendor: Christian Schenk
 Require-Bundle: org.eclipse.core.runtime

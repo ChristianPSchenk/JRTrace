@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test
 Bundle-SymbolicName: de.schenk.jrtrace.service.test
-Bundle-Version: 1.0.3.qualifier
+Bundle-Version: 1.0.4.qualifier
 Bundle-Activator: de.schenk.jrtrace.service.test.Activator
 Bundle-Vendor: SCHENK
 Require-Bundle: org.eclipse.core.runtime,
@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
  de.schenk.jrtrace.service,
  de.schenk.jrtrace.ui,
  de.schenk.jrtrace.helperagent,
- de.schenk.jrtrace.service.enginex.targets;bundle-version="1.0.0",
+ de.schenk.jrtrace.service.enginex.targets,
  de.schenk.jrtrace.helperlib,
  org.eclipse.ui,
  org.eclipse.ui.ide
