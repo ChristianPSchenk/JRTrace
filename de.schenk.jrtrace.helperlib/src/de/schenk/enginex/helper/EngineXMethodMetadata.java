@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.schenk.jrtrace.annotations.XLocation;
+import de.schenk.jrtrace.helperlib.JRLog;
 
 public class EngineXMethodMetadata {
 
@@ -159,7 +160,15 @@ public class EngineXMethodMetadata {
 	 *         in the transformation scope of this enginexmethod
 	 */
 	public boolean mayMatch(Class<?> theclass) {
-		Method[] methods = theclass.getDeclaredMethods();
+		Method[] methods = null;
+		try {
+			methods = theclass.getDeclaredMethods();
+		} catch (NoClassDefFoundError e) {
+			JRLog.error("getDeclaredMethods failed on Class<?> "
+					+ theclass
+					+ " with NoClassDefFoundError. The class can anyway probably not load and will therefore be ignored. Known cases when this happens: DynamicImport-Package in Osgi (probably also optional dependencies.)");
+			return false;
+		}
 		for (int i = 0; i < methods.length; i++) {
 			String name = methods[i].getName();
 			if (mayMatchMethodName(name)) {

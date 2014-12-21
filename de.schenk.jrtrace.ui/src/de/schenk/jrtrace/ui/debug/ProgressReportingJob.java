@@ -58,7 +58,7 @@ abstract public class ProgressReportingJob extends Job implements
 			monitor.worked(current - work);
 			work = current;
 		}
-		System.out.println(String.format("Progress: %d of %d", current, total));
+
 	}
 
 }
