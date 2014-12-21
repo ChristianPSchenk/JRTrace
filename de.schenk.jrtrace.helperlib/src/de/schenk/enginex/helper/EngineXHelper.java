@@ -42,6 +42,14 @@ public class EngineXHelper {
 		}
 	}
 
+	/**
+	 * This method is called by Reflection by the {@link DynamicBinder} class to
+	 * obtain the proper jrtrace class to inject
+	 * 
+	 * @param enginexclass
+	 * @param classLoader
+	 * @return the object
+	 */
 	public static Object getEngineXObject(String enginexclass,
 			ClassLoader classLoader) {
 		EngineXClassHolder o;
@@ -71,12 +79,15 @@ public class EngineXHelper {
 	}
 
 	public static void addEngineXClass(EngineXMetadata metadata) {
+
 		List<EngineXMetadata> list = new ArrayList<EngineXMetadata>();
 		list.add(metadata);
 		addEngineXClass(list);
 	}
 
 	public static void addEngineXClass(List<EngineXMetadata> metadatalist) {
+
+		Set<Class<?>> modifiableClasses = clearEngineXTransformationMap();
 		long start = System.nanoTime();
 		synchronized (lock) {
 			for (EngineXMetadata metadata : metadatalist) {
@@ -89,7 +100,6 @@ public class EngineXHelper {
 
 		Class<?>[] Allclasses = inst.getAllLoadedClasses();
 
-		List<Class<?>> modifiableClasses = new ArrayList<Class<?>>();
 		for (Class<?> c : Allclasses) {
 
 			if (!inst.isModifiableClass(c))
@@ -110,13 +120,42 @@ public class EngineXHelper {
 
 		}
 
+		retransformClasses(modifiableClasses);
+		long ende = System.nanoTime();
+		JRLog.debug(String.format(
+				"EngineXHelper.addEngineXClass() took %d ms.",
+				(ende - start) / 1000 / 1000));
+
+	}
+
+	/**
+	 * Perform a retransformation of the listed classes.
+	 * 
+	 * Note: the method will not fail and just report an error if the
+	 * transformation of a class fails.
+	 * 
+	 * @param modifiableClasses
+	 *            the list of Class<?>es that should be retransformed
+	 */
+	private static void retransformClasses(Set<Class<?>> modifiableClasses) {
+
+		Instrumentation inst2 = HelperLib.getInstrumentation();
+
 		if (modifiableClasses.size() > 0) {
+			NotificationUtil.sendProgressNotification(String.format(
+					"Retransforming %d classes", modifiableClasses.size()), 0,
+					modifiableClasses.size());
 			JRLog.debug(String.format("Retransforming %d classes.",
 					modifiableClasses.size()));
+			int i = 0;
+			long last = System.currentTimeMillis();
 			for (Class<?> m : modifiableClasses) {
+				i++;
+				if (checkAborted())
+					break;
 				try {
-					JRLog.debug("Retransform on: " + m.toString());
-					inst.retransformClasses(m);
+
+					inst2.retransformClasses(m);
 
 					// inst.retransformClasses(modifiableClasses
 					// .toArray(new Class<?>[modifiableClasses.size()]));
@@ -129,14 +168,17 @@ public class EngineXHelper {
 
 				}
 
+				NotificationUtil.sendProgressNotification("", i,
+						modifiableClasses.size());
+
 			}
 
+			if (System.currentTimeMillis() > last + 250) {
+				NotificationUtil.sendProgressNotification("",
+						modifiableClasses.size(), modifiableClasses.size());
+				last = System.currentTimeMillis();
+			}
 		}
-		long ende = System.nanoTime();
-		JRLog.debug(String.format(
-				"EngineXHelper.addEngineXClass() took %d ms.",
-				(ende - start) / 1000 / 1000));
-
 	}
 
 	/**
@@ -161,7 +203,25 @@ public class EngineXHelper {
 
 	public static void clearEngineX() {
 
-		List<Class<?>> objects = new ArrayList<Class<?>>();
+		Set<Class<?>> objects = clearEngineXTransformationMap();
+
+		JRLog.debug(String.format("Clear retransform of %d classes.",
+				objects.size()));
+		retransformClasses(objects);
+
+	}
+
+	/**
+	 * Will clear the list of all registered transfomrations and done
+	 * instrumentations (without actually retransforming them)
+	 * 
+	 * 
+	 * @return the list of all classes that have been instrumented by the
+	 *         removed jrtrace classes
+	 */
+	private static Set<Class<?>> clearEngineXTransformationMap() {
+		Set<Class<?>> objects = new HashSet<Class<?>>();
+
 		Map<String, Set<ClassLoader>> copyOfTransformed = null;
 		synchronized (lock) {
 
@@ -172,8 +232,6 @@ public class EngineXHelper {
 			transformedClassesMap.clear();
 		}
 
-		JRLog.debug(String.format("Clear retransform of %d classes.",
-				copyOfTransformed.size()));
 		for (Entry<String, Set<ClassLoader>> entry : copyOfTransformed
 				.entrySet())
 
@@ -189,20 +247,7 @@ public class EngineXHelper {
 
 			}
 		}
-
-		if (objects.size() > 0) {
-			try {
-
-				HelperLib.getInstrumentation().retransformClasses(
-						objects.toArray(new Class<?>[objects.size()]));
-
-			} catch (Throwable e) {
-				e.printStackTrace();
-
-			}
-			JRLog.debug("JRTrace transformations cleared (disabled)");
-		}
-
+		return objects;
 	}
 
 	/**
@@ -222,4 +267,19 @@ public class EngineXHelper {
 			set.add(classLoader);
 		}
 	}
+
+	static private boolean abortFlagSet = false;
+
+	static public void abort() {
+		abortFlagSet = true;
+
+	}
+
+	/** returns and clears the abort flag */
+	static public boolean checkAborted() {
+		boolean returnvalue = abortFlagSet;
+		abortFlagSet = false;
+		return returnvalue;
+	}
+
 }

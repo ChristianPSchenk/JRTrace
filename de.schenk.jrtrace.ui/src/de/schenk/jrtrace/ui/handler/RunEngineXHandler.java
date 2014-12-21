@@ -1,6 +1,6 @@
 /**
-* (c) 2014 by Christian Schenk
-**/
+ * (c) 2014 by Christian Schenk
+ **/
 package de.schenk.jrtrace.ui.handler;
 
 import java.io.File;
@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import de.schenk.jrtrace.ui.debug.InstallJRTraceJob;
 import de.schenk.jrtrace.ui.debug.JRTraceDebugTarget;
 import de.schenk.jrtrace.ui.launch.JRTraceLaunchUtils;
 import de.schenk.jrtrace.ui.util.JarUtil;
@@ -41,7 +42,9 @@ public class RunEngineXHandler extends AbstractHandler implements IHandler {
 					.getJRTraceDebugTargets();
 
 			for (JRTraceDebugTarget btarget : jrtraceTargets) {
-				btarget.installEngineX(jarFile);
+				InstallJRTraceJob job = new InstallJRTraceJob(
+						btarget.getJRTraceMachine(), jarFile);
+				job.schedule();
 			}
 			return true;
 		}

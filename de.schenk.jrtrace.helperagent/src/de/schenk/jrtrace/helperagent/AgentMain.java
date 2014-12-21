@@ -16,7 +16,6 @@ import java.util.jar.JarFile;
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 import javax.management.remote.JMXConnectorServer;
@@ -24,6 +23,7 @@ import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
 
 import de.schenk.enginex.helper.EngineXHelper;
+import de.schenk.enginex.helper.NotificationUtil;
 import de.schenk.jrtrace.helperagent.internal.JRTraceMXBeanImpl;
 import de.schenk.jrtrace.helperlib.GroovyUtil;
 import de.schenk.jrtrace.helperlib.HelperLib;
@@ -31,8 +31,6 @@ import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.NotificationConstants;
 
 public class AgentMain {
-
-	public static final String MXBEAN_DOMAIN = "de.schenk.jrtrace";
 
 	/*
 	 * The message codes the Agent sends
@@ -125,13 +123,13 @@ public class AgentMain {
 
 			cs.start();
 
-			mxbeanName = new ObjectName(MXBEAN_DOMAIN + ":type=JRTRace");
+			mxbeanName = NotificationUtil.getJRTraceObjectName();
 			jrtraceBean = new JRTraceMXBeanImpl(this);
 			if (!mbs.isRegistered(mxbeanName)) {
 				mbs.registerMBean(jrtraceBean, mxbeanName);
 			}
-		} catch (MalformedObjectNameException | InstanceAlreadyExistsException
-				| MBeanRegistrationException | NotCompliantMBeanException e) {
+		} catch (InstanceAlreadyExistsException | MBeanRegistrationException
+				| NotCompliantMBeanException e) {
 			throw new RuntimeException(e);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -162,11 +160,13 @@ public class AgentMain {
 			System.setErr(new PrintStream(new RedirectingOutputStream(
 					jrtraceBean, System.err,
 					NotificationConstants.NOTIFY_STDERR)));
+			NotificationUtil.setNotificationSender(jrtraceBean);
 		} else {
 			if (enable == false && stdout_isredirected) {
 				stdout_isredirected = false;
 				System.setOut(stdout);
 				System.setErr(stderr);
+				NotificationUtil.setNotificationSender(null);
 			}
 		}
 	}

@@ -8,10 +8,10 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.StringWriter;
 
-import javax.management.MalformedObjectNameException;
 import javax.management.Notification;
-import javax.management.ObjectName;
 
+import de.schenk.enginex.helper.INotificationSender;
+import de.schenk.enginex.helper.NotificationUtil;
 import de.schenk.jrtrace.helperlib.NotificationConstants;
 
 public class RedirectingOutputStream extends OutputStream {
@@ -64,13 +64,9 @@ public class RedirectingOutputStream extends OutputStream {
 			try {
 				inSend = true;
 
-				try {
-					bean.sendMessage(new Notification(comId, new ObjectName(
-							AgentMain.MXBEAN_DOMAIN + ":type=JRTRace"),
-							sequence++, msg));
-				} catch (MalformedObjectNameException e) {
-					throw new RuntimeException("shouldn't happen...");
-				}
+				bean.sendMessage(new Notification(comId, NotificationUtil
+						.getJRTraceObjectName(), sequence++, msg));
+
 			} finally {
 				inSend = false;
 			}

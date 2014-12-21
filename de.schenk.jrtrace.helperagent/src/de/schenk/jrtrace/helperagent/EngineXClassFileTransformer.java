@@ -53,6 +53,10 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 					String cname = className == null ? null : Type.getType(
 							"L" + className + ";").getClassName();
 
+					if (superClass == null) {
+						JRLog.error(String.format("Superclass null for class: "
+								+ cname));
+					}
 					if (entry.mayMatchClassHierarchy(cname, superClass,
 							interfaces)) {
 						JRLog.verbose("Applying rules to class:" + className);

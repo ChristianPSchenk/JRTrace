@@ -95,4 +95,10 @@ public interface IJRTraceVM {
 	void removeClientListener(String notifyStderr,
 			NotificationListener errorstreamReceiver);
 
+	/**
+	 * sends an abort event to the machine. Any ongoning work will be
+	 * interrupted. Might leave the machine in an inconsistent state .
+	 */
+	void abort();
+
 }

@@ -6,8 +6,9 @@ import java.util.jar.JarFile;
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
 
+import de.schenk.enginex.helper.EngineXHelper;
+import de.schenk.enginex.helper.INotificationSender;
 import de.schenk.jrtrace.helperagent.AgentMain;
-import de.schenk.jrtrace.helperagent.INotificationSender;
 import de.schenk.jrtrace.helperagent.JRTraceMXBean;
 import de.schenk.jrtrace.helperlib.GroovyUtil;
 import de.schenk.jrtrace.helperlib.HelperLib;
@@ -17,7 +18,7 @@ import de.schenk.jrtrace.helperlib.JRLog;
 public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 		JRTraceMXBean, INotificationSender {
 
-	transient private AgentMain agent;
+	private AgentMain agent;
 
 	public JRTraceMXBeanImpl(AgentMain agent) {
 		this.agent = agent;
@@ -96,4 +97,15 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 
 	}
 
+	@Override
+	public void clearEngineX() {
+		EngineXHelper.clearEngineX();
+
+	}
+
+	@Override
+	public void abort() {
+		EngineXHelper.abort();
+
+	}
 }

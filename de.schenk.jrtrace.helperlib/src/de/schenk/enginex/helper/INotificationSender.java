@@ -1,4 +1,4 @@
-package de.schenk.jrtrace.helperagent;
+package de.schenk.enginex.helper;
 
 import javax.management.Notification;
 

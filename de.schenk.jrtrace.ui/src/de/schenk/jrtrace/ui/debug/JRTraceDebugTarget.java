@@ -12,6 +12,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
@@ -48,16 +49,21 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 		if (theProject != null) {
 			if (uploadHelperOnConnect) {
+				final File jarFile[] = new File[1];
 				Display.getDefault().syncExec(new Runnable() {
 
 					@Override
 					public void run() {
-						File jarFile = JarUtil.createJar(theProject, Display
+						jarFile[0] = JarUtil.createJar(theProject, Display
 								.getDefault().getActiveShell());
-						machine.installEngineXClass(jarFile.getAbsolutePath());
+
 					}
 
 				});
+
+				Job installEngineXJob = new InstallJRTraceJob(machine,
+						jarFile[0]);
+				installEngineXJob.schedule();
 
 			}
 
@@ -163,7 +169,16 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 	@Override
 	public void disconnect() throws DebugException {
 
-		machine.detach();
+		DetachJRTraceJob job = new DetachJRTraceJob(machine);
+		job.schedule();
+
+		while (true)
+			try {
+				job.join();
+				break;
+			} catch (InterruptedException e) {
+				//
+			}
 
 		JRTraceConsole.stop();
 

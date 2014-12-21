@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.management.AttributeChangeNotification;
 import javax.management.Notification;
 import javax.management.NotificationListener;
 
@@ -22,6 +23,10 @@ public class JRTraceBeanNotificationListener implements NotificationListener {
 	public void handleNotification(Notification notification, Object object) {
 
 		String type = notification.getType();
+		if (notification instanceof AttributeChangeNotification) {
+			AttributeChangeNotification a = (AttributeChangeNotification) notification;
+			type = a.getAttributeType();
+		}
 
 		Collection<NotificationListener> listenerCopy = new ArrayList<NotificationListener>();
 		synchronized (listenerMap) {

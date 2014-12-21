@@ -9,14 +9,13 @@ import java.util.Properties;
 import javax.management.InstanceNotFoundException;
 import javax.management.JMX;
 import javax.management.MBeanServerConnection;
-import javax.management.MalformedObjectNameException;
 import javax.management.NotificationListener;
 import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
-import de.schenk.jrtrace.helperagent.AgentMain;
+import de.schenk.enginex.helper.NotificationUtil;
 import de.schenk.jrtrace.helperagent.JRTraceMXBean;
 import de.schenk.jrtrace.service.ICancelable;
 import de.schenk.jrtrace.service.IJRTraceVM;
@@ -29,13 +28,19 @@ abstract public class AbstractVM implements IJRTraceVM {
 	protected Exception lastException;
 
 	@Override
-	public void setLogLevel(int i) {
+	synchronized public void setLogLevel(int i) {
 
 		mbeanProxy.setLogLevel(i);
 	}
 
 	@Override
-	public boolean setSystemProperties(Properties p) {
+	public void abort() {
+		mbeanProxy.abort();
+
+	}
+
+	@Override
+	synchronized public boolean setSystemProperties(Properties p) {
 		boolean result = true;
 		Enumeration<Object> theKeys = p.keys();
 		while (theKeys.hasMoreElements()) {
@@ -66,13 +71,13 @@ abstract public class AbstractVM implements IJRTraceVM {
 	}
 
 	@Override
-	public void runGroovy(String groovyOSPath, String className) {
+	synchronized public void runGroovy(String groovyOSPath, String className) {
 		mbeanProxy.runGroovy(className, groovyOSPath);
 	}
 
 	@Override
-	public void runJava(File jarFile, String theClassLoader, String className,
-			String methodName) {
+	synchronized public void runJava(File jarFile, String theClassLoader,
+			String className, String methodName) {
 		theClassLoader = theClassLoader == null ? "" : theClassLoader;
 		if (className == null)
 			throw new IllegalArgumentException(
@@ -86,15 +91,15 @@ abstract public class AbstractVM implements IJRTraceVM {
 	}
 
 	@Override
-	public void installEngineXClass(String fileForClass) {
+	synchronized public void installEngineXClass(String fileForClass) {
 		mbeanProxy.installEngineXClass(fileForClass);
 
 	}
 
 	@Override
-	public void clearEngineX() {
+	synchronized public void clearEngineX() {
 
-		mbeanProxy.installEngineXClass("");
+		mbeanProxy.clearEngineX();
 
 	}
 
@@ -134,18 +139,17 @@ abstract public class AbstractVM implements IJRTraceVM {
 				jmxc = JMXConnectorFactory.connect(url, null);
 				mxbeanConnection = jmxc.getMBeanServerConnection();
 
-				ObjectName mbeanName = new ObjectName(AgentMain.MXBEAN_DOMAIN
-						+ ":type=JRTRace");
+				ObjectName mbeanName = NotificationUtil.getJRTraceObjectName();
 
 				mbeanProxy = (JRTraceMXBean) JMX.newMBeanProxy(
 						mxbeanConnection, mbeanName, JRTraceMXBean.class, true);
+
 				mxbeanListener = new JRTraceBeanNotificationListener(this);
 				mxbeanConnection.addNotificationListener(mbeanName,
 						mxbeanListener, null, null);
 
 				return;
-			} catch (IOException | InstanceNotFoundException
-					| MalformedObjectNameException e2) {
+			} catch (IOException | InstanceNotFoundException e2) {
 				e = e2;
 			}
 			try {
@@ -158,7 +162,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 		throw new RuntimeException("Connect failed after 10 tries", e);
 	}
 
-	private boolean stopMXBeanServerConnection() {
+	private boolean stopMXBeanClientConnection() {
 
 		try {
 
@@ -180,17 +184,17 @@ abstract public class AbstractVM implements IJRTraceVM {
 	protected boolean stopConnection(boolean disconnectOnly) {
 
 		boolean result1 = stopSender(disconnectOnly);
-		boolean result2 = stopMXBeanServerConnection();
+		boolean result2 = stopMXBeanClientConnection();
 
 		return result1 & result2;
 	}
 
 	@Override
-	public boolean attach() {
+	synchronized public boolean attach() {
 		return attach(null);
 	}
 
-	public boolean installJar(String jar) {
+	synchronized public boolean installJar(String jar) {
 		mbeanProxy.addToBootClassPath(jar);
 		return true;
 

@@ -50,4 +50,8 @@ public interface JRTraceMXBean {
 	 */
 	public void setLogLevel(int level);
 
+	public void clearEngineX();
+
+	public void abort();
+
 }

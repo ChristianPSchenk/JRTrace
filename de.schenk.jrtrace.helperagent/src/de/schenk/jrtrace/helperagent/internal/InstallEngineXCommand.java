@@ -29,25 +29,29 @@ public class InstallEngineXCommand {
 
 	public void installEngineX(String classOrJarFilePath) {
 
-		if (classOrJarFilePath.isEmpty()) {
-			EngineXHelper.clearEngineX();
-
+		if (classOrJarFilePath.endsWith(".jar")) {
+			addEngineXJar(classOrJarFilePath);
 		} else {
-			if (classOrJarFilePath.endsWith(".jar")) {
-				addEngineXJar(classOrJarFilePath);
-			} else {
 
-				addEngineXFile(classOrJarFilePath);
-			}
+			addEngineXFile(classOrJarFilePath);
 		}
 
 	}
 
-	private void addEngineXJar(String clientSentence) {
+	private void addEngineXJar(String jarFileName) {
+		List<EngineXMetadata> mdlist = parseEngineXJarFile(jarFileName);
+		EngineXHelper.addEngineXClass(mdlist);
+
+	}
+
+	private List<EngineXMetadata> parseEngineXJarFile(String jarFileName) {
+		List<EngineXMetadata> mdlist = null;
+
 		JarFile jar = null;
+
 		try {
-			List<EngineXMetadata> mdlist = new ArrayList<EngineXMetadata>();
-			jar = new JarFile(clientSentence);
+			mdlist = new ArrayList<EngineXMetadata>();
+			jar = new JarFile(jarFileName);
 			Enumeration<JarEntry> entries = jar.entries();
 			while (entries.hasMoreElements()) {
 				JarEntry jarentry = entries.nextElement();
@@ -69,7 +73,7 @@ public class InstallEngineXCommand {
 					mdlist.add(metadata);
 				}
 			}
-			EngineXHelper.addEngineXClass(mdlist);
+
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} finally {
@@ -79,8 +83,9 @@ public class InstallEngineXCommand {
 				} catch (IOException e) {
 					// do nothing more.
 				}
-		}
 
+		}
+		return mdlist;
 	}
 
 	public void addEngineXFile(String clientSentence) {
