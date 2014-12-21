@@ -3,13 +3,14 @@
  **/
 package de.schenk.jrtrace.helperagent;
 
-import de.schenk.jrtrace.helperagent.FieldList.FieldEntry;
 import de.schenk.enginex.helper.EngineXMetadata;
 import de.schenk.enginex.helper.EngineXMethodMetadata;
+import de.schenk.jrtrace.helperagent.FieldList.FieldEntry;
 import de.schenk.objectweb.asm.ClassVisitor;
 import de.schenk.objectweb.asm.FieldVisitor;
 import de.schenk.objectweb.asm.MethodVisitor;
 import de.schenk.objectweb.asm.Opcodes;
+import de.schenk.objectweb.asm.addons.ClassWriterForClassLoader;
 import de.schenk.objectweb.asm.commons.JSRInlinerAdapter;
 
 public class EngineXClassVisitor extends ClassVisitor {
@@ -18,10 +19,12 @@ public class EngineXClassVisitor extends ClassVisitor {
 	private FieldList fieldList = new FieldList();
 	private String className;
 	private Class<?> superClass;
+	private ClassWriterForClassLoader classWriter;
 
-	public EngineXClassVisitor(ClassVisitor classWriter, int api,
+	public EngineXClassVisitor(ClassWriterForClassLoader classWriter, int api,
 			EngineXMetadata metadata, Class<?> superClass) {
 		super(Opcodes.ASM5, classWriter);
+		this.classWriter = classWriter;
 		this.metadata = metadata;
 		this.superClass = superClass;
 
@@ -39,6 +42,7 @@ public class EngineXClassVisitor extends ClassVisitor {
 	public void visit(int version, int access, String name, String signature,
 			String superName, String[] interfaces) {
 		this.className = name;
+		classWriter.setSuperInformation(superName);
 		super.visit(Opcodes.V1_7, access, name, signature, superName,
 				interfaces);
 	}

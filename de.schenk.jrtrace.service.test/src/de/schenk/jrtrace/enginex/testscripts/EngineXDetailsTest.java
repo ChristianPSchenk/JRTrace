@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkEvent;
 
+import de.schenk.jrtrace.commonsuper.test.CSCore;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.JRTraceControllerService;
@@ -281,6 +282,15 @@ public class EngineXDetailsTest {
 		Test16 test16 = new Test16();
 		test16.test16();
 		assertTrue(Test16.success);
+
+	}
+
+	@Test
+	public void testcommonSuperProblem() throws Exception {
+
+		CSCore cscore = new CSCore();
+		cscore.doit();
+		assertTrue(cscore.success);
 
 	}
 

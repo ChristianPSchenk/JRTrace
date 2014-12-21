@@ -58,7 +58,8 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 						JRLog.verbose("Applying rules to class:" + className);
 
 						byte[] returnBytes = applyEngineXClasses(classLoader,
-								entry, targetclass, classBytes, superClass);
+								className, entry, targetclass, classBytes,
+								superClass);
 						if (returnBytes != null) {
 							transformed = true;
 							classBytes = returnBytes;
@@ -101,19 +102,22 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 	}
 
 	private byte[] applyEngineXClasses(ClassLoader classLoader,
-			EngineXMetadata entry, String targetclass, byte[] classBytes,
-			Class<?> superClass) {
+			String targetClassName, EngineXMetadata entry, String targetclass,
+			byte[] classBytes, Class<?> superClass) {
 
-		return applyEngineXMethods(classLoader, entry, classBytes, superClass);
+		return applyEngineXMethods(classLoader, targetClassName, entry,
+				classBytes, superClass);
 
 	}
 
 	private byte[] applyEngineXMethods(ClassLoader classLoader,
-			EngineXMetadata metadata, byte[] classBytes, Class<?> superClass) {
+			String targetClassName, EngineXMetadata metadata,
+			byte[] classBytes, Class<?> superClass) {
 		ClassReader classReader = new ClassReader(classBytes);
 
-		ClassWriter classWriter = new ClassWriterForClassLoader(classLoader,
-				classReader, ClassWriter.COMPUTE_FRAMES);
+		ClassWriterForClassLoader classWriter = new ClassWriterForClassLoader(
+				classLoader, targetClassName, classReader,
+				ClassWriter.COMPUTE_FRAMES);
 		ClassVisitor classVisitor = new EngineXClassVisitor(classWriter,
 				Opcodes.ASM5, metadata, superClass);
 		classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES);

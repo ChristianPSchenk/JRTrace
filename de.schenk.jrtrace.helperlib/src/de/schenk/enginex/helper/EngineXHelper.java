@@ -77,6 +77,7 @@ public class EngineXHelper {
 	}
 
 	public static void addEngineXClass(List<EngineXMetadata> metadatalist) {
+		long start = System.nanoTime();
 		synchronized (lock) {
 			for (EngineXMetadata metadata : metadatalist) {
 				classCache.put(metadata.getExternalClassName(),
@@ -110,7 +111,8 @@ public class EngineXHelper {
 		}
 
 		if (modifiableClasses.size() > 0) {
-
+			JRLog.debug(String.format("Retransforming %d classes.",
+					modifiableClasses.size()));
 			for (Class<?> m : modifiableClasses) {
 				try {
 					JRLog.debug("Retransform on: " + m.toString());
@@ -130,6 +132,10 @@ public class EngineXHelper {
 			}
 
 		}
+		long ende = System.nanoTime();
+		JRLog.debug(String.format(
+				"EngineXHelper.addEngineXClass() took %d ms.",
+				(ende - start) / 1000 / 1000));
 
 	}
 
@@ -154,6 +160,7 @@ public class EngineXHelper {
 	}
 
 	public static void clearEngineX() {
+
 		List<Class<?>> objects = new ArrayList<Class<?>>();
 		Map<String, Set<ClassLoader>> copyOfTransformed = null;
 		synchronized (lock) {
@@ -165,6 +172,8 @@ public class EngineXHelper {
 			transformedClassesMap.clear();
 		}
 
+		JRLog.debug(String.format("Clear retransform of %d classes.",
+				copyOfTransformed.size()));
 		for (Entry<String, Set<ClassLoader>> entry : copyOfTransformed
 				.entrySet())
 
