@@ -37,7 +37,15 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 			Class<?> superClass = null;
 			Class<?>[] interfaces = null;
 			if (classObject != null) {
-				superClass = classObject.getSuperclass();
+
+				if (classObject.isInterface()) {
+					superClass = Object.class;
+				} else
+
+				{
+					superClass = classObject.getSuperclass();
+				}
+
 				interfaces = classObject.getInterfaces();
 			} else {
 				SuperClassExtractor extractor = new SuperClassExtractor(
