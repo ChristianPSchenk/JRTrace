@@ -182,10 +182,21 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 		// throw new RuntimeException("The field " + injectionSource
 		// + " could not be found in this class.");
 		// }
+		String desc = field.getDescriptor();
+		Type fieldType = Type.getType(desc);
+		if (fieldType.getSort() != injectionMethodArgumentTypes[pos].getSort()) {
+			fatal(String
+					.format("The type of the field "
+							+ injectionSource
+							+ " of the targetclass "
+							+ EngineXNameUtil.getExternalName(classVisitor
+									.getClassName())
+							+ " doesn't match the type of the argument %d of the injected method and cannot be injected with XField.",
+							pos));
+		}
 
 		if (field != null) {
 			int opCode = GETSTATIC;
-			String desc = field.getDescriptor();
 
 			if (!field.isStatic()) {
 				opCode = GETFIELD;
