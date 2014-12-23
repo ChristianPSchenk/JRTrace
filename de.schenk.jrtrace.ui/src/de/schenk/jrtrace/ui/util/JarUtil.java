@@ -1,6 +1,6 @@
 /**
-* (c) 2014 by Christian Schenk
-**/
+ * (c) 2014 by Christian Schenk
+ **/
 package de.schenk.jrtrace.ui.util;
 
 import java.io.File;
@@ -67,6 +67,7 @@ public class JarUtil {
 		description.setJarBuilder(jarBuilder);
 		try {
 			java.nio.file.Path temp = Files.createTempDirectory("jrtracejars");
+			temp.toFile().deleteOnExit();
 
 			IPath location = new Path(temp.toAbsolutePath() + "/"
 					+ prj.getName() + ".jar");

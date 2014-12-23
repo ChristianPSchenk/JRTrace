@@ -4,6 +4,7 @@
 package de.schenk.jrtrace.helperagent;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
@@ -28,34 +29,34 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 			byte[] classBytes) throws IllegalClassFormatException {
 
 		byte[] oldBytes = classBytes;
-		try {
+		boolean transformed = false;
+		Collection<EngineXMetadata> allEngineXClasses = EngineXHelper
+				.getEngineXClasses();
 
-			boolean transformed = false;
-			Collection<EngineXMetadata> allEngineXClasses = EngineXHelper
-					.getEngineXClasses();
+		Class<?> superClass = null;
+		Class<?>[] interfaces = null;
+		if (classObject != null) {
 
-			Class<?> superClass = null;
-			Class<?>[] interfaces = null;
-			if (classObject != null) {
+			if (classObject.isInterface()) {
+				superClass = Object.class;
+			} else
 
-				if (classObject.isInterface()) {
-					superClass = Object.class;
-				} else
-
-				{
-					superClass = classObject.getSuperclass();
-				}
-
-				interfaces = classObject.getInterfaces();
-			} else {
-				SuperClassExtractor extractor = new SuperClassExtractor(
-						classLoader, classBytes);
-				extractor.analyze();
-				superClass = extractor.getSuperclass();
-				interfaces = extractor.getInterfaces().toArray(new Class<?>[0]);
+			{
+				superClass = classObject.getSuperclass();
 			}
 
-			for (EngineXMetadata entry : allEngineXClasses) {
+			interfaces = classObject.getInterfaces();
+		} else {
+			SuperClassExtractor extractor = new SuperClassExtractor(
+					classLoader, classBytes);
+			extractor.analyze();
+			superClass = extractor.getSuperclass();
+			interfaces = extractor.getInterfaces().toArray(new Class<?>[0]);
+		}
+
+		for (EngineXMetadata entry : allEngineXClasses) {
+			try {
+
 				List<String> classes = entry.getClasses();
 				for (String targetclass : classes) {
 					String cname = className == null ? null : Type.getType(
@@ -75,15 +76,24 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 						if (returnBytes != null) {
 							transformed = true;
 							classBytes = returnBytes;
+							break;
 						}
 					}
 
 				}
 
+			} catch (Throwable e) {
+				JRLog.error("Skiped applying jrtrace class "
+						+ entry.getClassName() + " to class " + className
+						+ " due to runtime exception");
+				e.printStackTrace();
+				return null;
 			}
-			if (transformed) {
-				EngineXHelper.setTransformed(className, classLoader);
-			}
+		}
+		if (transformed) {
+			EngineXHelper.setTransformed(className, classLoader);
+		}
+		try {
 			if (JRLog.getLogLevel() == JRLog.DEBUG && transformed) {
 				if (className != null) {
 					String tmpdir = System.getProperty("java.io.tmpdir");
@@ -104,13 +114,11 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 				}
 
 			}
-			return transformed ? classBytes : null;
-		} catch (Throwable e) {
-			JRLog.error("Skipping Transformation of " + className
-					+ " due to runtime exception");
-			e.printStackTrace();
-			return null;
+		} catch (IOException e) {
+			JRLog.error("Error when trying to write transformed classbytes.");
 		}
+		return transformed ? classBytes : null;
+
 	}
 
 	private byte[] applyEngineXClasses(ClassLoader classLoader,

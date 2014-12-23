@@ -21,6 +21,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkEvent;
 
 import de.schenk.jrtrace.commonsuper.test.CSCore;
+import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.JRTraceControllerService;
@@ -51,6 +52,7 @@ public class EngineXDetailsTest {
 		pid = javaSplit[0];
 		machine = bmController.getMachine(pid);
 		assertTrue(machine.attach());
+		machine.setLogLevel(JRLog.DEBUG);
 
 		DoneListener doneListener = new DoneListener();
 
@@ -282,6 +284,15 @@ public class EngineXDetailsTest {
 		Test16 test16 = new Test16();
 		test16.test16();
 		assertTrue(Test16.success);
+
+	}
+
+	@Test
+	public void test17ReturnValueIsLong() throws Exception {
+
+		Test17 test17 = new Test17();
+		test17.test17();
+		assertTrue(Test17.success);
 
 	}
 

@@ -66,18 +66,34 @@ public class EngineXClassHolder {
 			} else {
 				if (metadata.getClassLoaderPolicy() == XClassLoaderPolicy.NAMED) {
 					String classForLoader = metadata.getClassLoaderName();
-					if (classForLoader.isEmpty())
-						throw new RuntimeException(
-								"No classloader class defined");
+					if (classForLoader == null || classForLoader.isEmpty()) {
+						NotificationUtil
+								.sendProblemNotification(
+										"ClassloaderPolicy is NAMED, but no 'classname' annotation was provided. Falling back to BOOT classloader",
 
-					classLoader = HelperLib
-							.getCachedClassLoader(classForLoader);
-					if (classLoader == null) {
-						throw new RuntimeException("The classloader of class "
-								+ classForLoader + " could not be identified.");
+										EngineXNameUtil
+												.getExternalName(metadata
+														.getClassName()), "",
+										"");
+
+					} else {
+						classLoader = HelperLib
+								.getCachedClassLoader(classForLoader);
+						if (classLoader == null) {
+							NotificationUtil
+									.sendProblemNotification(
+											"Failed to obtain a the class loader for the class "
+													+ classForLoader
+													+ ". Note: the class specified in the classloadername attribute must already be loaded when the instrumentation point is hit. Falling back to boot classloader",
+
+											EngineXNameUtil
+													.getExternalName(metadata
+															.getClassName()),
+											"", "");
+
+						}
 					}
-				} else
-					throw new RuntimeException("Unknown classloader policy");
+				}
 
 			}
 		}

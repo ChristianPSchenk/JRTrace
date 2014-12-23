@@ -3,11 +3,9 @@ package de.schenk.jrtrace.ui.debug;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
-import de.schenk.jrtrace.service.IJRTraceVM;
-
 public class DetachJRTraceJob extends ProgressReportingJob {
 
-	public DetachJRTraceJob(IJRTraceVM machine) {
+	public DetachJRTraceJob(JRTraceDebugTarget machine) {
 		super("Detaching from machine.", machine);
 
 	}

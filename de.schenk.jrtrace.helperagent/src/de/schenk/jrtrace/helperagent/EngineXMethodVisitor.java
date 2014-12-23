@@ -8,6 +8,8 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 
 import de.schenk.enginex.helper.EngineXMethodMetadata;
+import de.schenk.enginex.helper.EngineXNameUtil;
+import de.schenk.enginex.helper.NotificationUtil;
 import de.schenk.jrtrace.annotations.XLocation;
 import de.schenk.jrtrace.helperagent.FieldList.FieldEntry;
 import de.schenk.jrtrace.helperlib.JRLog;
@@ -29,6 +31,9 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 	private Type[] injectionMethodArgumentTypes;
 	private Type injectionMethodReturnTypes;
 	private EngineXClassVisitor classVisitor;
+	private Object targetMethodName;
+	private String injectionMethodDescriptor;
+	private Type[] targetArguments;
 
 	// static
 
@@ -37,10 +42,12 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 			MethodVisitor visitMethod, EngineXMethodMetadata method) {
 
 		super(Opcodes.ASM5, visitMethod, access, name, desc);
+		this.targetMethodName = name;
 		this.classVisitor = fieldList;
 		this.descriptor = desc;
 		Method targetMethod = new Method("dontcare", desc);
 		this.targetReturnType = targetMethod.getReturnType();
+		this.targetArguments = targetMethod.getArgumentTypes();
 
 		this.injectedMethod = method;
 		this.targetMethodStatic = isStatic;
@@ -50,19 +57,25 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 				targetDescriptor);
 		injectionMethodArgumentTypes = enginexMethod.getArgumentTypes();
 		injectionMethodReturnTypes = enginexMethod.getReturnType();
-
+		injectionMethodDescriptor = enginexMethod.getDescriptor();
 		if (injectedMethod.getInjectLocation() != XLocation.EXIT) {
 			if (!injectionMethodReturnTypes.equals(Type.VOID_TYPE)) {
-				throw new RuntimeException(
-						"Only methods injected at EXIT can have a return type");
+				fatal(String
+						.format("The injected method has a non-empty return type. This is only allowed for methods injected in location XLocation.EXIT"));
+
 			}
 
 		} else {
 			if (!injectionMethodReturnTypes.equals(Type.VOID_TYPE)) {
 				if (targetReturnType.getSort() != injectionMethodReturnTypes
 						.getSort()) {
-					throw new RuntimeException(
-							"Return type of injected method and target method don't match!");
+					fatal(String
+							.format("Return type of injected method doesn't match the type %s of the target method %s in class %s.",
+									targetReturnType.getClassName(),
+									targetMethodName, EngineXNameUtil
+											.getExternalName(classVisitor
+													.getClassName())));
+
 				}
 			}
 
@@ -119,18 +132,46 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 		Type argument = injectionMethodArgumentTypes[pos];
 		if (callerArgumentPosition == -1) {
 			if (pos != 0)
-				throw new RuntimeException(
-						"@XReturn only possible on first parameter");
+				fatal("@XReturn is only allowed on the first parameter.");
 			if (injectedMethod.getInjectLocation() != XLocation.EXIT)
-				throw new RuntimeException(
-						"@XReturn only possible on inject location EXIT");
+				fatal("@XReturn is only allowed on inject location XLocation.EXIT");
 			if (injectionMethodReturnTypes.equals(Type.VOID_TYPE)) {
-				mv.visitInsn(Opcodes.DUP);
+				if (targetReturnType.getSize() == 1) {
+					mv.visitInsn(Opcodes.DUP);
+				} else {
+					mv.visitInsn(Opcodes.DUP2);
+				}
 			}
 		} else {
 			int localVarIndex = getLocalVariablePosition(callerArgumentPosition);
 
 			int code = argument.getOpcode(Opcodes.ILOAD);
+
+			if (localVarIndex > 0) /* not XThis */
+			{
+				if ((targetArguments[localVarIndex - 1]).getSort() != (argument
+						.getSort())) {
+					fatal(String
+							.format("Argument Type mismatch: target method parameter %d has type %s on method %s in class %s but injected into type %s",
+									localVarIndex,
+									targetArguments[localVarIndex - 1]
+											.toString(), targetMethodName,
+									EngineXNameUtil
+											.getExternalName(classVisitor
+													.getClassName()), argument
+											.getClassName()));
+				}
+			} else {
+				if (argument.getSort() != Type.OBJECT) {
+					fatal(String
+							.format("Argument Type mismatch: Tries to inject this in non-object parameter of type %s in method %s in class %s ",
+									argument.getClassName(), targetMethodName,
+									EngineXNameUtil
+											.getExternalName(classVisitor
+													.getClassName())));
+				}
+			}
+
 			mv.visitIntInsn(code, localVarIndex);
 		}
 	}
@@ -222,7 +263,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 
 	}
 
-	public void castToPrimitive(String objecttype, String conversionMethod,
+	private void castToPrimitive(String objecttype, String conversionMethod,
 			String descriptor) {
 		mv.visitTypeInsn(CHECKCAST, objecttype);
 		mv.visitMethodInsn(INVOKEVIRTUAL, objecttype, conversionMethod, "()"
@@ -236,9 +277,9 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 		Handle bootstrap = new Handle(Opcodes.H_INVOKESTATIC,
 				"de/schenk/enginex/helper/DynamicBinder", "bindEngineXMethods",
 				mt.toMethodDescriptorString());
-		JRLog.debug("Instrumenting "
+		JRLog.debug("Instrumentations is including call to class: "
 				+ injectedMethod.getClassMetadata().getExternalClassName()
-				+ " method:" + injectedMethod.getMethodName());
+				+ " method: " + injectedMethod.getMethodName());
 		mv.visitInvokeDynamicInsn(injectedMethod.getMethodName(),
 				injectedMethod.getDescriptor(), bootstrap, injectedMethod
 						.getClassMetadata().getExternalClassName(),
@@ -254,20 +295,39 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 			if (injectionSource == 0)
 				return 0;
 		} else {
-			if (injectionSource == 0)
-				throw new RuntimeException(
-						"@XThis or @XParam(n=0) not available on static methods.");
+			if (injectionSource == 0) {
+				String msg = String
+						.format("Cannot use @XThis or @XParam(n=0) on static method %s in class %s.",
+								targetMethodName, EngineXNameUtil
+										.getExternalName(classVisitor
+												.getClassName()));
+
+				fatal(msg);
+			}
 		}
 		Type[] targetArgumentTypes = m.getArgumentTypes();
 		for (int j = 0; j < injectionSource - 1; j++) {
 			if (j >= targetArgumentTypes.length) {
-				throw new RuntimeException("Invalid source indexs");
+				fatal(String
+						.format("There is no argument at position %d on method %s of class %s that can be injected with @Param.",
+								injectionSource, targetMethodName,
+								EngineXNameUtil.getExternalName(classVisitor
+										.getClassName())));
 			}
 			pos += targetArgumentTypes[j].getSize();
 
 		}
 
 		return pos;
+	}
+
+	private void fatal(String msg) {
+
+		NotificationUtil.sendProblemNotification(msg, EngineXNameUtil
+				.getExternalName(injectedMethod.getClassMetadata()
+						.getClassName()), injectedMethod.getMethodName(),
+				injectionMethodDescriptor);
+		throw new RuntimeException(msg);
 	}
 
 	private int getNullOperand(Type arguments) {

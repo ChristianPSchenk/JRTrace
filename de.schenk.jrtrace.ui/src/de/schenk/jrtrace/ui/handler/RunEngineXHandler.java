@@ -42,8 +42,7 @@ public class RunEngineXHandler extends AbstractHandler implements IHandler {
 					.getJRTraceDebugTargets();
 
 			for (JRTraceDebugTarget btarget : jrtraceTargets) {
-				InstallJRTraceJob job = new InstallJRTraceJob(
-						btarget.getJRTraceMachine(), jarFile);
+				InstallJRTraceJob job = new InstallJRTraceJob(btarget, jarFile);
 				job.schedule();
 			}
 			return true;

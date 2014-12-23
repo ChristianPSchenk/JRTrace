@@ -16,22 +16,34 @@ abstract public class ProgressReportingJob extends Job implements
 
 	private IProgressMonitor monitor;
 
-	private IJRTraceVM machine;
+	private JRTraceDebugTarget machine;
 
-	public ProgressReportingJob(String string, IJRTraceVM machine2) {
+	public ProgressReportingJob(String string, JRTraceDebugTarget btarget) {
 		super(string);
-		this.machine = machine2;
+		this.machine = btarget;
 	}
 
 	protected IJRTraceVM getMachine() {
+		return machine.getJRTraceMachine();
+	}
+
+	protected JRTraceDebugTarget getTarget() {
 		return machine;
 	}
 
 	@Override
 	final protected IStatus run(IProgressMonitor monitor) {
 		this.monitor = monitor;
-		machine.addClientListener(NotificationConstants.NOTIFY_PROGRESS, this);
-		return run();
+		IStatus result = null;
+		getMachine().addClientListener(NotificationConstants.NOTIFY_PROGRESS,
+				this);
+		try {
+			result = run();
+		} finally {
+			getMachine().removeClientListener(
+					NotificationConstants.NOTIFY_PROGRESS, this);
+		}
+		return result;
 
 	}
 
@@ -46,7 +58,7 @@ abstract public class ProgressReportingJob extends Job implements
 		Integer total = (Integer) a.getNewValue();
 
 		if (monitor.isCanceled()) {
-			machine.abort();
+			getMachine().abort();
 		}
 		if (current == 0) {
 			monitor.beginTask(a.getMessage(), total);

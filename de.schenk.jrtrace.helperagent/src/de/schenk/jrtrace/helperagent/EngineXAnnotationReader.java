@@ -74,9 +74,7 @@ public class EngineXAnnotationReader {
 				methodmd.addInjection(parameter, 0);
 			}
 			if (Type.getType(XReturn.class).equals(Type.getType(desc))) {
-				if (parameter != 0)
-					throw new RuntimeException(
-							"@XReturn allowed on parameter 1 only!");
+
 				methodmd.addInjection(parameter, -1);
 			}
 			boolean injectField = Type.getType(XField.class).equals(

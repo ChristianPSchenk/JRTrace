@@ -25,6 +25,7 @@ import org.eclipse.debug.core.model.IThread;
 import org.eclipse.swt.widgets.Display;
 
 import de.schenk.jrtrace.service.IJRTraceVM;
+import de.schenk.jrtrace.ui.markers.JRTraceMarkerManager;
 import de.schenk.jrtrace.ui.util.JarUtil;
 
 public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
@@ -38,14 +39,18 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 	private boolean isTerminated = false;
 	private JRTraceConsoleConnector JRTraceConsole;
 	IProcess process;
+	private JRTraceMarkerManager markerManager;
 
 	public JRTraceDebugTarget(IJRTraceVM vm, ILaunch launch,
 			final IProject theProject, boolean uploadHelperOnConnect) {
 		super(null);
 		this.launch = launch;
+
 		machine = vm;
 		process = new JRTraceProcess(this);
 		createConsole();
+
+		markerManager = new JRTraceMarkerManager(this);
 
 		if (theProject != null) {
 			if (uploadHelperOnConnect) {
@@ -61,8 +66,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 				});
 
-				Job installEngineXJob = new InstallJRTraceJob(machine,
-						jarFile[0]);
+				Job installEngineXJob = new InstallJRTraceJob(this, jarFile[0]);
 				installEngineXJob.schedule();
 
 			}
@@ -169,7 +173,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 	@Override
 	public void disconnect() throws DebugException {
 
-		DetachJRTraceJob job = new DetachJRTraceJob(machine);
+		DetachJRTraceJob job = new DetachJRTraceJob(this);
 		job.schedule();
 
 		while (true)
@@ -182,7 +186,13 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 		JRTraceConsole.stop();
 
+		if (markerManager != null) {
+			markerManager.close();
+			markerManager = null;
+		}
+
 		isDisconnected = true;
+
 		fireEvent(new DebugEvent(this, DebugEvent.CHANGE));
 	}
 
@@ -275,6 +285,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 	}
 
 	public void installEngineX(File jarFile) {
+		markerManager.clearAllMarkers();
 		machine.installEngineXClass(jarFile.getAbsolutePath());
 
 	}

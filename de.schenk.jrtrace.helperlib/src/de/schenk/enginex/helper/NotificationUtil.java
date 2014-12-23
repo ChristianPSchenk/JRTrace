@@ -42,4 +42,13 @@ public class NotificationUtil {
 
 		}
 	}
+
+	public static void sendProblemNotification(String msg, String className,
+			String methodName, String methodSignature) {
+		Notification not = new AttributeChangeNotification(
+				NotificationUtil.getJRTraceObjectName(), sequenceNumber++,
+				System.nanoTime(), msg, methodSignature,
+				NotificationConstants.NOTIFY_PROBLEM, className, methodName);
+		sendNotification(not);
+	}
 }

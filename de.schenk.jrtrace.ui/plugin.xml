@@ -289,5 +289,13 @@
          </enablement>
       </consolePatternMatchListener>
       </extension>
+ <extension
+       id="com.schenk.jrtrace.core.problemmarker"
+       name="JRTraceProblemMarker"
+       point="org.eclipse.core.resources.markers">
+    <super
+          type="org.eclipse.core.resources.problemmarker">
+    </super>
+ </extension>
 
 </plugin>

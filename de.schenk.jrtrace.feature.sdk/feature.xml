@@ -3,6 +3,7 @@
       id="de.schenk.jrtrace.feature.sdk"
       label="JRTrace SDK Feature"
       version="0.2.0.qualifier"
+      provider-name="Christian Schenk"
       plugin="de.schenk.jrtrace.ui">
 
    <description url="https://github.com/ChristianPSchenk/JRTrace">
@@ -47,6 +48,20 @@ limitations under the License.
    <includes
          id="de.schenk.jrtrace.feature.source"
          version="0.0.0"/>
+
+   <requires>
+      <import plugin="de.schenk.jrtrace.helperagent"/>
+      <import plugin="de.schenk.jrtrace.service.enginex.targets"/>
+      <import plugin="de.schenk.jrtrace.helperlib"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.junit"/>
+      <import plugin="de.schenk.jrtrace.service"/>
+      <import plugin="de.schenk.jrtrace.ui"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="de.schenk.toolsjar"/>
+   </requires>
 
    <plugin
          id="de.schenk.jrtrace.service.enginex.targets"

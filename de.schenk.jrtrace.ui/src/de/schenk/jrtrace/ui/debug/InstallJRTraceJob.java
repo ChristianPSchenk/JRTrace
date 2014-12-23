@@ -5,21 +5,19 @@ import java.io.File;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
-import de.schenk.jrtrace.service.IJRTraceVM;
-
 public class InstallJRTraceJob extends ProgressReportingJob {
 
 	private File jarFile;
 
-	public InstallJRTraceJob(IJRTraceVM machine, File jarFile) {
-		super("Installing JRTrace Classes", machine);
+	public InstallJRTraceJob(JRTraceDebugTarget btarget, File jarFile) {
+		super("Installing JRTrace Classes", btarget);
 
 		this.jarFile = jarFile;
 
 	}
 
 	protected IStatus run() {
-		getMachine().installEngineXClass(jarFile.getAbsolutePath());
+		getTarget().installEngineX(jarFile);
 		return Status.OK_STATUS;
 	}
 
