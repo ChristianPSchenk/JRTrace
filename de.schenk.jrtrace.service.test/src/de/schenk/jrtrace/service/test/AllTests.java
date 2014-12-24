@@ -10,6 +10,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import de.schenk.jrtrace.enginex.testscripts.EngineXAnnotationReaderTest;
 import de.schenk.jrtrace.enginex.testscripts.EngineXDetailsTest;
 import de.schenk.jrtrace.enginex.testscripts.EngineXLifeCycleTest;
+import de.schenk.jrtrace.helperagent.TypeCheckUtilTest;
 import de.schenk.jrtrace.helperlib.tests.InspectUtilTest;
 import de.schenk.jrtrace.service.JRTraceConnectToLaunchedAgentTest;
 import de.schenk.jrtrace.service.JRTraceControllerTest;
@@ -19,7 +20,7 @@ import de.schenk.jrtrace.service.test.utils.JavaUtilTest;
 @SuiteClasses({ JRTraceConnectToLaunchedAgentTest.class,
 		EngineXAnnotationReaderTest.class, EngineXLifeCycleTest.class,
 		JRTraceControllerTest.class, JavaUtilTest.class, InspectUtilTest.class,
-		EngineXDetailsTest.class })
+		EngineXDetailsTest.class, TypeCheckUtilTest.class })
 public class AllTests {
 
 }

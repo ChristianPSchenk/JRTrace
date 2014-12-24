@@ -11,6 +11,7 @@ import de.schenk.objectweb.asm.FieldVisitor;
 import de.schenk.objectweb.asm.MethodVisitor;
 import de.schenk.objectweb.asm.Opcodes;
 import de.schenk.objectweb.asm.addons.ClassWriterForClassLoader;
+import de.schenk.objectweb.asm.addons.CommonSuperClassUtil;
 import de.schenk.objectweb.asm.commons.JSRInlinerAdapter;
 
 public class EngineXClassVisitor extends ClassVisitor {
@@ -18,15 +19,16 @@ public class EngineXClassVisitor extends ClassVisitor {
 	private EngineXMetadata metadata;
 	private FieldList fieldList = new FieldList();
 	private String className;
-	private Class<?> superClass;
-	private ClassWriterForClassLoader classWriter;
 
-	public EngineXClassVisitor(ClassWriterForClassLoader classWriter, int api,
-			EngineXMetadata metadata, Class<?> superClass) {
+	private CommonSuperClassUtil superClassUtil;
+
+	public EngineXClassVisitor(CommonSuperClassUtil superClassUtil,
+			ClassWriterForClassLoader classWriter, int api,
+			EngineXMetadata metadata) {
 		super(Opcodes.ASM5, classWriter);
-		this.classWriter = classWriter;
+		this.superClassUtil = superClassUtil;
+
 		this.metadata = metadata;
-		this.superClass = superClass;
 
 	}
 
@@ -42,7 +44,7 @@ public class EngineXClassVisitor extends ClassVisitor {
 	public void visit(int version, int access, String name, String signature,
 			String superName, String[] interfaces) {
 		this.className = name;
-		classWriter.setSuperInformation(superName);
+
 		super.visit(Opcodes.V1_7, access, name, signature, superName,
 				interfaces);
 	}
@@ -74,8 +76,8 @@ public class EngineXClassVisitor extends ClassVisitor {
 		return className;
 	}
 
-	public Class<?> getSuperClass() {
-		return superClass;
+	public CommonSuperClassUtil getCommonSuperClassUtil() {
+		return this.superClassUtil;
 	}
 
 }

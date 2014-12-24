@@ -24,5 +24,6 @@ public class Test8Script {
 			throw new RuntimeException("bad double");
 		if (!c.equals("abc"))
 			throw new RuntimeException("bad string");
+		Test8.success = true;
 	}
 }

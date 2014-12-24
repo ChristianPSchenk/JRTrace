@@ -194,6 +194,7 @@ public class EngineXDetailsTest {
 		} catch (RuntimeException c) {
 			msg = c.getMessage();
 		}
+		assertTrue(Test8.success);
 		assertEquals("", msg);
 	}
 

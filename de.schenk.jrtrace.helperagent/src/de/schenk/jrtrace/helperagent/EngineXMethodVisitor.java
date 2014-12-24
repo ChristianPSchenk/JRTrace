@@ -18,6 +18,7 @@ import de.schenk.objectweb.asm.Handle;
 import de.schenk.objectweb.asm.MethodVisitor;
 import de.schenk.objectweb.asm.Opcodes;
 import de.schenk.objectweb.asm.Type;
+import de.schenk.objectweb.asm.addons.TypeCheckUtil;
 import de.schenk.objectweb.asm.commons.AdviceAdapter;
 import de.schenk.objectweb.asm.commons.Method;
 
@@ -67,8 +68,12 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 
 		} else {
 			if (!injectionMethodReturnTypes.equals(Type.VOID_TYPE)) {
-				if (targetReturnType.getSort() != injectionMethodReturnTypes
-						.getSort()) {
+
+				if (!TypeCheckUtil.isAssignable(injectionMethodReturnTypes,
+						targetReturnType,
+						classVisitor.getCommonSuperClassUtil()))
+
+				{
 					fatal(String
 							.format("Return type of injected method doesn't match the type %s of the target method %s in class %s.",
 									targetReturnType.getClassName(),
@@ -149,12 +154,13 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 
 			if (localVarIndex > 0) /* not XThis */
 			{
-				if ((targetArguments[localVarIndex - 1]).getSort() != (argument
-						.getSort())) {
+				if (!TypeCheckUtil.isAssignable(
+						targetArguments[callerArgumentPosition - 1], argument,
+						classVisitor.getCommonSuperClassUtil())) {
 					fatal(String
 							.format("Argument Type mismatch: target method parameter %d has type %s on method %s in class %s but injected into type %s",
-									localVarIndex,
-									targetArguments[localVarIndex - 1]
+									callerArgumentPosition,
+									targetArguments[callerArgumentPosition - 1]
 											.toString(), targetMethodName,
 									EngineXNameUtil
 											.getExternalName(classVisitor
@@ -162,10 +168,14 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 											.getClassName()));
 				}
 			} else {
-				if (argument.getSort() != Type.OBJECT) {
+				Type instrumentedType = Type.getType("L"
+						+ classVisitor.getClassName() + ";");
+				if (!TypeCheckUtil.isAssignable(instrumentedType, argument,
+						classVisitor.getCommonSuperClassUtil())) {
 					fatal(String
-							.format("Argument Type mismatch: Tries to inject this in non-object parameter of type %s in method %s in class %s ",
-									argument.getClassName(), targetMethodName,
+							.format("Argument Type mismatch: Tries to inject using XThis (type: %s) in parameter of type %s in method %s in class %s ",
+									instrumentedType.getClassName(), argument
+											.getClassName(), targetMethodName,
 									EngineXNameUtil
 											.getExternalName(classVisitor
 													.getClassName())));
@@ -182,20 +192,23 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 		// throw new RuntimeException("The field " + injectionSource
 		// + " could not be found in this class.");
 		// }
-		String desc = field.getDescriptor();
-		Type fieldType = Type.getType(desc);
-		if (fieldType.getSort() != injectionMethodArgumentTypes[pos].getSort()) {
-			fatal(String
-					.format("The type of the field "
-							+ injectionSource
-							+ " of the targetclass "
-							+ EngineXNameUtil.getExternalName(classVisitor
-									.getClassName())
-							+ " doesn't match the type of the argument %d of the injected method and cannot be injected with XField.",
-							pos));
-		}
 
 		if (field != null) {
+			String desc = field.getDescriptor();
+			Type fieldType = Type.getType(desc);
+			if (!TypeCheckUtil.isAssignable(fieldType,
+					injectionMethodArgumentTypes[pos],
+					classVisitor.getCommonSuperClassUtil())) {
+				fatal(String
+						.format("The type of the field "
+								+ injectionSource
+								+ " of the targetclass "
+								+ EngineXNameUtil.getExternalName(classVisitor
+										.getClassName())
+								+ " doesn't match the type of the argument %d of the injected method and cannot be injected with XField.",
+								pos));
+			}
+
 			int opCode = GETSTATIC;
 
 			if (!field.isStatic()) {

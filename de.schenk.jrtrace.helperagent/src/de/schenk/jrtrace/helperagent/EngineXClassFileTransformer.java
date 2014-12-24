@@ -20,6 +20,7 @@ import de.schenk.objectweb.asm.ClassWriter;
 import de.schenk.objectweb.asm.Opcodes;
 import de.schenk.objectweb.asm.Type;
 import de.schenk.objectweb.asm.addons.ClassWriterForClassLoader;
+import de.schenk.objectweb.asm.addons.CommonSuperClassUtil;
 
 public class EngineXClassFileTransformer implements ClassFileTransformer {
 
@@ -97,8 +98,7 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 			if (JRLog.getLogLevel() == JRLog.DEBUG && transformed) {
 				if (className != null) {
 					String tmpdir = System.getProperty("java.io.tmpdir");
-					JRLog.debug("Writing classbytes of " + className
-							+ " to tempdir " + tmpdir);
+
 					FileOutputStream fileOutputStream = new FileOutputStream(
 							tmpdir + "\\" + className.replace('/', '_')
 									+ "before.class");
@@ -110,7 +110,8 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 					fileOutputStream2.write(classBytes);
 					fileOutputStream2.close();
 
-					JRLog.debug("Done writing classbytes for " + className);
+					JRLog.debug("Writing bytes before/after transformation of class "
+							+ className + " to directory " + tmpdir);
 				}
 
 			}
@@ -134,12 +135,13 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 			String targetClassName, EngineXMetadata metadata,
 			byte[] classBytes, Class<?> superClass) {
 		ClassReader classReader = new ClassReader(classBytes);
-
+		CommonSuperClassUtil superClassUtil = new CommonSuperClassUtil(
+				classLoader, targetClassName, Type.getType(superClass)
+						.getInternalName());
 		ClassWriterForClassLoader classWriter = new ClassWriterForClassLoader(
-				classLoader, targetClassName, classReader,
-				ClassWriter.COMPUTE_FRAMES);
-		ClassVisitor classVisitor = new EngineXClassVisitor(classWriter,
-				Opcodes.ASM5, metadata, superClass);
+				classReader, superClassUtil, ClassWriter.COMPUTE_FRAMES);
+		ClassVisitor classVisitor = new EngineXClassVisitor(superClassUtil,
+				classWriter, Opcodes.ASM5, metadata);
 		classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES);
 		return classWriter.toByteArray();
 
