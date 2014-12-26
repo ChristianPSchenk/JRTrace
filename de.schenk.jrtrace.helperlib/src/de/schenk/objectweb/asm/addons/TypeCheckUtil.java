@@ -20,27 +20,48 @@ public class TypeCheckUtil {
 	 */
 	public static boolean isAssignable(Type input, Type output,
 			CommonSuperClassUtil util) {
+
+		boolean arrayToObjectAssignment = (input.getSort() == Type.ARRAY
+				&& output.getSort() == Type.OBJECT && output.equals(Type
+				.getType(Object.class)));
+		if (arrayToObjectAssignment)
+			return true;
+
 		boolean basicCheck = ((input).getSort()) == (output.getSort());
+
 		if (!basicCheck)
 			return false;
 		if (input.getSort() == Type.ARRAY) {
-			if (input.getDimensions() != output.getDimensions()) {
-				return false;
+			boolean outputIsObject = output.getElementType().equals(
+					Type.getType(Object.class));
+			if (!outputIsObject) {
+				if (input.getDimensions() != output.getDimensions()) {
+					return false;
+				}
+			} else {
+				if (output.getDimensions() > input.getDimensions()) {
+					return false;
+				}
+				return true;
 			}
 
-			input = input.getElementType();
-			output = output.getElementType();
+			return isAssignable(input.getElementType(),
+					output.getElementType(), util);
 		}
 		if (input.equals(output)) {
 			return true;
 		}
 
-		String result = util.getCommonSuperClass(input.getInternalName(),
-				output.getInternalName());
-		if (output.getInternalName().equals(result))
-			return true;
+		return util.isObjectAssignable(output, input);
 
-		return false;
+	}
+
+	public static boolean isInterface(Type t,
+			CommonSuperClassUtil superClassUtil) {
+
+		boolean is = superClassUtil.getIsInterface(t.getInternalName());
+
+		return is;
 
 	}
 }

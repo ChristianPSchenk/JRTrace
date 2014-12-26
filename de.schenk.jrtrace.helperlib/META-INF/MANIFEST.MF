@@ -14,7 +14,8 @@ Export-Package: de.schenk.enginex.helper,
  de.schenk.jrtrace.helperlib,
  de.schenk.objectweb.asm,
  de.schenk.objectweb.asm.addons,
- de.schenk.objectweb.asm.commons
+ de.schenk.objectweb.asm.commons,
+ de.schenk.objectweb.asm.util
 Bundle-ClassPath: .,
  groovylib/groovy-all-2.3.6-indy.jar
 Import-Package: com.sun.xml.internal.xsom.impl.scd,

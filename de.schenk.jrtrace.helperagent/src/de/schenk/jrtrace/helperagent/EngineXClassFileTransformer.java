@@ -5,6 +5,8 @@ package de.schenk.jrtrace.helperagent;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
@@ -21,6 +23,7 @@ import de.schenk.objectweb.asm.Opcodes;
 import de.schenk.objectweb.asm.Type;
 import de.schenk.objectweb.asm.addons.ClassWriterForClassLoader;
 import de.schenk.objectweb.asm.addons.CommonSuperClassUtil;
+import de.schenk.objectweb.asm.addons.ExtendedCheckClassAdapter;
 
 public class EngineXClassFileTransformer implements ClassFileTransformer {
 
@@ -73,7 +76,7 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 
 						byte[] returnBytes = applyEngineXClasses(classLoader,
 								className, entry, targetclass, classBytes,
-								superClass);
+								superClass, interfaces);
 						if (returnBytes != null) {
 							transformed = true;
 							classBytes = returnBytes;
@@ -124,25 +127,57 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 
 	private byte[] applyEngineXClasses(ClassLoader classLoader,
 			String targetClassName, EngineXMetadata entry, String targetclass,
-			byte[] classBytes, Class<?> superClass) {
+			byte[] classBytes, Class<?> superClass, Class<?>[] interfaces) {
 
 		return applyEngineXMethods(classLoader, targetClassName, entry,
-				classBytes, superClass);
+				classBytes, superClass, interfaces);
 
 	}
 
 	private byte[] applyEngineXMethods(ClassLoader classLoader,
 			String targetClassName, EngineXMetadata metadata,
-			byte[] classBytes, Class<?> superClass) {
+			byte[] classBytes, Class<?> superClass, Class<?>[] interfaces) {
 		ClassReader classReader = new ClassReader(classBytes);
+
+		Type[] theInterfaceTypes = new Type[interfaces.length];
+		for (int i = 0; i < interfaces.length; i++) {
+			theInterfaceTypes[i] = Type.getType(interfaces[i]);
+		}
 		CommonSuperClassUtil superClassUtil = new CommonSuperClassUtil(
 				classLoader, targetClassName, Type.getType(superClass)
-						.getInternalName());
-		ClassWriterForClassLoader classWriter = new ClassWriterForClassLoader(
-				classReader, superClassUtil, ClassWriter.COMPUTE_FRAMES);
+						.getInternalName(), theInterfaceTypes);
+		ClassWriter classWriter = new ClassWriterForClassLoader(classReader,
+				superClassUtil, ClassWriter.COMPUTE_FRAMES);
+
+		ClassVisitor visitor = classWriter;
+
 		ClassVisitor classVisitor = new EngineXClassVisitor(superClassUtil,
-				classWriter, Opcodes.ASM5, metadata);
+				visitor, Opcodes.ASM5, metadata);
 		classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES);
+
+		/**
+		 * keeping this permanently disabled since the SimpleVerifier of ASM
+		 * still has some gaps
+		 * 
+		 */
+		boolean checkClasses = false;
+		if (checkClasses) {
+
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			ExtendedCheckClassAdapter
+					.verify(new ClassReader(classWriter.toByteArray()),
+							classLoader, pw);
+			String result = sw.getBuffer().toString();
+			if (!result.isEmpty()) {
+
+				throw new RuntimeException(
+						String.format(
+								"Verification failed for transformed bytecode of: %s\n%s",
+								targetClassName, result));
+			}
+		}
+
 		return classWriter.toByteArray();
 
 	}

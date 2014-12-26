@@ -13,8 +13,10 @@ Require-Bundle: org.eclipse.core.runtime,
  de.schenk.jrtrace.service.enginex.targets,
  de.schenk.jrtrace.helperlib,
  org.eclipse.ui,
- org.eclipse.ui.ide
+ org.eclipse.ui.ide,
+ org.eclipse.jdt.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Eclipse-BundleShape: dir
-Import-Package: com.sun.tools.classfile
+Import-Package: com.sun.tools.classfile,
+ org.eclipse.core.internal.resources

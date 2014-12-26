@@ -1,6 +1,6 @@
 /**
-* (c) 2014 by Christian Schenk
-**/
+ * (c) 2014 by Christian Schenk
+ **/
 package de.schenk.jrtrace.enginex.testclasses;
 
 import de.schenk.jrtrace.annotations.XClass;
@@ -13,8 +13,8 @@ public class Test10Script {
 
 	@XMethod(names = "test10", location = XLocation.EXIT)
 	public void testinstrumentation(@XReturn int value) {
-		if (value != 1234)
-			throw new RuntimeException("bad return value");
+		if (value == 1234)
+			throw new RuntimeException("good return value");
 
 	}
 }

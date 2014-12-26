@@ -152,7 +152,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 
 			int code = argument.getOpcode(Opcodes.ILOAD);
 
-			if (localVarIndex > 0) /* not XThis */
+			if (callerArgumentPosition > 0) /* not XThis */
 			{
 				if (!TypeCheckUtil.isAssignable(
 						targetArguments[callerArgumentPosition - 1], argument,

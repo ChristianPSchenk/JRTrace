@@ -28,7 +28,7 @@ public class JRTraceJavaSearch {
 	 *            the progress monitor
 	 */
 	public SearchMatch searchClass(String className, IProgressMonitor monitor) {
-		long a = System.nanoTime();
+
 		SearchPattern classSearchPattern = SearchPattern.createPattern(
 				className, IJavaSearchConstants.CLASS,
 				IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
@@ -53,9 +53,6 @@ public class JRTraceJavaSearch {
 		} catch (CoreException e) {
 			throw new RuntimeException(e);
 		}
-		long b = System.nanoTime();
-		System.out.println(String.format("search took %d ms",
-				(b - a) / 1000 / 1000));
 
 		return result[0];
 

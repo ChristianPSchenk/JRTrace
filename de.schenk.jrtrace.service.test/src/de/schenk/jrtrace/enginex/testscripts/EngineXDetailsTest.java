@@ -13,6 +13,8 @@ import java.net.URL;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.actions.OpenResourceAction;
 import org.junit.After;
 import org.junit.Before;
@@ -208,6 +210,7 @@ public class EngineXDetailsTest {
 		} catch (RuntimeException c) {
 			msg = c.getMessage();
 		}
+		assertEquals(true, Test9.success);
 		assertEquals("", msg);
 	}
 
@@ -222,7 +225,7 @@ public class EngineXDetailsTest {
 		} catch (RuntimeException c) {
 			msg = c.getMessage();
 		}
-		assertEquals("", msg);
+		assertEquals("good return value", msg);
 	}
 
 	@Test
@@ -312,6 +315,8 @@ public class EngineXDetailsTest {
 		// the OpenResourceAction.class. (This uses the VerifyErrorScript rule
 		// which injects in all IResourceChangeListeners)
 		Class<?> c = OpenResourceAction.class;
+		Class<?> c2 = Display.class;
+		Class<?> jsv = JavaSourceViewerConfiguration.class;
 		assertTrue(true);
 	}
 

@@ -13,19 +13,24 @@ import java.util.Set;
 
 import de.schenk.objectweb.asm.ClassReader;
 import de.schenk.objectweb.asm.Opcodes;
+import de.schenk.objectweb.asm.Type;
 
 public class CommonSuperClassUtil {
 
 	private ClassLoader classLoader;
 	private String targetClassName;
-	private String superClassName;
+	private String superOfTargetClass;
+	private Type[] interfacesOfTargetClass;
 
 	/**
+	 * Simplified constructor. Slightly less efficient. If you know the
+	 * currently instrumented class and its superclass use the other
+	 * constructor.
 	 * 
 	 * @param classLoader
 	 */
 	public CommonSuperClassUtil(ClassLoader classLoader) {
-		this(classLoader, "Ljava/lang/Object;", null);
+		this(classLoader, "java/lang/Object", null, new Type[0]);
 	}
 
 	/**
@@ -37,16 +42,21 @@ public class CommonSuperClassUtil {
 	 * @param classLoader
 	 *            the classloader to load the classes in the hierarchy
 	 * @param targetClassName
-	 *            the currently instrumented class
+	 *            the currently instrumented class (internal name:
+	 *            "java/lang/Object")
 	 * @param superClassName
-	 *            the superclass of the currently instrumented class
+	 *            the superclass of the currently instrumented class (internal
+	 *            name: "java/lang/Object")
+	 * @param theInterfaceTypes
 	 */
 	public CommonSuperClassUtil(ClassLoader classLoader,
-			String targetClassName, String superClassName) {
+			String targetClassName, String superClassName,
+			Type[] theInterfaceTypes) {
 
 		this.targetClassName = targetClassName;
-		this.superClassName = superClassName;
+		this.superOfTargetClass = superClassName;
 		this.classLoader = classLoader;
+		this.interfacesOfTargetClass = theInterfaceTypes;
 	}
 
 	/**
@@ -80,23 +90,9 @@ public class CommonSuperClassUtil {
 	public String getCommonSuperClass(String type1, String type2) {
 
 		Class<?> type1Class, type2Class;
-		type1Class = null;
-		type2Class = null;
 
-		try {
-
-			type1Class = Class.forName(type1.replace('/', '.'), false,
-					classLoader);
-
-		} catch (Throwable e) {
-			// don't do anything, we will handle that later
-		}
-		try {
-			type2Class = Class.forName(type2.replace('/', '.'), false,
-					classLoader);
-		} catch (Throwable e) {
-			// don't do anything we will handle that later.
-		}
+		type1Class = tryLoadClass(type1);
+		type2Class = tryLoadClass(type2);
 
 		if (type1Class == null || type2Class == null) {
 			if (type2Class == null) {
@@ -146,6 +142,26 @@ public class CommonSuperClassUtil {
 	}
 
 	/**
+	 * 
+	 * @param type1
+	 *            internal name of the object to load
+	 * @return null: if the object is not loadable, the class else.
+	 */
+	private Class<?> tryLoadClass(String type1) {
+		Class<?> type1Class;
+		type1Class = null;
+		try {
+
+			type1Class = Class.forName(type1.replace('/', '.'), false,
+					classLoader);
+
+		} catch (Throwable e) {
+			// don't do anything, we will handle that later
+		}
+		return type1Class;
+	}
+
+	/**
 	 * recursively walks up the supertype hierarchy stopping only at the
 	 * instrumented type and returns everything in a hashset
 	 * 
@@ -166,9 +182,10 @@ public class CommonSuperClassUtil {
 
 	private String getSuperClassName(String type1) {
 		if (type1.equals(targetClassName))
-			type1 = superClassName;
+			type1 = superOfTargetClass;
 		else
-			type1 = readSuperType(type1);
+			type1 = getSuperAndInterfacesFromBytes(type1).getSuperClass();
+
 		return type1;
 	}
 
@@ -179,7 +196,14 @@ public class CommonSuperClassUtil {
 	 * @param theType
 	 * @return the sueprtype of theType
 	 */
-	private String readSuperType(String theType) {
+	public SuperClassExtractVisitor getSuperAndInterfacesFromBytes(
+			String theType) {
+		SuperClassExtractVisitor readSuperTypeVisitor = readClassFromBytes(theType);
+
+		return readSuperTypeVisitor;
+	}
+
+	private SuperClassExtractVisitor readClassFromBytes(String theType) {
 		SuperClassExtractVisitor readSuperTypeVisitor = null;
 		InputStream stream = null;
 		try {
@@ -187,17 +211,19 @@ public class CommonSuperClassUtil {
 
 			ClassReader reader = new ClassReader(stream);
 
-			readSuperTypeVisitor = new SuperClassExtractVisitor(Opcodes.ASM5,
-					theType);
+			readSuperTypeVisitor = new SuperClassExtractVisitor(Opcodes.ASM5);
+
 			reader.accept(readSuperTypeVisitor, 0);
+			if (!theType.equals(readSuperTypeVisitor.getType())) {
+				throw new RuntimeException("That was unexpected");
+			}
 
 			stream.close();
 		} catch (IOException e) {
-			throw new RuntimeException("Failed reading classbyes for "
+			throw new RuntimeException("Failed reading classbytes for "
 					+ theType);
 		}
-
-		return readSuperTypeVisitor.getSuperClass();
+		return readSuperTypeVisitor;
 	}
 
 	private InputStream getClassBytesStream(String theClassName) {
@@ -210,6 +236,7 @@ public class CommonSuperClassUtil {
 					.getSystemResourceAsStream(convertInteralNameToResourceName(theClassName));
 
 		}
+
 		return stream;
 	}
 
@@ -217,6 +244,82 @@ public class CommonSuperClassUtil {
 		String result = type1;
 
 		return result + ".class";
+	}
+
+	public boolean getIsInterface(String internalName) {
+
+		Class<?> theClass = tryLoadClass(internalName);
+		if (theClass != null)
+			return theClass.isInterface();
+		SuperClassExtractVisitor readSuperTypeVisitor = readClassFromBytes(internalName);
+
+		return readSuperTypeVisitor.getIsInterface();
+	}
+
+	/**
+	 * Checks if the input is the output element or an of the interfaces or
+	 * supertypes of output.
+	 *
+	 * @param output
+	 *            an object internal name
+	 * @param input
+	 *            an object internal name
+	 * 
+	 * @return true, if yes
+	 */
+	public boolean isObjectAssignable(Type output, Type input) {
+		/* everything can be assigned to an object */
+		if (output.equals(Type.getType(Object.class)))
+
+			return true;
+
+		if (input.equals(output))
+			return true;
+		Class<?> inputClass = tryLoadClass(input.getInternalName());
+		Type inputSuperClassType = null;
+		Type[] theInputInterfaces = new Type[0];
+
+		if (input.getInternalName().equals(this.targetClassName)) {
+			inputSuperClassType = superOfTargetClass == null ? null : Type
+					.getType("L" + this.superOfTargetClass + ";");
+			theInputInterfaces = this.interfacesOfTargetClass;
+
+		} else if (inputClass != null) {
+
+			if (inputClass.getSuperclass() != null) {
+				inputSuperClassType = Type.getType(inputClass.getSuperclass());
+
+			}
+
+			else
+				inputSuperClassType = null;
+
+			Class<?>[] ifaces = inputClass.getInterfaces();
+			theInputInterfaces = new Type[ifaces.length];
+			for (int i = 0; i < ifaces.length; i++) {
+				theInputInterfaces[i] = Type.getType(ifaces[i]);
+			}
+		}
+
+		else {
+
+			SuperClassExtractVisitor superAndInterfaces = getSuperAndInterfacesFromBytes(input
+					.getInternalName());
+			inputSuperClassType = superAndInterfaces.getSuperClassAsType();
+			theInputInterfaces = superAndInterfaces.getInterfacesAsTypes();
+
+		}
+
+		if (inputSuperClassType != null
+				&& isObjectAssignable(output, inputSuperClassType))
+			return true;
+		for (Type oneInputInterface : theInputInterfaces) {
+			if (output.equals(oneInputInterface))
+				return true;
+			if (isObjectAssignable(output, oneInputInterface))
+				return true;
+		}
+		return false;
 	}
 
 }

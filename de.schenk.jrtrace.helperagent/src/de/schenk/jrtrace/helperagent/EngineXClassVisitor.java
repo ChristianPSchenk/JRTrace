@@ -10,7 +10,6 @@ import de.schenk.objectweb.asm.ClassVisitor;
 import de.schenk.objectweb.asm.FieldVisitor;
 import de.schenk.objectweb.asm.MethodVisitor;
 import de.schenk.objectweb.asm.Opcodes;
-import de.schenk.objectweb.asm.addons.ClassWriterForClassLoader;
 import de.schenk.objectweb.asm.addons.CommonSuperClassUtil;
 import de.schenk.objectweb.asm.commons.JSRInlinerAdapter;
 
@@ -23,8 +22,7 @@ public class EngineXClassVisitor extends ClassVisitor {
 	private CommonSuperClassUtil superClassUtil;
 
 	public EngineXClassVisitor(CommonSuperClassUtil superClassUtil,
-			ClassWriterForClassLoader classWriter, int api,
-			EngineXMetadata metadata) {
+			ClassVisitor classWriter, int api, EngineXMetadata metadata) {
 		super(Opcodes.ASM5, classWriter);
 		this.superClassUtil = superClassUtil;
 
