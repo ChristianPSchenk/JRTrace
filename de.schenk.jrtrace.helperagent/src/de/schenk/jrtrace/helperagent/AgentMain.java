@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.jar.JarFile;
 
 import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.NotCompliantMBeanException;
@@ -74,12 +75,23 @@ public class AgentMain {
 
 	}
 
-	static JMXConnectorServer cs = null;
-	private static Registry mxbeanRegistry = null;
+	private MBeanServer mbs = null;
+	JMXConnectorServer cs = null;
+	private Registry mxbeanRegistry = null;
 
 	synchronized private void stopMXBeanServer() {
 
 		try {
+			mxbeanName = NotificationUtil.getJRTraceObjectName();
+			jrtraceBean = new JRTraceMXBeanImpl(this);
+			if (!mbs.isRegistered(mxbeanName)) {
+				try {
+					mbs.unregisterMBean(mxbeanName);
+				} catch (MBeanRegistrationException | InstanceNotFoundException e) {
+					throw new RuntimeException(e);
+				}
+			}
+
 			mxbeanRegistry = null;
 			cs.stop();
 
@@ -115,7 +127,8 @@ public class AgentMain {
 
 			}
 
-			MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+			mbs = ManagementFactory.getPlatformMBeanServer();
+
 			JMXServiceURL url = new JMXServiceURL(
 					"service:jmx:rmi:///jndi/rmi://:" + port + "/jmxrmi");
 			cs = JMXConnectorServerFactory.newJMXConnectorServer(url,
