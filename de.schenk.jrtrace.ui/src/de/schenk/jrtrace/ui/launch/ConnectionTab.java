@@ -402,6 +402,9 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 		autoconnectButton.setEnabled(upload);
 		portText.setEnabled(!upload);
 		copyJavaParameterButton.setEnabled(!upload);
+		
+		boolean noProjectSelected = rulesProjectName.getText().isEmpty();
+		autouploadButton.setEnabled(!noProjectSelected);
 
 	}
 
@@ -473,8 +476,8 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 		configuration
 				.setAttribute(BM_PROJECT_IDENT, rulesProjectName.getText());
 		configuration.setAttribute(BM_VERBOSE, verboseButton.getSelection());
-		configuration.setAttribute(BM_AUTOUPLOAD,
-				autouploadButton.getSelection());
+		configuration.setAttribute(BM_AUTOUPLOAD,autouploadButton.isEnabled()?
+				autouploadButton.getSelection():false);
 		configuration.setAttribute(BM_AUTOCONNECT,
 				autoconnectButton.getSelection());
 		configuration.setAttribute(BM_DEBUG, debugButton.getSelection());

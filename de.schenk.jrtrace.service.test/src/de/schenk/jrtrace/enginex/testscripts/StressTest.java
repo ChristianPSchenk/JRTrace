@@ -1,9 +1,12 @@
 package de.schenk.jrtrace.enginex.testscripts;
 
-import static org.junit.Assert.fail;
-
 import org.junit.Test;
 
+/**
+ * 
+ * @author Christian Schenk
+ *
+ */
 public class StressTest {
 
 	@Test
@@ -19,7 +22,7 @@ public class StressTest {
 				details.verifyErrorTest();
 				details.after();
 			} catch (Exception e) {
-				fail("ops");
+				throw new RuntimeException(e);
 			}
 
 		}

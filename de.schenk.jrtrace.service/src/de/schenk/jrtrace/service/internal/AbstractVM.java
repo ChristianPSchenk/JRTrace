@@ -8,6 +8,7 @@ import java.util.Properties;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.JMX;
+import javax.management.ListenerNotFoundException;
 import javax.management.MBeanServerConnection;
 import javax.management.NotificationListener;
 import javax.management.ObjectName;
@@ -162,15 +163,34 @@ abstract public class AbstractVM implements IJRTraceVM {
 		throw new RuntimeException("Connect failed after 10 tries", e);
 	}
 
-	private boolean stopMXBeanClientConnection() {
+	private boolean stopMXBeanClientConnection(boolean disconnectOnly) {
 
+	  boolean result=true;
 		try {
 
+	        try {
+            mxbeanConnection.removeNotificationListener(NotificationUtil.getJRTraceObjectName(),
+                  mxbeanListener, null, null);
+          }
+          catch (InstanceNotFoundException e) {
+           lastException=e;
+           result=false;
+           
+          }
+	        
+	        
+          catch (ListenerNotFoundException e) {
+            throw new RuntimeException(e);
+          } finally
+          {
+            result=(result & stopSender(disconnectOnly));
 			jmxc.close();
+          }
 		} catch (IOException e) {
-			// do nothing
-			return false;
+			lastException=e;
+			result=false;
 		}
+	 
 		return true;
 	}
 
@@ -183,10 +203,10 @@ abstract public class AbstractVM implements IJRTraceVM {
 	 */
 	protected boolean stopConnection(boolean disconnectOnly) {
 
-		boolean result1 = stopSender(disconnectOnly);
-		boolean result2 = stopMXBeanClientConnection();
+		
+		boolean result2 = stopMXBeanClientConnection(disconnectOnly);
 
-		return result1 & result2;
+		return result2;
 	}
 
 	@Override
