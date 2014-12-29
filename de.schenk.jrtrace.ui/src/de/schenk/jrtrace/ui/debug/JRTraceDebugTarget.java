@@ -265,18 +265,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 	}
 
-	/**
-	 * runs the supplied groovy script on the target
-	 * 
-	 * @param f
-	 *            the groovy script to run
-	 * @param classLoaderClass
-	 *            the class to use to determine the classloader for the script
-	 */
-	public void runGroovy(IFile f, String classLoaderClass) {
-
-		machine.runGroovy(f.getLocation().toOSString(), classLoaderClass);
-	}
+	
 
 	public void runJava(File jarFile, String theClassLoader, String className,
 			String methodName) {

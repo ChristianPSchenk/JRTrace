@@ -249,10 +249,7 @@ upload the project connected to the launch configuration and deploy it as JRTrac
 It is generally recommended to associate a project with a launch. This project can be used to
 store the classes that are related to the task at hand, e.g. tracing a specific functionality.
 
- <p>
- When using groovy scripts from e.g. the inspect command, a project relative path is required which always 
- uses the associated project as root.
- </p>
+
 
 
 <h3>JRTrace Commands</h3>
@@ -263,26 +260,6 @@ application. This will effectively remove all previously deployed JRTrace classe
 There is no restrictions on changes to the classes (e.g. including/removing static fields is always possible).
 
 </p>
-<h4>Execute a Groovy Script</h4>
-
-<p>The <img src="pics/run_groovy_16.gif"/>-menu/toolbar allows to run a groovy script on the target JVM. 
-It will be active only when selecting a <code>groovy</code> file.</p>
-<p>
-The Run Groovy-wizard will ask for a fully qualified classname to execute the script. This classname will be used
-to obtain the classloader for the script. If no classname is specified, the root classloader will be used. This allows access
-to java only. However when specifying a different classloader, the script will have access to all classes in the scope of this
-classloader. 
-</p>  
-<p>Example:</p>
-<pre>
-import org.eclipse.core.runtime.adaptor.EclipseStarter
-import org.osgi.framework.Bundle
-Bundle b=EclipseStarter.getSystemBundleContext().installBundle("file:/c:/temp/plugins/de.schenk.sample.handler_1.0.0.201410101949.jar");
-b.start()
-</pre>
-<p>The above groovy example will install and
-start the plugin referenced in <code>installBundle</code> (Use <code>org.osgi.framework.Bundle</code> for the class to obtain the classloader from).
-</p> 
 
  
 
@@ -316,10 +293,12 @@ inpect(Object o,int depth,String toStringClass, String excludeFields, boolean in
 <code>toStringClasses</code>: a comma separated list of classnames (not necessarily qualified). If encountering classes of this type, toString() is used on the value</br>
 <code>excludeFields</code>: a comma separated list of field names. Fields with these names will not be followed</br>
 <code>includeStatics</code>: will include static fields in the inspection</br>
-<code>detailFormatter</code>: use a groovy script to format a specific field. This argument
-has to be of the format 'fieldname=groovyscriptname.groovy[,fieldname2=groovyscriptname2.groovy]'.
-Whenever inspect encounters a field with the specified name, it will invoke the groovy script and pass the value of the field
-as argument (arg0).
+<code>detailFormatter</code>: use a custom formatter for specified fields. 
+This argument has to be of the format 'fieldname=methodname[,fieldname2=methodname2]'.
+Whenever inspect encounters a field with the specified name, it will invoke the method with the specified name on the current HelperLib object (and the type of the field as argument; 
+boxed: Integer instead of int) to
+get the formatted value. To use this feature, <code>HelperLib</code> has to be extended and the required detail formatter methods have to be added to the subclass.  
+
 
 </p>
 
@@ -336,49 +315,6 @@ setField(target,fieldname, value);
 <code>value</code>: the new value</br>
 
 
-<h4>groovy</h4>
-
-<p>
-
-The various <code>groovy</code> methods provide the option to run a groovy script in the scope of any classloader.  
-</p>
-<pre>groovy(String expression,Object arguments...)</pre>
-<p>
-The above simple syntax will use the classloader of the target class to execute the script. Effectively therefore the access to all classes from this scope is possible.
-
-</p>
-
-<p>
-All <code>groovy</code> methods exist in a second variant that takes a classloader as the first parameter. Using these gives the developer full control on the available classes. This is particularly
-important in J2EE or Osgi applications in which several 100 classloaders can exist.
-</p>
-
-
-Options to provide the classloader are either providing it yourself or just using <code>getClassLoader</code> to use the classloader of any class known by its fully qualified name.
-Note that if the same class was loaded by different classloaders, as of now, just the first one will be used. 
-</p>
-<pre>com.company.package.TheClass.class.getClassLoader()</pre>
-<pre>getClassLoader("fully.qualified.class.Name")</pre>
-
-<p>All groovy calls take up to 4 additional arguments for the scripts. Numbers sometimes need to be boxed in an object by using the helper function box: e.g. box(1) or box(5.5). The arguments are referenced 
-with variables <code>arg0</code> to </code>arg3</code>.</p>
-<pre>
-groovyScript([classloader,]filename,arg0,arg1,arg2,arg3);
-</pre>
-<p>
-<code>groovyScript</code> does the same as <code>groovy</code> but expects a project relative filename as first parameter.
-Using this it is possible to write arbitrary complex scripts, e.g.:
-</p>
-<pre>
-def test=new Test()
-return "yuhuu:"+test.call().toString()
-class Test 
-{
-static def x=5
-def call() { x=x+1; return x; }
-}
-</pre>
-<p>This example would provide a counter that counts the number of invocations.</p>
 
 
 <h2>Remarks on Techniques and Design</h2>

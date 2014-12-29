@@ -265,6 +265,8 @@ public class EngineXAnnotationReader {
 		MetadataClassVisitor mdcvisitor = new MetadataClassVisitor(md);
 		cr.accept(mdcvisitor, 0);
 
+		md.addBytes(classBytes);
+		
 		return md;
 
 	}

@@ -3,11 +3,8 @@
  **/
 package de.schenk.jrtrace.ui.launch;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -21,14 +18,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
-import de.schenk.jrtrace.helperlib.HelperLibConstants;
 import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.jdk.init.Activator;
 import de.schenk.jrtrace.service.ICancelable;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.JRTraceControllerService;
-import de.schenk.jrtrace.service.JarLocator;
 import de.schenk.jrtrace.service.internal.VMInfo;
 import de.schenk.jrtrace.ui.debug.JRTraceDebugTarget;
 
@@ -112,15 +107,14 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 
 		if (machine.attach(stopper)) {
 
-			if (prepareGroovy(machine, theProject)) {
-
+			
 				boolean uploadHelperOnConnect = launch.getLaunchConfiguration()
 						.getAttribute(ConnectionTab.BM_AUTOUPLOAD, false);
 				JRTraceDebugTarget dbt = new JRTraceDebugTarget(machine,
 						launch, theProject, uploadHelperOnConnect);
 
 				launch.addDebugTarget(dbt);
-			}
+			
 
 			return true;
 
@@ -325,24 +319,5 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 
 	}
 
-	private boolean prepareGroovy(IJRTraceVM machine, IProject theProject) {
-
-		String jar = null;
-		try {
-			jar = JarLocator.getGroovyLibJar();
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		Properties p = new Properties();
-		p.put(HelperLibConstants.DE_SCHENK_JRTRACE_GROOVYJAR, jar);
-		if (theProject != null) {
-			p.put(HelperLibConstants.DE_SCHENK_JRTRACE_PROJECTDIR, theProject
-					.getLocation().toOSString());
-		}
-		return machine.setSystemProperties(p);
-
-	}
 
 }

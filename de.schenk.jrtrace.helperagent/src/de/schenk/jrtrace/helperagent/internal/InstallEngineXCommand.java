@@ -97,7 +97,7 @@ public class InstallEngineXCommand {
 	public EngineXMetadata createMetadata(byte[] enginexclass) {
 		EngineXMetadata metadata = annotationReader
 				.getMetaInformation(enginexclass);
-		metadata.addBytes(enginexclass);
+		
 		return metadata;
 	}
 

@@ -61,16 +61,6 @@ public interface IJRTraceVM {
 	 */
 	boolean setSystemProperties(Properties props);
 
-	/**
-	 * Run a groovy script on the target machine
-	 * 
-	 * @param osString
-	 *            the absolute path of the file that holds the script
-	 * @param string
-	 *            the name of a class which will be used to get the classloader
-	 *            for the script
-	 */
-	void runGroovy(String osString, String string);
 
 	void runJava(File jarFile, String theClassLoader, String className,
 			String methodName);

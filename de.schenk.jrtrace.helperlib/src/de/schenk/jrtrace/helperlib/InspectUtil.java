@@ -17,21 +17,23 @@ import java.util.Set;
 
 public class InspectUtil {
 
-	private GroovyUtil groovyUtil;
+  /**
+   * when using the detail formatter, the detailformatterobject wil be used
+   * to search for formatting methods.
+   */
+	private Object detailFormatterObject=null;
 	private ClassLoader classLoader;
 
 	public InspectUtil() {
-		groovyUtil = new GroovyUtil();
+		
 	}
 
-	public InspectUtil(String groovyPath, String projectRoots) {
-		groovyUtil = new GroovyUtil(groovyPath, projectRoots);
+	public InspectUtil(Object detailFormatterObject)
+	{
+	  this.detailFormatterObject=detailFormatterObject;
 	}
+	
 
-	public InspectUtil(ClassLoader cl, String projectPath) {
-		groovyUtil = new GroovyUtil(null, projectPath);
-		classLoader = cl;
-	}
 
 	private int linebreaklimit = 120;
 	private boolean skipStatics = true;
@@ -67,10 +69,10 @@ public class InspectUtil {
 	 * @param includeStatics
 	 *            include static fields
 	 * @param detailFormatter
-	 *            a map of field usedForNames to groovy script usedForNames. The
-	 *            groovy scripts will be called with the field value to provide
-	 *            the formatting.
-	 * @return
+	 *            a map that specifies methods for named fields. If a field with a specified
+	 *            name is found, the specified method will be invoked to format it.
+	 *            The method must take an object parameter and must return a String or a List<String>
+	 * @return a string representation of the object
 	 */
 	public String inspect(Object o, int depth, List<String> toStringClasses,
 			List<String> skipFields, boolean includeStatics,
@@ -315,16 +317,15 @@ public class InspectUtil {
 	 * Formats the value object using a detail formatter
 	 * 
 	 * @param detailFormat
-	 *            the groovy script to use for detailformat, should return
-	 *            String or List<String>
+	 *            the name of the method to invoke on the detailFormatterObject, should return
+	 *            String or List<String> and must take one parameter of the field type
 	 * @param fieldValue
 	 * @return the formatted value
 	 */
 	@SuppressWarnings("unchecked")
 	private List<String> getDetailedFormat(String detailFormat,
 			Object fieldValue) {
-		Object erg = groovyUtil.evaluateFile(detailFormat, classLoader,
-				fieldValue);
+		Object erg = ReflectionUtil.invokeMethod(detailFormatterObject, detailFormat,fieldValue);
 		if (erg instanceof List<?>)
 			return (List<String>) erg;
 		if (erg instanceof String) {

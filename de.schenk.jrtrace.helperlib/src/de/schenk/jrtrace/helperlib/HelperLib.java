@@ -14,8 +14,6 @@ public class HelperLib {
   
   
 	private static Instrumentation instrumentation;
-	GroovyUtil groovyUtil = new GroovyUtil(null,
-			System.getProperty(HelperLibConstants.DE_SCHENK_JRTRACE_PROJECTDIR));
 
 	
 	/**
@@ -31,171 +29,6 @@ public class HelperLib {
 	  
 	}
 	
-	public Object groovyScript(ClassLoader classloader, String expression) {
-		return groovyScript(classloader, expression, null, null, null, null);
-	}
-
-	public Object groovyScript(ClassLoader classloader, String expression,
-			Object arg0) {
-		return groovyScript(classloader, expression, arg0, null, null, null);
-	}
-
-	public Object groovyScript(ClassLoader classloader, String expression,
-			Object arg0, Object arg1) {
-		return groovyScript(classloader, expression, arg0, arg1, null, null);
-	}
-
-	public Object groovyScript(ClassLoader classloader, String expression,
-			Object arg0, Object arg1, Object arg2) {
-		return groovyScript(classloader, expression, arg0, arg1, arg2, null);
-	}
-
-	/**
-	 *
-	 *
-	 * @param expression
-	 *            the project relative path to a file containing a groovy script
-	 *            e.g. "return (arg0+arg1)" (to add the first two parameters)
-	 * @param classLoader
-	 *            classloader will be determined from this parameter: Can be
-	 *            classloader, class or object
-	 * @param parameters
-	 *            the parameters for the expression
-	 * @return
-	 */
-	public Object groovyScript(ClassLoader classloader, String expression,
-			Object arg0, Object arg1, Object arg2, Object arg3) {
-
-		return groovyUtil.evaluateFile(expression, getClassLoader(classloader),
-				new Object[] { arg0, arg1, arg2, arg3 });
-	}
-
-	public Object groovyScript(String expression) {
-		return groovyScript(expression, null, null, null, null);
-	}
-
-	public Object groovyScript(String expression, Object arg0) {
-		return groovyScript(expression, arg0, null, null, null);
-	}
-
-	public Object groovyScript(String expression, Object arg0, Object arg1) {
-		return groovyScript(expression, arg0, arg1, null, null);
-	}
-
-	public Object groovyScript(String expression, Object arg0, Object arg1,
-			Object arg2) {
-		return groovyScript(expression, arg0, arg1, arg2, null);
-	}
-
-	public Object groovyScript(String expression, Object arg0, Object arg1,
-			Object arg2, Object arg3) {
-		String callerClassName = getCallerClassName();
-		ClassLoader cl = getCachedClassLoader(callerClassName);
-		return groovyScript(cl, expression, arg0, arg1, arg2, arg3);
-	}
-
-	public Object groovy(ClassLoader classloader, String expression) {
-		return groovy(classloader, expression, null, null, null, null);
-	}
-
-	public Object groovy(ClassLoader classloader, String expression, Object arg0) {
-		return groovy(classloader, expression, arg0, null, null, null);
-	}
-
-	public Object groovy(ClassLoader classloader, String expression,
-			Object arg0, Object arg1) {
-		return groovy(classloader, expression, arg0, arg1, null, null);
-	}
-
-	public Object groovy(ClassLoader classloader, String expression,
-			Object arg0, Object arg1, Object arg2) {
-		return groovy(classloader, expression, arg0, arg1, arg2, null);
-	}
-
-	/**
-	 *
-	 *
-	 * @param expression
-	 *            e.g. "return (arg0+arg1)" (to add the first two parameters)
-	 * @param classLoader
-	 *            the classloader to use for the evaluation, provides the
-	 *            opportunity to evaluate a script in an arbitrary context
-	 * @param parameters
-	 *            the parameters for the expression, can be referenced with
-	 *            arg0...arg4 from the script
-	 * @return
-	 */
-	public Object groovy(ClassLoader classloader, String expression,
-			Object arg0, Object arg1, Object arg2, Object arg3) {
-
-		return groovyUtil.evaluate(expression, classloader, new Object[] {
-				arg0, arg1, arg2, arg3 });
-	}
-
-	public Object groovy(String expression) {
-		return groovy(expression, null, null, null, null);
-	}
-
-	public Object groovy(String expression, Object arg0) {
-		return groovy(expression, arg0, null, null, null);
-	}
-
-	public Object groovy(String expression, Object arg0, Object arg1) {
-		return groovy(expression, arg0, arg1, null, null);
-	}
-
-	public Object groovy(String expression, Object arg0, Object arg1,
-			Object arg2) {
-		return groovy(expression, arg0, arg1, arg2, null);
-	}
-
-	/**
-	 * Evalute groovy expression with parameters.
-	 *
-	 * @param expression
-	 *            e.g. "return (arg0+arg1)" (to add the first two parameters)
-	 *
-	 * @param parameters
-	 *            the parameters for the expression
-	 * @return
-	 */
-	public Object groovy(String expression, Object arg0, Object arg1,
-			Object arg2, Object arg3) {
-
-		String callerClassName = getCallerClassName();
-		ClassLoader cl = getCachedClassLoader(callerClassName);
-		return groovyUtil.evaluate(expression, cl, new Object[] { arg0, arg1,
-				arg2, arg3 });
-	}
-
-	public Object box(char i) {
-		return i;
-	}
-
-	public Object box(int i) {
-		return i;
-	}
-
-	public Object box(byte i) {
-		return i;
-	}
-
-	public Object box(long i) {
-		return i;
-	}
-
-	public Object box(float i) {
-		return i;
-	}
-
-	public Object box(double i) {
-		return i;
-	}
-
-	public Object box(Object i) {
-		return i;
-	}
-
 	private String getCallerClassName() {
 		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 		int i = triggerIndex(stack);
@@ -227,9 +60,7 @@ public class HelperLib {
 	}
 
 	/*
-	 * Utility to get any classloader. Classloaders can be passed to the
-	 * groovy... functions to evaluate a script in the context of a different
-	 * classloader.
+	 * Utility to get any classloader.
 	 * 
 	 * The classloader lookup strategy is: (a) o is an classloader -> use it (b)
 	 * o is an Object -> get the classloader from its class (c) o is a Class ->
@@ -294,7 +125,8 @@ public class HelperLib {
 	 * @param includeStatics
 	 *            include static fields
 	 * @param detailFormatters
-	 *            string "fieldName=script.groovy,fieldName2=script2.groovy" to
+	 *            string "fieldName=methodname,fieldName2=methodName2" : 
+	 *            will invoke a java method on the HelperLib (or its subclasses) and use it to format the field.
 	 */
 	public void inspect(Object o, int depth, String toStringClasses,
 			String skipFields, boolean includeStatics, String detailFormatters) {
@@ -309,7 +141,7 @@ public class HelperLib {
 				String[] oneFormat = format.split("=");
 				if (oneFormat.length != 2)
 					throw new RuntimeException(
-							"Invalid detail formatter syntax: Has to be like 'fieldName=groovyfilename.groovy,fieldName2=...");
+							"Invalid detail formatter syntax: Has to be like 'fieldName=methodName,fieldName2=...");
 				formatterMap.put(oneFormat[0], oneFormat[1]);
 			}
 		}
@@ -321,8 +153,7 @@ public class HelperLib {
 		if (!formatterMap.isEmpty()) {
 			cl = getCachedClassLoader(getCallerClassName());
 		}
-		System.out.println(new InspectUtil(cl, System
-				.getProperty(HelperLibConstants.DE_SCHENK_JRTRACE_PROJECTDIR))
+		System.out.println(new InspectUtil(this)
 				.inspect(o, depth, Arrays.asList(erg), Arrays.asList(erg2),
 						includeStatics, formatterMap));
 	}

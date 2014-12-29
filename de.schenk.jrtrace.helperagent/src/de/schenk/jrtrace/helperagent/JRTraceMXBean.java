@@ -32,16 +32,7 @@ public interface JRTraceMXBean {
 	public void runJava(String pathToJar, String referenceClassName,
 			String mainClass, String mainMethod);
 
-	/**
-	 * Execute a groovy script in the context of an arbitrary classloader.
-	 * 
-	 * @param referenceClassName
-	 *            the name of an arbitrary java class which will be used to
-	 *            obtain the classloader to execute the groovy script
-	 * @param pathToGroovy
-	 *            the path to the groovy script
-	 */
-	public void runGroovy(String referenceClassName, String pathToGroovy);
+	
 
 	/**
 	 * set the agents log level. Levels defined in JRLog constants.

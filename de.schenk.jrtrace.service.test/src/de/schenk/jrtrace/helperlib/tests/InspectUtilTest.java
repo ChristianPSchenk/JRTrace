@@ -3,7 +3,6 @@
 **/
 package de.schenk.jrtrace.helperlib.tests;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,7 +11,6 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import de.schenk.jrtrace.helperlib.InspectUtil;
-import de.schenk.jrtrace.service.JarLocator;
 
 public class InspectUtilTest extends TestCase {
 
@@ -275,18 +273,20 @@ public class InspectUtilTest extends TestCase {
 		System.out.println(result);
 		assertTrue(result.contains("'a'"));
 	}
+	
+	public String detailFormatter(String o)
+	{
+	  return ((String)o).toUpperCase();
+	}
 
 	// TODO: not nice that the test needs to know it's bundle... better way to
 	// get the test data required.
 	public void testDetailFormatter() throws Exception {
 		SampleClass s = new SampleClass();
-		String groovy = JarLocator.getFile("de.schenk.jrtrace.service.test",
-				"data/test.groovy");
-		File groovyFile = new File(groovy);
-		InspectUtil ui = new InspectUtil(JarLocator.getGroovyLibJar(),
-				groovyFile.getParent());
+		
+		InspectUtil ui = new InspectUtil(this);
 		Map<String, String> formatter = new HashMap<String, String>();
-		formatter.put("fstring", "test.groovy");
+		formatter.put("fstring", "detailFormatter");
 		String result = ui.inspect(s, 3, null, null, false, formatter);
 		assertTrue(result.contains("STRING"));
 	}

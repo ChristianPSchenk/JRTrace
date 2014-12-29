@@ -71,10 +71,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 		return true;
 	}
 
-	@Override
-	synchronized public void runGroovy(String groovyOSPath, String className) {
-		mbeanProxy.runGroovy(className, groovyOSPath);
-	}
+
 
 	@Override
 	synchronized public void runJava(File jarFile, String theClassLoader,

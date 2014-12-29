@@ -28,7 +28,6 @@ import javax.management.remote.JMXServiceURL;
 import de.schenk.enginex.helper.EngineXHelper;
 import de.schenk.enginex.helper.NotificationUtil;
 import de.schenk.jrtrace.helperagent.internal.JRTraceMXBeanImpl;
-import de.schenk.jrtrace.helperlib.GroovyUtil;
 import de.schenk.jrtrace.helperlib.HelperLib;
 import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.NotificationConstants;
@@ -264,7 +263,7 @@ public class AgentMain {
         instrumentation.removeTransformer(enginextransformer);
       enginextransformer = null;
 
-      GroovyUtil.clearScriptCache();
+    
 
       theAgent = null;
 

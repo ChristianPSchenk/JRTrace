@@ -14,11 +14,7 @@ import org.osgi.framework.Bundle;
 
 public class JarLocator {
 
-	static public String getGroovyLibJar() throws URISyntaxException,
-			IOException {
-		return getFile("de.schenk.jrtrace.helperlib",
-				"/groovylib/groovy-all-2.3.6-indy.jar");
-	}
+	
 
 	static public String getHelperLibJar() {
 		try {

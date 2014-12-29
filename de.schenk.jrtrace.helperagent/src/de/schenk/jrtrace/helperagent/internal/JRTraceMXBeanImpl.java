@@ -10,9 +10,6 @@ import de.schenk.enginex.helper.EngineXHelper;
 import de.schenk.enginex.helper.INotificationSender;
 import de.schenk.jrtrace.helperagent.AgentMain;
 import de.schenk.jrtrace.helperagent.JRTraceMXBean;
-import de.schenk.jrtrace.helperlib.GroovyUtil;
-import de.schenk.jrtrace.helperlib.HelperLib;
-import de.schenk.jrtrace.helperlib.HelperLibConstants;
 import de.schenk.jrtrace.helperlib.JRLog;
 
 public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
@@ -66,16 +63,7 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 
 	}
 
-	@Override
-	public void runGroovy(String referenceClassName, String pathToGroovy) {
-
-		GroovyUtil groovy = new GroovyUtil(
-				System.getProperty(HelperLibConstants.DE_SCHENK_JRTRACE_GROOVYJAR),
-				null);
-		groovy.evaluateFile(pathToGroovy,
-				HelperLib.getCachedClassLoader(referenceClassName));
-
-	}
+	
 
 	@Override
 	public void runJava(String pathToJar, String referenceClassName,
