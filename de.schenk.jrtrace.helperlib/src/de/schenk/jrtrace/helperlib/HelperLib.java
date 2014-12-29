@@ -11,10 +11,26 @@ import java.util.WeakHashMap;
 
 public class HelperLib {
 
+  
+  
 	private static Instrumentation instrumentation;
 	GroovyUtil groovyUtil = new GroovyUtil(null,
 			System.getProperty(HelperLibConstants.DE_SCHENK_JRTRACE_PROJECTDIR));
 
+	
+	/**
+	 * Utility method to set the value of any object field (especially on  private ones using reflection)
+	 * @param target the target object or target Class<?> (for static method calls)
+	 * @param name the name of the field
+	 * @param value the target value
+
+	 */
+	public void setField(Object target,String name,Object value)
+	{
+	  ReflectionUtil.setField(target,name,value);
+	  
+	}
+	
 	public Object groovyScript(ClassLoader classloader, String expression) {
 		return groovyScript(classloader, expression, null, null, null, null);
 	}

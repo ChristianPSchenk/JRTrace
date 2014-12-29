@@ -291,7 +291,7 @@ start the plugin referenced in <code>installBundle</code> (Use <code>org.osgi.fr
 <p>
 The JRTrace class includes a small utility class that might be useful in some tracing use cases:
 <code>de.schenk.jrtrace.helperlib.HelperLib</code>
-To use the  utility methods extend from <code>HelperLib</code> and use them from your instrumentation code.
+To use the  utility methods extend your classes from <code>HelperLib</code> and use them from your instrumentation code. Alternatively just create an instance of the class to use it.
 </p>
 
 
@@ -322,6 +322,20 @@ Whenever inspect encounters a field with the specified name, it will invoke the 
 as argument (arg0).
 
 </p>
+
+<h4>setField</h4>
+
+
+While <code>XField</code> can be used to obtain the values of fields of the currently instrumented object, it is not possible to manipulate those values. <code>setField</code> reflectively modifies a given field:
+<pre>
+setField(target,fieldname, value);
+</pre>
+
+<code>target</code>: the object -OR- the <code>Class</code> that contains the field. Pass the object instance for non-static and the <code>Class</code> for static fields.</br>
+<code>fieldname</code>: the name of the field to set</br>
+<code>value</code>: the new value</br>
+
+
 <h4>groovy</h4>
 
 <p>
