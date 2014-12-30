@@ -11,6 +11,7 @@ import com.sun.tools.attach.VirtualMachineDescriptor;
 
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
+import de.schenk.jrtrace.service.VMInfo;
 
 public class JRTraceControllerImpl implements JRTraceController {
 	@Override

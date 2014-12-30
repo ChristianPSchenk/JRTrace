@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -24,7 +25,7 @@ import de.schenk.jrtrace.service.ICancelable;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.JRTraceControllerService;
-import de.schenk.jrtrace.service.internal.VMInfo;
+import de.schenk.jrtrace.service.VMInfo;
 import de.schenk.jrtrace.ui.debug.JRTraceDebugTarget;
 
 public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
@@ -235,10 +236,22 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 
 				@Override
 				public void run() {
-					PIDSelectionDialog dialog = new PIDSelectionDialog();
+				  try
+				  {
+					PIDSelectionDialog dialog = new PIDSelectionDialog(Display.getDefault().getActiveShell(),false);
 					dialog.setVMs(usedVMs);
-					dialog.show(Display.getDefault().getActiveShell());
+					dialog.open();
+					if(dialog.getReturnCode()==IDialogConstants.OK_ID)
+					{
 					resultpid[0] = dialog.getPID();
+					} else
+					{
+					  resultpid[0]="";
+					}
+				  } catch(Exception e)
+				  {
+				    e.printStackTrace();
+				  }
 
 				}
 

@@ -21,7 +21,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.commands,
  org.eclipse.ui.workbench,
  org.eclipse.ui.editors,
- org.eclipse.jdt.debug.ui
+ org.eclipse.jdt.debug.ui,
+ org.eclipse.jface
 Import-Package: de.schenk.jrtrace.jdk.init,
  org.eclipse.core.runtime
 Bundle-Activator: de.schenk.jrtrace.ui.Activator

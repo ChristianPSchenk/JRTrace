@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.schenk.jrtrace.service.internal.JRTraceVMImpl;
-import de.schenk.jrtrace.service.internal.VMInfo;
 import de.schenk.jrtrace.service.test.utils.JavaUtil;
 
 public class JRTraceControllerTest {

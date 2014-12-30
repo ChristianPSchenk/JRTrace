@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -297,12 +298,25 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 			pidSelectButton.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					PIDSelectionDialog pidDialog = new PIDSelectionDialog();
+					PIDSelectionDialog pidDialog = new PIDSelectionDialog(box.getShell(),true);
 					pidDialog.setVMs(JRTraceControllerService.getInstance()
 							.getVMs());
-					pidDialog.show(box.getShell());
-					pidText.setText(pidDialog.getPID());
+					pidDialog.setFilterText(identifyText.getText());
+					pidDialog.open();
+					if(pidDialog.getReturnCode()==IDialogConstants.OK_ID)
+					{
+					if(pidDialog.useFilterText())
+					{
+					  identifyText.setText(pidDialog.getFilterText());
+					  pidText.setText("");
+					} else
+					
+					{
+					  identifyText.setText("");
+					  pidText.setText(pidDialog.getPID());
+					}
 					setDirty();
+					}
 				}
 			});
 		}

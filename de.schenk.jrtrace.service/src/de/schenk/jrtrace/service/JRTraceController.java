@@ -3,7 +3,6 @@
  **/
 package de.schenk.jrtrace.service;
 
-import de.schenk.jrtrace.service.internal.VMInfo;
 
 public interface JRTraceController {
 

@@ -1,4 +1,4 @@
-package de.schenk.jrtrace.service.internal;
+package de.schenk.jrtrace.service;
 
 public class VMInfo {
 
