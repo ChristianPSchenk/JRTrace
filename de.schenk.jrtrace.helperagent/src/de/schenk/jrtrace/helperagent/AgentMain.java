@@ -268,14 +268,16 @@ public class AgentMain {
       theAgent = null;
 
       if (!disconnect) {
-        Thread stopServerThread = new Thread() {
-
-          public void run() {
-            stopMXBeanServer();
-          };
-        };
-
-        stopServerThread.start();
+//        Thread stopServerThread = new Thread() {
+//
+//          @Override
+//          public void run() {
+//            stopMXBeanServer();
+//          };
+//        };
+        stopMXBeanServer();
+        
+        //stopServerThread.start();
 
 
       }

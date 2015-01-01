@@ -87,7 +87,7 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 				}
 
 			} catch (Throwable e) {
-				JRLog.error("Skiped applying jrtrace class "
+				JRLog.error("Skipped applying jrtrace class "
 						+ entry.getClassName() + " to class " + className
 						+ " due to runtime exception");
 				e.printStackTrace();

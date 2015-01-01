@@ -5,10 +5,16 @@ package de.schenk.jrtrace.helperagent;
 
 import de.schenk.enginex.helper.EngineXMetadata;
 import de.schenk.enginex.helper.EngineXMethodMetadata;
+import de.schenk.enginex.helper.Injection;
+import de.schenk.enginex.helper.Injection.InjectionType;
 import de.schenk.jrtrace.annotations.XClass;
 import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
 import de.schenk.jrtrace.annotations.XField;
+import de.schenk.jrtrace.annotations.XInvokeParam;
+import de.schenk.jrtrace.annotations.XInvokeReturn;
+import de.schenk.jrtrace.annotations.XInvokeThis;
 import de.schenk.jrtrace.annotations.XLocation;
+import de.schenk.jrtrace.annotations.XMethod;
 import de.schenk.jrtrace.annotations.XParam;
 import de.schenk.jrtrace.annotations.XReturn;
 import de.schenk.jrtrace.annotations.XThis;
@@ -25,13 +31,14 @@ public class EngineXAnnotationReader {
 
 		private EngineXMethodMetadata method;
 		private int param;
+    private InjectionType iType;
 
 		public MetadataParameterAnnotationVisitor(
-				EngineXMethodMetadata methodmd, int parameter,
+				EngineXMethodMetadata methodmd, InjectionType iType, int parameter,
 				AnnotationVisitor visitParameterAnnotation) {
 
 			super(Opcodes.ASM5, visitParameterAnnotation);
-
+			this.iType=iType;
 			this.param = parameter;
 			this.method = methodmd;
 		}
@@ -39,10 +46,28 @@ public class EngineXAnnotationReader {
 		@Override
 		public void visit(String name, Object value) {
 			if ("n".equals(name)) {
-				method.addInjection(param, (int) value);
+			  if(iType==InjectionType.PARAMETER)
+			  {
+				method.addInjection(param, Injection.createParameterInjection((int)value));
+			  } else
+			  {
+			    if(iType==InjectionType.INVOKE_PARAMETER)
+			    {
+			      method.addInjection(param, Injection.createInvokeParameterInjection((int)value));
+			    } else
+			    {
+			      throw new RuntimeException("Annotation n not valid for iType FIELD");
+			    }
+			  }
 			}
 			if ("name".equals(name)) {
-				method.addInjection(param, (String) value);
+			  if(iType==InjectionType.FIELD)
+			  {
+				method.addInjection(param, Injection.createFieldInjection((String)value));
+			  } else
+			  {
+			    throw new RuntimeException("Annotation name only valid for @XField");
+			  }
 			}
 			super.visit(name, value);
 		}
@@ -61,9 +86,16 @@ public class EngineXAnnotationReader {
 
 		@Override
 		public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-
-			return new MethodMetadataAnnotationVisitor(methodmd, null,
-					super.visitAnnotation(desc, visible));
+		   
+		    if(desc.equals(Type.getType(XMethod.class).toString()))
+            {
+		      methodmd.getClassMetadata().addMethod(methodmd);
+		      return new MethodMetadataAnnotationVisitor(methodmd, null,
+                  super.visitAnnotation(desc, visible)); 
+            }
+		    return super.visitAnnotation(desc,visible);
+              
+			
 		}
 
 		@Override
@@ -71,18 +103,28 @@ public class EngineXAnnotationReader {
 				String desc, boolean visible) {
 
 			if (Type.getType(XThis.class).equals(Type.getType(desc))) {
-				methodmd.addInjection(parameter, 0);
+				methodmd.addInjection(parameter, Injection.createParameterInjection(0));
 			}
+	         if (Type.getType(XInvokeThis.class).equals(Type.getType(desc))) {
+	           methodmd.addInjection(parameter, Injection.createInvokeParameterInjection(0));
+           }
+	         if (Type.getType(XInvokeReturn.class).equals(Type.getType(desc))) {
+               methodmd.addInjection(parameter, Injection.createInvokeParameterInjection(-1));
+           }
 			if (Type.getType(XReturn.class).equals(Type.getType(desc))) {
 
-				methodmd.addInjection(parameter, -1);
+				methodmd.addInjection(parameter, Injection.createParameterInjection(-1));
 			}
-			boolean injectField = Type.getType(XField.class).equals(
-					Type.getType(desc));
-			boolean injectArgument = Type.getType(XParam.class).equals(
-					Type.getType(desc));
-			if (injectArgument || injectField) {
-				return new MetadataParameterAnnotationVisitor(methodmd,
+			InjectionType iType=null;
+			if( Type.getType(XField.class).equals(
+					Type.getType(desc))) { iType=InjectionType.FIELD; }
+			if( Type.getType(XParam.class).equals(
+                Type.getType(desc))) { iType=InjectionType.PARAMETER; }
+			if( Type.getType(XInvokeParam.class).equals(
+                Type.getType(desc))) { iType=InjectionType.INVOKE_PARAMETER; }
+		
+			if (iType!=null) {
+				return new MetadataParameterAnnotationVisitor(methodmd,iType,
 						parameter, super.visitParameterAnnotation(parameter,
 								desc, visible));
 			}
@@ -97,18 +139,29 @@ public class EngineXAnnotationReader {
 		private String context;
 		boolean dataAdded = false;
 
+
+
 		public MethodMetadataAnnotationVisitor(EngineXMethodMetadata md,
 				String context, AnnotationVisitor visitor) {
 			super(Opcodes.ASM5, visitor);
 			this.context = context;
 			this.method = md;
 		}
+		
+		/** 
+		* {@inheritDoc}
+		*/
+		@Override
+		public AnnotationVisitor visitAnnotation(String name, String desc) {
+  		   
+  		    return super.visitAnnotation(name, desc);
+		}
 
 		@Override
 		public void visitEnd() {
-			if (context == null && !method.getTargetMethodNames().isEmpty()) {
-				method.getClassMetadata().addMethod(method);
-			}
+			
+			
+			
 			if ("arguments".equals(context) && !dataAdded) {
 				method.setArgumentListEmpty();
 			}
@@ -127,12 +180,21 @@ public class EngineXAnnotationReader {
 			if ("location".equals(name)) {
 				method.setInjectLocation(XLocation.valueOf(value));
 			}
+			
 
 			super.visitEnum(name, desc, value);
 		}
 
 		@Override
 		public void visit(String name, Object value) {
+		
+		  if("invokedname".equals(name))
+		    {
+		    method.setInvokedMethod((String)value);
+		    } else
+		    {
+		  if(context!=null)
+		  {
 			switch (context) {
 			case "names":
 
@@ -144,7 +206,11 @@ public class EngineXAnnotationReader {
 				method.addArgument((String) value);
 				dataAdded = true;
 				break;
+			
 			}
+		  }
+		    }
+			  
 			super.visit(name, value);
 		}
 

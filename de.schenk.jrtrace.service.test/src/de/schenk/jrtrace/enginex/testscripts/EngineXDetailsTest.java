@@ -299,6 +299,33 @@ public class EngineXDetailsTest {
 		assertTrue(Test17.success);
 
 	}
+    @Test
+    public void test18InvokeBefore() throws Exception {
+
+        Test18 test18 = new Test18();
+        long stage = test18.test18();
+        assertEquals(3,Test18.stage);
+
+    }
+    
+    @Test
+    public void test19InvokeReplace() throws Exception {
+
+        Test19 test19 = new Test19();
+        long stage = test19.test19();
+        assertEquals(1002,stage);
+
+    }
+    
+    
+    @Test
+    public void test20InvokeAfter() throws Exception {
+
+        Test20 test20 = new Test20();
+        long result = test20.test20();
+        assertEquals(15,result);
+
+    }
 
 	@Test
 	public void testcommonSuperProblem() throws Exception {

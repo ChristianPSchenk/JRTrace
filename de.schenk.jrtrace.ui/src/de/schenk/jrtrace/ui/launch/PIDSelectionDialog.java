@@ -156,7 +156,7 @@ public class PIDSelectionDialog extends TitleAreaDialog {
         if(!filterText.getText().isEmpty())
         {
           int pos = content.indexOf(filterText.getText());
-          System.out.println(filterText.getText());
+     
           if(pos!=-1)
           {
             StyleRange style = new StyleRange(pos,filterText.getText().length(),Display.getDefault().getSystemColor(SWT.COLOR_RED),null);                    

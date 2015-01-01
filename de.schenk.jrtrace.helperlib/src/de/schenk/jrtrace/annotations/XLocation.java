@@ -27,5 +27,22 @@ public enum XLocation {
 	/**
 	 * Injected code will be called before target method return.
 	 */
-	EXIT
+	EXIT, 
+	/**
+	 * Injected code will be called before any method is invoked. 
+	 * (restrict 
+     * method names to {@link XMethod.invokedname}.)
+	 */
+	BEFORE_INVOCATION,
+	/**
+     * Injected code will be called after any method is invoked. (restrict 
+     * method names to {@link XMethod.invokedname}.) 
+     */
+    AFTER_INVOCATION,
+    /**
+     * Injected code will be called instead of invoking any method (restrict 
+     * method names to {@link XMethod.invokedname}.)
+     */
+    REPLACE_INVOCATION,
+	
 }

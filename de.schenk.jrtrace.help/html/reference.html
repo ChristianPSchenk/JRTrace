@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>JRTrace Annotation Reference</title>
+</head>
+
+<body style="font-family:sans-serif">
+<h1>Annotation Reference</h1>
+
+The general concept of JRTrace requires one or more classes that are annotated. The annotations specify if, where and which methods
+will be injected into the running application.
+
+
+
+ <table border="1" style="width:100%"  >
+  <tr>
+    <th>Annotation</th>
+    <th>Attribute</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><code>@XClass</code></td>
+    <td></td>
+    <td>A class that can be used with JRTrace. If a class is installed using JRTrace without annotations, 
+    this is equivalent to using <code>@XClass()</code>.
+    </td>
+ 
+   
+   </tr>
+    <tr>
+    <td></td> 
+    <td><code>names</code></td>
+    
+    <td>One or more fully qualified class names. If set, the methods in this class can only be injected into classes with the
+    same qualified name. If not set, this class can inject in all classes. Use with care: usually it is a bad idea to instrument all
+    classes including the java core classes.
+    <p>Example: injection of methods from this class is restricted to classes <code>a.b.C</code> and <code>d.e.F</code>
+    <pre>
+    @XClass(names={"a.b.C","d.e.F"})
+    class Trace
+    {
+    }
+    </pre>
+    </p>
+    </td>
+    
+     <tr>
+    <td></td> 
+    <td><code>regex</code></td>
+    
+    <td>All string matching operations on class names, method names and argument names are performed using java regular expressions if this
+    attribute is set to true. This attribute is defined once on classlevel and effects all contained annotations that refer to java names and types.
+    <p>Example: the below class will inject code into all classes from the namespace "org.company". 
+    <pre>
+    @XClass(names={"org\\.company\\..*"},regex=true)
+    class Trace
+    {
+    }
+    </pre>
+    </p>
+    </td>
+    
+  </tr>
+</table> 
+ 
+</body>
+</html>

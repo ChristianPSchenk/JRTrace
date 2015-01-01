@@ -18,10 +18,13 @@ import org.junit.Test;
 
 import de.schenk.enginex.helper.EngineXMetadata;
 import de.schenk.enginex.helper.EngineXMethodMetadata;
+import de.schenk.enginex.helper.Injection;
+import de.schenk.enginex.helper.Injection.InjectionType;
 import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
 import de.schenk.jrtrace.annotations.XLocation;
 import de.schenk.jrtrace.enginex.testclasses.Script1;
 import de.schenk.jrtrace.enginex.testclasses.Script2;
+import de.schenk.jrtrace.enginex.testclasses.Script3;
 import de.schenk.jrtrace.enginex.testclasses.TestClass1;
 import de.schenk.jrtrace.enginex.testclasses.TestClass2;
 import de.schenk.jrtrace.enginex.testclasses.TestClass3;
@@ -60,6 +63,25 @@ public class EngineXAnnotationReaderTest {
 
 	}
 
+	   @Test
+	    public void readAnnotationsTestOfInvokation() throws Exception {
+	        classBytes = new JavaUtil().getClassBytes(Script3.class);
+	        EngineXAnnotationReader annoReader = new EngineXAnnotationReader();
+	        EngineXMetadata metadata = annoReader.getMetaInformation(classBytes);
+	        assertNotNull(metadata);
+	        EngineXMethodMetadata theMethod = metadata.getMethod("method");
+	        assertNotNull(theMethod);
+	        assertEquals(XLocation.BEFORE_INVOCATION,theMethod.getInjectLocation());
+	        assertEquals("invokedMethod",theMethod.getInvokedMethodName());
+	        assertEquals(-1,theMethod.getInjection(0).getN());
+            assertEquals(InjectionType.INVOKE_PARAMETER,theMethod.getInjection(0).getType());
+	        assertEquals(3,theMethod.getInjection(1).getN());
+	        assertEquals(InjectionType.INVOKE_PARAMETER,theMethod.getInjection(1).getType());
+	        assertEquals("field",theMethod.getInjection(2).getFieldname());
+	        assertEquals(InjectionType.FIELD,theMethod.getInjection(2).getType());
+	           assertEquals(0,theMethod.getInjection(3).getN());
+	            assertEquals(InjectionType.INVOKE_PARAMETER,theMethod.getInjection(3).getType());
+	   }
 	@Test
 	public void readAnnotationsTest() throws Exception {
 		classBytes = new JavaUtil().getClassBytes(Script1.class);
@@ -94,9 +116,9 @@ public class EngineXAnnotationReaderTest {
 				String entry = usedFor.iterator().next();
 				assertEquals("doit2", (entry));
 
-				Map<Integer, Object> injections = method.getInjections();
+				Map<Integer, Injection> injections = method.getInjections();
 				assertEquals(1, injections.size());
-				assertEquals(new Integer(-1), injections.get(0));
+				assertEquals(-1, injections.get(0).getN());
 				assertEquals(XLocation.EXIT, method.getInjectLocation());
 				assertNull(method.getArgumentList());
 
@@ -110,18 +132,18 @@ public class EngineXAnnotationReaderTest {
 				assertEquals(1, argumentList.size());
 				assertEquals("java.lang.String", argumentList.get(0));
 
-				Map<Integer, Object> injections = method.getInjections();
+				Map<Integer, Injection> injections = method.getInjections();
 				assertEquals(2, injections.size());
-				assertEquals(new Integer(0), injections.get(0));
+				assertEquals(0, injections.get(0).getN());
 				assertNull(method.getInjection(2));
-				assertEquals(new Integer(0), method.getInjection(0));
-				assertEquals(new Integer(1), method.getInjection(1));
+				assertEquals(0, method.getInjection(0).getN());
+				assertEquals(1, method.getInjection(1).getN());
 				assertEquals(XLocation.ENTRY, method.getInjectLocation());
 			} else if ("(Ljava/lang/Object;)I".equals(method.getDescriptor())) {
 				assertNotNull(method.getArgumentList());
 				assertEquals(0, method.getArgumentList().size());
-				Object par = method.getInjections().get(0);
-				assertEquals(par, "aField");
+				Injection par = method.getInjections().get(0);
+				assertEquals(par.getFieldname(), "aField");
 
 			} else
 

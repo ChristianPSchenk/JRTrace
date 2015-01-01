@@ -63,13 +63,22 @@ public class EngineXMethodMetadata {
 	}
 
 	/**
-	 * null: no argument list provided.
+	 * null: no argument list provided = matches any argument list
 	 */
 	List<String> argumentList = null;
 
-	private Map<Integer, Object> injection = new HashMap<Integer, Object>();
+	/**
+	 *  a map describing the argument, return and field injections into the instrumented method:
+	 *  key: the argument position (0,...)
+	 *  value: Integer: 0: this, -1: return value, n>=1: paramter index, String: field injection.
+	 */
+	private Map<Integer, Injection> injection = new HashMap<Integer, Injection>();
 
+
+	
 	private XLocation injectLocation = XLocation.ENTRY;
+
+  private String invokedethodName="";
 
 	public void addArgument(String value) {
 		if (argumentList == null)
@@ -106,16 +115,16 @@ public class EngineXMethodMetadata {
 	 *            the source index to take this from (0=this,1=first
 	 *            parameter,...) -or- the source field name to inject here
 	 */
-	public void addInjection(int targetposition, Object source) {
+	public void addInjection(int targetposition, Injection source) {
 		injection.put(targetposition, source);
 
 	}
 
-	public Map<Integer, Object> getInjections() {
+	public Map<Integer, Injection> getInjections() {
 		return Collections.unmodifiableMap(injection);
 	}
 
-	public Object getInjection(int i) {
+	public Injection getInjection(int i) {
 		return injection.get(i);
 	}
 
@@ -232,5 +241,47 @@ public class EngineXMethodMetadata {
 		argumentList = Collections.emptyList();
 
 	}
+
+  /**
+   * @return
+   */
+  public String getInvokedMethodName() {
+    
+    return invokedethodName;
+  }
+
+  /**
+   * @param value
+   */
+  public void setInvokedMethod(String value) {
+      invokedethodName=value;
+    
+  }
+
+  /**
+   * @param invokedMethodName
+   * @return true: if the passed in method name matches the "invokedMethodName"
+   */
+  public boolean matchesInvoker(String invokedMethodName) {
+ 
+   if(getInvokedMethodName().isEmpty()) return true;
+   if(this.parent.getUseRegEx())
+   {
+     return invokedMethodName.matches(getInvokedMethodName());
+   } else
+   {
+     return getInvokedMethodName().equals(invokedMethodName);
+   }
+  }
+
+  /**
+   * @param i the parameter index of the injected method
+   * @return the position of argument of the invoked method that should be injected into this parameter
+   * 0: this, -1: the return value, >0: the call argument.
+   */
+  public Integer getInvokeArgumentInjection(int i) {
+    
+    return null;
+  }
 
 }

@@ -49,4 +49,13 @@ public @interface XMethod {
 	 * 
 	 */
 	XLocation location() default XLocation.ENTRY;
+
+	/** 
+	 * 
+	 * @return valid only for {@link XLocation.BEFORE_INVOCATION} and similar: the name of the 
+	 * method that is invoked. If not set, any method will match. If set, any method with the given name
+	 * will match. If set and the class has "useregex" set, will match any method name that
+	 * matches the regular expression provided.
+	 */
+  String invokedname() default "";
 }

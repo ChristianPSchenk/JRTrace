@@ -276,4 +276,19 @@ public class EngineXMetadata {
 		return getExternalClassName();
 	}
 
+  /**
+   * 
+   * 
+   * @param methodName
+   * @return the metadata of the specified method or null if the injection class doesn't contain a method with this name
+   */
+  public EngineXMethodMetadata getMethod(String methodName) {
+    for(EngineXMethodMetadata m: methods)
+    {
+      if(m.getMethodName().equals(methodName))
+      { return m; }
+    }
+    return null;
+  }
+
 }

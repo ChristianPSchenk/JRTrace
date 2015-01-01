@@ -12,6 +12,7 @@ import de.schenk.objectweb.asm.MethodVisitor;
 import de.schenk.objectweb.asm.Opcodes;
 import de.schenk.objectweb.asm.addons.CommonSuperClassUtil;
 import de.schenk.objectweb.asm.commons.JSRInlinerAdapter;
+import de.schenk.objectweb.asm.commons.LocalVariablesSorter;
 
 public class EngineXClassVisitor extends ClassVisitor {
 
@@ -54,9 +55,13 @@ public class EngineXClassVisitor extends ClassVisitor {
 			if (method.mayMatch(name, desc)) {
 				boolean isStatic = ((access & Opcodes.ACC_STATIC) != 0) ? true
 						: false;
-				return new JSRInlinerAdapter(new EngineXMethodVisitor(this,
-						isStatic, access, name, desc, super.visitMethod(access,
-								name, desc, signature, exceptions), method),
+				MethodVisitor methodVisitor = super.visitMethod(access,
+                    name, desc, signature, exceptions);
+				EngineXMethodVisitor jrtraceVisitor = new EngineXMethodVisitor(this,
+                    isStatic, access, name, desc, methodVisitor, method);
+				LocalVariablesSorter lvs=new LocalVariablesSorter(access, desc, jrtraceVisitor);
+				jrtraceVisitor.setLocalVariableSorter(lvs);
+				return new JSRInlinerAdapter(lvs,
 						access, name, desc, signature, exceptions);
 			}
 		}
