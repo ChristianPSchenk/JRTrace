@@ -14,7 +14,7 @@ import de.schenk.jrtrace.annotations.XMethod;
 @XClass(classes = { "de.schenk.jrtrace.enginex.testclasses.TestClass1" })
 public class Script3 {
 
-	@XMethod(location=XLocation.BEFORE_INVOCATION,invokedname="invokedMethod")
+	@XMethod(location=XLocation.BEFORE_INVOCATION,invokedname="invokedMethod",invokedclass="a.b.C")
 	public void method(@XInvokeReturn Object x, @XInvokeParam(n=3) Object i,@XField(name="field") int field,@XInvokeThis Object o) {
 
 	}

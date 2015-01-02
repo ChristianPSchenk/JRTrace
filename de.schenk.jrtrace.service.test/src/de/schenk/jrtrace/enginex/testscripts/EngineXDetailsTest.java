@@ -327,6 +327,14 @@ public class EngineXDetailsTest {
 
     }
 
+    @Test
+    public void test21InvokeReplaceWithSpecificInvokeClass() throws Exception {
+
+        Test21 test21 = new Test21();
+        int result = test21.test21();
+        assertEquals(1,result);
+
+    }
 	@Test
 	public void testcommonSuperProblem() throws Exception {
 

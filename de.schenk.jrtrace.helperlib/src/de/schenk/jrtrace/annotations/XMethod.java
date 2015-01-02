@@ -45,17 +45,24 @@ public @interface XMethod {
 	/**
 	 * @return location specifies, where to inject the code. See
 	 *         {@link XLocation} for the options. If not set, the injection will
-	 *         take place at method entry see {@link XLocation.ENTRY}
+	 *         take place at method entry see {@link XLocation#ENTRY}
 	 * 
 	 */
 	XLocation location() default XLocation.ENTRY;
 
 	/** 
 	 * 
-	 * @return valid only for {@link XLocation.BEFORE_INVOCATION} and similar: the name of the 
+	 * @return valid only for {@link XLocation#BEFORE_INVOCATION} and similar: the name of the 
 	 * method that is invoked. If not set, any method will match. If set, any method with the given name
 	 * will match. If set and the class has "useregex" set, will match any method name that
 	 * matches the regular expression provided.
 	 */
   String invokedname() default "";
+
+  /**
+   * 
+   * @return valid only for {@link XLocation#BEFORE_INVOCATION} and similar: the name of the class on which
+   * a method is invoked. If not set, any class will match.
+   */
+  String invokedclass() default "";
 }

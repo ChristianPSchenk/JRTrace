@@ -44,5 +44,15 @@ public enum XLocation {
      * method names to {@link XMethod.invokedname}.)
      */
     REPLACE_INVOCATION,
+    
+    /**
+     * Insertion before getting a field value
+     */
+    GETFIELD,
+    
+    /**
+     * Insertion before setting a field value
+     */
+    PUTFIELD
 	
 }

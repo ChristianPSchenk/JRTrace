@@ -107,7 +107,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
     if (injectedMethod.getInjectLocation() == XLocation.BEFORE_INVOCATION ||
         injectedMethod.getInjectLocation() == XLocation.REPLACE_INVOCATION ||
         injectedMethod.getInjectLocation() == XLocation.AFTER_INVOCATION) {
-      if (injectedMethod.matchesInvoker(name)) {
+      if (injectedMethod.matchesInvoker(owner,name)) {
         applyOnInvokeInstrumentation(opcode, owner, name, desc, itf);
         return;
       }

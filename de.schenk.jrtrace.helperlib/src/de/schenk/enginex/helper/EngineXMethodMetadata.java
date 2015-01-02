@@ -80,6 +80,8 @@ public class EngineXMethodMetadata {
 
   private String invokedethodName="";
 
+  private String invokedClass="";
+
 	public void addArgument(String value) {
 		if (argumentList == null)
 			argumentList = new ArrayList<String>();
@@ -262,26 +264,42 @@ public class EngineXMethodMetadata {
    * @param invokedMethodName
    * @return true: if the passed in method name matches the "invokedMethodName"
    */
-  public boolean matchesInvoker(String invokedMethodName) {
- 
-   if(getInvokedMethodName().isEmpty()) return true;
-   if(this.parent.getUseRegEx())
-   {
-     return invokedMethodName.matches(getInvokedMethodName());
-   } else
-   {
-     return getInvokedMethodName().equals(invokedMethodName);
-   }
+  public boolean matchesInvoker(String invokedMethodClass,String invokedMethodName) {
+    
+    
+   return checkStringMatch(invokedMethodName,getInvokedMethodName()) && checkStringMatch(invokedMethodClass.replace('/', '.'),getInvokedMethodClass());
   }
 
   /**
-   * @param i the parameter index of the injected method
-   * @return the position of argument of the invoked method that should be injected into this parameter
-   * 0: this, -1: the return value, >0: the call argument.
+   * @param invokedMethodName
+   * @return
    */
-  public Integer getInvokeArgumentInjection(int i) {
+  private boolean checkStringMatch(String state,String match) {
+    if(match.isEmpty()) return true;
+     if(this.parent.getUseRegEx())
+     {
+       return state.matches(match);
+     } else
+     {
+       return state.equals(match);
+     }
+  }
+
+  
+
+  /**
+   * @param value
+   */
+  public void setInvokedClass(String value) {
+    this.invokedClass=value;
     
-    return null;
+  }
+
+  /**
+   * @return
+   */
+  public String getInvokedMethodClass() {
+    return invokedClass;
   }
 
 }

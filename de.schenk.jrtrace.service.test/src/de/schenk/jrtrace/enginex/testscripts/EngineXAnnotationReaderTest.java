@@ -73,6 +73,7 @@ public class EngineXAnnotationReaderTest {
 	        assertNotNull(theMethod);
 	        assertEquals(XLocation.BEFORE_INVOCATION,theMethod.getInjectLocation());
 	        assertEquals("invokedMethod",theMethod.getInvokedMethodName());
+	        assertEquals("a.b.C",theMethod.getInvokedMethodClass());
 	        assertEquals(-1,theMethod.getInjection(0).getN());
             assertEquals(InjectionType.INVOKE_PARAMETER,theMethod.getInjection(0).getType());
 	        assertEquals(3,theMethod.getInjection(1).getN());

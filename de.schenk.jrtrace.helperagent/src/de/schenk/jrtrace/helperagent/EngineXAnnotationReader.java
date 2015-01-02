@@ -192,6 +192,10 @@ public class EngineXAnnotationReader {
 		    {
 		    method.setInvokedMethod((String)value);
 		    } else
+		      if("invokedclass".equals(name))
+		      {
+		        method.setInvokedClass((String)value);
+		      }
 		    {
 		  if(context!=null)
 		  {
