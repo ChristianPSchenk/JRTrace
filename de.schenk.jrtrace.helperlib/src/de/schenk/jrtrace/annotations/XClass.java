@@ -82,4 +82,12 @@ public @interface XClass {
 	 */
 	boolean regex() default false;
 
+	/**
+	 * 
+	 * @return a collection of regular expressions. All classes matching will be excluded from potential instrumentation from
+	 * this {@link XClass}. Note that this is always a regular expression and the {@link XClass#regex()} flag has no influence here.
+	 * 
+	 */
+  String[] exclude() default "";
+
 }

@@ -11,7 +11,7 @@ import de.schenk.jrtrace.annotations.XInvokeThis;
 import de.schenk.jrtrace.annotations.XLocation;
 import de.schenk.jrtrace.annotations.XMethod;
 
-@XClass(classes = { "de.schenk.jrtrace.enginex.testclasses.TestClass1" })
+@XClass(exclude={"abc.*","def.*"},classes = { "de.schenk.jrtrace.enginex.testclasses.TestClass1" })
 public class Script3 {
 
 	@XMethod(location=XLocation.BEFORE_INVOCATION,invokedname="invokedMethod",invokedclass="a.b.C")

@@ -4,8 +4,11 @@
 package de.schenk.enginex.helper;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import de.schenk.jrtrace.annotations.XClass;
 import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
 import de.schenk.objectweb.asm.Type;
 
@@ -243,6 +246,7 @@ public class EngineXMetadata {
 
 	XClassLoaderPolicy classLoaderPolicy = XClassLoaderPolicy.BOOT;
 	private boolean useRegex;
+  private HashSet<String> excludedClasses=new HashSet<String>();
 
 	public XClassLoaderPolicy getClassLoaderPolicy() {
 		return classLoaderPolicy;
@@ -289,6 +293,32 @@ public class EngineXMetadata {
       { return m; }
     }
     return null;
+  }
+
+  public void addExcludedClass(String exclude)
+  {
+    excludedClasses.add(exclude);
+  }
+  /**
+   * @return the set of regular expressions that excludes classes from instrumentation
+   */
+  public Set<String> getExcludedClasses() {
+   
+    return excludedClasses;
+  }
+
+  /**
+   * 
+   * Checks whether a class of name classname is excluded from instrumentation via the {@link XClass#exclude} attribute
+   * @param classname
+   * @return true, if this class is excludes.
+   */
+  public boolean excludesClass(String classname) {
+    for(String excludePattern: getExcludedClasses())
+    {
+      if(classname.matches(excludePattern)) return true;
+    }
+    return false;
   }
 
 }

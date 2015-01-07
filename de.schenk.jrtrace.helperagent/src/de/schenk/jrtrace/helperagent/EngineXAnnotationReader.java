@@ -269,6 +269,14 @@ public class EngineXAnnotationReader {
 				}
 				md.addClassesEntry((String) value);
 			}
+			
+			if ("exclude".equals(context)) {
+              if (!(value instanceof String)) {
+                  md.setInvalid("exclude field is not type String");
+                  return;
+              }
+              md.addExcludedClass(((String) value));
+          }
 			super.visit(name, value);
 		}
 

@@ -60,11 +60,16 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 
 		for (EngineXMetadata entry : allEngineXClasses) {
 			try {
-
+			  String cname = className == null ? null : Type.getType(
+                  "L" + className + ";").getClassName();
+			    if(entry.excludesClass(cname))
+			    {
+			      continue;
+			    }
+			  
 				List<String> classes = entry.getClasses();
 				for (String targetclass : classes) {
-					String cname = className == null ? null : Type.getType(
-							"L" + className + ";").getClassName();
+					
 
 					if (superClass == null) {
 						JRLog.error(String.format("Superclass null for class: "

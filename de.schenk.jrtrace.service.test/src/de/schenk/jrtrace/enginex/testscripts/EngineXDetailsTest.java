@@ -348,7 +348,16 @@ public class EngineXDetailsTest {
         assertEquals(1,result);
 
     }
-	@Test
+
+    @Test
+    public void test22XClassExclude() throws Exception {
+
+        Test22 test22 = new Test22();
+        int result = test22.test22();
+        assertEquals(1,result);
+
+    }
+    @Test
 	public void testcommonSuperProblem() throws Exception {
 
 		CSCore cscore = new CSCore();

@@ -68,6 +68,10 @@ public class EngineXAnnotationReaderTest {
 	        classBytes = new JavaUtil().getClassBytes(Script3.class);
 	        EngineXAnnotationReader annoReader = new EngineXAnnotationReader();
 	        EngineXMetadata metadata = annoReader.getMetaInformation(classBytes);
+	        Set<String> excludedClasses=metadata.getExcludedClasses();
+	        assertTrue( excludedClasses.contains("abc.*"));
+	        assertTrue( excludedClasses.contains("def.*"));
+	        
 	        assertNotNull(metadata);
 	        EngineXMethodMetadata theMethod = metadata.getMethod("method");
 	        assertNotNull(theMethod);
