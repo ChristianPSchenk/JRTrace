@@ -525,7 +525,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
   }
 
   /**
-   * @param lvs
+   * @param lvs set the instance of the variable sorter to create new local variables
    */
   public void setLocalVariableSorter(LocalVariablesSorter lvs) {
     this.localVariableSorter=lvs;

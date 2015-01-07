@@ -25,7 +25,7 @@ public class Test21 {
 	    y.clear();
 	    
 	    
-		return x.size()+y.size();
+		return 10*x.size()+y.size();
 	}
 
   

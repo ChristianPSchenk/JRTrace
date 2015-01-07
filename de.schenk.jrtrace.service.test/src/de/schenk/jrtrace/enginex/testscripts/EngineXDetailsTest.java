@@ -31,7 +31,11 @@ import de.schenk.jrtrace.service.JRTraceControllerService;
 /**
  * install the test enginex jar once , execute all tests and then detach.
  * 
- * @author
+ * Tests follow the naming scheme: "test##<comment>"
+ * 
+ * They usually use the test class Test## which are instrumented using Test#Script
+ * 
+ * @author Christian Schenk
  *
  */
 public class EngineXDetailsTest {
@@ -324,6 +328,15 @@ public class EngineXDetailsTest {
         Test20 test20 = new Test20();
         long result = test20.test20();
         assertEquals(15,result);
+
+    }
+    
+    @Test
+    public void test21UseInvokeClassName() throws Exception {
+
+        Test21 test21 = new Test21();
+        long result = test21.test21();
+        assertEquals(1,result);
 
     }
 
