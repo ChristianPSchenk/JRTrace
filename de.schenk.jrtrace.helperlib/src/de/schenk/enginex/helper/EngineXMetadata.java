@@ -314,6 +314,7 @@ public class EngineXMetadata {
    * @return true, if this class is excludes.
    */
   public boolean excludesClass(String classname) {
+	if(classname==null) return false;
     for(String excludePattern: getExcludedClasses())
     {
       if(classname.matches(excludePattern)) return true;
