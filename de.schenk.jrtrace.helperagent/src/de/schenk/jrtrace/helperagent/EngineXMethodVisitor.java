@@ -118,6 +118,14 @@ public class EngineXMethodVisitor extends AdviceAdapter {
   }
   
   
+  /** 
+   * {@inheritDoc}
+   */
+  @Override
+  public void visitFieldInsn(int opcode, String owner, String name, String desc) {
+    // TODO Auto-generated method stub
+    super.visitFieldInsn(opcode, owner, name, desc);
+  }
 
 
   

@@ -18,6 +18,12 @@ public class Script3 {
 	public void method(@XInvokeReturn Object x, @XInvokeParam(n=3) Object i,@XField(name="field") int field,@XInvokeThis Object o) {
 
 	}
+	
+	@XMethod(location=XLocation.GETFIELD,fieldclass="a.b.C",fieldname="field")
+	public void method2()
+	{
+	  
+	}
 
 	
 }

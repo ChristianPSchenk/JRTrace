@@ -82,6 +82,10 @@ public class EngineXMethodMetadata {
 
   private String invokedClass="";
 
+  private String fieldAccessClass="";
+  
+  private String fieldAccessName="";
+
 	public void addArgument(String value) {
 		if (argumentList == null)
 			argumentList = new ArrayList<String>();
@@ -300,6 +304,38 @@ public class EngineXMethodMetadata {
    */
   public String getInvokedMethodClass() {
     return invokedClass;
+  }
+
+  /**
+   * @return
+   */
+  public String getFieldAccessClass() {
+    
+    return fieldAccessClass;
+  }
+
+  /**
+   * @return
+   */
+  public String getFieldAccessName() {
+   
+    return fieldAccessName;
+  }
+
+  /**
+   * @param value the name of the class to restrict instrumentation of field access (GETFIELD/PUTFIELD)
+   */
+  public void setFieldAccessClass(String value) {
+    fieldAccessClass=value;
+    
+  }
+
+  /**
+   * @param value the name of the field to restrict instrumentation of field access (GETFIELD/PUTFIELD)
+   */
+  public void setFieldAccessName(String value) {
+    this.fieldAccessName=value;
+    
   }
 
 }

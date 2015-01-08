@@ -64,13 +64,20 @@ public class EngineXAnnotationReaderTest {
 	}
 
 	   @Test
-	    public void readAnnotationsTestOfInvokation() throws Exception {
+	    public void readAnnotationsTestOfInvokationAndFields() throws Exception {
 	        classBytes = new JavaUtil().getClassBytes(Script3.class);
 	        EngineXAnnotationReader annoReader = new EngineXAnnotationReader();
 	        EngineXMetadata metadata = annoReader.getMetaInformation(classBytes);
 	        Set<String> excludedClasses=metadata.getExcludedClasses();
 	        assertTrue( excludedClasses.contains("abc.*"));
 	        assertTrue( excludedClasses.contains("def.*"));
+	        
+	        EngineXMethodMetadata theMethod2 = metadata.getMethod("method2");
+            assertNotNull(theMethod2);
+            assertEquals("a.b.C",theMethod2.getFieldAccessClass());
+            assertEquals("field",theMethod2.getFieldAccessName());
+            
+	        
 	        
 	        assertNotNull(metadata);
 	        EngineXMethodMetadata theMethod = metadata.getMethod("method");

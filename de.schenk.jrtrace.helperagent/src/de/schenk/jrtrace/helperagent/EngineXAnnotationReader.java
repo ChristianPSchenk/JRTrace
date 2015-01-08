@@ -195,7 +195,15 @@ public class EngineXAnnotationReader {
 		      if("invokedclass".equals(name))
 		      {
 		        method.setInvokedClass((String)value);
-		      }
+		      } else
+		        if("fieldname".equals(name))
+		        {
+		          method.setFieldAccessName((String)value);
+		        } else
+		          if("fieldclass".equals(name))
+		          {
+		            method.setFieldAccessClass((String)value);
+		          }
 		    {
 		  if(context!=null)
 		  {
