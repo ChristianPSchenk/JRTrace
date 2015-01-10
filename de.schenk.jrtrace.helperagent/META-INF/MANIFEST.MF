@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JRTrace HelperAgent
 Bundle-SymbolicName: de.schenk.jrtrace.helperagent
-Bundle-Version: 1.1.1.qualifier
+Bundle-Version: 1.1.2.qualifier
 Bundle-Vendor: Christian Schenk
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Eclipse-BundleShape: dir
-Require-Bundle: de.schenk.jrtrace.helperlib;bundle-version="1.0.0",
+Require-Bundle: de.schenk.jrtrace.helperlib,
  org.eclipse.osgi
 Export-Package: de.schenk.jrtrace.helperagent
