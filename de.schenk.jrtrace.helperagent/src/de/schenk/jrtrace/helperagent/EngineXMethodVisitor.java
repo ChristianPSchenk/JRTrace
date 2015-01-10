@@ -331,7 +331,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 				localVarType = targetReturnType;
 				if (injectionSource != -1) {
 					if (injectionSource == 0) {
-						localVarIndex = 0;
+						localVarIndex = getLocalVariablePosition(injectedMethod,injectionSource);
 						localVarType = Type.getType("L"
 								+ classVisitor.getClassName() + ";");
 					} else {

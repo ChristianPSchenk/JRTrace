@@ -6,9 +6,17 @@ package de.schenk.jrtrace.enginex.testscripts;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.management.ManagementFactory;
 import java.net.URL;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import javax.management.Notification;
+import javax.management.NotificationListener;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -24,6 +32,7 @@ import org.osgi.framework.FrameworkEvent;
 
 import de.schenk.jrtrace.commonsuper.test.CSCore;
 import de.schenk.jrtrace.helperlib.JRLog;
+import de.schenk.jrtrace.helperlib.NotificationConstants;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.JRTraceControllerService;
@@ -38,7 +47,7 @@ import de.schenk.jrtrace.service.JRTraceControllerService;
  * @author Christian Schenk
  *
  */
-public class EngineXDetailsTest {
+public class EngineXDetailsTest implements NotificationListener {
 
 	private JRTraceController bmController;
 	private String pid;
@@ -69,6 +78,8 @@ public class EngineXDetailsTest {
 				new Path("lib/EngineXTests.jar"), null);
 		String fullPath = FileLocator.resolve(fileURL).toURI().toASCIIString()
 				.replace("file:/", "");
+		machine.addClientListener(
+				NotificationConstants.NOTIFY_PROBLEM, this);
 		machine.installEngineXClass(fullPath);
 
 	}
@@ -367,6 +378,23 @@ public class EngineXDetailsTest {
         assertEquals(11,Test23.hitpoint);
 
     }
+
+    @Test
+    public void test24ErrorMessageForXThisOnStaticMethod()
+    throws Exception
+    {
+    	notificationBarrier=new CyclicBarrier(2);
+    	Test24 test24=new Test24();
+    	Test24.test24();
+    	try
+    	{
+    	notificationBarrier.await(1,TimeUnit.SECONDS);
+    	}catch(TimeoutException t)
+    	{
+    		fail("no problem detected by the agent in Test24");
+    	}
+    	
+    }
     
     @Test
 	public void testcommonSuperProblem() throws Exception {
@@ -386,6 +414,20 @@ public class EngineXDetailsTest {
 		Class<?> c2 = Display.class;
 		Class<?> jsv = JavaSourceViewerConfiguration.class;
 		assertTrue(true);
+	}
+
+	CyclicBarrier notificationBarrier=new CyclicBarrier(2);
+	@Override
+	public void handleNotification(Notification notification, Object handback) {
+		if(notificationBarrier==null) return;
+		
+			try {
+				notificationBarrier.await();
+			} catch (InterruptedException | BrokenBarrierException e) {
+throw new RuntimeException("test");			}
+		
+		notificationBarrier=null;
+		
 	}
 
 }
