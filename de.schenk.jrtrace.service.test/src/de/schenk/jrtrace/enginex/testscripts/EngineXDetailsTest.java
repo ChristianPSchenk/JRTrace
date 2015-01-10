@@ -357,6 +357,17 @@ public class EngineXDetailsTest {
         assertEquals(1,result);
 
     }
+
+    @Test
+    public void test23FieldAccess() throws Exception {
+
+        Test23 test23 = new Test23();
+        int result = test23.test23();
+        assertEquals(25,result);
+        assertEquals(11,Test23.hitpoint);
+
+    }
+    
     @Test
 	public void testcommonSuperProblem() throws Exception {
 

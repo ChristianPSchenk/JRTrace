@@ -338,4 +338,8 @@ public class EngineXMethodMetadata {
     
   }
 
+public boolean matchesField(String fieldClassName, String fieldMethodName) {
+	 return checkStringMatch(fieldMethodName,getFieldAccessName()) && checkStringMatch(fieldClassName.replace('/', '.'),getFieldAccessClass());
+}
+
 }

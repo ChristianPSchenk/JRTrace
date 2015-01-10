@@ -1,0 +1,1737 @@
+>> No more data
++starting main in TestProcess, kill expected on 62119
+TestProcess.main(): Writing int to file
++doSomeThing()
+Writing file!Testprocess successfully killed
++interrupted
++done
+>> No more data
++starting main in TestProcess, kill expected on 62133
+TestProcess.main(): Writing int to file
++doSomeThing()
+Writing file!Testprocess successfully killed
++interrupted
++done
+doit
+doit of InstrumentedClass / class loaded with: org.eclipse.osgi.internal.loader.EquinoxClassLoader@10ad95cd[de.schenk.jrtrace.service.enginex.targets:1.0.3.qualifier(id=7)]
+doit of InstrumentedClass / class loaded with: org.eclipse.osgi.internal.loader.EquinoxClassLoader@10ad95cd[de.schenk.jrtrace.service.enginex.targets:1.0.3.qualifier(id=7)]
+doit of InstrumentedClass / class loaded with: org.eclipse.osgi.internal.loader.EquinoxClassLoader@10ad95cd[de.schenk.jrtrace.service.enginex.targets:1.0.3.qualifier(id=7)]
+>> No more data
++starting main in TestProcess, kill expected on 62168
++doSomeThing()
+Testprocess successfully killed
++interrupted
++done
+>> No more data
++starting main in TestProcess, kill expected on 62169
++doSomeThing()
+0
+1
+Testprocess successfully killed
++interrupted
++done
+>> No more data
++starting main in TestProcess, kill expected on 62187
++doSomeThing()
+Testprocess successfully killed
++interrupted
++done
+>> No more data
++starting main in TestProcess, kill expected on 62197
++doSomeThing()
+Testprocess successfully killed
++interrupted
++done
+Jan 10, 2015 4:17:05 PM ClientCommunicatorAdmin restart
+WARNUNG: Failed to restart: java.io.IOException: Failed to get a RMI stub: javax.naming.CommunicationException [Root exception is java.rmi.NoSuchObjectException: no such object in table]
++starting main in TestProcess, kill expected on 62207
++doSomeThing()
+Testprocess successfully killed
++interrupted
++done
+Array ['a', 'b']
+
+Map [ ["a">5],  ["b">7]]
+
+Array ["array", "b", null, "c"]
+
+InspectUtilTest$Recurse [recurse=InspectUtilTest$Recurse [recurse=InspectUtilTest$Recurse [recurse=(depth reached)]]]
+
+InspectUtilTest$Recurse [
+recurse=InspectUtilTest$Recurse [recurse=InspectUtilTest$Recurse [recurse=InspectUtilTest$Recurse [text="du!"]]]]
+
+miniclass.toString()
+
+InspectUtilTest$MainClass [sub=InspectUtilTest$SubClass [main=<parent>]]
+
+miniclass.toString()
+
+InspectUtilTest$SampleClass [fstring="string", fbyte=5, fdouble=2,000000, fchar='a', ffloat=3,000000, flong=4
+, fbool=true, farray=Array ["array", "b", null, "c"], fenum=Value1]
+
+InspectUtilTest$MiniClass [fint=5, fsub="sub"]
+
+InspectUtilTest$MiniClass [fint=5, fsub="sub"]
+
+InspectUtilTest$SampleClass [fstring="string", fint=1, fbyte=5, fdouble=2,000000, fchar='a', ffloat=3,000000, flong=4
+, fbool=true, farray=Array ["array", "b", null, "c"], fenum=Value1]
+
+InspectUtilTest$SampleClass [fstring="string", fint=1, fbyte=5, fdouble=2,000000, fchar='a', ffloat=3,000000, flong=4
+, fbool=true, farray=Array ["array", "b", null, "c"], STATICSTRING="staticstring", fenum=Value1]
+
+miniclass.toString()
+
+Collection [5]
+
+Map []
+
+Array [
+ InspectUtilTest$MiniClass [fint=5, fsub="sub"]
+ InspectUtilTest$SampleClass [
+ fstring="kjdhfaksjhfskjfhsakjfhsakfhskdfhskfhskdfhskjfhskfhsdkjfhsdkjfhhskjfhskfhslkfhsddkjfhskjfhskjlf", fint=1
+ , fbyte=5, fdouble=2,000000, fchar='a', ffloat=3,000000, flong=4, fbool=true, farray=Array ["array", "b", null, "c"]
+ , fenum=Value1]
+]
+
+InspectUtilTest$SampleClass [fstring="string", fint=1, fbyte=5, fdouble=2,000000, fchar='a', ffloat=3,000000, flong=4
+, fbool=true, farray=Array ["array", "b", null, "c"], fenum=Value1]
+
+16:17:07.066 Retransforming 6 classes.
+16:17:07.070 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:07.071 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:07.071 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:07.071 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:07.118 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:07.134 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:07.134 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:07.165 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:07.165 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:07.165 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:07.196 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:07.196 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:07.196 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:07.259 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:07.259 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:07.274 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:07.305 EngineXHelper.addEngineXClass() took 286 ms.
+16:17:07.305 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:07.305 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:07.305 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:07.305 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test21Script with classloader de.schenk.enginex.helper.EngineXClassLoader@393bcd6b
+16:17:07.305 AgentMain.stop(disconnect:false)
+16:17:07.305 Clear retransform of 6 classes.
+16:17:07.305 Retransforming 6 classes.
+16:17:07.493 JRTrace Agent launched port:62212
+16:17:08.571 AgentMain.connect() now connected
+16:17:08.692 Retransforming 7 classes.
+16:17:08.692 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:08.692 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:08.692 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:08.707 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:08.738 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:08.738 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:08.738 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:08.770 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:08.770 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:08.770 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:08.801 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:08.817 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:08.817 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:08.879 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:08.879 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:08.879 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:08.910 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:08.910 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:08.910 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:08.942 EngineXHelper.addEngineXClass() took 338 ms.
+16:17:08.942 AgentMain.stop(disconnect:false)
+16:17:08.942 Clear retransform of 6 classes.
+16:17:08.942 Retransforming 6 classes.
+16:17:09.129 JRTrace Agent launched port:62221
+16:17:10.192 AgentMain.connect() now connected
+16:17:10.302 Retransforming 8 classes.
+16:17:10.302 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:10.302 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:10.302 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:10.302 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:10.333 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:10.349 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:10.349 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:10.380 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:10.380 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:10.396 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:10.427 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:10.427 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:10.442 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:10.536 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:10.536 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:10.536 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:10.583 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:10.583 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:10.583 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:10.614 EngineXHelper.addEngineXClass() took 397 ms.
+16:17:10.630 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:17:10.630 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:17:10.630 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:17:10.630 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:10.630 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test23Script with classloader de.schenk.enginex.helper.EngineXClassLoader@3346e906
+16:17:23.982 AgentMain.stop(disconnect:false)
+16:17:23.982 Clear retransform of 7 classes.
+16:17:23.982 Retransforming 7 classes.
+16:17:24.230 JRTrace Agent launched port:62226
+16:17:25.277 AgentMain.connect() now connected
+16:17:25.386 Retransforming 9 classes.
+16:17:25.386 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:25.386 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:25.401 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:25.401 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:25.433 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:25.433 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:25.448 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:25.479 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:25.479 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:25.479 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:25.526 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:17:25.542 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:17:25.542 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:17:25.542 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:25.573 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:25.573 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:25.589 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:25.683 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:25.683 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:25.683 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:25.714 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:25.714 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:25.729 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:25.761 EngineXHelper.addEngineXClass() took 447 ms.
+16:17:25.776 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test21Script with classloader de.schenk.enginex.helper.EngineXClassLoader@2c557eee
+16:17:25.776 AgentMain.stop(disconnect:false)
+16:17:25.776 Clear retransform of 7 classes.
+16:17:25.776 Retransforming 7 classes.
+16:17:26.027 JRTrace Agent launched port:62232
+16:17:27.106 AgentMain.connect() now connected
+16:17:27.181 Retransforming 9 classes.
+16:17:27.181 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:27.181 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:27.181 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:27.181 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:27.228 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:27.228 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:27.228 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:27.259 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:27.259 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:27.275 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:27.306 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:17:27.306 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:17:27.306 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:17:27.321 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:27.384 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:27.400 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:27.431 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:27.556 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:27.556 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:27.556 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:27.594 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:27.594 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:27.594 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:27.640 EngineXHelper.addEngineXClass() took 517 ms.
+16:17:27.640 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:17:27.640 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:17:27.656 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:27.656 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test10Script with classloader de.schenk.enginex.helper.EngineXClassLoader@66a8ff6d
+16:17:27.656 AgentMain.stop(disconnect:false)
+16:17:27.656 Clear retransform of 8 classes.
+16:17:27.656 Retransforming 8 classes.
+Jan 10, 2015 4:17:27 PM ClientCommunicatorAdmin restart
+WARNUNG: Failed to restart: java.io.IOException: Failed to get a RMI stub: javax.naming.CommunicationException [Root exception is java.rmi.NoSuchObjectException: no such object in table]
+16:17:27.955 JRTrace Agent launched port:62235
+16:17:29.018 AgentMain.connect() now connected
+16:17:29.086 Retransforming 10 classes.
+16:17:29.086 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:29.086 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:29.086 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:29.086 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:29.117 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:29.133 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:29.133 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:29.164 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:29.164 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:29.164 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:29.195 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:17:29.211 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:17:29.211 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:17:29.211 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:29.242 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:29.242 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:29.242 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:29.289 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:17:29.289 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:17:29.289 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:29.414 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:29.414 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:29.414 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:29.461 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:29.461 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:29.461 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:29.492 EngineXHelper.addEngineXClass() took 446 ms.
+16:17:29.492 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:17:29.508 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:17:29.508 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:17:29.508 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:29.508 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test11Script with classloader de.schenk.enginex.helper.EngineXClassLoader@6d0a4a22
+16:17:29.508 AgentMain.stop(disconnect:false)
+16:17:29.523 Clear retransform of 9 classes.
+16:17:29.523 Retransforming 9 classes.
+Jan 10, 2015 4:17:29 PM ClientCommunicatorAdmin restart
+WARNUNG: Failed to restart: java.io.IOException: Failed to get a RMI stub: javax.naming.CommunicationException [Root exception is java.rmi.NoSuchObjectException: no such object in table]
+16:17:29.840 JRTrace Agent launched port:62240
+16:17:30.918 AgentMain.connect() now connected
+16:17:31.021 Retransforming 11 classes.
+16:17:31.021 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:31.036 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:31.036 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:31.036 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:31.083 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:31.083 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:31.083 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:31.115 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:31.130 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:31.130 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:31.161 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:17:31.161 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:17:31.161 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:17:31.161 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:31.193 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:31.208 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:31.208 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:31.240 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:17:31.240 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:17:31.240 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:17:31.240 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:31.271 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:17:31.286 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:17:31.286 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:31.380 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:31.396 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:31.396 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:31.427 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:31.427 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:31.443 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:31.474 EngineXHelper.addEngineXClass() took 537 ms.
+16:17:31.474 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:17:31.474 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:17:31.474 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:31.490 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test12Script with classloader de.schenk.enginex.helper.EngineXClassLoader@a5d23c9
+16:17:31.505 AgentMain.stop(disconnect:false)
+16:17:31.505 Clear retransform of 10 classes.
+16:17:31.505 Retransforming 10 classes.
+16:17:31.880 JRTrace Agent launched port:62246
+16:17:32.943 AgentMain.connect() now connected
+16:17:33.017 Retransforming 12 classes.
+16:17:33.017 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:33.017 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:33.017 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:33.017 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:33.064 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:33.080 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:33.080 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:33.111 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:33.127 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:33.127 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:33.158 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:17:33.158 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:17:33.174 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:17:33.174 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:33.205 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:33.205 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:33.205 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:33.252 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:17:33.252 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:17:33.252 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:17:33.267 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:33.299 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:17:33.314 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:17:33.314 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:33.424 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:17:33.424 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:17:33.439 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:33.470 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:33.470 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:33.470 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:33.517 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:33.517 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:33.517 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:33.564 EngineXHelper.addEngineXClass() took 596 ms.
+16:17:33.564 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test13
+16:17:33.564 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test13Script method: testinstrumentation
+16:17:33.564 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test13Script method: testinstrumentation2
+16:17:33.564 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test13 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:33.580 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test13Script with classloader de.schenk.enginex.helper.EngineXClassLoader@565c887e
+16:17:33.580 AgentMain.stop(disconnect:false)
+16:17:33.580 Clear retransform of 11 classes.
+16:17:33.580 Retransforming 11 classes.
+16:17:33.986 JRTrace Agent launched port:62250
+16:17:35.018 AgentMain.connect() now connected
+16:17:35.094 Retransforming 12 classes.
+16:17:35.110 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:35.110 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:35.110 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:35.126 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:35.172 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:35.188 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:35.188 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:35.235 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:35.235 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:35.235 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:35.266 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:17:35.282 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:17:35.282 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:17:35.282 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:35.313 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:35.329 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:35.329 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:35.360 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:17:35.360 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:17:35.360 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:17:35.376 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:35.422 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:17:35.422 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:17:35.422 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:35.532 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:17:35.532 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:17:35.547 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:35.579 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:35.594 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:35.594 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:35.626 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:35.626 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:35.641 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:35.672 EngineXHelper.addEngineXClass() took 630 ms.
+16:17:35.672 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:17:35.672 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:17:35.672 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:35.688 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test16Script with classloader de.schenk.enginex.helper.EngineXClassLoader@1fa796a4
+16:17:35.688 AgentMain.stop(disconnect:false)
+16:17:35.688 Clear retransform of 11 classes.
+16:17:35.688 Retransforming 11 classes.
+16:17:36.079 JRTrace Agent launched port:62255
+16:17:37.139 AgentMain.connect() now connected
+16:17:37.234 Retransforming 13 classes.
+16:17:37.234 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:17:37.234 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:17:37.234 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:37.281 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:17:37.281 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:17:37.281 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:17:37.281 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:37.312 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:17:37.312 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:17:37.312 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:37.391 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:17:37.391 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:17:37.391 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:37.422 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:37.422 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:37.422 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:37.469 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:37.469 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:37.469 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:37.469 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:37.500 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:37.500 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:37.500 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:37.562 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:37.562 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:37.562 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:37.594 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:37.594 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:37.594 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:37.641 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:17:37.641 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:17:37.641 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:17:37.641 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:37.703 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:37.703 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:37.703 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:37.750 EngineXHelper.addEngineXClass() took 586 ms.
+16:17:37.750 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+16:17:37.750 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+16:17:37.750 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:37.750 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test20Script with classloader de.schenk.enginex.helper.EngineXClassLoader@744f0e0b
+16:17:37.750 AgentMain.stop(disconnect:false)
+16:17:37.766 Clear retransform of 12 classes.
+16:17:37.766 Retransforming 12 classes.
+Jan 10, 2015 4:17:38 PM ClientCommunicatorAdmin restart
+WARNUNG: Failed to restart: java.io.IOException: Failed to get a RMI stub: javax.naming.CommunicationException [Root exception is java.rmi.NoSuchObjectException: no such object in table]
+16:17:38.180 JRTrace Agent launched port:62260
+16:17:39.219 AgentMain.connect() now connected
+16:17:39.318 Retransforming 14 classes.
+16:17:39.318 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:17:39.318 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:17:39.333 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:39.380 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+16:17:39.396 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+16:17:39.396 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:39.427 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:17:39.427 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:17:39.427 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:17:39.427 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:39.458 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:17:39.474 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:17:39.474 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:39.536 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:17:39.536 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:17:39.536 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:39.583 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:39.583 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:39.583 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:39.615 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:39.615 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:39.630 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:39.630 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:39.661 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:39.661 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:39.677 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:39.708 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:39.708 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:39.708 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:39.740 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:39.755 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:39.755 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:39.786 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:17:39.786 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:17:39.802 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:17:39.802 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:39.865 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:39.865 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:39.865 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:39.896 EngineXHelper.addEngineXClass() took 647 ms.
+16:17:39.911 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test2Script with classloader de.schenk.enginex.helper.EngineXClassLoader@1764e45e
+16:17:39.911 AgentMain.stop(disconnect:false)
+16:17:39.911 Clear retransform of 12 classes.
+16:17:39.911 Retransforming 12 classes.
+16:17:40.333 JRTrace Agent launched port:62264
+16:17:41.367 AgentMain.connect() now connected
+16:17:41.452 Retransforming 14 classes.
+16:17:41.452 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:17:41.452 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:17:41.452 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:41.484 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+16:17:41.499 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+16:17:41.499 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:41.530 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:17:41.530 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:17:41.530 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:17:41.530 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:41.562 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:17:41.562 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:17:41.562 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:41.640 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:17:41.640 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:17:41.640 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:41.671 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:41.671 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:41.671 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:41.718 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:41.718 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:41.718 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:41.718 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:41.749 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:41.749 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:41.749 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:41.796 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:41.796 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:41.796 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:41.827 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:41.843 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:41.843 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:41.874 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:17:41.890 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:17:41.890 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:17:41.890 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:41.968 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:41.968 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:41.968 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:41.999 EngineXHelper.addEngineXClass() took 616 ms.
+16:17:42.015 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2
+16:17:42.015 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test1Script method: test1
+16:17:42.015 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:42.015 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test1Script with classloader de.schenk.enginex.helper.EngineXClassLoader@677c2820
+16:17:42.015 AgentMain.stop(disconnect:false)
+16:17:42.030 Clear retransform of 13 classes.
+16:17:42.030 Retransforming 13 classes.
+16:17:42.468 JRTrace Agent launched port:62268
+16:17:43.531 AgentMain.connect() now connected
+16:17:43.592 Retransforming 15 classes.
+16:17:43.592 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2
+16:17:43.592 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test1Script method: test1
+16:17:43.592 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:43.639 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:17:43.639 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:17:43.639 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:43.670 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+16:17:43.670 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+16:17:43.670 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:43.717 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:17:43.717 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:17:43.717 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:17:43.717 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:43.748 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:17:43.748 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:17:43.748 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:43.826 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:17:43.826 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:17:43.826 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:43.857 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:43.857 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:43.857 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:43.889 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:43.904 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:43.904 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:43.904 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:43.935 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:43.935 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:43.935 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:43.967 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:43.982 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:43.982 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:44.014 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:44.014 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:44.014 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:44.045 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:17:44.045 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:17:44.045 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:17:44.060 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:44.123 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:44.123 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:44.123 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:44.154 EngineXHelper.addEngineXClass() took 611 ms.
+16:17:44.154 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test3
+16:17:44.170 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test3Script method: testinstrumentation
+16:17:44.170 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test3 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:44.170 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test3Script with classloader de.schenk.enginex.helper.EngineXClassLoader@37344d31
+16:17:44.170 AgentMain.stop(disconnect:false)
+16:17:44.170 Clear retransform of 14 classes.
+16:17:44.170 Retransforming 14 classes.
+16:17:44.670 JRTrace Agent launched port:62273
+16:17:45.708 AgentMain.connect() now connected
+16:17:45.795 Retransforming 16 classes.
+16:17:45.795 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2
+16:17:45.795 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test1Script method: test1
+16:17:45.795 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:45.842 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:17:45.842 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:17:45.842 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:45.874 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+16:17:45.874 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+16:17:45.874 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:45.920 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:17:45.920 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:17:45.920 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:17:45.920 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:45.952 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:17:45.952 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:17:45.952 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:46.030 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test3
+16:17:46.030 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test3Script method: testinstrumentation
+16:17:46.030 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test3 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:46.061 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:17:46.061 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:17:46.061 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:46.108 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:46.108 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:46.108 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:46.139 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:46.139 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:46.139 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:46.139 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:46.186 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:46.186 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:46.186 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:46.217 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:46.217 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:46.217 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:46.264 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:46.264 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:46.264 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:46.295 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:17:46.295 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:17:46.295 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:17:46.311 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:46.374 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:46.374 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:46.374 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:46.420 EngineXHelper.addEngineXClass() took 683 ms.
+16:17:46.420 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test4
+16:17:46.420 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test4Script method: testinstrumentation
+16:17:46.420 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test4 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:46.420 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test4Script with classloader de.schenk.enginex.helper.EngineXClassLoader@6054ac20
+16:17:46.420 AgentMain.stop(disconnect:false)
+16:17:46.420 Clear retransform of 15 classes.
+16:17:46.420 Retransforming 15 classes.
+Jan 10, 2015 4:17:46 PM ClientCommunicatorAdmin restart
+WARNUNG: Failed to restart: java.io.IOException: Failed to get a RMI stub: javax.naming.CommunicationException [Root exception is java.rmi.NoSuchObjectException: no such object in table]
+16:17:46.947 JRTrace Agent launched port:62276
+16:17:48.015 AgentMain.connect() now connected
+16:17:48.117 Retransforming 17 classes.
+16:17:48.117 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2
+16:17:48.117 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test1Script method: test1
+16:17:48.117 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:48.163 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test4
+16:17:48.179 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test4Script method: testinstrumentation
+16:17:48.179 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test4 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:48.210 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:17:48.210 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:17:48.210 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:48.257 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+16:17:48.257 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+16:17:48.257 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:48.288 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:17:48.288 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:17:48.288 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:17:48.304 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:48.335 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:17:48.335 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:17:48.335 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:48.413 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test3
+16:17:48.413 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test3Script method: testinstrumentation
+16:17:48.413 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test3 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:48.445 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:17:48.445 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:17:48.460 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:48.492 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:48.492 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:48.492 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:48.523 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:48.538 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:48.538 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:48.538 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:48.570 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:48.570 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:48.570 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:48.617 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:48.617 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:48.617 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:48.648 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:48.648 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:48.663 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:48.695 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:17:48.710 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:17:48.710 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:17:48.710 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:48.773 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:48.773 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:48.788 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:48.820 EngineXHelper.addEngineXClass() took 781 ms.
+16:17:48.820 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test5
+16:17:48.820 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test5Script method: testinstrumentation
+16:17:48.820 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test5 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:48.820 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test5Script with classloader de.schenk.enginex.helper.EngineXClassLoader@55315a00
+16:17:48.820 AgentMain.stop(disconnect:false)
+16:17:48.820 Clear retransform of 16 classes.
+16:17:48.820 Retransforming 16 classes.
+Jan 10, 2015 4:17:49 PM ClientCommunicatorAdmin restart
+WARNUNG: Failed to restart: java.io.IOException: Failed to get a RMI stub: javax.naming.CommunicationException [Root exception is java.rmi.NoSuchObjectException: no such object in table]
+16:17:49.388 JRTrace Agent launched port:62282
+16:17:50.428 AgentMain.connect() now connected
+16:17:50.527 Retransforming 18 classes.
+16:17:50.527 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2
+16:17:50.527 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test1Script method: test1
+16:17:50.527 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:50.559 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test4
+16:17:50.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test4Script method: testinstrumentation
+16:17:50.559 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test4 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:50.605 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:17:50.605 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:17:50.605 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:50.637 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test5
+16:17:50.637 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test5Script method: testinstrumentation
+16:17:50.637 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test5 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:50.684 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+16:17:50.684 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+16:17:50.684 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:50.715 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:17:50.715 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:17:50.715 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:17:50.715 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:50.746 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:17:50.762 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:17:50.762 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:50.824 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test3
+16:17:50.824 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test3Script method: testinstrumentation
+16:17:50.840 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test3 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:50.871 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:17:50.871 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:17:50.871 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:50.902 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:50.902 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:50.918 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:50.949 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:50.949 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:50.949 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:50.949 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:50.980 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:50.996 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:50.996 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:51.027 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:51.027 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:51.043 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:51.074 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:51.074 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:51.074 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:51.105 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:17:51.121 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:17:51.121 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:17:51.121 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:51.184 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:51.184 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:51.184 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:51.215 EngineXHelper.addEngineXClass() took 773 ms.
+16:17:51.230 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test6
+16:17:51.230 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test6Script method: testinstrumentation
+16:17:51.230 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test6 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:51.230 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test6Script with classloader de.schenk.enginex.helper.EngineXClassLoader@fe09374
+16:17:51.230 AgentMain.stop(disconnect:false)
+16:17:51.230 Clear retransform of 17 classes.
+16:17:51.230 Retransforming 17 classes.
+16:17:51.824 JRTrace Agent launched port:62287
+Jan 10, 2015 4:17:52 PM ClientCommunicatorAdmin restart
+WARNUNG: Failed to restart: java.io.IOException: Failed to get a RMI stub: javax.naming.ServiceUnavailableException [Root exception is java.rmi.ConnectException: Connection refused to host: 192.168.56.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect]
+16:17:52.884 AgentMain.connect() now connected
+16:17:52.967 Retransforming 19 classes.
+16:17:52.967 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2
+16:17:52.967 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test1Script method: test1
+16:17:52.967 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:52.998 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test6
+16:17:53.014 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test6Script method: testinstrumentation
+16:17:53.014 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test6 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:53.045 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test4
+16:17:53.045 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test4Script method: testinstrumentation
+16:17:53.045 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test4 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:53.092 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:17:53.092 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:17:53.092 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:53.123 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test5
+16:17:53.123 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test5Script method: testinstrumentation
+16:17:53.123 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test5 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:53.154 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+16:17:53.170 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+16:17:53.170 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:53.201 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:17:53.201 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:17:53.201 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:17:53.201 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:53.232 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:17:53.232 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:17:53.248 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:53.311 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test3
+16:17:53.311 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test3Script method: testinstrumentation
+16:17:53.311 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test3 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:53.357 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:17:53.357 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:17:53.357 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:53.389 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:53.389 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:53.389 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:53.420 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:53.436 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:53.436 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:53.436 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:53.467 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:53.467 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:53.467 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:53.514 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:53.514 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:53.514 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:53.545 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:53.561 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:53.561 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:53.592 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:17:53.592 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:17:53.592 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:17:53.592 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:53.670 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:53.670 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:53.670 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:53.701 EngineXHelper.addEngineXClass() took 808 ms.
+16:17:53.701 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test7
+16:17:53.717 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test7Script method: testinstrumentation
+16:17:53.717 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test7 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:53.717 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test7Script with classloader de.schenk.enginex.helper.EngineXClassLoader@857f1a7
+16:17:53.717 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test7ScriptBoot with classloader de.schenk.enginex.helper.EngineXClassLoader@13e0f380
+16:17:53.717 AgentMain.stop(disconnect:false)
+16:17:53.717 Clear retransform of 18 classes.
+16:17:53.717 Retransforming 18 classes.
+16:17:54.342 JRTrace Agent launched port:62292
+16:17:55.393 AgentMain.connect() now connected
+16:17:55.493 Retransforming 20 classes.
+16:17:55.493 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test7
+16:17:55.493 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test7Script method: testinstrumentation
+16:17:55.493 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test7 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:55.524 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2
+16:17:55.524 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test1Script method: test1
+16:17:55.539 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:55.571 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test6
+16:17:55.571 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test6Script method: testinstrumentation
+16:17:55.571 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test6 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:55.602 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test4
+16:17:55.602 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test4Script method: testinstrumentation
+16:17:55.618 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test4 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:55.649 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:17:55.649 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:17:55.649 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:55.680 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test5
+16:17:55.680 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test5Script method: testinstrumentation
+16:17:55.680 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test5 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:55.727 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+16:17:55.727 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+16:17:55.727 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:55.758 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:17:55.758 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:17:55.758 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:17:55.774 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:55.805 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:17:55.805 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:17:55.805 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:55.883 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test3
+16:17:55.883 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test3Script method: testinstrumentation
+16:17:55.883 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test3 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:55.914 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:17:55.914 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:17:55.914 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:55.961 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:55.961 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:55.961 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:55.993 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:55.993 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:55.993 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:56.008 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:56.039 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:56.039 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:56.039 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:56.086 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:56.086 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:56.086 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:56.118 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:56.133 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:56.133 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:56.180 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:17:56.180 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:17:56.180 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:17:56.180 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:56.258 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:56.258 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:56.258 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:56.305 EngineXHelper.addEngineXClass() took 890 ms.
+16:17:56.305 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test8
+16:17:56.305 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test8Script method: testinstrumentation
+16:17:56.305 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test8 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:56.305 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test8Script with classloader de.schenk.enginex.helper.EngineXClassLoader@63c6c5e5
+16:17:56.321 AgentMain.stop(disconnect:false)
+16:17:56.321 Clear retransform of 19 classes.
+16:17:56.321 Retransforming 19 classes.
+16:17:57.008 JRTrace Agent launched port:62298
+Jan 10, 2015 4:17:58 PM ClientCommunicatorAdmin restart
+WARNUNG: Failed to restart: java.io.IOException: Failed to get a RMI stub: javax.naming.ServiceUnavailableException [Root exception is java.rmi.ConnectException: Connection refused to host: 192.168.56.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect]
+16:17:58.057 AgentMain.connect() now connected
+16:17:58.157 Retransforming 21 classes.
+16:17:58.157 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test7
+16:17:58.157 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test7Script method: testinstrumentation
+16:17:58.157 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test7 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:58.188 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2
+16:17:58.188 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test1Script method: test1
+16:17:58.188 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:58.235 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test6
+16:17:58.235 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test6Script method: testinstrumentation
+16:17:58.235 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test6 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:58.266 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test4
+16:17:58.282 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test4Script method: testinstrumentation
+16:17:58.282 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test4 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:58.313 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:17:58.328 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:17:58.328 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:58.360 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test5
+16:17:58.360 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test5Script method: testinstrumentation
+16:17:58.360 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test5 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:58.391 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+16:17:58.407 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+16:17:58.407 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:58.438 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:17:58.438 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:17:58.438 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:17:58.438 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:58.469 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:17:58.469 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:17:58.485 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:58.547 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test3
+16:17:58.547 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test3Script method: testinstrumentation
+16:17:58.547 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test3 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:58.579 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:17:58.594 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:17:58.594 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:58.625 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:17:58.625 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:17:58.625 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:58.672 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:17:58.672 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:58.672 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:17:58.703 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:58.766 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:17:58.766 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:17:58.766 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:58.813 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:17:58.828 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:17:58.828 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:58.875 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:17:58.875 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:17:58.891 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:58.922 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test8
+16:17:58.922 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test8Script method: testinstrumentation
+16:17:58.922 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test8 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:58.969 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:17:58.969 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:17:58.969 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:17:58.969 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:59.063 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:17:59.068 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:17:59.068 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:59.099 EngineXHelper.addEngineXClass() took 1024 ms.
+16:17:59.099 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test9
+16:17:59.099 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test9Script method: testinstrumentation
+16:17:59.114 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test9 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:17:59.114 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test9Script with classloader de.schenk.enginex.helper.EngineXClassLoader@5300694d
+16:17:59.114 AgentMain.stop(disconnect:false)
+16:17:59.114 Clear retransform of 20 classes.
+16:17:59.114 Retransforming 20 classes.
+16:17:59.849 JRTrace Agent launched port:62303
+Jan 10, 2015 4:18:00 PM ClientCommunicatorAdmin restart
+WARNUNG: Failed to restart: java.io.IOException: Failed to get a RMI stub: javax.naming.ServiceUnavailableException [Root exception is java.rmi.ConnectException: Connection refused to host: 192.168.56.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect]
+16:18:00.891 AgentMain.connect() now connected
+16:18:00.968 Retransforming 22 classes.
+16:18:00.968 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test7
+16:18:00.968 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test7Script method: testinstrumentation
+16:18:00.968 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test7 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.015 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2
+16:18:01.015 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test1Script method: test1
+16:18:01.015 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.046 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test6
+16:18:01.046 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test6Script method: testinstrumentation
+16:18:01.046 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test6 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.077 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test4
+16:18:01.093 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test4Script method: testinstrumentation
+16:18:01.093 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test4 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.124 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:18:01.124 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:18:01.124 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.155 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test5
+16:18:01.155 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test5Script method: testinstrumentation
+16:18:01.171 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test5 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.202 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+16:18:01.202 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+16:18:01.202 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.249 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:18:01.249 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:18:01.249 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:18:01.249 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.280 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:18:01.280 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:18:01.296 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.359 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test3
+16:18:01.359 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test3Script method: testinstrumentation
+16:18:01.359 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test3 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.405 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:18:01.405 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:18:01.405 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.437 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:18:01.437 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:18:01.437 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.484 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:18:01.484 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:18:01.484 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:18:01.484 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.515 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:18:01.515 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:18:01.530 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.562 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:18:01.562 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:18:01.562 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.593 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:18:01.593 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:18:01.609 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.640 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test9
+16:18:01.640 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test9Script method: testinstrumentation
+16:18:01.640 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test9 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.671 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test8
+16:18:01.687 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test8Script method: testinstrumentation
+16:18:01.687 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test8 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.718 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:18:01.718 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:18:01.734 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:18:01.734 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.796 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:18:01.812 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:18:01.812 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.843 EngineXHelper.addEngineXClass() took 927 ms.
+16:18:01.843 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test14
+16:18:01.843 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test14Script method: testinstrumentation
+16:18:01.843 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test14 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:01.859 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test14Script with classloader de.schenk.enginex.helper.EngineXClassLoader@31cd0efa
+16:18:01.874 AgentMain.stop(disconnect:false)
+16:18:01.874 Clear retransform of 21 classes.
+16:18:01.874 Retransforming 21 classes.
+16:18:02.609 JRTrace Agent launched port:62309
+Jan 10, 2015 4:18:03 PM ClientCommunicatorAdmin restart
+WARNUNG: Failed to restart: java.io.IOException: Failed to get a RMI stub: javax.naming.ServiceUnavailableException [Root exception is java.rmi.ConnectException: Connection refused to host: 192.168.56.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect]
+16:18:03.666 AgentMain.connect() now connected
+16:18:03.750 Retransforming 23 classes.
+16:18:03.750 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test7
+16:18:03.750 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test7Script method: testinstrumentation
+16:18:03.750 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test7 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:03.782 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2
+16:18:03.782 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test1Script method: test1
+16:18:03.782 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:03.813 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test6
+16:18:03.828 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test6Script method: testinstrumentation
+16:18:03.828 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test6 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:03.860 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test4
+16:18:03.860 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test4Script method: testinstrumentation
+16:18:03.860 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test4 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:03.891 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:18:03.907 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:18:03.907 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:03.938 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test5
+16:18:03.938 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test5Script method: testinstrumentation
+16:18:03.953 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test5 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:04.000 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test14
+16:18:04.000 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test14Script method: testinstrumentation
+16:18:04.000 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test14 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:04.047 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+16:18:04.047 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+16:18:04.047 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:04.094 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:18:04.110 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:18:04.110 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:18:04.110 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:04.157 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:18:04.157 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:18:04.157 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:04.235 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test3
+16:18:04.235 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test3Script method: testinstrumentation
+16:18:04.235 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test3 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:04.282 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:18:04.282 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:18:04.282 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:04.313 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:18:04.313 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:18:04.313 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:04.360 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:18:04.360 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:18:04.360 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:18:04.360 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:04.391 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:18:04.391 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:18:04.407 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:04.438 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:18:04.438 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:18:04.438 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:04.469 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:18:04.485 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:18:04.485 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:04.516 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test9
+16:18:04.516 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test9Script method: testinstrumentation
+16:18:04.516 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test9 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:04.563 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test8
+16:18:04.563 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test8Script method: testinstrumentation
+16:18:04.563 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test8 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:04.594 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:18:04.610 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:18:04.610 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:18:04.610 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:04.672 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:18:04.682 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:18:04.682 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:04.713 EngineXHelper.addEngineXClass() took 1038 ms.
+16:18:04.713 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test19
+16:18:04.729 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test19Script method: testinstrumentation
+16:18:04.729 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test19 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:04.729 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test19Script with classloader de.schenk.enginex.helper.EngineXClassLoader@3465edf9
+16:18:04.729 AgentMain.stop(disconnect:false)
+16:18:04.744 Clear retransform of 22 classes.
+16:18:04.744 Retransforming 22 classes.
+16:18:05.510 JRTrace Agent launched port:62316
+Jan 10, 2015 4:18:06 PM ClientCommunicatorAdmin restart
+WARNUNG: Failed to restart: java.io.IOException: Failed to get a RMI stub: javax.naming.ServiceUnavailableException [Root exception is java.rmi.ConnectException: Connection refused to host: 192.168.56.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect]
+16:18:06.546 AgentMain.connect() now connected
+16:18:06.641 Retransforming 24 classes.
+16:18:06.657 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test19
+16:18:06.657 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test19Script method: testinstrumentation
+16:18:06.657 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test19 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:06.688 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test7
+16:18:06.688 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test7Script method: testinstrumentation
+16:18:06.688 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test7 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:06.735 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2
+16:18:06.735 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test1Script method: test1
+16:18:06.735 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:06.766 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test6
+16:18:06.766 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test6Script method: testinstrumentation
+16:18:06.766 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test6 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:06.813 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test4
+16:18:06.813 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test4Script method: testinstrumentation
+16:18:06.813 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test4 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:06.844 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:18:06.844 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:18:06.844 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:06.876 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test5
+16:18:06.876 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test5Script method: testinstrumentation
+16:18:06.891 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test5 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:06.922 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test14
+16:18:06.922 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test14Script method: testinstrumentation
+16:18:06.922 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test14 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:06.969 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+16:18:06.969 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+16:18:06.969 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:07.001 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:18:07.001 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:18:07.001 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:18:07.001 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:07.047 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:18:07.047 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:18:07.047 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:07.110 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test3
+16:18:07.110 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test3Script method: testinstrumentation
+16:18:07.126 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test3 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:07.157 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:18:07.157 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:18:07.157 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:07.188 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:18:07.188 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:18:07.188 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:07.235 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:18:07.235 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:18:07.235 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:18:07.235 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:07.266 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:18:07.266 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:18:07.282 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:07.313 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:18:07.329 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:18:07.329 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:07.360 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:18:07.360 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:18:07.360 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:07.407 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test9
+16:18:07.407 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test9Script method: testinstrumentation
+16:18:07.407 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test9 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:07.454 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test8
+16:18:07.454 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test8Script method: testinstrumentation
+16:18:07.454 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test8 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:07.485 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:18:07.485 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:18:07.485 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:18:07.501 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:07.563 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:18:07.577 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:18:07.577 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:07.608 EngineXHelper.addEngineXClass() took 1037 ms.
+16:18:07.608 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test18
+16:18:07.608 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test18Script method: testinstrumentation
+16:18:07.608 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test18 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:07.624 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test18Script with classloader de.schenk.enginex.helper.EngineXClassLoader@137d04d8
+16:18:07.624 AgentMain.stop(disconnect:false)
+16:18:07.624 Clear retransform of 23 classes.
+16:18:07.624 Retransforming 23 classes.
+16:18:08.420 JRTrace Agent launched port:62320
+16:18:09.459 AgentMain.connect() now connected
+16:18:09.523 Retransforming 25 classes.
+16:18:09.523 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test7
+16:18:09.523 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test7Script method: testinstrumentation
+16:18:09.523 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test7 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:09.555 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:18:09.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:18:09.555 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:09.602 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:18:09.602 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:18:09.602 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:18:09.602 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:09.633 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:18:09.633 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:18:09.648 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:09.680 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:18:09.680 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:18:09.680 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:09.711 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:18:09.711 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:18:09.711 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:09.758 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:18:09.758 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:18:09.758 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:09.789 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test8
+16:18:09.789 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test8Script method: testinstrumentation
+16:18:09.805 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test8 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:09.836 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test18
+16:18:09.836 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test18Script method: testinstrumentation
+16:18:09.836 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test18 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:09.867 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test19
+16:18:09.867 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test19Script method: testinstrumentation
+16:18:09.867 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test19 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:09.914 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2
+16:18:09.914 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test1Script method: test1
+16:18:09.914 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:09.945 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test6
+16:18:09.945 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test6Script method: testinstrumentation
+16:18:09.945 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test6 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:09.992 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test4
+16:18:09.992 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test4Script method: testinstrumentation
+16:18:09.992 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test4 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:10.039 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test5
+16:18:10.039 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test5Script method: testinstrumentation
+16:18:10.039 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test5 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:10.070 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test14
+16:18:10.086 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test14Script method: testinstrumentation
+16:18:10.086 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test14 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:10.117 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+16:18:10.117 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+16:18:10.117 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:10.195 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test3
+16:18:10.195 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test3Script method: testinstrumentation
+16:18:10.195 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test3 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:10.227 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:18:10.227 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:18:10.227 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:10.273 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:18:10.273 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:18:10.273 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:10.305 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:18:10.305 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:18:10.305 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:18:10.305 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:10.352 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test9
+16:18:10.352 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test9Script method: testinstrumentation
+16:18:10.352 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test9 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:10.383 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:18:10.383 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:18:10.383 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:18:10.383 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:10.461 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:18:10.461 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:18:10.461 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:10.492 EngineXHelper.addEngineXClass() took 1019 ms.
+16:18:10.508 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test17
+16:18:10.508 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test17Script method: doit
+16:18:10.508 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test17 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:10.508 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test17Script with classloader de.schenk.enginex.helper.EngineXClassLoader@1c36ab22
+16:18:10.508 AgentMain.stop(disconnect:false)
+16:18:10.508 Clear retransform of 24 classes.
+16:18:10.508 Retransforming 24 classes.
+Jan 10, 2015 4:18:11 PM ClientCommunicatorAdmin restart
+WARNUNG: Failed to restart: java.io.IOException: Failed to get a RMI stub: javax.naming.CommunicationException [Root exception is java.rmi.NoSuchObjectException: no such object in table]
+16:18:11.359 JRTrace Agent launched port:62324
+16:18:12.406 AgentMain.connect() now connected
+16:18:12.504 Retransforming 26 classes.
+16:18:12.504 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test7
+16:18:12.504 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test7Script method: testinstrumentation
+16:18:12.504 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test7 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:12.551 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:18:12.567 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:18:12.567 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:12.598 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:18:12.598 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:18:12.598 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:18:12.598 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:12.645 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:18:12.645 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:18:12.645 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:12.676 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:18:12.676 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:18:12.676 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:12.723 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:18:12.723 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:18:12.723 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:12.754 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:18:12.754 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:18:12.754 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:12.801 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test8
+16:18:12.801 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test8Script method: testinstrumentation
+16:18:12.801 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test8 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:12.833 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test18
+16:18:12.833 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test18Script method: testinstrumentation
+16:18:12.848 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test18 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:12.879 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test19
+16:18:12.879 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test19Script method: testinstrumentation
+16:18:12.879 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test19 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:12.911 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2
+16:18:12.911 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test1Script method: test1
+16:18:12.926 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:12.958 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test6
+16:18:12.958 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test6Script method: testinstrumentation
+16:18:12.958 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test6 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:12.989 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test4
+16:18:12.989 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test4Script method: testinstrumentation
+16:18:13.004 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test4 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:13.036 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test5
+16:18:13.036 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test5Script method: testinstrumentation
+16:18:13.036 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test5 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:13.067 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test14
+16:18:13.067 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test14Script method: testinstrumentation
+16:18:13.083 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test14 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:13.114 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+16:18:13.114 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+16:18:13.114 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:13.192 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test17
+16:18:13.192 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test17Script method: doit
+16:18:13.192 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test17 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:13.223 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test3
+16:18:13.223 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test3Script method: testinstrumentation
+16:18:13.223 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test3 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:13.270 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:18:13.270 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:18:13.270 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:13.301 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:18:13.301 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:18:13.301 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:13.348 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:18:13.348 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:18:13.348 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:18:13.348 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:13.379 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test9
+16:18:13.395 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test9Script method: testinstrumentation
+16:18:13.395 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test9 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:13.426 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:18:13.434 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:18:13.434 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:18:13.434 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:13.497 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:18:13.497 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:18:13.497 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:13.544 EngineXHelper.addEngineXClass() took 1122 ms.
+16:18:13.544 Applying rules to class:org/eclipse/jdt/ui/text/JavaSourceViewerConfiguration
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:13.559 Writing bytes before/after transformation of class org/eclipse/jdt/ui/text/JavaSourceViewerConfiguration to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:13.575 AgentMain.stop(disconnect:false)
+16:18:13.575 Clear retransform of 25 classes.
+16:18:13.575 Retransforming 25 classes.
+16:18:14.466 JRTrace Agent launched port:62330
+16:18:15.507 AgentMain.connect() now connected
+16:18:15.581 Retransforming 27 classes.
+16:18:15.581 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test7
+16:18:15.581 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test7Script method: testinstrumentation
+16:18:15.581 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test7 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:15.612 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:18:15.628 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:18:15.628 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:15.659 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:18:15.674 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:18:15.674 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:18:15.674 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:15.706 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:18:15.706 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:18:15.706 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:15.737 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:18:15.753 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:18:15.753 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:15.784 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:18:15.784 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:18:15.784 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:15.831 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:18:15.831 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:18:15.831 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:15.878 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test8
+16:18:15.878 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test8Script method: testinstrumentation
+16:18:15.878 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test8 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:15.909 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test18
+16:18:15.909 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test18Script method: testinstrumentation
+16:18:15.924 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test18 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:15.956 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test19
+16:18:15.956 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test19Script method: testinstrumentation
+16:18:15.956 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test19 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:15.987 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2
+16:18:16.003 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test1Script method: test1
+16:18:16.003 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:16.034 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test6
+16:18:16.034 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test6Script method: testinstrumentation
+16:18:16.034 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test6 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:16.065 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test4
+16:18:16.065 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test4Script method: testinstrumentation
+16:18:16.081 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test4 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:16.112 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test5
+16:18:16.112 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test5Script method: testinstrumentation
+16:18:16.112 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test5 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:16.159 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test14
+16:18:16.159 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test14Script method: testinstrumentation
+16:18:16.174 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test14 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:16.206 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+16:18:16.206 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+16:18:16.206 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:16.284 Applying rules to class:org/eclipse/jdt/ui/text/JavaSourceViewerConfiguration
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.299 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.299 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.299 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.299 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.299 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.299 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.299 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.299 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.299 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:16.299 Writing bytes before/after transformation of class org/eclipse/jdt/ui/text/JavaSourceViewerConfiguration to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:16.331 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test17
+16:18:16.346 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test17Script method: doit
+16:18:16.346 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test17 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:16.378 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test3
+16:18:16.378 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test3Script method: testinstrumentation
+16:18:16.393 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test3 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:16.424 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:18:16.424 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:18:16.424 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:16.471 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:18:16.471 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:18:16.471 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:16.503 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:18:16.503 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:18:16.503 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:18:16.518 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:16.551 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test9
+16:18:16.551 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test9Script method: testinstrumentation
+16:18:16.551 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test9 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:16.582 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:18:16.598 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:18:16.598 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:18:16.598 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:16.660 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:18:16.676 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:18:16.676 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:16.707 EngineXHelper.addEngineXClass() took 1184 ms.
+16:18:16.707 Applying rules to class:de/schenk/jrtrace/commonsuper/test/CSCore
+16:18:16.707 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.CSCoreScript method: testinstrumentation
+16:18:16.738 Writing bytes before/after transformation of class de/schenk/jrtrace/commonsuper/test/CSCore to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:16.738 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.CSCoreScript with classloader de.schenk.enginex.helper.EngineXClassLoader@5e9671e6
+cscore4 method
+de.schenk.jrtrace.commonsuper.test.CSCore@5dd2ea0a
+16:18:16.754 AgentMain.stop(disconnect:false)
+16:18:16.754 Clear retransform of 26 classes.
+16:18:16.754 Retransforming 26 classes.
+16:18:17.676 JRTrace Agent launched port:62333
+16:18:18.745 AgentMain.connect() now connected
+16:18:18.837 Retransforming 28 classes.
+16:18:18.837 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test7
+16:18:18.837 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test7Script method: testinstrumentation
+16:18:18.852 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test7 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:18.883 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+16:18:18.899 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+16:18:18.899 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:18.930 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+16:18:18.930 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+16:18:18.930 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+16:18:18.930 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:18.977 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+16:18:18.977 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+16:18:18.977 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.008 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+16:18:19.008 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+16:18:19.008 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.055 Applying rules to class:org/eclipse/swt/graphics/Cursor
+16:18:19.055 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+16:18:19.055 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.102 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+16:18:19.102 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+16:18:19.102 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.133 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test8
+16:18:19.133 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test8Script method: testinstrumentation
+16:18:19.133 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test8 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.180 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test18
+16:18:19.180 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test18Script method: testinstrumentation
+16:18:19.180 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test18 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.212 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test19
+16:18:19.227 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test19Script method: testinstrumentation
+16:18:19.227 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test19 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.258 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2
+16:18:19.258 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test1Script method: test1
+16:18:19.258 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.305 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test6
+16:18:19.305 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test6Script method: testinstrumentation
+16:18:19.305 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test6 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.337 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test4
+16:18:19.352 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test4Script method: testinstrumentation
+16:18:19.352 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test4 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.399 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test5
+16:18:19.399 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test5Script method: testinstrumentation
+16:18:19.399 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test5 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.430 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test14
+16:18:19.430 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test14Script method: testinstrumentation
+16:18:19.430 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test14 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.477 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+16:18:19.477 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+16:18:19.477 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.540 Applying rules to class:org/eclipse/jdt/ui/text/JavaSourceViewerConfiguration
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+16:18:19.555 Writing bytes before/after transformation of class org/eclipse/jdt/ui/text/JavaSourceViewerConfiguration to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.602 Applying rules to class:de/schenk/jrtrace/commonsuper/test/CSCore
+16:18:19.602 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.CSCoreScript method: testinstrumentation
+16:18:19.602 Writing bytes before/after transformation of class de/schenk/jrtrace/commonsuper/test/CSCore to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.633 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test17
+16:18:19.633 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test17Script method: doit
+16:18:19.649 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test17 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.680 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test3
+16:18:19.680 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test3Script method: testinstrumentation
+16:18:19.680 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test3 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.727 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+16:18:19.727 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+16:18:19.727 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.774 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+16:18:19.777 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+16:18:19.777 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.809 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+16:18:19.809 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:18:19.809 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+16:18:19.809 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.855 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test9
+16:18:19.855 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test9Script method: testinstrumentation
+16:18:19.855 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test9 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.887 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+16:18:19.902 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+16:18:19.902 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+16:18:19.902 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:19.965 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+16:18:19.965 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+16:18:19.980 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:20.012 EngineXHelper.addEngineXClass() took 1244 ms.
+16:18:20.012 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test15
+16:18:20.012 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test15Script method: doit
+16:18:20.012 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test15 to directory C:\Users\CDLK\AppData\Local\Temp\
+16:18:20.027 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test15Script with classloader de.schenk.enginex.helper.EngineXClassLoader@542beecb
+16:18:20.027 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test15UnannotatedClass with classloader de.schenk.enginex.helper.EngineXClassLoader@6f2a1ff0
+16:18:20.027 AgentMain.stop(disconnect:false)
+16:18:20.027 Clear retransform of 27 classes.
+16:18:20.027 Retransforming 27 classes.

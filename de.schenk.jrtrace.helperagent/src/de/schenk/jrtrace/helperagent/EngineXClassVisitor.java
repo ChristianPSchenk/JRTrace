@@ -3,6 +3,9 @@
  **/
 package de.schenk.jrtrace.helperagent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.schenk.enginex.helper.EngineXMetadata;
 import de.schenk.enginex.helper.EngineXMethodMetadata;
 import de.schenk.jrtrace.helperagent.FieldList.FieldEntry;
@@ -51,24 +54,36 @@ public class EngineXClassVisitor extends ClassVisitor {
 	@Override
 	public MethodVisitor visitMethod(int access, String name, String desc,
 			String signature, String[] exceptions) {
+		
+		MethodVisitor currentVisitor = super.visitMethod(access,
+                name, desc, signature, exceptions);
+		
+
+	
+		List<EngineXMethodMetadata> matchingMethods=new ArrayList<EngineXMethodMetadata>();
 		for (EngineXMethodMetadata method : metadata.getMethods()) {
 			if (method.mayMatch(name, desc)) {
-				boolean isStatic = ((access & Opcodes.ACC_STATIC) != 0) ? true
-						: false;
-				MethodVisitor methodVisitor = super.visitMethod(access,
-                    name, desc, signature, exceptions);
-				EngineXMethodVisitor jrtraceVisitor = new EngineXMethodVisitor(this,
-                    isStatic, access, name, desc, methodVisitor, method);
-				LocalVariablesSorter lvs=new LocalVariablesSorter(access, desc, jrtraceVisitor);
-				jrtraceVisitor.setLocalVariableSorter(lvs);
-				return new JSRInlinerAdapter(lvs,
-						access, name, desc, signature, exceptions);
+				
+				matchingMethods.add(method);
+				
 			}
 		}
 
-		return new JSRInlinerAdapter(super.visitMethod(access, name, desc,
-				signature, exceptions), access, name, desc, signature,
-				exceptions);
+		if(!matchingMethods.isEmpty())
+		{
+			boolean isStatic = ((access & Opcodes.ACC_STATIC) != 0) ? true
+					: false;
+		 MethodVisitor oldVisitor = currentVisitor;
+		 EngineXMethodVisitor newMethodVisitor = new EngineXMethodVisitor(this,
+            isStatic, access, name, desc,oldVisitor, matchingMethods);
+			LocalVariablesSorter lvs=new LocalVariablesSorter(access, desc, newMethodVisitor);
+		 newMethodVisitor.setLocalVariableSorter(lvs);
+		 currentVisitor=lvs;
+		}
+		
+		return new JSRInlinerAdapter(currentVisitor,
+				access, name, desc, signature, exceptions);
+		 
 	}
 
 	public FieldEntry getFieldEntry(String injectionSource) {

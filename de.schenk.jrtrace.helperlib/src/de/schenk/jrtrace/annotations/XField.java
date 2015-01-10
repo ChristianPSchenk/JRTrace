@@ -23,7 +23,7 @@ public @interface XField {
 	/**
 	 * 
 	 * @return the name of the field to inject into this parameter. The field
-	 *         can be static or non-static and the search will also extend to
+	 *         canT be static or non-static and the search will also extend to
 	 *         fields in superclasses. Note: access to fields in superclasses
 	 *         will internally rely on java reflection, while the access to
 	 *         declared fields of the targetclass will use native
