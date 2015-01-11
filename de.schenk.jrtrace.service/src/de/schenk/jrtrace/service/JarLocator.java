@@ -3,6 +3,7 @@
  **/
 package de.schenk.jrtrace.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -33,9 +34,8 @@ public class JarLocator {
 		Path path = new Path(jarpath);
 		URL fileURL = FileLocator.find(bundle, path, null);
 
-		String pathString = FileLocator.resolve(fileURL).toURI()
-				.toASCIIString();
-		return pathString.replace("file:/", "");
+		return new File(FileLocator.resolve(fileURL).toURI()).getAbsolutePath();
+	
 	}
 
 	static public String getJRTraceHelperAgent() {

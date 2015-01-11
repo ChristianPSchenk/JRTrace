@@ -8,6 +8,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.util.concurrent.BrokenBarrierException;
@@ -76,8 +77,7 @@ public class EngineXDetailsTest implements NotificationListener {
 
 		URL fileURL = FileLocator.find(bundle,
 				new Path("lib/EngineXTests.jar"), null);
-		String fullPath = FileLocator.resolve(fileURL).toURI().toASCIIString()
-				.replace("file:/", "");
+		String fullPath = new File(FileLocator.resolve(fileURL).toURI()).getAbsolutePath();
 		machine.addClientListener(
 				NotificationConstants.NOTIFY_PROBLEM, this);
 		machine.installEngineXClass(fullPath);

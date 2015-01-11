@@ -6,6 +6,7 @@ package de.schenk.jrtrace.enginex.testscripts;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.net.URL;
 
@@ -72,8 +73,7 @@ public class EngineXLifeCycleTest {
 								"bin/de/schenk/jrtrace/enginex/testclasses/JobInstrument.class"),
 						null);
 
-		String fullPath = FileLocator.resolve(fileURL).toURI().toASCIIString()
-				.replace("file:/", "");
+		String fullPath = new File(FileLocator.resolve(fileURL).toURI()).getAbsolutePath();
 
 		machine.installEngineXClass(fullPath);
 
@@ -100,8 +100,8 @@ public class EngineXLifeCycleTest {
 
 		URL fileURL = FileLocator.find(bundle,
 				new Path("lib/EngineXTests.jar"), null);
-		String fullPath = FileLocator.resolve(fileURL).toURI().toASCIIString()
-				.replace("file:/", "");
+		String fullPath = new File(FileLocator.resolve(fileURL).toURI()).getAbsolutePath();
+				
 		machine.installEngineXClass(fullPath);
 
 		InstrumentedClass2 c = new InstrumentedClass2();
@@ -133,8 +133,8 @@ public class EngineXLifeCycleTest {
 								"bin/de/schenk/jrtrace/enginex/testclasses/EngineXTestClass.class"),
 						null);
 
-		String fullPath = FileLocator.resolve(fileURL).toURI().toASCIIString()
-				.replace("file:/", "");
+		String fullPath =new File( FileLocator.resolve(fileURL).toURI()).getAbsolutePath();
+				
 		machine.installEngineXClass(fullPath);
 
 		// InstrumentedClass is not loaded yet after installing the enginex

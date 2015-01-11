@@ -86,9 +86,8 @@ public class Activator extends Plugin {
 		Path path = new Path(jarpath);
 		URL fileURL = FileLocator.find(bundle, path, null);
 
-		String pathString = FileLocator.resolve(fileURL).toURI()
-				.toASCIIString();
-		return pathString.replace("file:/", "");
+		
+		return new File(FileLocator.toFileURL(fileURL).toURI()).getAbsolutePath();
 	}
 
 }

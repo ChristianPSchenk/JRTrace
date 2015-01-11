@@ -158,7 +158,11 @@ public class HelperLib {
 						includeStatics, formatterMap));
 	}
 
-	public void initPluginUpload(Object o) {
+	/**
+	 * Just intermediate demo code how to install a bundle into a target machine.
+	 * @param o
+	 */
+	private void initPluginUpload(Object o) {
 		ClassLoader swt_classloader = (o.getClass().getClassLoader());
 		System.out.println(swt_classloader.toString());
 

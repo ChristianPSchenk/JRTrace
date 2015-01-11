@@ -92,7 +92,7 @@ public class JavaUtil {
 
 		String fullPath = getClassPathForClass(TestProcess.class);
 		ArrayList<String> commandParameters = new ArrayList<String>();
-		commandParameters.add(javaHome + "\\bin\\java.exe");
+		commandParameters.add(javaHome + File.separator+"bin"+File.separator+"java.exe");
 		commandParameters.add(parameters);
 
 		commandParameters.add("-cp");
@@ -131,7 +131,8 @@ public class JavaUtil {
 		String file = getFileForClass(class1);
 		String internalclassname = EngineXNameUtil.getInternalName(class1
 				.getName());
-		int index = file.indexOf(internalclassname);
+		String pathLikeClassName=internalclassname.replace("/", File.separator);
+		int index = file.indexOf(pathLikeClassName);
 
 		return file.substring(0, index - 1);
 	}
@@ -193,8 +194,7 @@ public class JavaUtil {
 		Bundle bundle = Platform.getBundle(bundleid);
 		URL fileURL = FileLocator.find(bundle, path, null);
 
-		fullPath = FileLocator.resolve(fileURL).toURI().toASCIIString()
-				.replace("file:/", "");
+		fullPath = new File(FileLocator.resolve(fileURL).toURI()).getAbsolutePath();
 		return fullPath;
 	}
 
