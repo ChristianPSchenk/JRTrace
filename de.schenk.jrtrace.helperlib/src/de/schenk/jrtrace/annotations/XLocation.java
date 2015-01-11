@@ -26,6 +26,9 @@ public enum XLocation {
 	ENTRY,
 	/**
 	 * Injected code will be called before target method return.
+	 * For EXIT, the method may have a return type (which needs to be assignable to the return
+	 * type of the instrumented method). If it has a return type, the instrumented method will
+	 * return the value returned by the jrtrace method instead of the original return type.
 	 */
 	EXIT, 
 	/**

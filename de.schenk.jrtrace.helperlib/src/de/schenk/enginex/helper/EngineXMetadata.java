@@ -157,7 +157,7 @@ public class EngineXMetadata {
 		if (!getDerived()) {
 			return mayMatchClassName(className);
 		}
-		boolean result = mayMatchClassHierarchy(superclass);
+		boolean result = mayMatchClassName(className)  || mayMatchClassHierarchy(superclass);
 		if (result)
 			return true;
 		for (Class<?> iface : interfaces) {

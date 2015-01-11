@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * If a parameter of the injected method is annotated with {@link XThis} the
  * object of the target method will be injected into this parameter when called.
  * It is in the responsibility of the developer to ensure that the types of the
- * target object and the type of the method parameter match.
+ * target object and the type of the method parameter match. 
  * 
  * @author Christian Schenk
  *

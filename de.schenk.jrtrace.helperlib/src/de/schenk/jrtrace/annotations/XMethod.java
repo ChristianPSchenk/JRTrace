@@ -13,6 +13,12 @@ import java.lang.annotation.Target;
  * {@link XMethod} to define that they are intended to be called from the target
  * class. The attributes define the specific call locations.
  * 
+ * Usually, methods have no return type (void). Non-void return types are allowed for
+ * {@link XLocation#EXIT} (to replace the return value of the intrumented value) and on
+ * {@link XLocation#AFTER_INVOCATION} to overwrite the return value of the invoked method 
+ * and the return type is mandatory on {@link XLocation#REPLACE_INVOCATION}. 
+ * 
+ * 
  * @author Christian Schenk
  *
  */

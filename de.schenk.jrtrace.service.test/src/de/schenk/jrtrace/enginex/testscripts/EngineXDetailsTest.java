@@ -378,6 +378,15 @@ public class EngineXDetailsTest implements NotificationListener {
         assertEquals(11,Test23.hitpoint);
 
     }
+    @Test
+    public void test25BugfixDerivedDoesntIncludeClassItself() throws Exception {
+
+        Test25 test25 = new Test25();
+        String result = test25.test25();
+        assertEquals("instrumented",result);
+        
+
+    }
 
     @Test
     public void test24ErrorMessageForXThisOnStaticMethod()
