@@ -3,9 +3,20 @@
  **/
 package de.schenk.jrtrace.service;
 
+import java.io.File;
 
 public interface JRTraceController {
 
+	/**
+	 * 
+	 * Checks accessibility of the folder:  %tmp%/hsperfdata_%username%. If this folder is not accessible the VirtualMachine list
+	 * and attach API will not work on windows.
+	 * @return true, if the folder doesn't exist but can be created -OR- if the folder exists and files can be created inside.
+	 */
+	public boolean hsperfdataAccessible();
+	
+	
+	
 	/**
 	 * 
 	 * @return a list of all JVMs on this system active

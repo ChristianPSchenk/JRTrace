@@ -12,7 +12,9 @@ import java.lang.annotation.Target;
  * Methods inside of a class annotated with {@link XClass} can be annotated with
  * {@link XMethod} to define that they are intended to be called from the target
  * class. The attributes define the specific call locations.
- * 
+ * <p>
+ * The most important attribute is {@link XMethod#location()} which specifies where the injected method should be called. 
+ * <p>
  * Usually, methods have no return type (void). Non-void return types are allowed for
  * {@link XLocation#EXIT} (to replace the return value of the intrumented value) and on
  * {@link XLocation#AFTER_INVOCATION} to overwrite the return value of the invoked method 
@@ -60,7 +62,7 @@ public @interface XMethod {
 	 * 
 	 * @return valid only for {@link XLocation#BEFORE_INVOCATION} and similar: the name of the 
 	 * method that is invoked. If not set, any method will match. If set, any method with the given name
-	 * will match. If set and the class has "regex" set, will match any method name that
+	 * will match. If set and the {@link XClass#regex()} is true, will match any method name that
 	 * matches the regular expression provided.
 	 */
   String invokedname() default "";

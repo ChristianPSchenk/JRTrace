@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  * If a parameter of the injected method is annotated with {@link XInvokeParam} the
  * value of the corresponding call argument of the instrumented method invocation 
  * is injected here. 
- * <p>Only valid with {@XLocation.BEFORE_INVOKE},{@XLocation.AFTER_INVOKE} and {@XLocation.REPLACE_INVOKE}
+ * <p>Only valid with {@link XLocation#BEFORE_INVOKE},{@link XLocation#AFTER_INVOKE} and {@link XLocation#REPLACE_INVOKE}
  * 
  * @author Christian Schenk
  *
@@ -31,7 +31,7 @@ public @interface XInvokeParam {
 	 *         <p>
 	 *         2: ...
 	 *         <p>
-	 *         0: only valid for non-static method calls: the instance on which the method is invoked.
+	 *         0: only valid for non-static method calls: the instance on which the method is invoked, same as using {@link XInvokeThis}
 	 */
 	int n();
 }

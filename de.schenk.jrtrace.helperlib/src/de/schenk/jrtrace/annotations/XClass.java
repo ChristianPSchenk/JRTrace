@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  * ability to inject method calls into methods of the target java application
  * (into "target methods" of "target classes").
  * <p>
- * The classes and methods that are called by the target injection are referred
+ * The classes and methods that are inserted into the target application are referred
  * to as the "injected classes" or "injected methods".
  * <p>
  * 
@@ -41,7 +41,7 @@ public @interface XClass {
 	 * 
 	 * @return This annotation can specify one ore more fully qualified
 	 *         classnames. Only target classes or interfaces that match one of
-	 *         these classnames are potential targets for code injection. Which
+	 *         these classnames are potential targets for code injection from this class. Which
 	 *         classes qualify as targets for injection can also be influenced
 	 *         using the annotation {@link #derived()}.
 	 *         <p>
@@ -61,9 +61,20 @@ public @interface XClass {
 	 *         options. Depending on this option, injected code will be loaded
 	 *         with different ClassLoaders. The default is to load the class
 	 *         with a classloader that can access the bootclasspath only.
+	 *         <p>
+	 *         Example:
+	 *         <pre>
+	 *         @XClass(classloaderpolicy=XClassLoaderPolicy.BOOT)</pre
+	 *         
+	 *         
 	 */
 	XClassLoaderPolicy classloaderpolicy() default XClassLoaderPolicy.BOOT;
 
+	/**
+	 * 
+	 * @return if {@link XClassLoaderPolicy#NAMED} is selected the name of a class has to be specified. The ClassLoader
+	 * of this class will be the used for the injected code.
+	 */
 	String classloadername() default "";
 
 	/**
@@ -78,6 +89,12 @@ public @interface XClass {
 	 * 
 	 * @return if set to true, regular expressions will be used to test
 	 *         classnames, methodnames and argument names.
+	 *         
+	 *         <p>
+	 *         Example:
+	 *         </p>
+	 *         <pre>@XClass(classes="org\\.eclipse.*",regex=true)</pre>
+	 *         Methods from this Class maybe injected in all classes from the namespace <b>org.eclipse</b>
 	 * 
 	 */
 	boolean regex() default false;

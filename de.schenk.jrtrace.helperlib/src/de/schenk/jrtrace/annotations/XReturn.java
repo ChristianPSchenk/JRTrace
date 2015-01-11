@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 /**
  * The first parameter of the injected method may be annotated with
  * {@link XReturn} if and only if the {@link XMethod#location() } is set to
- * {@Link XLocation#EXIT}. In this case the value of one of the arguments
+ * {@Link XLocation#EXIT}. In this case the return value 
  * of the target method will be injected into this parameter when called. It is
  * in the responsibility of the developer to ensure that the types of the target
  * method parameter and the injected method parameter match.

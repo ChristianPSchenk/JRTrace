@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
+import de.schenk.jrtrace.service.JRTraceControllerService;
 import de.schenk.jrtrace.service.VMInfo;
 
 /**
@@ -78,6 +79,8 @@ public class PIDSelectionDialog extends TitleAreaDialog {
 
   private Button usePIDButton;
 
+private boolean attachWorking;
+
 
   /**
    * @param parentShell
@@ -86,6 +89,8 @@ public class PIDSelectionDialog extends TitleAreaDialog {
   public PIDSelectionDialog(Shell parentShell, boolean showIdentifyTextButton) {
     super(parentShell);
     this.showFilterTextButton=showIdentifyTextButton;
+    this.attachWorking=JRTraceControllerService.getInstance().hsperfdataAccessible();
+   
   }
 
   /**
@@ -366,6 +371,13 @@ createButton(parent, IDialogConstants.CANCEL_ID,
     table.setLayoutData(gd);
     table.setHeaderVisible(true);
     table.setLinesVisible(true);
+    
+    if(!attachWorking)
+    {
+    	this.setErrorMessage("In the folder %TMP%/hsperfdata_%USERNAME% no files can be created or the folder itself cannot be created. In this case JVMs cannot be listed and attaching to running processes is not possible. Ensure that this folder is accessible. A restart of the development environment might be required.")
+    	;
+    }
+    
     viewer.setInput(vms);
     return area;
 

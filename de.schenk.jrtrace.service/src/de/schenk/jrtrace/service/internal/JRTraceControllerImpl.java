@@ -3,6 +3,8 @@
  **/
 package de.schenk.jrtrace.service.internal;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 
@@ -61,4 +63,35 @@ public class JRTraceControllerImpl implements JRTraceController {
 	public IJRTraceVM getMachine(int port) {
 		return new JRTraceConnectingImpl(port);
 	}
-}
+
+	@Override
+	
+		public boolean hsperfdataAccessible()
+		{
+			String username;
+			String tmpDir=System.getenv("TMP");
+			String userName=System.getenv("USERNAME");
+			File hsperfdataFolder=new File(tmpDir+"\\hsperfdata_"+userName);
+			if(hsperfdataFolder.exists())
+			{
+				File testFile=new File(hsperfdataFolder+"\\"+String.format("%d",System.currentTimeMillis()));
+				try {
+					testFile.createNewFile();
+					testFile.delete();
+				} catch (IOException e) {
+					return false;
+				}
+			} else
+			{
+				try {
+					hsperfdataFolder.createNewFile();
+					hsperfdataFolder.delete();
+				} catch (IOException e) {
+					return false;
+				}
+				
+			}
+			return true;
+		}
+	}
+
