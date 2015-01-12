@@ -17,5 +17,4 @@ Export-Package: de.schenk.enginex.helper,
  de.schenk.objectweb.asm.commons,
  de.schenk.objectweb.asm.util
 Bundle-ClassPath: .
-Import-Package: com.sun.xml.internal.xsom.impl.scd,
- de.schenk.jrtrace.annotations
+Import-Package: de.schenk.jrtrace.annotations
