@@ -58,8 +58,8 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 	}
 
 	@Override
-	public void installEngineXClass(String classOrJarLocation) {
-		new InstallEngineXCommand().installEngineX(classOrJarLocation);
+	public void installEngineXClass(byte[] jarBytes) {
+		new InstallEngineXCommand().installEngineX(jarBytes);
 
 	}
 

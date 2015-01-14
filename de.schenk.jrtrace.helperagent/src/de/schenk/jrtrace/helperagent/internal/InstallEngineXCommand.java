@@ -27,24 +27,20 @@ public class InstallEngineXCommand {
 
 	}
 
-	public void installEngineX(String classOrJarFilePath) {
+	public void installEngineX(byte[] jarBytes) {
 
-		if (classOrJarFilePath.endsWith(".jar")) {
-			addEngineXJar(classOrJarFilePath);
-		} else {
-
-			addEngineXFile(classOrJarFilePath);
-		}
-
+		
+			addEngineXJar(jarBytes);
+		
 	}
 
-	private void addEngineXJar(String jarFileName) {
+	private void addEngineXJar(byte[] jarFileName) {
 		List<EngineXMetadata> mdlist = parseEngineXJarFile(jarFileName);
 		EngineXHelper.addEngineXClass(mdlist);
 
 	}
 
-	private List<EngineXMetadata> parseEngineXJarFile(String jarFileName) {
+	private List<EngineXMetadata> parseEngineXJarFile(byte[] jarFileName) {
 		List<EngineXMetadata> mdlist = null;
 
 		JarFile jar = null;
@@ -88,11 +84,7 @@ public class InstallEngineXCommand {
 		return mdlist;
 	}
 
-	public void addEngineXFile(String clientSentence) {
-		byte[] enginexclass = getFileAsByteArray(clientSentence);
-		EngineXMetadata metadata = createMetadata(enginexclass);
-		EngineXHelper.addEngineXClass(metadata);
-	}
+	
 
 	public EngineXMetadata createMetadata(byte[] enginexclass) {
 		EngineXMetadata metadata = annotationReader

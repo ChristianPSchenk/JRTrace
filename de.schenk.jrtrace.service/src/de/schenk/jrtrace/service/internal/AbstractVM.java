@@ -89,7 +89,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 	}
 
 	@Override
-	synchronized public void installEngineXClass(String fileForClass) {
+	synchronized public void installEngineXClass(byte[] fileForClass) {
 		mbeanProxy.installEngineXClass(fileForClass);
 
 	}

@@ -71,7 +71,7 @@ public interface IJRTraceVM {
 	 * @param fileForClass
 	 *            a class file or a jar file
 	 */
-	void installEngineXClass(String fileForClass);
+	void installEngineXClass(byte[] fileForClass);
 
 	void setLogLevel(int i);
 

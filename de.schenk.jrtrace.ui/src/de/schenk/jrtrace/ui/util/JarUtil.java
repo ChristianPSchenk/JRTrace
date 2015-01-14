@@ -72,6 +72,7 @@ public class JarUtil {
 			IPath location = new Path(temp.toAbsolutePath() + "/"
 					+ prj.getName() + ".jar");
 			description.setJarLocation(location);
+		
 		} catch (IOException e1) {
 			throw new RuntimeException("Not possible to create temp dir", e1);
 		}

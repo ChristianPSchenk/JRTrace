@@ -6,7 +6,7 @@ public interface JRTraceMXBean {
 
 	public boolean disconnect();
 
-	public void installEngineXClass(String classOrJarLocation);
+	public void installEngineXClass(byte[] classOrJarLocation);
 
 	public boolean stop(boolean disconnectOnly);
 
