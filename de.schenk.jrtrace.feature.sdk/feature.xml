@@ -41,10 +41,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
    </license>
 
-   <includes
-         id="de.schenk.jrtrace.feature.source"
-         version="0.0.0"/>
-
    <requires>
       <import plugin="de.schenk.jrtrace.helperagent"/>
       <import plugin="de.schenk.jrtrace.service.enginex.targets"/>
@@ -59,7 +55,6 @@ limitations under the License.
       <import plugin="de.schenk.toolsjar"/>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import feature="de.schenk.jrtrace.feature"/>
    </requires>
 
    <plugin

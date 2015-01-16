@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="JRTrace Update Site">
+      JRTrace Feature for Runtime Product Debugging
+   </description>
+   <feature url="features/de.schenk.jrtrace.feature_0.3.1.201501121645.jar" id="de.schenk.jrtrace.feature" version="0.3.1.201501121645" ws="win32">
+      <category name="JRTrace"/>
+   </feature>
+   <feature url="features/de.schenk.jrtrace.feature.sdk_0.3.1.201501121645.jar" id="de.schenk.jrtrace.feature.sdk" version="0.3.1.201501121645">
+      <category name="JRTrace"/>
+   </feature>
+   <category-def name="JRTrace" label="JRTrace">
+      <description>
+         JRTrace: inserting tracing code into running Java applications
+      </description>
+   </category-def>
+</site>
