@@ -100,7 +100,7 @@ public class EngineXAnnotationReaderTest {
 		EngineXAnnotationReader annoReader = new EngineXAnnotationReader();
 		EngineXMetadata metadata = annoReader.getMetaInformation(classBytes);
 		assertNotNull(metadata);
-		assertTrue(metadata.isValidEngineXClass());
+		assertTrue(metadata.hasXClassAnnotation());
 
 		assertEquals(Script1.class.getName().replace(".", "/"),
 				metadata.getClassName());
@@ -181,7 +181,7 @@ public class EngineXAnnotationReaderTest {
 		EngineXAnnotationReader annoReader = new EngineXAnnotationReader();
 		EngineXMetadata metadata = annoReader.getMetaInformation(classBytes);
 		assertNotNull(metadata);
-		assertFalse(metadata.isValidEngineXClass());
+		assertFalse(metadata.hasXClassAnnotation());
 
 	}
 

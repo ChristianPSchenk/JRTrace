@@ -9,6 +9,7 @@ import java.util.Map;
 import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
 import de.schenk.jrtrace.helperlib.HelperLib;
 import de.schenk.jrtrace.helperlib.JRLog;
+import de.schenk.jrtrace.helperlib.NotificationMessages;
 
 public class EngineXClassHolder {
 
@@ -23,6 +24,10 @@ public class EngineXClassHolder {
 	}
 
 	/**
+	 * Creates the JRTrace object that will be injected into target objects.
+	 * Note: each JRTrace object that is used for injection therefore requires a
+	 * public no-argument constructor.
+	 * 
 	 * Deadlock danger? Classloading and construction of enginex objects happens
 	 * here while holding the lock. Rule: constructor of enginex objects should
 	 * not obtain any locks
@@ -35,29 +40,62 @@ public class EngineXClassHolder {
 
 		if (!contained) {
 
-			EngineXClassLoader enginexclassloader = new EngineXClassLoader(
-					classLoader, metadata);
+			
+			EngineXClassLoader enginexclassloader= EngineXClassLoaderRegistry.getInstance().getClassLoader(classLoader);
+			enginexclassloader.addMetadata(metadata);
 			Class<?> mainClass = null;
+			
+			
 			try {
-
 				mainClass = enginexclassloader.loadClass(metadata
 						.getExternalClassName());
-				JRLog.debug("JRTrace class loaded: "
-						+ metadata.getExternalClassName()
-						+ " with classloader "
-						+ ((mainClass.getClassLoader() == null) ? "null"
-								: mainClass.getClassLoader().toString()));
-				classCache.put(classLoader, mainClass);
-				objectCache.put(classLoader, mainClass.newInstance());
+			} catch (ClassNotFoundException e1) {
+				throw new RuntimeException(e1);
+			}
+			JRLog.debug("JRTrace class loaded: "
+					+ metadata.getExternalClassName()
+	 				+ " with classloader "
+					+ ((mainClass.getClassLoader() == null) ? "null"
+							: mainClass.getClassLoader().toString()));
+			classCache.put(classLoader, mainClass);
+			
+			
+			
+			try {
+				
+				if(metadata.hasXClassAnnotation())
+				{
+					Object mainInstance = mainClass.newInstance();			
+					objectCache.put(classLoader,mainInstance);
+				}
 
-			} catch (ClassNotFoundException | InstantiationException
-					| IllegalAccessException e) {
-				throw new RuntimeException(e);
+			} catch (  IllegalAccessException |InstantiationException e) {
+				NotificationUtil
+				.sendProblemNotification(
+						NotificationMessages.MESSAGE_MISSING_NO_ARGUMENT_CONSTRUCTOR,
+
+						EngineXNameUtil
+								.getExternalName(metadata
+										.getClassName()), "",
+						"");
 			}
 		}
 	}
 
 	synchronized public Object getObject(ClassLoader classLoader) {
+		classLoader = identifyJRTraceClassLoader(classLoader);
+		prepareEngineXClass(classLoader);
+		return objectCache.get(classLoader);
+	}
+
+	/**
+	 * Returns the proper classloader to use for the injected code based on the classloader of the target class and the classloader
+	 * policy used by the JRTrce class
+	 * 
+	 * @param classLoader the classloader of the target class
+	 * @return the classloader to use for the creation of the injected methods
+	 */
+	private ClassLoader identifyJRTraceClassLoader(ClassLoader classLoader) {
 		if (!(metadata.getClassLoaderPolicy() == XClassLoaderPolicy.TARGET)) {
 			if (metadata.getClassLoaderPolicy() == XClassLoaderPolicy.BOOT)
 
@@ -97,8 +135,7 @@ public class EngineXClassHolder {
 
 			}
 		}
-		prepareEngineXClass(classLoader);
-		return objectCache.get(classLoader);
+		return classLoader;
 	}
 
 	public EngineXMetadata getMetadata() {

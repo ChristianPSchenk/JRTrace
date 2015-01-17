@@ -226,6 +226,7 @@ public class EngineXHelper {
 		synchronized (lock) {
 
 			classCache.clear();
+			EngineXClassLoaderRegistry.getInstance().clear();
 
 			copyOfTransformed = new HashMap<String, Set<ClassLoader>>();
 			copyOfTransformed.putAll(transformedClassesMap);

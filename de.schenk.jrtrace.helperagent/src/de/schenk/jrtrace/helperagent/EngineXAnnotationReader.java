@@ -272,7 +272,7 @@ public class EngineXAnnotationReader {
 
 			if ("classes".equals(context)) {
 				if (!(value instanceof String)) {
-					md.setInvalid("classes field is not type String");
+					md.setHasNoXClassAnnotation();
 					return;
 				}
 				md.addClassesEntry((String) value);
@@ -280,7 +280,7 @@ public class EngineXAnnotationReader {
 			
 			if ("exclude".equals(context)) {
               if (!(value instanceof String)) {
-                  md.setInvalid("exclude field is not type String");
+                  md.setHasNoXClassAnnotation();
                   return;
               }
               md.addExcludedClass(((String) value));
@@ -330,7 +330,7 @@ public class EngineXAnnotationReader {
 		@Override
 		public void visitEnd() {
 			if (!foundEngineXAnnotation) {
-				md.setInvalid();
+				md.setHasNoXClassAnnotation();
 			}
 			super.visitEnd();
 		}

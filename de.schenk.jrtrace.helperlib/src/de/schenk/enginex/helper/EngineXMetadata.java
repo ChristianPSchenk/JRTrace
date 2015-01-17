@@ -71,11 +71,11 @@ public class EngineXMetadata {
 	 * @return true, if the class described by this object has valid EngineX
 	 *         Annotations.
 	 */
-	public boolean isValidEngineXClass() {
+	public boolean hasXClassAnnotation() {
 		return valid;
 	}
 
-	public void setInvalid() {
+	public void setHasNoXClassAnnotation() {
 		valid = false;
 	}
 
@@ -84,11 +84,7 @@ public class EngineXMetadata {
 
 	}
 
-	public void setInvalid(String string) {
-		setInvalid();
-
-	}
-
+	
 	public List<EngineXMethodMetadata> getMethods() {
 
 		return methods;

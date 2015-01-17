@@ -32,8 +32,10 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkEvent;
 
 import de.schenk.jrtrace.commonsuper.test.CSCore;
+import de.schenk.jrtrace.helperagent.EngineXClassFileTransformer;
 import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.NotificationConstants;
+import de.schenk.jrtrace.helperlib.NotificationMessages;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.JRTraceControllerService;
@@ -50,6 +52,7 @@ import de.schenk.jrtrace.service.JRTraceControllerService;
  */
 public class EngineXDetailsTest implements NotificationListener {
 
+	
 	private JRTraceController bmController;
 	private String pid;
 	private IJRTraceVM machine;
@@ -387,20 +390,67 @@ public class EngineXDetailsTest implements NotificationListener {
         
 
     }
+    
+    
+    @Test
+    public void test26NoXClassHasNoArgConstructor() throws Exception {
 
+        Test26 test26 = new Test26();
+        String result = test26.test26();
+        assertEquals("1",result);
+        
+
+    }
+
+    @Test
+    public void test28AnonymousClasses() throws Exception {
+
+        Test28 test28 = new Test28();
+        String result = test28.test28();
+        assertEquals("instrumented",result);
+        
+
+    }
+    
     @Test
     public void test24ErrorMessageForXThisOnStaticMethod()
     throws Exception
     {
     	notificationBarrier=new CyclicBarrier(2);
-    	Test24 test24=new Test24();
+    
     	Test24.test24();
     	try
     	{
-    	notificationBarrier.await(1,TimeUnit.SECONDS);
+    	notificationBarrier.await(10,TimeUnit.SECONDS);
     	}catch(TimeoutException t)
     	{
     		fail("no problem detected by the agent in Test24");
+    	}
+    	
+    }
+    
+    
+    @Test
+    public void test27ErrorMessageForXClassWithoutPublicConstructor()
+    throws Exception
+    {
+    	notificationBarrier=new CyclicBarrier(2);
+    	try
+    	{
+    	Test27 test27=new Test27();
+    	test27.test27();
+    	} catch(BootstrapMethodError e)
+    	{
+    		//today: throws exception. Would be better to inject a dummy method with fitting signature...
+    		
+    	}
+    	try
+    	{
+    	notificationBarrier.await(10,TimeUnit.SECONDS);
+    	assertTrue(lastNotification.getMessage().contains(NotificationMessages.MESSAGE_MISSING_NO_ARGUMENT_CONSTRUCTOR));
+    	}catch(TimeoutException t)
+    	{
+    		fail("no problem detected by the agent in Test27");
     	}
     	
     }
@@ -426,6 +476,7 @@ public class EngineXDetailsTest implements NotificationListener {
 	}
 
 	CyclicBarrier notificationBarrier=new CyclicBarrier(2);
+	Notification lastNotification=null;
 	@Override
 	public void handleNotification(Notification notification, Object handback) {
 		if(notificationBarrier==null) return;
@@ -434,7 +485,7 @@ public class EngineXDetailsTest implements NotificationListener {
 				notificationBarrier.await();
 			} catch (InterruptedException | BrokenBarrierException e) {
 throw new RuntimeException("test");			}
-		
+		lastNotification=notification;
 		notificationBarrier=null;
 		
 	}
