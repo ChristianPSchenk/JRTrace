@@ -5,8 +5,18 @@ import org.eclipse.ui.console.MessageConsole;
 
 public class JRTraceConsole extends MessageConsole {
 
-	public JRTraceConsole(String name, ImageDescriptor imageDescriptor) {
+	private JRTraceDebugTarget debugTarget;
+
+	public JRTraceConsole(String name, JRTraceDebugTarget jrTraceDebugTarget,
+			ImageDescriptor imageDescriptor) {
+
 		super(name, imageDescriptor);
+		this.debugTarget = jrTraceDebugTarget;
+	}
+
+	public JRTraceDebugTarget getDebugTarget() {
+		return debugTarget;
+
 	}
 
 }

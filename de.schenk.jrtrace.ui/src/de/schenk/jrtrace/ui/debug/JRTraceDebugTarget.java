@@ -40,6 +40,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 	private JRTraceConsoleConnector JRTraceConsole;
 	IProcess process;
 	private JRTraceMarkerManager markerManager;
+	private IProject theProject;
 
 	public JRTraceDebugTarget(IJRTraceVM vm, ILaunch launch,
 			final IProject theProject, boolean uploadHelperOnConnect) {
@@ -52,6 +53,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 		markerManager = new JRTraceMarkerManager(this);
 
+		this.theProject = theProject;
 		if (theProject != null) {
 			if (uploadHelperOnConnect) {
 				final File jarFile[] = new File[1];
@@ -76,8 +78,8 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 	}
 
 	private void createConsole() {
-		JRTraceConsole = new JRTraceConsoleConnector(machine);
-		JRTraceConsole.start();
+		JRTraceConsole = new JRTraceConsoleConnector();
+		JRTraceConsole.start(this);
 
 	}
 
@@ -210,7 +212,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 	@Override
 	public IMemoryBlock getMemoryBlock(long startAddress, long length)
 			throws DebugException {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -265,8 +267,6 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 	}
 
-	
-
 	public void runJava(File jarFile, String theClassLoader, String className,
 			String methodName) {
 		machine.runJava(jarFile, theClassLoader, className, methodName);
@@ -276,6 +276,11 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 	public void installEngineX(File jarFile) {
 		markerManager.clearAllMarkers();
 		machine.installEngineXClass(jarFile.getAbsolutePath());
+
+	}
+
+	public IProject getProject() {
+		return theProject;
 
 	}
 

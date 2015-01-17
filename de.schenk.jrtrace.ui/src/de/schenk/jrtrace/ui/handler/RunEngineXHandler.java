@@ -35,19 +35,23 @@ public class RunEngineXHandler extends AbstractHandler implements IHandler {
 
 		if (c != null) {
 
-			File jarFile = JarUtil.createJar(c, PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getShell());
-
-			List<JRTraceDebugTarget> jrtraceTargets = JRTraceLaunchUtils
-					.getJRTraceDebugTargets();
-
-			for (JRTraceDebugTarget btarget : jrtraceTargets) {
-				InstallJRTraceJob job = new InstallJRTraceJob(btarget, jarFile);
-				job.schedule();
-			}
+			installJRTraceJar(c);
 			return true;
 		}
 		return null;
+	}
+
+	static public void installJRTraceJar(IProject c) {
+		File jarFile = JarUtil.createJar(c, PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getShell());
+
+		List<JRTraceDebugTarget> jrtraceTargets = JRTraceLaunchUtils
+				.getJRTraceDebugTargets();
+
+		for (JRTraceDebugTarget btarget : jrtraceTargets) {
+			InstallJRTraceJob job = new InstallJRTraceJob(btarget, jarFile);
+			job.schedule();
+		}
 	}
 
 	/**

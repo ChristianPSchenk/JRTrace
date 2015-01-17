@@ -32,7 +32,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkEvent;
 
 import de.schenk.jrtrace.commonsuper.test.CSCore;
-import de.schenk.jrtrace.helperagent.EngineXClassFileTransformer;
 import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.NotificationConstants;
 import de.schenk.jrtrace.helperlib.NotificationMessages;
@@ -45,14 +44,14 @@ import de.schenk.jrtrace.service.JRTraceControllerService;
  * 
  * Tests follow the naming scheme: "test##<comment>"
  * 
- * They usually use the test class Test## which are instrumented using Test#Script
+ * They usually use the test class Test## which are instrumented using
+ * Test#Script
  * 
  * @author Christian Schenk
  *
  */
 public class EngineXDetailsTest implements NotificationListener {
 
-	
 	private JRTraceController bmController;
 	private String pid;
 	private IJRTraceVM machine;
@@ -80,9 +79,9 @@ public class EngineXDetailsTest implements NotificationListener {
 
 		URL fileURL = FileLocator.find(bundle,
 				new Path("lib/EngineXTests.jar"), null);
-		String fullPath = new File(FileLocator.resolve(fileURL).toURI()).getAbsolutePath();
-		machine.addClientListener(
-				NotificationConstants.NOTIFY_PROBLEM, this);
+		String fullPath = new File(FileLocator.resolve(fileURL).toURI())
+				.getAbsolutePath();
+		machine.addClientListener(NotificationConstants.NOTIFY_PROBLEM, this);
 		machine.installEngineXClass(fullPath);
 
 	}
@@ -317,145 +316,136 @@ public class EngineXDetailsTest implements NotificationListener {
 		assertTrue(Test17.success);
 
 	}
-    @Test
-    public void test18InvokeBefore() throws Exception {
 
-        Test18 test18 = new Test18();
-        long stage = test18.test18();
-        assertEquals(3,Test18.stage);
+	@Test
+	public void test18InvokeBefore() throws Exception {
 
-    }
-    
-    @Test
-    public void test19InvokeReplace() throws Exception {
+		Test18 test18 = new Test18();
+		long stage = test18.test18();
+		assertEquals(3, Test18.stage);
 
-        Test19 test19 = new Test19();
-        long stage = test19.test19();
-        assertEquals(1002,stage);
+	}
 
-    }
-    
-    
-    @Test
-    public void test20InvokeAfter() throws Exception {
+	@Test
+	public void test19InvokeReplace() throws Exception {
 
-        Test20 test20 = new Test20();
-        long result = test20.test20();
-        assertEquals(15,result);
+		Test19 test19 = new Test19();
+		long stage = test19.test19();
+		assertEquals(1002, stage);
 
-    }
-    
-    @Test
-    public void test21UseInvokeClassName() throws Exception {
+	}
 
-        Test21 test21 = new Test21();
-        long result = test21.test21();
-        assertEquals(1,result);
+	@Test
+	public void test20InvokeAfter() throws Exception {
 
-    }
+		Test20 test20 = new Test20();
+		long result = test20.test20();
+		assertEquals(15, result);
 
-    @Test
-    public void test21InvokeReplaceWithSpecificInvokeClass() throws Exception {
+	}
 
-        Test21 test21 = new Test21();
-        int result = test21.test21();
-        assertEquals(1,result);
+	@Test
+	public void test21UseInvokeClassName() throws Exception {
 
-    }
+		Test21 test21 = new Test21();
+		long result = test21.test21();
+		assertEquals(1, result);
 
-    @Test
-    public void test22XClassExclude() throws Exception {
+	}
 
-        Test22 test22 = new Test22();
-        int result = test22.test22();
-        assertEquals(1,result);
+	@Test
+	public void test21InvokeReplaceWithSpecificInvokeClass() throws Exception {
 
-    }
+		Test21 test21 = new Test21();
+		int result = test21.test21();
+		assertEquals(1, result);
 
-    @Test
-    public void test23FieldAccess() throws Exception {
+	}
 
-        Test23 test23 = new Test23();
-        int result = test23.test23();
-        assertEquals(25,result);
-        assertEquals(11,Test23.hitpoint);
+	@Test
+	public void test22XClassExclude() throws Exception {
 
-    }
-    @Test
-    public void test25BugfixDerivedDoesntIncludeClassItself() throws Exception {
+		Test22 test22 = new Test22();
+		int result = test22.test22();
+		assertEquals(1, result);
 
-        Test25 test25 = new Test25();
-        String result = test25.test25();
-        assertEquals("instrumented",result);
-        
+	}
 
-    }
-    
-    
-    @Test
-    public void test26NoXClassHasNoArgConstructor() throws Exception {
+	@Test
+	public void test23FieldAccess() throws Exception {
 
-        Test26 test26 = new Test26();
-        String result = test26.test26();
-        assertEquals("1",result);
-        
+		Test23 test23 = new Test23();
+		int result = test23.test23();
+		assertEquals(25, result);
+		assertEquals(11, Test23.hitpoint);
 
-    }
+	}
 
-    @Test
-    public void test28AnonymousClasses() throws Exception {
+	@Test
+	public void test25BugfixDerivedDoesntIncludeClassItself() throws Exception {
 
-        Test28 test28 = new Test28();
-        String result = test28.test28();
-        assertEquals("instrumented",result);
-        
+		Test25 test25 = new Test25();
+		String result = test25.test25();
+		assertEquals("instrumented", result);
 
-    }
-    
-    @Test
-    public void test24ErrorMessageForXThisOnStaticMethod()
-    throws Exception
-    {
-    	notificationBarrier=new CyclicBarrier(2);
-    
-    	Test24.test24();
-    	try
-    	{
-    	notificationBarrier.await(10,TimeUnit.SECONDS);
-    	}catch(TimeoutException t)
-    	{
-    		fail("no problem detected by the agent in Test24");
-    	}
-    	
-    }
-    
-    
-    @Test
-    public void test27ErrorMessageForXClassWithoutPublicConstructor()
-    throws Exception
-    {
-    	notificationBarrier=new CyclicBarrier(2);
-    	try
-    	{
-    	Test27 test27=new Test27();
-    	test27.test27();
-    	} catch(BootstrapMethodError e)
-    	{
-    		//today: throws exception. Would be better to inject a dummy method with fitting signature...
-    		
-    	}
-    	try
-    	{
-    	notificationBarrier.await(10,TimeUnit.SECONDS);
-    	assertTrue(lastNotification.getMessage().contains(NotificationMessages.MESSAGE_MISSING_NO_ARGUMENT_CONSTRUCTOR));
-    	}catch(TimeoutException t)
-    	{
-    		fail("no problem detected by the agent in Test27");
-    	}
-    	
-    }
-    
-    @Test
+	}
+
+	@Test
+	public void test26NoXClassHasNoArgConstructor() throws Exception {
+
+		Test26 test26 = new Test26();
+		String result = test26.test26();
+		assertEquals("1", result);
+
+	}
+
+	@Test
+	public void test28AnonymousClasses() throws Exception {
+
+		Test28 test28 = new Test28();
+		String result = test28.test28();
+		assertEquals("instrumented", result);
+
+	}
+
+	@Test
+	public void test24ErrorMessageForXThisOnStaticMethod() throws Exception {
+		notificationBarrier = new CyclicBarrier(2);
+
+		Test24.test24();
+		try {
+			notificationBarrier.await(10, TimeUnit.SECONDS);
+		} catch (TimeoutException t) {
+			fail("no problem detected by the agent in Test24");
+		}
+
+	}
+
+	@Test
+	public void test27ErrorMessageForXClassWithoutPublicConstructor()
+			throws Exception {
+		notificationBarrier = new CyclicBarrier(2);
+		try {
+			Test27 test27 = new Test27();
+			test27.test27();
+		} catch (BootstrapMethodError e) {
+			// today: throws exception. Would be better to inject a dummy method
+			// with fitting signature...
+
+		}
+		try {
+			notificationBarrier.await(15, TimeUnit.SECONDS);
+			assertTrue(lastNotification
+					.getMessage()
+					.contains(
+							NotificationMessages.MESSAGE_MISSING_NO_ARGUMENT_CONSTRUCTOR));
+		} catch (TimeoutException t) {
+			fail("no problem detected by the agent in Test27");
+		}
+
+	}
+
+	@Test
 	public void testcommonSuperProblem() throws Exception {
 
 		CSCore cscore = new CSCore();
@@ -475,19 +465,22 @@ public class EngineXDetailsTest implements NotificationListener {
 		assertTrue(true);
 	}
 
-	CyclicBarrier notificationBarrier=new CyclicBarrier(2);
-	Notification lastNotification=null;
+	CyclicBarrier notificationBarrier = new CyclicBarrier(2);
+	Notification lastNotification = null;
+
 	@Override
 	public void handleNotification(Notification notification, Object handback) {
-		if(notificationBarrier==null) return;
-		
-			try {
-				notificationBarrier.await();
-			} catch (InterruptedException | BrokenBarrierException e) {
-throw new RuntimeException("test");			}
-		lastNotification=notification;
-		notificationBarrier=null;
-		
+		if (notificationBarrier == null)
+			return;
+		lastNotification = notification;
+
+		try {
+			notificationBarrier.await();
+		} catch (InterruptedException | BrokenBarrierException e) {
+			throw new RuntimeException("test");
+		}
+		notificationBarrier = null;
+
 	}
 
 }

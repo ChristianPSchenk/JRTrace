@@ -100,7 +100,7 @@
                   commandId="de.schenk.jrtrace.ui.commands.runenginex"
                   icon="icons/upload_java_16.gif"
                   id="de.schenk.jrtrace.ui.popup.runenginex"
-                  label="Deply the selected java project as JRTrace project into the target"
+                  label="Deploy the selected java project as JRTrace project into the target"
                   style="push">
                <visibleWhen>
                   <iterate
@@ -252,6 +252,16 @@
     <super
           type="org.eclipse.core.resources.problemmarker">
     </super>
+ </extension>
+ <extension
+       point="org.eclipse.ui.console.consolePageParticipants">
+    <consolePageParticipant
+          class="de.schenk.jrtrace.ui.debug.ConsolePageParticipant"
+          id="de.schenk.jrtrace.ui.consolePageParticipant">
+        <enablement>
+            <instanceof value="de.schenk.jrtrace.ui.debug.JRTraceConsole"/>
+         </enablement>
+    </consolePageParticipant>
  </extension>
 
 </plugin>
