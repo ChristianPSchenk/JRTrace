@@ -409,6 +409,26 @@ public class EngineXDetailsTest implements NotificationListener {
 	}
 
 	@Test
+	public void test29AnonymousClassesWithClassloaderPolicyTarget()
+			throws Exception {
+
+		Test29 test29 = new Test29();
+		String result = test29.test29();
+		assertEquals("instrumented", result);
+
+	}
+
+	@Test
+	public void test30TargetClassPolicyInjectionUsesJRTraceOnBootClassPath()
+			throws Exception {
+
+		Test30 test30 = new Test30();
+		String result = test30.test30();
+		assertEquals("instrumented", result);
+
+	}
+
+	@Test
 	public void test24ErrorMessageForXThisOnStaticMethod() throws Exception {
 		notificationBarrier = new CyclicBarrier(2);
 

@@ -28,7 +28,7 @@ public class EngineXClassHolder {
 	 * Note: each JRTrace object that is used for injection therefore requires a
 	 * public no-argument constructor.
 	 * 
-	 * Deadlock danger? Classloading and construction of enginex objects happens
+	 * Deadlock danger: Classloading and construction of enginex objects happens
 	 * here while holding the lock. Rule: constructor of enginex objects should
 	 * not obtain any locks
 	 * 
@@ -40,12 +40,11 @@ public class EngineXClassHolder {
 
 		if (!contained) {
 
-			
-			EngineXClassLoader enginexclassloader= EngineXClassLoaderRegistry.getInstance().getClassLoader(classLoader);
+			EngineXClassLoader enginexclassloader = EngineXClassLoaderRegistry
+					.getInstance().getClassLoader(classLoader);
 			enginexclassloader.addMetadata(metadata);
 			Class<?> mainClass = null;
-			
-			
+
 			try {
 				mainClass = enginexclassloader.loadClass(metadata
 						.getExternalClassName());
@@ -54,30 +53,25 @@ public class EngineXClassHolder {
 			}
 			JRLog.debug("JRTrace class loaded: "
 					+ metadata.getExternalClassName()
-	 				+ " with classloader "
+					+ " with classloader "
 					+ ((mainClass.getClassLoader() == null) ? "null"
 							: mainClass.getClassLoader().toString()));
 			classCache.put(classLoader, mainClass);
-			
-			
-			
+
 			try {
-				
-				if(metadata.hasXClassAnnotation())
-				{
-					Object mainInstance = mainClass.newInstance();			
-					objectCache.put(classLoader,mainInstance);
+
+				if (metadata.hasXClassAnnotation()) {
+					Object mainInstance = mainClass.newInstance();
+					objectCache.put(classLoader, mainInstance);
 				}
 
-			} catch (  IllegalAccessException |InstantiationException e) {
+			} catch (IllegalAccessException | InstantiationException e) {
 				NotificationUtil
-				.sendProblemNotification(
-						NotificationMessages.MESSAGE_MISSING_NO_ARGUMENT_CONSTRUCTOR,
+						.sendProblemNotification(
+								NotificationMessages.MESSAGE_MISSING_NO_ARGUMENT_CONSTRUCTOR,
 
-						EngineXNameUtil
-								.getExternalName(metadata
-										.getClassName()), "",
-						"");
+								EngineXNameUtil.getExternalName(metadata
+										.getClassName()), "", "");
 			}
 		}
 	}
@@ -89,13 +83,25 @@ public class EngineXClassHolder {
 	}
 
 	/**
-	 * Returns the proper classloader to use for the injected code based on the classloader of the target class and the classloader
-	 * policy used by the JRTrce class
+	 * Returns the proper classloader to use for the injected code based on the
+	 * classloader of the target class and the classloader policy used by the
+	 * JRTrace class
 	 * 
-	 * @param classLoader the classloader of the target class
+	 * The rules are basically:
+	 * 
+	 * For unannnotated classes (anonymous inner classes or helper classes
+	 * without XClass annotation): use the class loader that triggered the load
+	 * For annaotated classes -> Proceed based on the classloaderpolicy (BOOT,
+	 * NAMED or TARGET which is basically the same for unannotated classes)
+	 * 
+	 * @param classLoader
+	 *            the classloader of the target class
 	 * @return the classloader to use for the creation of the injected methods
 	 */
 	private ClassLoader identifyJRTraceClassLoader(ClassLoader classLoader) {
+		if (!metadata.hasXClassAnnotation())
+			return classLoader;
+
 		if (!(metadata.getClassLoaderPolicy() == XClassLoaderPolicy.TARGET)) {
 			if (metadata.getClassLoaderPolicy() == XClassLoaderPolicy.BOOT)
 
@@ -144,17 +150,15 @@ public class EngineXClassHolder {
 
 	/**
 	 * 
+	 * @param classLoader
+	 *            the classLoader of the class that triggered the classloading
 	 * @return an
 	 */
-	synchronized public Class<?> getEngineXClass() {
+	synchronized public Class<?> getEngineXClass(ClassLoader classLoader) {
 
-		if (metadata.getClassLoaderPolicy() != XClassLoaderPolicy.TARGET) {
-			getObject(null);
-		}
-		int size = classCache.size();
-		if (size == 1)
-			return classCache.values().iterator().next();
+		ClassLoader theClassLoader = identifyJRTraceClassLoader(classLoader);
+		prepareEngineXClass(theClassLoader);
 
-		return null;
+		return classCache.get(theClassLoader);
 	}
 }

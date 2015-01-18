@@ -63,19 +63,22 @@ public class EngineXHelper {
 	 * 
 	 * @param enginexclass
 	 *            the name of an enginex class
+	 * @param classLoader
+	 *            the classloader of the class that triggered the class loading
 	 * @return the Class<?> object, if exactly one class can be identified.
 	 *         null, if there is more than one classes (from different
 	 *         classloaders) or none (e.g. because a named classloader has not
 	 *         been loaded yet)
 	 */
-	public static Class<?> getEngineXClass(String enginexclass) {
+	public static Class<?> getEngineXClass(String enginexclass,
+			ClassLoader classLoader) {
 		EngineXClassHolder o;
 		synchronized (lock) {
 			o = classCache.get(enginexclass);
 		}
 		if (o == null)
 			return null;
-		return o.getEngineXClass();
+		return o.getEngineXClass(classLoader);
 	}
 
 	public static void addEngineXClass(EngineXMetadata metadata) {
