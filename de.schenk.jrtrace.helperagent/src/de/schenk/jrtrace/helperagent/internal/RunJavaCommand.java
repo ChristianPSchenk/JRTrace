@@ -10,7 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import de.schenk.jrtrace.helperlib.HelperLib;
+import de.schenk.enginex.helper.InstrumentationUtil;
 
 public class RunJavaCommand {
 
@@ -24,7 +24,7 @@ public class RunJavaCommand {
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("invalid url", e);
 		}
-		ClassLoader classLoader = HelperLib
+		ClassLoader classLoader = InstrumentationUtil
 				.getCachedClassLoader(referenceClassName);
 		URLClassLoader jarLoader = URLClassLoader.newInstance(new URL[] { u },
 				classLoader);

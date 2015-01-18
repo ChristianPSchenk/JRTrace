@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import de.schenk.jrtrace.helperlib.HelperLib;
 import de.schenk.jrtrace.helperlib.JRLog;
 
 public class EngineXHelper {
@@ -99,7 +98,7 @@ public class EngineXHelper {
 			}
 		}
 		Collection<EngineXMetadata> currentenginex = getEngineXClasses();
-		Instrumentation inst = HelperLib.getInstrumentation();
+		Instrumentation inst = InstrumentationUtil.getInstrumentation();
 
 		Class<?>[] Allclasses = inst.getAllLoadedClasses();
 
@@ -142,7 +141,7 @@ public class EngineXHelper {
 	 */
 	private static void retransformClasses(Set<Class<?>> modifiableClasses) {
 
-		Instrumentation inst2 = HelperLib.getInstrumentation();
+		Instrumentation inst2 = InstrumentationUtil.getInstrumentation();
 
 		if (modifiableClasses.size() > 0) {
 			NotificationUtil.sendProgressNotification(String.format(

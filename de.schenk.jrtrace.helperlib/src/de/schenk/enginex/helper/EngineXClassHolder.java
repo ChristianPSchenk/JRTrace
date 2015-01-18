@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
-import de.schenk.jrtrace.helperlib.HelperLib;
 import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.NotificationMessages;
 
@@ -121,7 +120,7 @@ public class EngineXClassHolder {
 										"");
 
 					} else {
-						classLoader = HelperLib
+						classLoader = InstrumentationUtil
 								.getCachedClassLoader(classForLoader);
 						if (classLoader == null) {
 							NotificationUtil

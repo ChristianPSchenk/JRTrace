@@ -26,270 +26,260 @@ import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
 
 import de.schenk.enginex.helper.EngineXHelper;
+import de.schenk.enginex.helper.InstrumentationUtil;
 import de.schenk.enginex.helper.NotificationUtil;
 import de.schenk.jrtrace.helperagent.internal.JRTraceMXBeanImpl;
-import de.schenk.jrtrace.helperlib.HelperLib;
 import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.NotificationConstants;
 
 public class AgentMain {
 
-  /*
-   * The message codes the Agent sends
-   */
+	/*
+	 * The message codes the Agent sends
+	 */
 
-  public static final String AGENT_READY = "READY";
+	public static final String AGENT_READY = "READY";
 
-  public static AgentMain theAgent = null;
+	public static AgentMain theAgent = null;
 
-  private static Instrumentation instrumentation;
+	private static Instrumentation instrumentation;
 
-  private JRTraceMXBeanImpl jrtraceBean;
+	private JRTraceMXBeanImpl jrtraceBean;
 
-  private ObjectName mxbeanName;
+	private ObjectName mxbeanName;
 
-  public AgentMain() {
+	public AgentMain() {
 
-  }
+	}
 
-  /**
-   * check if the agent is still active (not null), if yes: stop it. start the new agent.
-   * 
-   * @param args
-   * @param inst
-   */
-  public static void launch(int port, Instrumentation inst) {
-    JRLog.debug(String.format("JRTrace Agent launched port:%d", port));
-    HelperLib.setInstrumentation(inst);
-    AgentMain.instrumentation = inst;
-    if (theAgent != null) {
-      theAgent.stop(false);
-      theAgent = null;
-    }
-    if (theAgent == null) {
-      theAgent = new AgentMain();
-      theAgent.start(port);
+	/**
+	 * check if the agent is still active (not null), if yes: stop it. start the
+	 * new agent.
+	 * 
+	 * @param args
+	 * @param inst
+	 */
+	public static void launch(int port, Instrumentation inst) {
+		JRLog.debug(String.format("JRTrace Agent launched port:%d", port));
+		InstrumentationUtil.setInstrumentation(inst);
+		AgentMain.instrumentation = inst;
+		if (theAgent != null) {
+			theAgent.stop(false);
+			theAgent = null;
+		}
+		if (theAgent == null) {
+			theAgent = new AgentMain();
+			theAgent.start(port);
 
-    }
+		}
 
-  }
+	}
 
-  private MBeanServer mbs = null;
-  JMXConnectorServer cs = null;
-  private Registry mxbeanRegistry = null;
+	private MBeanServer mbs = null;
+	JMXConnectorServer cs = null;
+	private Registry mxbeanRegistry = null;
 
-  private void stopMXBeanServer() {
-    synchronized (AgentMain.class) {
+	private void stopMXBeanServer() {
+		synchronized (AgentMain.class) {
 
-      mxbeanName = NotificationUtil.getJRTraceObjectName();
+			mxbeanName = NotificationUtil.getJRTraceObjectName();
 
-      if (mbs.isRegistered(mxbeanName)) {
-        try {
-          mbs.unregisterMBean(mxbeanName);
-        
-        }
-        catch (MBeanRegistrationException | InstanceNotFoundException e) {
-          throw new RuntimeException(e);
-        }
-      }
+			if (mbs.isRegistered(mxbeanName)) {
+				try {
+					mbs.unregisterMBean(mxbeanName);
 
-      if (cs != null) {
-        try {
-          cs.stop();
-        }
-        catch (IOException e) {
-          e.printStackTrace();
-        }
-        finally {
-          cs = null;
-        }
-      }
-      if (mxbeanRegistry != null) {
+				} catch (MBeanRegistrationException | InstanceNotFoundException e) {
+					throw new RuntimeException(e);
+				}
+			}
 
-        try {
-          UnicastRemoteObject.unexportObject(mxbeanRegistry, true);
-        }
-        catch (NoSuchObjectException e) {
-          e.printStackTrace();
-        }
-        finally {
-          mxbeanRegistry = null;
-        }
+			if (cs != null) {
+				try {
+					cs.stop();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					cs = null;
+				}
+			}
+			if (mxbeanRegistry != null) {
 
-      }
+				try {
+					UnicastRemoteObject.unexportObject(mxbeanRegistry, true);
+				} catch (NoSuchObjectException e) {
+					e.printStackTrace();
+				} finally {
+					mxbeanRegistry = null;
+				}
 
+			}
 
-    }
+		}
 
-  }
+	}
 
-  private void startMXBeanServer(int port) {
+	private void startMXBeanServer(int port) {
 
-    synchronized (AgentMain.class) {
+		synchronized (AgentMain.class) {
 
-      HashMap<String, String> environment = new HashMap<String, String>();
-      environment.put("jmx.remote.x.daemon", "true");
-      environment.put("com.sun.management.jmxremote.port", String.format("%d", port));
-      environment.put("com.sun.management.jmxremote.authenticate", "false");
-      environment.put("com.sun.management.jmxremote.ssl", "false");
+			HashMap<String, String> environment = new HashMap<String, String>();
+			environment.put("jmx.remote.x.daemon", "true");
+			environment.put("com.sun.management.jmxremote.port",
+					String.format("%d", port));
+			environment.put("com.sun.management.jmxremote.authenticate",
+					"false");
+			environment.put("com.sun.management.jmxremote.ssl", "false");
 
-      try {
+			try {
 
-        if (mxbeanRegistry == null) {
+				if (mxbeanRegistry == null) {
 
-          try {
-            mxbeanRegistry = LocateRegistry.getRegistry(port);
+					try {
+						mxbeanRegistry = LocateRegistry.getRegistry(port);
 
-            // try to connect. In case of problem: createregistry.
-            String[] list = mxbeanRegistry.list();
-          }
-          catch (RemoteException e) {
+						// try to connect. In case of problem: createregistry.
+						String[] list = mxbeanRegistry.list();
+					} catch (RemoteException e) {
 
-            mxbeanRegistry = LocateRegistry.createRegistry(port);
-          }
+						mxbeanRegistry = LocateRegistry.createRegistry(port);
+					}
 
-        }
+				}
 
+				mbs = ManagementFactory.getPlatformMBeanServer();
 
-        mbs = ManagementFactory.getPlatformMBeanServer();
+				JMXServiceURL url = new JMXServiceURL(
+						"service:jmx:rmi:///jndi/rmi://:" + port + "/jmxrmi");
 
-        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://:" + port + "/jmxrmi");
+				cs = JMXConnectorServerFactory.newJMXConnectorServer(url,
+						environment, mbs);
 
-        cs = JMXConnectorServerFactory.newJMXConnectorServer(url, environment, mbs);
+				cs.start();
 
+				mxbeanName = NotificationUtil.getJRTraceObjectName();
 
-        cs.start();
+				jrtraceBean = new JRTraceMXBeanImpl(this);
+				if (!mbs.isRegistered(mxbeanName)) {
+					mbs.registerMBean(jrtraceBean, mxbeanName);
+				}
+			} catch (InstanceAlreadyExistsException
+					| MBeanRegistrationException | NotCompliantMBeanException e) {
+				throw new RuntimeException(e);
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+		}
+	}
 
-       
-        
-        
-        mxbeanName = NotificationUtil.getJRTraceObjectName();
-        
-        jrtraceBean = new JRTraceMXBeanImpl(this);
-        if (!mbs.isRegistered(mxbeanName)) {
-          mbs.registerMBean(jrtraceBean, mxbeanName);
-        }
-      }
-      catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException e) {
-        throw new RuntimeException(e);
-      }
-      catch (IOException e) {
-        e.printStackTrace();
-        throw new RuntimeException(e);
-      }
-    }
-  }
+	private PrintStream stdout;
+	private PrintStream stderr;
 
-  private PrintStream stdout;
-  private PrintStream stderr;
+	private EngineXClassFileTransformer enginextransformer;
 
-  private EngineXClassFileTransformer enginextransformer;
+	private boolean stdout_isredirected = false;
 
-  private boolean stdout_isredirected = false;
+	private void start(int port) {
 
-  private void start(int port) {
+		startMXBeanServer(port);
 
-    startMXBeanServer(port);
+	}
 
+	public void redirectStandardOut(boolean enable) {
+		synchronized (AgentMain.class) {
 
-  }
+			if (enable && !stdout_isredirected) {
+				stdout_isredirected = true;
+				stdout = System.out;
+				stderr = System.err;
+				System.setOut(new PrintStream(new RedirectingOutputStream(
+						jrtraceBean, System.out)));
+				System.setErr(new PrintStream(new RedirectingOutputStream(
+						jrtraceBean, System.err,
+						NotificationConstants.NOTIFY_STDERR)));
+				NotificationUtil.setNotificationSender(jrtraceBean);
+			} else {
+				if (enable == false && stdout_isredirected) {
+					stdout_isredirected = false;
+					System.setOut(stdout);
+					System.setErr(stderr);
+					NotificationUtil.setNotificationSender(null);
+				}
+			}
+		}
+	}
 
-  public void redirectStandardOut(boolean enable) {
-    synchronized (AgentMain.class) {
+	public void connect() {
+		synchronized (AgentMain.class) {
+			if (enginextransformer != null)
+				return;
 
+			enginextransformer = new EngineXClassFileTransformer();
+			instrumentation.addTransformer(enginextransformer, true);
 
-      if (enable && !stdout_isredirected) {
-        stdout_isredirected = true;
-        stdout = System.out;
-        stderr = System.err;
-        System.setOut(new PrintStream(new RedirectingOutputStream(jrtraceBean, System.out)));
-        System.setErr(new PrintStream(new RedirectingOutputStream(jrtraceBean, System.err,
-            NotificationConstants.NOTIFY_STDERR)));
-        NotificationUtil.setNotificationSender(jrtraceBean);
-      }
-      else {
-        if (enable == false && stdout_isredirected) {
-          stdout_isredirected = false;
-          System.setOut(stdout);
-          System.setErr(stderr);
-          NotificationUtil.setNotificationSender(null);
-        }
-      }
-    }
-  }
+			redirectStandardOut(true);
 
-  public void connect() {
-    synchronized (AgentMain.class) {
-      if (enginextransformer != null)
-        return;
+			JRLog.debug("AgentMain.connect() now connected");
+		}
+	}
 
-      enginextransformer = new EngineXClassFileTransformer();
-      instrumentation.addTransformer(enginextransformer, true);
+	/**
+	 * disconnect the agent from the current connection
+	 */
+	public void disconnect() {
+		stop(true);
+	}
 
-      redirectStandardOut(true);
+	/**
+	 * shut down the agent
+	 */
+	public void stop() {
+		stop(false);
+	}
 
-      JRLog.debug("AgentMain.connect() now connected");
-    }
-  }
+	/**
+	 * stop all agent threads/activities/redirections
+	 * 
+	 * @param disconnect
+	 *            true: only disconnect, false: disable the command listener as
+	 *            well , the agent in this case effectively shut down
+	 */
+	public void stop(boolean disconnect) {
+		synchronized (AgentMain.class) {
+			JRLog.debug(String.format("AgentMain.stop(disconnect:%b)",
+					disconnect));
+			EngineXHelper.clearEngineX();
 
-  /**
-   * disconnect the agent from the current connection
-   */
-  public void disconnect() {
-    stop(true);
-  }
+			redirectStandardOut(false);
 
-  /**
-   * shut down the agent
-   */
-  public void stop() {
-    stop(false);
-  }
+			if (enginextransformer != null)
+				instrumentation.removeTransformer(enginextransformer);
+			enginextransformer = null;
 
-  /**
-   * stop all agent threads/activities/redirections
-   * 
-   * @param disconnect true: only disconnect, false: disable the command listener as well , the agent in this case
-   *          effectively shut down
-   */
-  public void stop(boolean disconnect) {
-    synchronized (AgentMain.class) {
-      JRLog.debug(String.format("AgentMain.stop(disconnect:%b)", disconnect));
-      EngineXHelper.clearEngineX();
+			theAgent = null;
 
-      redirectStandardOut(false);
+			if (!disconnect) {
+				// Thread stopServerThread = new Thread() {
+				//
+				// @Override
+				// public void run() {
+				// stopMXBeanServer();
+				// };
+				// };
+				stopMXBeanServer();
 
-      if (enginextransformer != null)
-        instrumentation.removeTransformer(enginextransformer);
-      enginextransformer = null;
+				// stopServerThread.start();
 
-    
+			}
+		}
+	}
 
-      theAgent = null;
+	public void appendToBootstrapClassLoaderSearch(JarFile jarFile) {
+		instrumentation.appendToBootstrapClassLoaderSearch(jarFile);
 
-      if (!disconnect) {
-//        Thread stopServerThread = new Thread() {
-//
-//          @Override
-//          public void run() {
-//            stopMXBeanServer();
-//          };
-//        };
-        stopMXBeanServer();
-        
-        //stopServerThread.start();
+	}
 
-
-      }
-    }
-  }
-
-  public void appendToBootstrapClassLoaderSearch(JarFile jarFile) {
-    instrumentation.appendToBootstrapClassLoaderSearch(jarFile);
-
-  }
-
-  public static AgentMain getAgentInstance() {
-    return theAgent;
-  }
+	public static AgentMain getAgentInstance() {
+		return theAgent;
+	}
 }
