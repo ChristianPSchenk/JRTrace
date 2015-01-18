@@ -54,36 +54,33 @@ public class EngineXClassVisitor extends ClassVisitor {
 	@Override
 	public MethodVisitor visitMethod(int access, String name, String desc,
 			String signature, String[] exceptions) {
-		
-		MethodVisitor currentVisitor = super.visitMethod(access,
-                name, desc, signature, exceptions);
-		
 
-	
-		List<EngineXMethodMetadata> matchingMethods=new ArrayList<EngineXMethodMetadata>();
+		MethodVisitor currentVisitor = super.visitMethod(access, name, desc,
+				signature, exceptions);
+
+		List<EngineXMethodMetadata> matchingMethods = new ArrayList<EngineXMethodMetadata>();
 		for (EngineXMethodMetadata method : metadata.getMethods()) {
 			if (method.mayMatch(name, desc)) {
-				
+
 				matchingMethods.add(method);
-				
+
 			}
 		}
 
-		if(!matchingMethods.isEmpty())
-		{
-			boolean isStatic = ((access & Opcodes.ACC_STATIC) != 0) ? true
-					: false;
-		 MethodVisitor oldVisitor = currentVisitor;
-		 EngineXMethodVisitor newMethodVisitor = new EngineXMethodVisitor(this,
-            isStatic, access, name, desc,oldVisitor, matchingMethods);
-			LocalVariablesSorter lvs=new LocalVariablesSorter(access, desc, newMethodVisitor);
-		 newMethodVisitor.setLocalVariableSorter(lvs);
-		 currentVisitor=lvs;
+		if (!matchingMethods.isEmpty()) {
+
+			MethodVisitor oldVisitor = currentVisitor;
+			EngineXMethodVisitor newMethodVisitor = new EngineXMethodVisitor(
+					this, access, name, desc, oldVisitor, matchingMethods);
+			LocalVariablesSorter lvs = new LocalVariablesSorter(access, desc,
+					newMethodVisitor);
+			newMethodVisitor.setLocalVariableSorter(lvs);
+			currentVisitor = lvs;
 		}
-		
-		return new JSRInlinerAdapter(currentVisitor,
-				access, name, desc, signature, exceptions);
-		 
+
+		return new JSRInlinerAdapter(currentVisitor, access, name, desc,
+				signature, exceptions);
+
 	}
 
 	public FieldEntry getFieldEntry(String injectionSource) {

@@ -33,19 +33,19 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 	private boolean targetMethodStatic = false; // fixme: target injectedMethod
 	// may be
 	private Type targetReturnType;
-	
 
 	private EngineXClassVisitor classVisitor;
 	private Object targetMethodName;
 
 	private Type[] targetArguments;
 	private LocalVariablesSorter localVariableSorter;
+	private int targetMethodAccess;
 
 	/**
    */
-	public EngineXMethodVisitor(EngineXClassVisitor fieldList,
-			boolean isStatic, int access, String name, String desc,
-			MethodVisitor visitMethod, List<EngineXMethodMetadata> injectedMethods) {
+	public EngineXMethodVisitor(EngineXClassVisitor fieldList, int access,
+			String name, String desc, MethodVisitor visitMethod,
+			List<EngineXMethodMetadata> injectedMethods) {
 
 		super(Opcodes.ASM5, visitMethod, access, name, desc);
 		this.targetMethodName = name;
@@ -56,58 +56,57 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 		this.targetArguments = targetMethod.getArgumentTypes();
 
 		this.injectedMethods = injectedMethods;
+		boolean isStatic = ((access & Opcodes.ACC_STATIC) != 0) ? true : false;
 		this.targetMethodStatic = isStatic;
+		this.targetMethodAccess = access;
 
-		
-		for(EngineXMethodMetadata injectedMethod:injectedMethods)
-		{
+		for (EngineXMethodMetadata injectedMethod : injectedMethods) {
 
-		Method enginexMethod = new Method(injectedMethod.getMethodName(),
-				injectedMethod.getDescriptor());
-		
-		Type injectionMethodReturnTypes = enginexMethod.getReturnType();
-		
-		if (injectedMethod.getInjectLocation() != XLocation.EXIT
-				&& injectedMethod.getInjectLocation() != XLocation.REPLACE_INVOCATION
-				&& injectedMethod.getInjectLocation() != XLocation.AFTER_INVOCATION) {
-			if (!injectionMethodReturnTypes.equals(Type.VOID_TYPE)) {
-				fatal(injectedMethod,String
-						.format("The injected method has a non-empty return type. This is only allowed for methods injected in location XLocation.EXIT"));
+			Method enginexMethod = new Method(injectedMethod.getMethodName(),
+					injectedMethod.getDescriptor());
 
-			}
+			Type injectionMethodReturnTypes = enginexMethod.getReturnType();
 
-		} else {
-			if (!injectionMethodReturnTypes.equals(Type.VOID_TYPE)
-					&& injectedMethod.getInjectLocation() == XLocation.EXIT) {
-
-				if (!TypeCheckUtil.isAssignable(injectionMethodReturnTypes,
-						targetReturnType,
-						classVisitor.getCommonSuperClassUtil()))
-
-				{
-					fatal(injectedMethod,String
-							.format("Return type of injected method doesn't match the type %s of the target method %s in class %s.",
-									targetReturnType.getClassName(),
-									targetMethodName, EngineXNameUtil
-											.getExternalName(classVisitor
-													.getClassName())));
+			if (injectedMethod.getInjectLocation() != XLocation.EXIT
+					&& injectedMethod.getInjectLocation() != XLocation.REPLACE_INVOCATION
+					&& injectedMethod.getInjectLocation() != XLocation.AFTER_INVOCATION) {
+				if (!injectionMethodReturnTypes.equals(Type.VOID_TYPE)) {
+					fatal(injectedMethod,
+							String.format("The injected method has a non-empty return type. This is only allowed for methods injected in location XLocation.EXIT"));
 
 				}
-			}
 
-		}
+			} else {
+				if (!injectionMethodReturnTypes.equals(Type.VOID_TYPE)
+						&& injectedMethod.getInjectLocation() == XLocation.EXIT) {
+
+					if (!TypeCheckUtil.isAssignable(injectionMethodReturnTypes,
+							targetReturnType,
+							classVisitor.getCommonSuperClassUtil()))
+
+					{
+						fatal(injectedMethod,
+								String.format(
+										"Return type of injected method doesn't match the type %s of the target method %s in class %s.",
+										targetReturnType.getClassName(),
+										targetMethodName, EngineXNameUtil
+												.getExternalName(classVisitor
+														.getClassName())));
+
+					}
+				}
+
+			}
 		}
 
 	}
 
 	@Override
 	protected void onMethodEnter() {
-		for(EngineXMethodMetadata injectedMethod: injectedMethods)
-		{
-		if (injectedMethod.getInjectLocation() == XLocation.ENTRY)
-		{
-			injectEngineXCall(injectedMethod);
-		}
+		for (EngineXMethodMetadata injectedMethod : injectedMethods) {
+			if (injectedMethod.getInjectLocation() == XLocation.ENTRY) {
+				injectEngineXCall(injectedMethod);
+			}
 		}
 
 		super.onMethodEnter();
@@ -119,18 +118,17 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 	@Override
 	public void visitMethodInsn(int opcode, String owner, String name,
 			String desc, boolean itf) {
-		for(EngineXMethodMetadata injectedMethod:injectedMethods)
-		{
-		if (injectedMethod.getInjectLocation() == XLocation.BEFORE_INVOCATION
-				|| injectedMethod.getInjectLocation() == XLocation.REPLACE_INVOCATION
-				|| injectedMethod.getInjectLocation() == XLocation.AFTER_INVOCATION) {
-			if (injectedMethod.matchesInvoker(owner, name)) {
-				applyOnInvokeInstrumentation(injectedMethod,opcode, owner, name, desc, itf);
-				return;
+		for (EngineXMethodMetadata injectedMethod : injectedMethods) {
+			if (injectedMethod.getInjectLocation() == XLocation.BEFORE_INVOCATION
+					|| injectedMethod.getInjectLocation() == XLocation.REPLACE_INVOCATION
+					|| injectedMethod.getInjectLocation() == XLocation.AFTER_INVOCATION) {
+				if (injectedMethod.matchesInvoker(owner, name)) {
+					applyOnInvokeInstrumentation(injectedMethod, opcode, owner,
+							name, desc, itf);
+					return;
+				}
 			}
 		}
-		}
-		
 
 		super.visitMethodInsn(opcode, owner, name, desc, itf);
 	}
@@ -143,50 +141,53 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 			String desc) {
 
 		super.visitFieldInsn(opcode, owner, name, desc);
-		for(EngineXMethodMetadata injectedMethod:injectedMethods)
-		{
-		XLocation loc = injectedMethod.getInjectLocation();
-		if (loc == XLocation.GETFIELD || loc == XLocation.PUTFIELD) {
-			if (injectedMethod.matchesField(owner, name)) {
-				if ((loc == XLocation.GETFIELD && (opcode == Opcodes.GETFIELD || opcode == Opcodes.GETSTATIC))
-						|| (loc == XLocation.PUTFIELD && (opcode == Opcodes.PUTFIELD || opcode == Opcodes.PUTSTATIC)))
-					injectEngineXCall(injectedMethod);
+		for (EngineXMethodMetadata injectedMethod : injectedMethods) {
+			XLocation loc = injectedMethod.getInjectLocation();
+			if (loc == XLocation.GETFIELD || loc == XLocation.PUTFIELD) {
+				if (injectedMethod.matchesField(owner, name)) {
+					if ((loc == XLocation.GETFIELD && (opcode == Opcodes.GETFIELD || opcode == Opcodes.GETSTATIC))
+							|| (loc == XLocation.PUTFIELD && (opcode == Opcodes.PUTFIELD || opcode == Opcodes.PUTSTATIC)))
+						injectEngineXCall(injectedMethod);
+				}
 			}
-		}
-		
+
 		}
 
 	}
 
 	/**
-	 * @param injectedMethod 
+	 * @param injectedMethod
 	 * @param opcode
 	 * @param owner
 	 * @param name
 	 * @param desc
 	 * @param itf
 	 */
-	private void applyOnInvokeInstrumentation(EngineXMethodMetadata injectedMethod, int opcode, String owner,
+	private void applyOnInvokeInstrumentation(
+			EngineXMethodMetadata injectedMethod, int opcode, String owner,
 			String name, String desc, boolean itf) {
 		boolean invokedMethodStatic = (opcode == Opcodes.INVOKESTATIC);
 
 		int[] localArgPositions = moveCallArgumentsFromStackToLocals(desc,
 				owner, invokedMethodStatic);
 		if (injectedMethod.getInjectLocation() == XLocation.BEFORE_INVOCATION) {
-			injectEngineXCall(injectedMethod,localArgPositions, owner, name, desc);
+			injectEngineXCall(injectedMethod, localArgPositions, owner, name,
+					desc);
 		}
 		if (injectedMethod.getInjectLocation() == XLocation.REPLACE_INVOCATION) {
-			injectEngineXCall(injectedMethod,localArgPositions, owner, name, desc);
+			injectEngineXCall(injectedMethod, localArgPositions, owner, name,
+					desc);
 			Method enginexMethod = new Method(injectedMethod.getMethodName(),
 					injectedMethod.getDescriptor());
-			
+
 			Type injectionMethodReturnTypes = enginexMethod.getReturnType();
-			
+
 			if (!TypeCheckUtil.isAssignable(injectionMethodReturnTypes,
 					Type.getReturnType(desc),
 					classVisitor.getCommonSuperClassUtil())) {
-				fatal(injectedMethod,String
-						.format("Type mismatch: @XLocation.REPLACE_INVOCATION requires that the return type %s of the injected method %s is assignable to the return type %s of the replaced method invocation to method %s.",
+				fatal(injectedMethod,
+						String.format(
+								"Type mismatch: @XLocation.REPLACE_INVOCATION requires that the return type %s of the injected method %s is assignable to the return type %s of the replaced method invocation to method %s.",
 								EngineXNameUtil
 										.getExternalName(injectionMethodReturnTypes
 												.getClassName()),
@@ -201,7 +202,8 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 			// TODO return replace
 		}
 		if (injectedMethod.getInjectLocation() == XLocation.AFTER_INVOCATION) {
-			injectEngineXCall(injectedMethod,localArgPositions, owner, name, desc);
+			injectEngineXCall(injectedMethod, localArgPositions, owner, name,
+					desc);
 		}
 	}
 
@@ -268,23 +270,23 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 
 	@Override
 	protected void onMethodExit(int opcode) {
-		for(EngineXMethodMetadata injectedMethod:injectedMethods)
-		{
-		if (injectedMethod.getInjectLocation() == XLocation.EXIT
-				&& opcode == targetReturnType.getOpcode(Opcodes.IRETURN)) {
-			injectEngineXCall(injectedMethod);
-		}
+		for (EngineXMethodMetadata injectedMethod : injectedMethods) {
+			if (injectedMethod.getInjectLocation() == XLocation.EXIT
+					&& opcode == targetReturnType.getOpcode(Opcodes.IRETURN)) {
+				injectEngineXCall(injectedMethod);
+			}
 		}
 		super.onMethodExit(opcode);
 	}
 
 	private void injectEngineXCall(EngineXMethodMetadata injectedMethod) {
-		injectEngineXCall(injectedMethod,null, null, null, null);
+		injectEngineXCall(injectedMethod, null, null, null, null);
 	}
 
 	/**
 	 * 
-	 * @param injectedMethod the method to be injected
+	 * @param injectedMethod
+	 *            the method to be injected
 	 * @param invokeArgPositions
 	 *            the local variable indexes where the parameters of the
 	 *            invokedmethod are stored for invocation instrumentation, else
@@ -295,28 +297,29 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 	 *            the signature of the invoked method
 	 * @param invokeMethodOwner
 	 */
-	private void injectEngineXCall(EngineXMethodMetadata injectedMethod, int[] invokeArgPositions,
-			String invokeMethodOwner, String invokeMethodName,
-			String invokeMethodDesc) {
+	private void injectEngineXCall(EngineXMethodMetadata injectedMethod,
+			int[] invokeArgPositions, String invokeMethodOwner,
+			String invokeMethodName, String invokeMethodDesc) {
 
 		Method enginexMethod = new Method(injectedMethod.getMethodName(),
 				injectedMethod.getDescriptor());
 		Type[] injectionMethodArgumentTypes = enginexMethod.getArgumentTypes();
-		
+
 		for (int i = 0; i < injectionMethodArgumentTypes.length; i++) {
-			prepareCallArgument(injectedMethod,i, invokeArgPositions, invokeMethodOwner,
-					invokeMethodName, invokeMethodDesc);
+			prepareCallArgument(injectedMethod, i, invokeArgPositions,
+					invokeMethodOwner, invokeMethodName, invokeMethodDesc);
 		}
 		createVirtualDynamicInvoke(injectedMethod);
 	}
 
-	private void prepareCallArgument(EngineXMethodMetadata injectedMethod, int i, int[] localArgPositions,
-			String owner, String name, String desc) {
+	private void prepareCallArgument(EngineXMethodMetadata injectedMethod,
+			int i, int[] localArgPositions, String owner, String name,
+			String desc) {
 
 		Method enginexMethod = new Method(injectedMethod.getMethodName(),
 				injectedMethod.getDescriptor());
 		Type[] injectionMethodArgumentTypes = enginexMethod.getArgumentTypes();
-		
+
 		Injection injectionObject = injectedMethod.getInjection(i);
 		if (injectionObject == null) {
 			mv.visitInsn(getNullOperand(injectionMethodArgumentTypes[i]));
@@ -331,19 +334,23 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 				localVarType = targetReturnType;
 				if (injectionSource != -1) {
 					if (injectionSource == 0) {
-						localVarIndex = getLocalVariablePosition(injectedMethod,injectionSource);
+						localVarIndex = getLocalVariablePosition(
+								injectedMethod, injectionSource);
 						localVarType = Type.getType("L"
 								+ classVisitor.getClassName() + ";");
 					} else {
-						localVarIndex = getLocalVariablePosition(injectedMethod,injectionSource);
+						localVarIndex = getLocalVariablePosition(
+								injectedMethod, injectionSource);
 						localVarType = targetArguments[injectionSource - 1];
 					}
 				}
-				prepareCallerArgumentArgument(injectedMethod,i, localVarIndex, localVarType);
+				prepareCallerArgumentArgument(injectedMethod, i, localVarIndex,
+						localVarType);
 				break;
 			case FIELD:
 
-				prepareFieldInjectedArgument(injectedMethod,i, injectionObject.getFieldname());
+				prepareFieldInjectedArgument(injectedMethod, i,
+						injectionObject.getFieldname());
 				break;
 
 			case INVOKE_PARAMETER:
@@ -356,15 +363,17 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 						localVarType = Type.getType("L" + owner + ";");
 					} else {
 						if (injectionSource >= localArgPositions.length) {
-							fatal(injectedMethod,String
-									.format("The method %s of class %s doesn't have a parameter %d for injection.",
+							fatal(injectedMethod,
+									String.format(
+											"The method %s of class %s doesn't have a parameter %d for injection.",
 											name, owner, injectionSource));
 						}
 						localVarIndex = localArgPositions[injectionSource];
 						localVarType = (Type.getArgumentTypes(desc))[injectionSource - 1];
 					}
 				}
-				prepareCallerArgumentArgument(injectedMethod,i, localVarIndex, localVarType);
+				prepareCallerArgumentArgument(injectedMethod, i, localVarIndex,
+						localVarType);
 				break;
 
 			}
@@ -383,20 +392,23 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 	 * @param sourceType
 	 *            the type of the local variable slot.
 	 */
-	private void prepareCallerArgumentArgument(EngineXMethodMetadata injectedMethod,int pos, int sourceLocalVar,
+	private void prepareCallerArgumentArgument(
+			EngineXMethodMetadata injectedMethod, int pos, int sourceLocalVar,
 			Type sourceType) {
 		Method enginexMethod = new Method(injectedMethod.getMethodName(),
 				injectedMethod.getDescriptor());
 		Type[] injectionMethodArgumentTypes = enginexMethod.getArgumentTypes();
 		Type injectionMethodReturnTypes = enginexMethod.getReturnType();
-		
+
 		Type argument = injectionMethodArgumentTypes[pos];
 		if (sourceLocalVar == -1) {
 			if (pos != 0)
-				fatal(injectedMethod,"@XReturn/@XInvokeReturn is only allowed on the first parameter.");
+				fatal(injectedMethod,
+						"@XReturn/@XInvokeReturn is only allowed on the first parameter.");
 			if (injectedMethod.getInjectLocation() != XLocation.EXIT
 					&& injectedMethod.getInjectLocation() != XLocation.AFTER_INVOCATION)
-				fatal(injectedMethod,"@XReturn/@XInvokeReturn is only allowed on inject location XLocation.EXIT/XLocation.AFTER_INVOKATION");
+				fatal(injectedMethod,
+						"@XReturn/@XInvokeReturn is only allowed on inject location XLocation.EXIT/XLocation.AFTER_INVOKATION");
 			if (injectionMethodReturnTypes.equals(Type.VOID_TYPE)) {
 				if (sourceType.getSize() == 1) {
 					mv.visitInsn(Opcodes.DUP);
@@ -406,8 +418,9 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 			} else {
 				if (!TypeCheckUtil.isAssignable(sourceType, argument,
 						classVisitor.getCommonSuperClassUtil())) {
-					fatal(injectedMethod,String
-							.format("The type returned by the method %s is %s and cannot be assigned to the first argument of the method %s which is %s.",
+					fatal(injectedMethod,
+							String.format(
+									"The type returned by the method %s is %s and cannot be assigned to the first argument of the method %s which is %s.",
 									targetMethodName, EngineXNameUtil
 											.getExternalName(sourceType
 													.getClassName()),
@@ -423,8 +436,9 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 
 			if (!TypeCheckUtil.isAssignable(sourceType, argument,
 					classVisitor.getCommonSuperClassUtil())) {
-				fatal(injectedMethod,String
-						.format("Argument Type mismatch:  method parameter of type %s is injected into type %s of method %s in class %s.",
+				fatal(injectedMethod,
+						String.format(
+								"Argument Type mismatch:  method parameter of type %s is injected into type %s of method %s in class %s.",
 								EngineXNameUtil.getExternalName(sourceType
 										.getClassName()), EngineXNameUtil
 										.getExternalName(argument
@@ -438,25 +452,29 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 		}
 	}
 
-	private void prepareFieldInjectedArgument(EngineXMethodMetadata injectedMethod,int pos, String injectionSource) {
+	private void prepareFieldInjectedArgument(
+			EngineXMethodMetadata injectedMethod, int pos,
+			String injectionSource) {
 		FieldEntry field = classVisitor.getFieldEntry(injectionSource);
 		Method enginexMethod = new Method(injectedMethod.getMethodName(),
 				injectedMethod.getDescriptor());
 		Type[] injectionMethodArgumentTypes = enginexMethod.getArgumentTypes();
-	
+
 		if (field != null) {
 			String desc = field.getDescriptor();
 			Type fieldType = Type.getType(desc);
 			if (!TypeCheckUtil.isAssignable(fieldType,
 					injectionMethodArgumentTypes[pos],
 					classVisitor.getCommonSuperClassUtil())) {
-				fatal(injectedMethod,String
-						.format("The type of the field "
-								+ injectionSource
-								+ " of the targetclass "
-								+ EngineXNameUtil.getExternalName(classVisitor
-										.getClassName())
-								+ " doesn't match the type of the argument %d of the injected method and cannot be injected with XField.",
+				fatal(injectedMethod,
+						String.format(
+								"The type of the field "
+										+ injectionSource
+										+ " of the targetclass "
+										+ EngineXNameUtil
+												.getExternalName(classVisitor
+														.getClassName())
+										+ " doesn't match the type of the argument %d of the injected method and cannot be injected with XField.",
 								pos));
 			}
 
@@ -487,12 +505,13 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 					"(Ljava/lang/Object;Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Object;",
 					false);
 
-			castToTargetArgumentType(injectedMethod,pos);
+			castToTargetArgumentType(injectedMethod, pos);
 		}
 
 	}
 
-	private void castToTargetArgumentType(EngineXMethodMetadata injectedMethod,int pos) {
+	private void castToTargetArgumentType(EngineXMethodMetadata injectedMethod,
+			int pos) {
 		Method enginexMethod = new Method(injectedMethod.getMethodName(),
 				injectedMethod.getDescriptor());
 		Type[] injectionMethodArgumentTypes = enginexMethod.getArgumentTypes();
@@ -565,7 +584,8 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 				injectedMethod.getMethodName(), injectedMethod.getDescriptor());
 	}
 
-	private int getLocalVariablePosition(EngineXMethodMetadata injectedMethod,Integer injectionSource) {
+	private int getLocalVariablePosition(EngineXMethodMetadata injectedMethod,
+			Integer injectionSource) {
 		int pos = 0;
 		Method m = new Method("doesntmatter", descriptor);
 
@@ -581,14 +601,15 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 										.getExternalName(classVisitor
 												.getClassName()));
 
-				fatal(injectedMethod,msg);
+				fatal(injectedMethod, msg);
 			}
 		}
 		Type[] targetArgumentTypes = m.getArgumentTypes();
 		for (int j = 0; j < injectionSource - 1; j++) {
 			if (j >= targetArgumentTypes.length) {
-				fatal(injectedMethod,String
-						.format("There is no argument at position %d on method %s of class %s that can be injected with @Param.",
+				fatal(injectedMethod,
+						String.format(
+								"There is no argument at position %d on method %s of class %s that can be injected with @Param.",
 								injectionSource, targetMethodName,
 								EngineXNameUtil.getExternalName(classVisitor
 										.getClassName())));
@@ -600,10 +621,10 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 		return pos;
 	}
 
-	private void fatal(EngineXMethodMetadata injectedMethod,String msg) {
+	private void fatal(EngineXMethodMetadata injectedMethod, String msg) {
 		Method enginexMethod = new Method(injectedMethod.getMethodName(),
 				injectedMethod.getDescriptor());
-	
+
 		String injectionMethodDescriptor = enginexMethod.getDescriptor();
 		NotificationUtil.sendProblemNotification(msg, EngineXNameUtil
 				.getExternalName(injectedMethod.getClassMetadata()
