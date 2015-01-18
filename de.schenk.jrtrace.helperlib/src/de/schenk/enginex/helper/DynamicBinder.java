@@ -56,10 +56,21 @@ public class DynamicBinder {
 					+ enginexclass + " failed!");
 		}
 
-		MethodHandle enginexMethod = lookup.bind(object, enginexmethodname,
-				MethodType.fromMethodDescriptorString(enginexmethoddescriptor,
-						caller.lookupClass().getClassLoader()));
+		MethodHandle enginexMethod = null;
+		try {
+			enginexMethod = lookup.bind(object, enginexmethodname, MethodType
+					.fromMethodDescriptorString(enginexmethoddescriptor, caller
+							.lookupClass().getClassLoader()));
+		} catch (IllegalAccessException e) {
 
+			NotificationUtil
+					.sendProblemNotification(
+							String.format(
+									"It is not possible to inject into %s due to an IllegalAccessException. This indicates that the injected method requires classes that are either not present or not accessible. Check your classloader settings.",
+									caller.toString()), enginexclass,
+							enginexmethodname, enginexmethoddescriptor);
+			e.printStackTrace();
+		}
 		// System.out.println("bootstrapping " + lookup.getClass().toString()
 		// + " to " + enginexclass + " / " + enginexmethodname);
 		return new ConstantCallSite(enginexMethod.asType(type));
