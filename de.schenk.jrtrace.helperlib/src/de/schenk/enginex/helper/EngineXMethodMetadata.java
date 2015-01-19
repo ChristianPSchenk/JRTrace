@@ -4,6 +4,7 @@
 package de.schenk.enginex.helper;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.schenk.jrtrace.annotations.XLocation;
+import de.schenk.jrtrace.annotations.XModifier;
 import de.schenk.jrtrace.helperlib.JRLog;
 
 public class EngineXMethodMetadata {
@@ -68,23 +70,23 @@ public class EngineXMethodMetadata {
 	List<String> argumentList = null;
 
 	/**
-	 *  a map describing the argument, return and field injections into the instrumented method:
-	 *  key: the argument position (0,...)
-	 *  value: Integer: 0: this, -1: return value, n>=1: paramter index, String: field injection.
+	 * a map describing the argument, return and field injections into the
+	 * instrumented method: key: the argument position (0,...) value: Integer:
+	 * 0: this, -1: return value, n>=1: paramter index, String: field injection.
 	 */
 	private Map<Integer, Injection> injection = new HashMap<Integer, Injection>();
 
-
-	
 	private XLocation injectLocation = XLocation.ENTRY;
 
-  private String invokedethodName="";
+	private String invokedethodName = "";
 
-  private String invokedClass="";
+	private String invokedClass = "";
 
-  private String fieldAccessClass="";
-  
-  private String fieldAccessName="";
+	private String fieldAccessClass = "";
+
+	private String fieldAccessName = "";
+
+	private List<XModifier> modifier = new ArrayList<XModifier>();
 
 	public void addArgument(String value) {
 		if (argumentList == null)
@@ -101,14 +103,17 @@ public class EngineXMethodMetadata {
 	 * 
 	 * @param methodName
 	 * @param desc
+	 * @param access
 	 * @return true, if the methodName and Descriptor passed in is matched by
 	 *         this metadata.
 	 */
-	public boolean mayMatch(String methodName, String desc) {
+	public boolean mayMatch(String methodName, String desc, int access) {
 		if (mayMatchMethodName(methodName)) {
 			String[] ps = MethodUtil.getParametersAsString(desc);
-			if (mayMatchParameters(ps))
-				return true;
+			if (mayMatchParameters(ps)) {
+
+				return mayMatchModifier(access);
+			}
 		}
 		return false;
 	}
@@ -189,11 +194,65 @@ public class EngineXMethodMetadata {
 			if (mayMatchMethodName(name)) {
 				Method theMethod = methods[i];
 				String[] ptypesStrings = getParameterList(theMethod);
-				if (mayMatchParameters(ptypesStrings))
-					return true;
+				int modifiers;
+				if (mayMatchParameters(ptypesStrings)) {
+					modifiers = theMethod.getModifiers();
+					return mayMatchModifier(modifiers);
+				}
 			}
 		}
 		return false;
+	}
+
+	private boolean mayMatchModifier(int modifiers) {
+
+		for (XModifier modifier : getMethodModifiers()) {
+			switch (modifier) {
+			case PUBLIC:
+				if (!((modifiers & Modifier.PUBLIC) == Modifier.PUBLIC))
+					return false;
+				break;
+			case NOT_PUBLIC:
+				if (!((modifiers & Modifier.PUBLIC) == 0))
+					return false;
+				break;
+			case PRIVATE:
+				if (!((modifiers & Modifier.PRIVATE) == Modifier.PRIVATE))
+					return false;
+				break;
+			case NOT_PRIVATE:
+				if (!((modifiers & Modifier.PRIVATE) == 0))
+					return false;
+				break;
+			case PROTECTED:
+				if (!((modifiers & Modifier.PROTECTED) == Modifier.PROTECTED))
+					return false;
+				break;
+			case NOT_PROTECTED:
+				if (!((modifiers & Modifier.PROTECTED) == 0))
+					return false;
+				break;
+			case STATIC:
+				if (!((modifiers & Modifier.STATIC) == Modifier.STATIC))
+					return false;
+				break;
+			case NOT_STATIC:
+				if (!((modifiers & Modifier.STATIC) == 0))
+					return false;
+				break;
+
+			case FINAL:
+				if (!((modifiers & Modifier.FINAL) == Modifier.FINAL))
+					return false;
+				break;
+			case NOT_FINAL:
+				if (!((modifiers & Modifier.FINAL) == 0))
+					return false;
+				break;
+
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -248,98 +307,113 @@ public class EngineXMethodMetadata {
 
 	}
 
-  /**
-   * @return
-   */
-  public String getInvokedMethodName() {
-    
-    return invokedethodName;
-  }
+	/**
+	 * @return
+	 */
+	public String getInvokedMethodName() {
 
-  /**
-   * @param value
-   */
-  public void setInvokedMethod(String value) {
-      invokedethodName=value;
-    
-  }
+		return invokedethodName;
+	}
 
-  /**
-   * @param invokedMethodName
-   * @return true: if the passed in method name matches the "invokedMethodName"
-   */
-  public boolean matchesInvoker(String invokedMethodClass,String invokedMethodName) {
-    
-    
-   return checkStringMatch(invokedMethodName,getInvokedMethodName()) && checkStringMatch(invokedMethodClass.replace('/', '.'),getInvokedMethodClass());
-  }
+	/**
+	 * @param value
+	 */
+	public void setInvokedMethod(String value) {
+		invokedethodName = value;
 
-  /**
-   * @param invokedMethodName
-   * @return
-   */
-  private boolean checkStringMatch(String state,String match) {
-    if(match.isEmpty()) return true;
-     if(this.parent.getUseRegEx())
-     {
-       return state.matches(match);
-     } else
-     {
-       return state.equals(match);
-     }
-  }
+	}
 
-  
+	/**
+	 * @param invokedMethodName
+	 * @return true: if the passed in method name matches the
+	 *         "invokedMethodName"
+	 */
+	public boolean matchesInvoker(String invokedMethodClass,
+			String invokedMethodName) {
 
-  /**
-   * @param value
-   */
-  public void setInvokedClass(String value) {
-    this.invokedClass=value;
-    
-  }
+		return checkStringMatch(invokedMethodName, getInvokedMethodName())
+				&& checkStringMatch(invokedMethodClass.replace('/', '.'),
+						getInvokedMethodClass());
+	}
 
-  /**
-   * @return
-   */
-  public String getInvokedMethodClass() {
-    return invokedClass;
-  }
+	/**
+	 * @param invokedMethodName
+	 * @return
+	 */
+	private boolean checkStringMatch(String state, String match) {
+		if (match.isEmpty())
+			return true;
+		if (this.parent.getUseRegEx()) {
+			return state.matches(match);
+		} else {
+			return state.equals(match);
+		}
+	}
 
-  /**
-   * @return
-   */
-  public String getFieldAccessClass() {
-    
-    return fieldAccessClass;
-  }
+	/**
+	 * @param value
+	 */
+	public void setInvokedClass(String value) {
+		this.invokedClass = value;
 
-  /**
-   * @return
-   */
-  public String getFieldAccessName() {
-   
-    return fieldAccessName;
-  }
+	}
 
-  /**
-   * @param value the name of the class to restrict instrumentation of field access (GETFIELD/PUTFIELD)
-   */
-  public void setFieldAccessClass(String value) {
-    fieldAccessClass=value;
-    
-  }
+	/**
+	 * @return
+	 */
+	public String getInvokedMethodClass() {
+		return invokedClass;
+	}
 
-  /**
-   * @param value the name of the field to restrict instrumentation of field access (GETFIELD/PUTFIELD)
-   */
-  public void setFieldAccessName(String value) {
-    this.fieldAccessName=value;
-    
-  }
+	/**
+	 * @return
+	 */
+	public String getFieldAccessClass() {
 
-public boolean matchesField(String fieldClassName, String fieldMethodName) {
-	 return checkStringMatch(fieldMethodName,getFieldAccessName()) && checkStringMatch(fieldClassName.replace('/', '.'),getFieldAccessClass());
-}
+		return fieldAccessClass;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getFieldAccessName() {
+
+		return fieldAccessName;
+	}
+
+	/**
+	 * @param value
+	 *            the name of the class to restrict instrumentation of field
+	 *            access (GETFIELD/PUTFIELD)
+	 */
+	public void setFieldAccessClass(String value) {
+		fieldAccessClass = value;
+
+	}
+
+	/**
+	 * @param value
+	 *            the name of the field to restrict instrumentation of field
+	 *            access (GETFIELD/PUTFIELD)
+	 */
+	public void setFieldAccessName(String value) {
+		this.fieldAccessName = value;
+
+	}
+
+	public boolean matchesField(String fieldClassName, String fieldMethodName) {
+		return checkStringMatch(fieldMethodName, getFieldAccessName())
+				&& checkStringMatch(fieldClassName.replace('/', '.'),
+						getFieldAccessClass());
+	}
+
+	public XModifier[] getMethodModifiers() {
+		return modifier.toArray(new XModifier[modifier.size()]);
+	}
+
+	public void addModifier(XModifier valueOf) {
+		modifier.add(valueOf);
+
+	}
 
 }

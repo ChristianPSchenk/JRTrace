@@ -60,7 +60,7 @@ public class EngineXClassVisitor extends ClassVisitor {
 
 		List<EngineXMethodMetadata> matchingMethods = new ArrayList<EngineXMethodMetadata>();
 		for (EngineXMethodMetadata method : metadata.getMethods()) {
-			if (method.mayMatch(name, desc)) {
+			if (method.mayMatch(name, desc, access)) {
 
 				matchingMethods.add(method);
 

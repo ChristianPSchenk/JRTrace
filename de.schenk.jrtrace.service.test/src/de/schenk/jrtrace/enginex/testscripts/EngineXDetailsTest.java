@@ -429,6 +429,15 @@ public class EngineXDetailsTest implements NotificationListener {
 	}
 
 	@Test
+	public void test31testQualifierRestrictions() throws Exception {
+
+		Test31 test31 = new Test31();
+		int result = test31.test31();
+		assertEquals(12, result);
+
+	}
+
+	@Test
 	public void test24ErrorMessageForXThisOnStaticMethod() throws Exception {
 		notificationBarrier = new CyclicBarrier(2);
 

@@ -3,10 +3,10 @@
    <description name="JRTrace Update Site">
       JRTrace Feature for Runtime Product Debugging
    </description>
-   <feature url="features/de.schenk.jrtrace.feature_0.4.0.qualifier.jar" id="de.schenk.jrtrace.feature" version="0.4.0.qualifier" ws="win32">
+   <feature url="features/de.schenk.jrtrace.feature_0.4.0.201501181819.jar" id="de.schenk.jrtrace.feature" version="0.4.0.201501181819" ws="win32">
       <category name="JRTrace"/>
    </feature>
-   <feature url="features/de.schenk.jrtrace.feature.sdk_0.4.0.qualifier.jar" id="de.schenk.jrtrace.feature.sdk" version="0.4.0.qualifier">
+   <feature url="features/de.schenk.jrtrace.feature.sdk_0.4.0.201501181819.jar" id="de.schenk.jrtrace.feature.sdk" version="0.4.0.201501181819">
       <category name="JRTrace"/>
    </feature>
    <category-def name="JRTrace" label="JRTrace">

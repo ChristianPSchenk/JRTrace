@@ -16,6 +16,7 @@ import de.schenk.jrtrace.annotations.XInvokeThis;
 import de.schenk.jrtrace.annotations.XLocation;
 import de.schenk.jrtrace.annotations.XMethod;
 import de.schenk.jrtrace.annotations.XParam;
+import de.schenk.jrtrace.annotations.XModifier;
 import de.schenk.jrtrace.annotations.XReturn;
 import de.schenk.jrtrace.annotations.XThis;
 import de.schenk.objectweb.asm.AnnotationVisitor;
@@ -31,14 +32,14 @@ public class EngineXAnnotationReader {
 
 		private EngineXMethodMetadata method;
 		private int param;
-    private InjectionType iType;
+		private InjectionType iType;
 
 		public MetadataParameterAnnotationVisitor(
-				EngineXMethodMetadata methodmd, InjectionType iType, int parameter,
-				AnnotationVisitor visitParameterAnnotation) {
+				EngineXMethodMetadata methodmd, InjectionType iType,
+				int parameter, AnnotationVisitor visitParameterAnnotation) {
 
 			super(Opcodes.ASM5, visitParameterAnnotation);
-			this.iType=iType;
+			this.iType = iType;
 			this.param = parameter;
 			this.method = methodmd;
 		}
@@ -46,28 +47,27 @@ public class EngineXAnnotationReader {
 		@Override
 		public void visit(String name, Object value) {
 			if ("n".equals(name)) {
-			  if(iType==InjectionType.PARAMETER)
-			  {
-				method.addInjection(param, Injection.createParameterInjection((int)value));
-			  } else
-			  {
-			    if(iType==InjectionType.INVOKE_PARAMETER)
-			    {
-			      method.addInjection(param, Injection.createInvokeParameterInjection((int)value));
-			    } else
-			    {
-			      throw new RuntimeException("Annotation n not valid for iType FIELD");
-			    }
-			  }
+				if (iType == InjectionType.PARAMETER) {
+					method.addInjection(param,
+							Injection.createParameterInjection((int) value));
+				} else {
+					if (iType == InjectionType.INVOKE_PARAMETER) {
+						method.addInjection(param, Injection
+								.createInvokeParameterInjection((int) value));
+					} else {
+						throw new RuntimeException(
+								"Annotation n not valid for iType FIELD");
+					}
+				}
 			}
 			if ("name".equals(name)) {
-			  if(iType==InjectionType.FIELD)
-			  {
-				method.addInjection(param, Injection.createFieldInjection((String)value));
-			  } else
-			  {
-			    throw new RuntimeException("Annotation name only valid for @XField");
-			  }
+				if (iType == InjectionType.FIELD) {
+					method.addInjection(param,
+							Injection.createFieldInjection((String) value));
+				} else {
+					throw new RuntimeException(
+							"Annotation name only valid for @XField");
+				}
 			}
 			super.visit(name, value);
 		}
@@ -86,16 +86,14 @@ public class EngineXAnnotationReader {
 
 		@Override
 		public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-		   
-		    if(desc.equals(Type.getType(XMethod.class).toString()))
-            {
-		      methodmd.getClassMetadata().addMethod(methodmd);
-		      return new MethodMetadataAnnotationVisitor(methodmd, null,
-                  super.visitAnnotation(desc, visible)); 
-            }
-		    return super.visitAnnotation(desc,visible);
-              
-			
+
+			if (desc.equals(Type.getType(XMethod.class).toString())) {
+				methodmd.getClassMetadata().addMethod(methodmd);
+				return new MethodMetadataAnnotationVisitor(methodmd, null,
+						super.visitAnnotation(desc, visible));
+			}
+			return super.visitAnnotation(desc, visible);
+
 		}
 
 		@Override
@@ -103,28 +101,35 @@ public class EngineXAnnotationReader {
 				String desc, boolean visible) {
 
 			if (Type.getType(XThis.class).equals(Type.getType(desc))) {
-				methodmd.addInjection(parameter, Injection.createParameterInjection(0));
+				methodmd.addInjection(parameter,
+						Injection.createParameterInjection(0));
 			}
-	         if (Type.getType(XInvokeThis.class).equals(Type.getType(desc))) {
-	           methodmd.addInjection(parameter, Injection.createInvokeParameterInjection(0));
-           }
-	         if (Type.getType(XInvokeReturn.class).equals(Type.getType(desc))) {
-               methodmd.addInjection(parameter, Injection.createInvokeParameterInjection(-1));
-           }
+			if (Type.getType(XInvokeThis.class).equals(Type.getType(desc))) {
+				methodmd.addInjection(parameter,
+						Injection.createInvokeParameterInjection(0));
+			}
+			if (Type.getType(XInvokeReturn.class).equals(Type.getType(desc))) {
+				methodmd.addInjection(parameter,
+						Injection.createInvokeParameterInjection(-1));
+			}
 			if (Type.getType(XReturn.class).equals(Type.getType(desc))) {
 
-				methodmd.addInjection(parameter, Injection.createParameterInjection(-1));
+				methodmd.addInjection(parameter,
+						Injection.createParameterInjection(-1));
 			}
-			InjectionType iType=null;
-			if( Type.getType(XField.class).equals(
-					Type.getType(desc))) { iType=InjectionType.FIELD; }
-			if( Type.getType(XParam.class).equals(
-                Type.getType(desc))) { iType=InjectionType.PARAMETER; }
-			if( Type.getType(XInvokeParam.class).equals(
-                Type.getType(desc))) { iType=InjectionType.INVOKE_PARAMETER; }
-		
-			if (iType!=null) {
-				return new MetadataParameterAnnotationVisitor(methodmd,iType,
+			InjectionType iType = null;
+			if (Type.getType(XField.class).equals(Type.getType(desc))) {
+				iType = InjectionType.FIELD;
+			}
+			if (Type.getType(XParam.class).equals(Type.getType(desc))) {
+				iType = InjectionType.PARAMETER;
+			}
+			if (Type.getType(XInvokeParam.class).equals(Type.getType(desc))) {
+				iType = InjectionType.INVOKE_PARAMETER;
+			}
+
+			if (iType != null) {
+				return new MetadataParameterAnnotationVisitor(methodmd, iType,
 						parameter, super.visitParameterAnnotation(parameter,
 								desc, visible));
 			}
@@ -139,29 +144,25 @@ public class EngineXAnnotationReader {
 		private String context;
 		boolean dataAdded = false;
 
-
-
 		public MethodMetadataAnnotationVisitor(EngineXMethodMetadata md,
 				String context, AnnotationVisitor visitor) {
 			super(Opcodes.ASM5, visitor);
 			this.context = context;
 			this.method = md;
 		}
-		
-		/** 
-		* {@inheritDoc}
-		*/
+
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		public AnnotationVisitor visitAnnotation(String name, String desc) {
-  		   
-  		    return super.visitAnnotation(name, desc);
+
+			return super.visitAnnotation(name, desc);
 		}
 
 		@Override
 		public void visitEnd() {
-			
-			
-			
+
 			if ("arguments".equals(context) && !dataAdded) {
 				method.setArgumentListEmpty();
 			}
@@ -180,49 +181,41 @@ public class EngineXAnnotationReader {
 			if ("location".equals(name)) {
 				method.setInjectLocation(XLocation.valueOf(value));
 			}
-			
-
+			if (Type.getType(XModifier.class).toString().equals(desc)) {
+				method.addModifier(XModifier.valueOf(value));
+			}
 			super.visitEnum(name, desc, value);
 		}
 
 		@Override
 		public void visit(String name, Object value) {
-		
-		  if("invokedname".equals(name))
-		    {
-		    method.setInvokedMethod((String)value);
-		    } else
-		      if("invokedclass".equals(name))
-		      {
-		        method.setInvokedClass((String)value);
-		      } else
-		        if("fieldname".equals(name))
-		        {
-		          method.setFieldAccessName((String)value);
-		        } else
-		          if("fieldclass".equals(name))
-		          {
-		            method.setFieldAccessClass((String)value);
-		          }
-		    {
-		  if(context!=null)
-		  {
-			switch (context) {
-			case "names":
 
-				method.addTargetMethodName((String) value);
-				break;
-
-			case "arguments":
-
-				method.addArgument((String) value);
-				dataAdded = true;
-				break;
-			
+			if ("invokedname".equals(name)) {
+				method.setInvokedMethod((String) value);
+			} else if ("invokedclass".equals(name)) {
+				method.setInvokedClass((String) value);
+			} else if ("fieldname".equals(name)) {
+				method.setFieldAccessName((String) value);
+			} else if ("fieldclass".equals(name)) {
+				method.setFieldAccessClass((String) value);
 			}
-		  }
-		    }
-			  
+			{
+				if (context != null) {
+					switch (context) {
+					case "names":
+
+						method.addTargetMethodName((String) value);
+						break;
+					case "arguments":
+
+						method.addArgument((String) value);
+						dataAdded = true;
+						break;
+
+					}
+				}
+			}
+
 			super.visit(name, value);
 		}
 
@@ -277,14 +270,14 @@ public class EngineXAnnotationReader {
 				}
 				md.addClassesEntry((String) value);
 			}
-			
+
 			if ("exclude".equals(context)) {
-              if (!(value instanceof String)) {
-                  md.setHasNoXClassAnnotation();
-                  return;
-              }
-              md.addExcludedClass(((String) value));
-          }
+				if (!(value instanceof String)) {
+					md.setHasNoXClassAnnotation();
+					return;
+				}
+				md.addExcludedClass(((String) value));
+			}
 			super.visit(name, value);
 		}
 
@@ -352,7 +345,7 @@ public class EngineXAnnotationReader {
 		cr.accept(mdcvisitor, 0);
 
 		md.addBytes(classBytes);
-		
+
 		return md;
 
 	}

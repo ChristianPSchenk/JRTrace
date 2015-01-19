@@ -10,6 +10,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,8 +21,11 @@ import de.schenk.enginex.helper.EngineXMetadata;
 import de.schenk.enginex.helper.EngineXMethodMetadata;
 import de.schenk.enginex.helper.Injection;
 import de.schenk.enginex.helper.Injection.InjectionType;
+import de.schenk.jrtrace.annotations.XClass;
 import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
 import de.schenk.jrtrace.annotations.XLocation;
+import de.schenk.jrtrace.annotations.XMethod;
+import de.schenk.jrtrace.annotations.XModifier;
 import de.schenk.jrtrace.enginex.testclasses.Script1;
 import de.schenk.jrtrace.enginex.testclasses.Script2;
 import de.schenk.jrtrace.enginex.testclasses.Script3;
@@ -30,6 +34,7 @@ import de.schenk.jrtrace.enginex.testclasses.TestClass2;
 import de.schenk.jrtrace.enginex.testclasses.TestClass3;
 import de.schenk.jrtrace.helperagent.EngineXAnnotationReader;
 import de.schenk.jrtrace.service.test.utils.JavaUtil;
+import de.schenk.objectweb.asm.Opcodes;
 
 public class EngineXAnnotationReaderTest {
 
@@ -63,37 +68,40 @@ public class EngineXAnnotationReaderTest {
 
 	}
 
-	   @Test
-	    public void readAnnotationsTestOfInvokationAndFields() throws Exception {
-	        classBytes = new JavaUtil().getClassBytes(Script3.class);
-	        EngineXAnnotationReader annoReader = new EngineXAnnotationReader();
-	        EngineXMetadata metadata = annoReader.getMetaInformation(classBytes);
-	        Set<String> excludedClasses=metadata.getExcludedClasses();
-	        assertTrue( excludedClasses.contains("abc.*"));
-	        assertTrue( excludedClasses.contains("def.*"));
-	        
-	        EngineXMethodMetadata theMethod2 = metadata.getMethod("method2");
-            assertNotNull(theMethod2);
-            assertEquals("a.b.C",theMethod2.getFieldAccessClass());
-            assertEquals("field",theMethod2.getFieldAccessName());
-            
-	        
-	        
-	        assertNotNull(metadata);
-	        EngineXMethodMetadata theMethod = metadata.getMethod("method");
-	        assertNotNull(theMethod);
-	        assertEquals(XLocation.BEFORE_INVOCATION,theMethod.getInjectLocation());
-	        assertEquals("invokedMethod",theMethod.getInvokedMethodName());
-	        assertEquals("a.b.C",theMethod.getInvokedMethodClass());
-	        assertEquals(-1,theMethod.getInjection(0).getN());
-            assertEquals(InjectionType.INVOKE_PARAMETER,theMethod.getInjection(0).getType());
-	        assertEquals(3,theMethod.getInjection(1).getN());
-	        assertEquals(InjectionType.INVOKE_PARAMETER,theMethod.getInjection(1).getType());
-	        assertEquals("field",theMethod.getInjection(2).getFieldname());
-	        assertEquals(InjectionType.FIELD,theMethod.getInjection(2).getType());
-	           assertEquals(0,theMethod.getInjection(3).getN());
-	            assertEquals(InjectionType.INVOKE_PARAMETER,theMethod.getInjection(3).getType());
-	   }
+	@Test
+	public void readAnnotationsTestOfInvokationAndFields() throws Exception {
+		classBytes = new JavaUtil().getClassBytes(Script3.class);
+		EngineXAnnotationReader annoReader = new EngineXAnnotationReader();
+		EngineXMetadata metadata = annoReader.getMetaInformation(classBytes);
+		Set<String> excludedClasses = metadata.getExcludedClasses();
+		assertTrue(excludedClasses.contains("abc.*"));
+		assertTrue(excludedClasses.contains("def.*"));
+
+		EngineXMethodMetadata theMethod2 = metadata.getMethod("method2");
+		assertNotNull(theMethod2);
+		assertEquals("a.b.C", theMethod2.getFieldAccessClass());
+		assertEquals("field", theMethod2.getFieldAccessName());
+		assertEquals(XModifier.STATIC, theMethod2.getMethodModifiers()[0]);
+
+		assertNotNull(metadata);
+		EngineXMethodMetadata theMethod = metadata.getMethod("method");
+		assertNotNull(theMethod);
+		assertEquals(XLocation.BEFORE_INVOCATION, theMethod.getInjectLocation());
+		assertEquals("invokedMethod", theMethod.getInvokedMethodName());
+		assertEquals("a.b.C", theMethod.getInvokedMethodClass());
+		assertEquals(-1, theMethod.getInjection(0).getN());
+		assertEquals(InjectionType.INVOKE_PARAMETER, theMethod.getInjection(0)
+				.getType());
+		assertEquals(3, theMethod.getInjection(1).getN());
+		assertEquals(InjectionType.INVOKE_PARAMETER, theMethod.getInjection(1)
+				.getType());
+		assertEquals("field", theMethod.getInjection(2).getFieldname());
+		assertEquals(InjectionType.FIELD, theMethod.getInjection(2).getType());
+		assertEquals(0, theMethod.getInjection(3).getN());
+		assertEquals(InjectionType.INVOKE_PARAMETER, theMethod.getInjection(3)
+				.getType());
+	}
+
 	@Test
 	public void readAnnotationsTest() throws Exception {
 		classBytes = new JavaUtil().getClassBytes(Script1.class);
@@ -185,4 +193,71 @@ public class EngineXAnnotationReaderTest {
 
 	}
 
+	@XClass(classes = "de.schenk.jrtrace.enginex.testscripts.EngineXAnnotationReaderTest$QualifierMatch")
+	class QualifierMatchScript {
+		@XMethod(names = "methoda", modifier = XModifier.PUBLIC)
+		public void instr() {
+		}
+
+		@XMethod(names = "methoda", modifier = XModifier.PRIVATE)
+		public void instr2() {
+		}
+
+		@XMethod(names = "methoda", modifier = { XModifier.NOT_PUBLIC,
+				XModifier.FINAL })
+		public void instr3() {
+		}
+
+		@XMethod(names = "methoda", modifier = { XModifier.PUBLIC,
+				XModifier.FINAL })
+		public void instr4() {
+		}
+
+	}
+
+	class QualifierMatch {
+		final public void methoda() {
+		};
+	}
+
+	@Test
+	public void testMayMatchQualifier() throws Exception {
+
+		classBytes = new JavaUtil().getClassBytes(QualifierMatchScript.class);
+		EngineXAnnotationReader annoReader = new EngineXAnnotationReader();
+		EngineXMetadata metadata = annoReader.getMetaInformation(classBytes);
+		EngineXMethodMetadata methoda = metadata.getMethod("instr");
+		assertTrue(methoda.mayMatch(QualifierMatch.class));
+		assertTrue(methoda.mayMatch("methoda", "()V", Opcodes.ACC_PUBLIC
+				| Opcodes.ACC_FINAL));
+
+		EngineXMethodMetadata methodb = metadata.getMethod("instr2");
+		assertFalse(methodb.mayMatch(QualifierMatch.class));
+		assertFalse(methodb.mayMatch("methoda", "()V", Opcodes.ACC_PUBLIC
+				| Opcodes.ACC_FINAL));
+
+		EngineXMethodMetadata methodc = metadata.getMethod("instr3");
+		assertFalse(methodc.mayMatch(QualifierMatch.class));
+		assertFalse(methodc.mayMatch("methoda", "()V", Opcodes.ACC_PUBLIC
+				| Opcodes.ACC_FINAL));
+
+		EngineXMethodMetadata method4 = metadata.getMethod("instr4");
+		assertTrue(method4.mayMatch(QualifierMatch.class));
+		assertTrue(method4.mayMatch("methoda", "()V", Opcodes.ACC_PUBLIC
+				| Opcodes.ACC_FINAL));
+	}
+
+	/**
+	 * in Method.mayMatchMethod(String,String,int) it is assumed that the
+	 * "access" variable from the asm parser has the same values as the Java
+	 * Modifier constants. This ensures that.
+	 */
+	@Test
+	public void testOpcodesMatchesModifier() {
+		assertEquals(Opcodes.ACC_PUBLIC, Modifier.PUBLIC);
+		assertEquals(Opcodes.ACC_PRIVATE, Modifier.PRIVATE);
+		assertEquals(Opcodes.ACC_PROTECTED, Modifier.PROTECTED);
+		assertEquals(Opcodes.ACC_STATIC, Modifier.STATIC);
+		assertEquals(Opcodes.ACC_FINAL, Modifier.FINAL);
+	}
 }
