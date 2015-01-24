@@ -6,6 +6,12 @@ public class AgentArgs {
 	private int port;
 	private String bootjar;
 
+	/**
+	 * the ip address of the server on which the RMI Registry resides. Required
+	 * if the computer has multiple network interfaces.
+	 */
+	private String server;
+
 	public AgentArgs(String args) {
 		String[] entries = args.split(",");
 		for (String entry : entries) {
@@ -19,6 +25,8 @@ public class AgentArgs {
 			case "bootjar":
 				this.bootjar = keyvalue[1];
 				break;
+			case "server":
+				this.server = keyvalue[1];
 			}
 
 		}
@@ -31,6 +39,10 @@ public class AgentArgs {
 
 	public String getBootJar() {
 		return bootjar;
+	}
+
+	public String getServer() {
+		return server;
 	}
 
 }

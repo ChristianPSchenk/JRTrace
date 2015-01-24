@@ -40,7 +40,7 @@ public class JRTraceControllerTest {
 	public void testConnectToVM() throws Exception {
 		VMInfo vm = getJavaVMInfo();
 
-		IJRTraceVM mach = bmController.getMachine(vm.getId());
+		IJRTraceVM mach = bmController.getMachine(vm.getId(), null);
 		JRTraceVMImpl theMachine = (JRTraceVMImpl) mach;
 		assertTrue(theMachine.attach());
 		assertNotNull(theMachine);
@@ -51,7 +51,7 @@ public class JRTraceControllerTest {
 	public void testUploadJRTraceAgent() throws Exception {
 		VMInfo vm = getJavaVMInfo();
 
-		IJRTraceVM mach = bmController.getMachine(vm.getId());
+		IJRTraceVM mach = bmController.getMachine(vm.getId(), null);
 		assertTrue(mach.attach());
 
 		assertTrue(mach.detach());
@@ -62,7 +62,7 @@ public class JRTraceControllerTest {
 	public void testUploadJRTraceAgentTwice() throws Exception {
 		VMInfo vm = getJavaVMInfo();
 
-		IJRTraceVM mach = bmController.getMachine(vm.getId());
+		IJRTraceVM mach = bmController.getMachine(vm.getId(), null);
 		for (int i = 0; i < 2; i++) {
 			System.out.println(i);
 			boolean erg = mach.attach();

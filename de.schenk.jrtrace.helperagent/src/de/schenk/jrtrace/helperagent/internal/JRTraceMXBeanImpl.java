@@ -1,5 +1,7 @@
 package de.schenk.jrtrace.helperagent.internal;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.jar.JarFile;
 
@@ -42,9 +44,19 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 	}
 
 	@Override
-	public void addToBootClassPath(String jarFile) {
+	public void addToBootClassPath(byte[] jarFile) {
 		try {
-			agent.appendToBootstrapClassLoaderSearch(new JarFile(jarFile));
+			File temp = File
+					.createTempFile(
+							String.format("bootclasspath%s", System.nanoTime()),
+							".jar");
+			temp.deleteOnExit();
+			FileOutputStream fos = new FileOutputStream(temp);
+
+			fos.write(jarFile);
+			fos.close();
+
+			agent.appendToBootstrapClassLoaderSearch(new JarFile(temp));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -58,12 +70,10 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 	}
 
 	@Override
-	public void installEngineXClass(byte[] jarBytes) {
-		new InstallEngineXCommand().installEngineX(jarBytes);
+	public void installEngineXClass(byte[][] classByteArray) {
+		new InstallEngineXCommand().installEngineX(classByteArray);
 
 	}
-
-	
 
 	@Override
 	public void runJava(String pathToJar, String referenceClassName,

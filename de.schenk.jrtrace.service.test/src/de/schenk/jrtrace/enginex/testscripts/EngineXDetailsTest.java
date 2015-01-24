@@ -11,6 +11,8 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
@@ -38,6 +40,7 @@ import de.schenk.jrtrace.helperlib.NotificationMessages;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.JRTraceControllerService;
+import de.schenk.jrtrace.ui.util.JarByteUtil;
 
 /**
  * install the test enginex jar once , execute all tests and then detach.
@@ -68,7 +71,7 @@ public class EngineXDetailsTest implements NotificationListener {
 		String javaName = ManagementFactory.getRuntimeMXBean().getName();
 		String[] javaSplit = javaName.split("@");
 		pid = javaSplit[0];
-		machine = bmController.getMachine(pid);
+		machine = bmController.getMachine(pid, null);
 		assertTrue(machine.attach());
 		machine.setLogLevel(JRLog.DEBUG);
 
@@ -79,10 +82,12 @@ public class EngineXDetailsTest implements NotificationListener {
 
 		URL fileURL = FileLocator.find(bundle,
 				new Path("lib/EngineXTests.jar"), null);
-		String fullPath = new File(FileLocator.resolve(fileURL).toURI())
-				.getAbsolutePath();
+		File theFile = new File(FileLocator.resolve(fileURL).toURI());
 		machine.addClientListener(NotificationConstants.NOTIFY_PROBLEM, this);
-		machine.installEngineXClass(fullPath);
+
+		byte[] jarBytes = Files.readAllBytes(Paths.get(theFile.toURI()));
+		byte[][] classBytes = JarByteUtil.convertJarToClassByteArray(jarBytes);
+		machine.installEngineXClass(classBytes);
 
 	}
 

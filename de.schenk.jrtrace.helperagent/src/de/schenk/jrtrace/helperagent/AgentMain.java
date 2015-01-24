@@ -59,8 +59,10 @@ public class AgentMain {
 	 * @param args
 	 * @param inst
 	 */
-	public static void launch(int port, Instrumentation inst) {
-		JRLog.debug(String.format("JRTrace Agent launched port:%d", port));
+	public static void launch(int port, String server, Instrumentation inst) {
+		JRLog.debug(String.format(
+				"JRTrace Agent launched port:%d on network interface: %s",
+				port, server == null ? "<auto>" : server));
 		InstrumentationUtil.setInstrumentation(inst);
 		AgentMain.instrumentation = inst;
 		if (theAgent != null) {
@@ -69,7 +71,7 @@ public class AgentMain {
 		}
 		if (theAgent == null) {
 			theAgent = new AgentMain();
-			theAgent.start(port);
+			theAgent.start(port, server);
 
 		}
 
@@ -118,7 +120,7 @@ public class AgentMain {
 
 	}
 
-	private void startMXBeanServer(int port) {
+	private void startMXBeanServer(int port, String server) {
 
 		synchronized (AgentMain.class) {
 
@@ -129,6 +131,9 @@ public class AgentMain {
 			environment.put("com.sun.management.jmxremote.authenticate",
 					"false");
 			environment.put("com.sun.management.jmxremote.ssl", "false");
+			if (server != null) {
+				environment.put("java.rmi.server.hostname", server);
+			}
 
 			try {
 
@@ -179,9 +184,9 @@ public class AgentMain {
 
 	private boolean stdout_isredirected = false;
 
-	private void start(int port) {
+	private void start(int port, String server) {
 
-		startMXBeanServer(port);
+		startMXBeanServer(port, server);
 
 	}
 

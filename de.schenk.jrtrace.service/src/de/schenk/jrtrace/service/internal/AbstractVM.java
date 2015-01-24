@@ -5,6 +5,11 @@ import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.JMX;
@@ -71,8 +76,6 @@ abstract public class AbstractVM implements IJRTraceVM {
 		return true;
 	}
 
-
-
 	@Override
 	synchronized public void runJava(File jarFile, String theClassLoader,
 			String className, String methodName) {
@@ -89,8 +92,8 @@ abstract public class AbstractVM implements IJRTraceVM {
 	}
 
 	@Override
-	synchronized public void installEngineXClass(byte[] fileForClass) {
-		mbeanProxy.installEngineXClass(fileForClass);
+	synchronized public void installEngineXClass(byte[][] classBytes) {
+		mbeanProxy.installEngineXClass(classBytes);
 
 	}
 
@@ -107,11 +110,17 @@ abstract public class AbstractVM implements IJRTraceVM {
 	 * 
 	 * @param the
 	 *            port on which the server listens for commands.
+	 * @param targetmachine
+	 *            the target machine to connect to. null for localhost.
 	 * @param stopper
 	 */
-	protected boolean connectToAgent(int port, ICancelable stopper) {
+	protected boolean connectToAgent(int port, String targetmachine,
+			ICancelable stopper) {
 
-		createMXBeanClientConnection(port);
+		boolean result = createMXBeanClientConnection(port, targetmachine,
+				stopper);
+		if (!result)
+			return result;
 
 		final boolean connected[] = new boolean[1];
 		connected[0] = false;
@@ -127,67 +136,102 @@ abstract public class AbstractVM implements IJRTraceVM {
 	JRTraceMXBean mbeanProxy;
 	private JRTraceBeanNotificationListener mxbeanListener;
 
-	private void createMXBeanClientConnection(int port) {
-		JMXServiceURL url;
+	/**
+	 * 
+	 * @param port
+	 *            the port on which the RMI registry has been started
+	 * @param targetmachine
+	 *            the machine on which the RMI registry has been started, use
+	 *            null for localhost / 127.0.0.1
+	 * @param stopper
+	 * @return
+	 */
+	private boolean createMXBeanClientConnection(int port,
+			String targetmachine, ICancelable stopper) {
+		if (targetmachine == null) {
+			targetmachine = "localhost";
+		}
+		final JMXServiceURL url;
 		Exception e = null;
-		for (int i = 0; i < 10; i++) {
-			try {
-				url = new JMXServiceURL(String.format(
-						"service:jmx:rmi:///jndi/rmi://:%d/jmxrmi", port));
-				jmxc = JMXConnectorFactory.connect(url, null);
-				mxbeanConnection = jmxc.getMBeanServerConnection();
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		try {
 
-				ObjectName mbeanName = NotificationUtil.getJRTraceObjectName();
+			url = new JMXServiceURL(String.format(
+					"service:jmx:rmi:///jndi/rmi://" + targetmachine
+							+ ":%d/jmxrmi", port));
 
-				mbeanProxy = (JRTraceMXBean) JMX.newMBeanProxy(
-						mxbeanConnection, mbeanName, JRTraceMXBean.class, true);
+			Future<JMXConnector> result = executor
+					.submit(new Callable<JMXConnector>() {
 
-				mxbeanListener = new JRTraceBeanNotificationListener(this);
-				mxbeanConnection.addNotificationListener(mbeanName,
-						mxbeanListener, null, null);
+						@Override
+						public JMXConnector call() throws Exception {
+							return JMXConnectorFactory.connect(url, null);
+						}
+					});
 
-				return;
-			} catch (IOException | InstanceNotFoundException e2) {
-				e = e2;
+			while (!result.isDone()) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e1) {
+					// do nothing
+				}
+				if (stopper.isCanceled()) {
+
+					lastException = new RuntimeException("Canceled by User");
+					return false;
+				}
+
 			}
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e1) {
-				// do nothing
-			}
+			jmxc = result.get();
+
+			mxbeanConnection = jmxc.getMBeanServerConnection();
+
+			ObjectName mbeanName = NotificationUtil.getJRTraceObjectName();
+
+			mbeanProxy = (JRTraceMXBean) JMX.newMBeanProxy(mxbeanConnection,
+					mbeanName, JRTraceMXBean.class, true);
+
+			mxbeanListener = new JRTraceBeanNotificationListener(this);
+			mxbeanConnection.addNotificationListener(mbeanName, mxbeanListener,
+					null, null);
+
+			return true;
+		} catch (IOException | InstanceNotFoundException | InterruptedException
+				| ExecutionException e2) {
+			lastException = new RuntimeException("Connect failed. ", e2);
+			return false;
+		} finally {
+			executor.shutdownNow();
 		}
 
-		throw new RuntimeException("Connect failed after 10 tries", e);
 	}
 
 	private boolean stopMXBeanClientConnection(boolean disconnectOnly) {
 
-	  boolean result=true;
+		boolean result = true;
 		try {
 
-	        try {
-            mxbeanConnection.removeNotificationListener(NotificationUtil.getJRTraceObjectName(),
-                  mxbeanListener, null, null);
-          }
-          catch (InstanceNotFoundException e) {
-           lastException=e;
-           result=false;
-           
-          }
-	        
-	        
-          catch (ListenerNotFoundException e) {
-            throw new RuntimeException(e);
-          } finally
-          {
-            result=(result & stopSender(disconnectOnly));
-			jmxc.close();
-          }
+			try {
+				mxbeanConnection.removeNotificationListener(
+						NotificationUtil.getJRTraceObjectName(),
+						mxbeanListener, null, null);
+			} catch (InstanceNotFoundException e) {
+				lastException = e;
+				result = false;
+
+			}
+
+			catch (ListenerNotFoundException e) {
+				throw new RuntimeException(e);
+			} finally {
+				result = (result & stopSender(disconnectOnly));
+				jmxc.close();
+			}
 		} catch (IOException e) {
-			lastException=e;
-			result=false;
+			lastException = e;
+			result = false;
 		}
-	 
+
 		return true;
 	}
 
@@ -200,7 +244,6 @@ abstract public class AbstractVM implements IJRTraceVM {
 	 */
 	protected boolean stopConnection(boolean disconnectOnly) {
 
-		
 		boolean result2 = stopMXBeanClientConnection(disconnectOnly);
 
 		return result2;
@@ -211,7 +254,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 		return attach(null);
 	}
 
-	synchronized public boolean installJar(String jar) {
+	synchronized public boolean installJar(byte[] jar) {
 		mbeanProxy.addToBootClassPath(jar);
 		return true;
 

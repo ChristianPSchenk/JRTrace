@@ -27,5 +27,6 @@ Import-Package: de.schenk.jrtrace.jdk.init,
  org.eclipse.core.runtime
 Bundle-Activator: de.schenk.jrtrace.ui.Activator
 Export-Package: de.schenk.jrtrace.ui,
- de.schenk.jrtrace.ui.debug
+ de.schenk.jrtrace.ui.debug,
+ de.schenk.jrtrace.ui.util
 Bundle-ActivationPolicy: lazy

@@ -3,20 +3,19 @@
  **/
 package de.schenk.jrtrace.service;
 
-import java.io.File;
-
 public interface JRTraceController {
 
 	/**
 	 * 
-	 * Checks accessibility of the folder:  %tmp%/hsperfdata_%username%. If this folder is not accessible the VirtualMachine list
-	 * and attach API will not work on windows.
-	 * @return true, if the folder doesn't exist but can be created -OR- if the folder exists and files can be created inside.
+	 * Checks accessibility of the folder: %tmp%/hsperfdata_%username%. If this
+	 * folder is not accessible the VirtualMachine list and attach API will not
+	 * work on windows.
+	 * 
+	 * @return true, if the folder doesn't exist but can be created -OR- if the
+	 *         folder exists and files can be created inside.
 	 */
 	public boolean hsperfdataAccessible();
-	
-	
-	
+
 	/**
 	 * 
 	 * @return a list of all JVMs on this system active
@@ -39,17 +38,25 @@ public interface JRTraceController {
 	 * 
 	 * @param pid
 	 *            the pid of the target process
+	 * @param servernetworkaddress
+	 *            if the computer has multiple network address, the address on
+	 *            which the connection will be expected. null if not or for
+	 *            local connections.
 	 * @return the IJRTraceVM to connect
 	 */
-	public IJRTraceVM getMachine(String pid);
+	public IJRTraceVM getMachine(String pid, String servernetworkaddress);
 
 	/**
 	 * returns a jrtrace machine representation that will try to connect to an
-	 * agent already started with the specified port.
+	 * agent already started with the specified port on the specified machine
 	 * 
 	 * @param port
+	 *            the port on which the RMI registry is listening
+	 * @param targetmachine
+	 *            the machine on which the server is running or null for local
+	 *            host
 	 * @return the IJRTraceVM to connect
 	 */
-	public IJRTraceVM getMachine(int port);
+	public IJRTraceVM getMachine(int port, String targetmachine);
 
 }

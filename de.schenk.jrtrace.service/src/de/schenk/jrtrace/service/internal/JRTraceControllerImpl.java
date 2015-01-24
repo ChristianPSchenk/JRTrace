@@ -48,50 +48,49 @@ public class JRTraceControllerImpl implements JRTraceController {
 	 * 
 	 * @param pid
 	 *            the process identifier
+	 * @param serveraddress
+	 *            the network address on which the RMI server expects requests.
+	 *            Important if the computer has more than one network address
 	 * @return the IVirtualMachine or null in case of any error.
 	 */
 	@Override
-	public IJRTraceVM getMachine(String pid) {
+	public IJRTraceVM getMachine(String pid, String serveraddress) {
 
-		IJRTraceVM theMachine = new JRTraceVMImpl(pid);
+		IJRTraceVM theMachine = new JRTraceVMImpl(pid, serveraddress);
 
 		return theMachine;
 
 	}
 
 	@Override
-	public IJRTraceVM getMachine(int port) {
-		return new JRTraceConnectingImpl(port);
+	public IJRTraceVM getMachine(int port, String targetmachine) {
+		return new JRTraceConnectingImpl(port, targetmachine);
 	}
 
 	@Override
-	
-		public boolean hsperfdataAccessible()
-		{
-			String username;
-			String tmpDir=System.getenv("TMP");
-			String userName=System.getenv("USERNAME");
-			File hsperfdataFolder=new File(tmpDir+"\\hsperfdata_"+userName);
-			if(hsperfdataFolder.exists())
-			{
-				File testFile=new File(hsperfdataFolder+"\\"+String.format("%d",System.currentTimeMillis()));
-				try {
-					testFile.createNewFile();
-					testFile.delete();
-				} catch (IOException e) {
-					return false;
-				}
-			} else
-			{
-				try {
-					hsperfdataFolder.createNewFile();
-					hsperfdataFolder.delete();
-				} catch (IOException e) {
-					return false;
-				}
-				
+	public boolean hsperfdataAccessible() {
+		String username;
+		String tmpDir = System.getenv("TMP");
+		String userName = System.getenv("USERNAME");
+		File hsperfdataFolder = new File(tmpDir + "\\hsperfdata_" + userName);
+		if (hsperfdataFolder.exists()) {
+			File testFile = new File(hsperfdataFolder + "\\"
+					+ String.format("%d", System.currentTimeMillis()));
+			try {
+				testFile.createNewFile();
+				testFile.delete();
+			} catch (IOException e) {
+				return false;
 			}
-			return true;
-		}
-	}
+		} else {
+			try {
+				hsperfdataFolder.createNewFile();
+				hsperfdataFolder.delete();
+			} catch (IOException e) {
+				return false;
+			}
 
+		}
+		return true;
+	}
+}

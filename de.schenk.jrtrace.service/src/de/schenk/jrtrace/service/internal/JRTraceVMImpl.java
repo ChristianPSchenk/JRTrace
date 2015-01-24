@@ -17,11 +17,21 @@ public class JRTraceVMImpl extends AbstractVM {
 
 	VirtualMachine vm;
 	private String thePID;
+	private String servernetworkaddress;
 
 	//
 
-	public JRTraceVMImpl(String pid) {
+	/**
+	 * 
+	 * @param pid
+	 *            the pid to upload the agent to.
+	 * @param servernetwork
+	 *            the ip address name on which the server will expect a
+	 *            connection or null for local connections
+	 */
+	public JRTraceVMImpl(String pid, String servernetwork) {
 		thePID = pid;
+		this.servernetworkaddress = servernetwork;
 	}
 
 	/**
@@ -38,7 +48,7 @@ public class JRTraceVMImpl extends AbstractVM {
 		if (port == -1)
 			return false;
 
-		return connectToAgent(port, stopper);
+		return connectToAgent(port, null, stopper);
 	}
 
 	private boolean attachVM() {
@@ -64,8 +74,10 @@ public class JRTraceVMImpl extends AbstractVM {
 		try {
 			String agent = JarLocator.getJRTraceHelperAgent();
 			String helperPath = JarLocator.getHelperLibJar();
-			vm.loadAgent(agent,
-					String.format("port=%d,bootjar=%s", port, helperPath));
+			String mynetwork = servernetworkaddress == null ? ""
+					: (",server=" + servernetworkaddress);
+			vm.loadAgent(agent, String.format("port=%d,bootjar=%s%s", port,
+					helperPath, mynetwork));
 
 		} catch (AgentInitializationException e) {
 			lastException = e;

@@ -39,11 +39,11 @@ public interface IJRTraceVM {
 	/**
 	 * installs a new jar file into the target machine
 	 * 
-	 * @param jar
-	 *            the path to the jar file
+	 * @param bytes
+	 *            the bytes of the jar file
 	 * @return true on success
 	 */
-	public boolean installJar(String jar);
+	public boolean installJar(byte[] bytes);
 
 	/**
 	 * The last exception that occured (e.g. after an unsuccessful, return code
@@ -61,17 +61,18 @@ public interface IJRTraceVM {
 	 */
 	boolean setSystemProperties(Properties props);
 
-
 	void runJava(File jarFile, String theClassLoader, String className,
 			String methodName);
 
 	/**
 	 * Install the class or all classes from the jar file (depends on parameter)
 	 * 
-	 * @param fileForClass
-	 *            a class file or a jar file
+	 * @param classByteArray
+	 *            an array with the array byte[], one for each JRTrace class to
+	 *            be installed, e.g. classByteArray[0] -> the bytes of the first
+	 *            class to install
 	 */
-	void installEngineXClass(byte[] fileForClass);
+	void installEngineXClass(byte[][] classByteArray);
 
 	void setLogLevel(int i);
 

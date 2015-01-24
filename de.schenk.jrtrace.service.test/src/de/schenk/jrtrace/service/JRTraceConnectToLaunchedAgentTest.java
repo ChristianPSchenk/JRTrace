@@ -9,6 +9,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.junit.After;
 import org.junit.Before;
@@ -35,7 +38,7 @@ public class JRTraceConnectToLaunchedAgentTest {
 		File tempFile = File.createTempFile("abc", "def");
 		tempFile.deleteOnExit();
 		port = javaUtil.launchJavaProcessWithAgent(tempFile.getAbsolutePath());
-		IJRTraceVM theMachine = bmController.getMachine(port);
+		IJRTraceVM theMachine = bmController.getMachine(port, null);
 
 		attachToMachineAndInstallTestProcessInstrumenter(theMachine);
 
@@ -50,14 +53,16 @@ public class JRTraceConnectToLaunchedAgentTest {
 	}
 
 	private void attachToMachineAndInstallTestProcessInstrumenter(
-			IJRTraceVM theMachine) {
+			IJRTraceVM theMachine) throws IOException {
 		assertTrue(theMachine.attach());
 		assertNotNull(theMachine);
 
 		File theClass = TestUtils
 				.getResource("bin/de/schenk/jrtrace/service/test/utils/TestProcessInstrumenter.class");
 
-		theMachine.installEngineXClass(theClass.getAbsolutePath());
+		byte[][] classBytes = new byte[1][];
+		classBytes[0] = Files.readAllBytes(Paths.get(theClass.toURI()));
+		theMachine.installEngineXClass(classBytes);
 
 	}
 
@@ -67,7 +72,7 @@ public class JRTraceConnectToLaunchedAgentTest {
 		tempFile.deleteOnExit();
 
 		port = javaUtil.launchJavaProcessWithAgent(tempFile.getAbsolutePath());
-		IJRTraceVM mach = bmController.getMachine(port);
+		IJRTraceVM mach = bmController.getMachine(port, null);
 
 		assertTrue(mach.attach());
 

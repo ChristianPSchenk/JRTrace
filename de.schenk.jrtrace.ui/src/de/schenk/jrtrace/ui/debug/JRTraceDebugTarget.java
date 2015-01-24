@@ -4,14 +4,9 @@
 package de.schenk.jrtrace.ui.debug;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
@@ -26,6 +21,7 @@ import org.eclipse.swt.widgets.Display;
 
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.ui.markers.JRTraceMarkerManager;
+import de.schenk.jrtrace.ui.util.JarByteUtil;
 import de.schenk.jrtrace.ui.util.JarUtil;
 
 public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
@@ -69,6 +65,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 				});
 
 				Job installEngineXJob = new InstallJRTraceJob(this, jarFile[0]);
+
 				installEngineXJob.schedule();
 
 			}
@@ -244,26 +241,9 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 		return false;
 	}
 
-	public void installJar(File jar) {
+	public void installJar(byte[] bytes) {
 
-		machine.installJar(jar.toString());
-
-	}
-
-	public void installJar(IFile jar) {
-		try {
-			installJar(new File(FileLocator.toFileURL(
-					jar.getLocationURI().toURL()).toURI()));
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(
-					"Error installing jar " + jar.toString(), e);
-		} catch (IOException e) {
-			throw new RuntimeException(
-					"Error installing jar " + jar.toString(), e);
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(
-					"Error installing jar " + jar.toString(), e);
-		}
+		machine.installJar(bytes);
 
 	}
 
@@ -275,7 +255,10 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 	public void installEngineX(File jarFile) {
 		markerManager.clearAllMarkers();
-		machine.installEngineXClass(jarFile.getAbsolutePath());
+
+		byte[][] classFileBytes = JarByteUtil
+				.convertJarToClassByteArray(jarFile);
+		machine.installEngineXClass(classFileBytes);
 
 	}
 

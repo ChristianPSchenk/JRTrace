@@ -3,17 +3,12 @@
  **/
 package de.schenk.jrtrace.helperagent.internal;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 import de.schenk.enginex.helper.EngineXHelper;
 import de.schenk.enginex.helper.EngineXMetadata;
@@ -27,69 +22,26 @@ public class InstallEngineXCommand {
 
 	}
 
-	public void installEngineX(byte[] jarBytes) {
+	public void installEngineX(byte[][] jarBytes) {
 
-		
-			addEngineXJar(jarBytes);
-		
+		setEngineXClasses(jarBytes);
+
 	}
 
-	private void addEngineXJar(byte[] jarFileName) {
-		List<EngineXMetadata> mdlist = parseEngineXJarFile(jarFileName);
+	private void setEngineXClasses(byte[][] jarFileBytes) {
+		List<EngineXMetadata> mdlist = new ArrayList<EngineXMetadata>();
+		for (int i = 0; i < jarFileBytes.length; i++) {
+			EngineXMetadata md = createMetadata(jarFileBytes[i]);
+			mdlist.add(md);
+		}
 		EngineXHelper.addEngineXClass(mdlist);
 
 	}
 
-	private List<EngineXMetadata> parseEngineXJarFile(byte[] jarFileName) {
-		List<EngineXMetadata> mdlist = null;
-
-		JarFile jar = null;
-
-		try {
-			mdlist = new ArrayList<EngineXMetadata>();
-			jar = new JarFile(jarFileName);
-			Enumeration<JarEntry> entries = jar.entries();
-			while (entries.hasMoreElements()) {
-				JarEntry jarentry = entries.nextElement();
-				String name = jarentry.getName();
-				if (!jarentry.isDirectory() && name.endsWith(".class")) {
-
-					InputStream in = new BufferedInputStream(
-							jar.getInputStream(jarentry));
-					ByteArrayOutputStream out = new ByteArrayOutputStream(
-							(int) jarentry.getSize());
-					byte[] buffer = new byte[2048];
-					while (true) {
-						int bytes = in.read(buffer);
-						if (bytes <= 0)
-							break;
-						out.write(buffer, 0, bytes);
-					}
-					EngineXMetadata metadata = createMetadata(out.toByteArray());
-					mdlist.add(metadata);
-				}
-			}
-
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (jar != null)
-				try {
-					jar.close();
-				} catch (IOException e) {
-					// do nothing more.
-				}
-
-		}
-		return mdlist;
-	}
-
-	
-
-	public EngineXMetadata createMetadata(byte[] enginexclass) {
+	public EngineXMetadata createMetadata(byte[] enginexclassbytes) {
 		EngineXMetadata metadata = annotationReader
-				.getMetaInformation(enginexclass);
-		
+				.getMetaInformation(enginexclassbytes);
+
 		return metadata;
 	}
 

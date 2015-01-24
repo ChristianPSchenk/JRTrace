@@ -6,13 +6,13 @@ public interface JRTraceMXBean {
 
 	public boolean disconnect();
 
-	public void installEngineXClass(byte[] classOrJarLocation);
+	public void installEngineXClass(byte[][] classBytes);
 
 	public boolean stop(boolean disconnectOnly);
 
 	public void setEnvironmentVariable(String key, String value);
 
-	public void addToBootClassPath(String jarFile);
+	public void addToBootClassPath(byte[] jar);
 
 	/**
 	 * Execute a static method of a specified class from a jarfile in the
@@ -31,8 +31,6 @@ public interface JRTraceMXBean {
 	 */
 	public void runJava(String pathToJar, String referenceClassName,
 			String mainClass, String mainMethod);
-
-	
 
 	/**
 	 * set the agents log level. Levels defined in JRLog constants.
