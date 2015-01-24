@@ -4,6 +4,8 @@
 <toc label="JRTrace Help Table of Contents" topic="html/toc.html">   
       <topic href="html/jrtrace.html" label="JRTrace Help">
       </topic>
+      <topic href="html/remote_connections.html" label="JRTrace Remote Connections">
+      </topic>
       
       <topic href="html/index.html" label="JRTrace Annotation Reference">
       </topic>
