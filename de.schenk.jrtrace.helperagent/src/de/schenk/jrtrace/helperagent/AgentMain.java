@@ -132,7 +132,7 @@ public class AgentMain {
 					"false");
 			environment.put("com.sun.management.jmxremote.ssl", "false");
 			if (server != null) {
-				environment.put("java.rmi.server.hostname", server);
+				System.setProperty("java.rmi.server.hostname", server);
 			}
 
 			try {

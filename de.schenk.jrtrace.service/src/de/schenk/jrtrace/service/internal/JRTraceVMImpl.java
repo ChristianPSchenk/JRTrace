@@ -18,8 +18,14 @@ public class JRTraceVMImpl extends AbstractVM {
 	VirtualMachine vm;
 	private String thePID;
 	private String servernetworkaddress;
+	/* the MX Bean registry port on which the agent is listening */
+	private int port;
 
 	//
+
+	public int getPort() {
+		return port;
+	}
 
 	/**
 	 * 
@@ -70,7 +76,7 @@ public class JRTraceVMImpl extends AbstractVM {
 
 	private int installAgent() {
 
-		int port = PortUtil.getFreePort();
+		port = PortUtil.getFreePort();
 		try {
 			String agent = JarLocator.getJRTraceHelperAgent();
 			String helperPath = JarLocator.getHelperLibJar();
@@ -117,7 +123,7 @@ public class JRTraceVMImpl extends AbstractVM {
 
 	@Override
 	public String getPID() {
-		return thePID;
+		return String.format("PID:%s  MXBean Server on port: %d", thePID, port);
 	}
 
 }

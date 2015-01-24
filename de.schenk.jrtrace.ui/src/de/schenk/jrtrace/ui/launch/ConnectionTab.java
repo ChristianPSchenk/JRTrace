@@ -480,10 +480,18 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 
 	private String getAgentInfoLabel() {
 
-		return String.format("-javaagent:%s=port=%s,bootjar=%s", JarLocator
+		String serverArgument = "";
+		if (networkCombo != null) {
+			String servername = networkCombo.getText();
+			if (!servername.isEmpty()) {
+				serverArgument = ",server=" + servername;
+			}
+		}
+
+		return String.format("-javaagent:%s=port=%s,bootjar=%s%s", JarLocator
 				.getJRTraceHelperAgent(),
 				portText.getText().isEmpty() ? "<port>" : portText.getText(),
-				JarLocator.getHelperLibJar());
+				JarLocator.getHelperLibJar(), serverArgument);
 	}
 
 	@Override
