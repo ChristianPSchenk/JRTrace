@@ -1,9 +1,9 @@
 /**
 * (c) 2014 by Christian Schenk
 **/
-package de.schenk.enginex.helper;
+package de.schenk.jrtrace.helper;
 
-public class EngineXNameUtil {
+public class JRTraceNameUtil {
 
 	/**
 	 * 

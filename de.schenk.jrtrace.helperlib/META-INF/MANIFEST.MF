@@ -7,8 +7,8 @@ Bundle-Vendor: Christian Schenk
 Require-Bundle: org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Eclipse-BundleShape: dir
-Export-Package: de.schenk.enginex.helper,
- de.schenk.jrtrace.annotations,
+Export-Package: de.schenk.jrtrace.annotations,
+ de.schenk.jrtrace.helper,
  de.schenk.jrtrace.helperlib,
  de.schenk.objectweb.asm,
  de.schenk.objectweb.asm.addons,

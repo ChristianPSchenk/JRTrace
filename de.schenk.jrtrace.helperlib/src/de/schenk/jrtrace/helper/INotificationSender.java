@@ -1,7 +1,7 @@
 /**
  * (c) 2014 by Christian Schenk
  **/
-package de.schenk.enginex.helper;
+package de.schenk.jrtrace.helper;
 
 import javax.management.Notification;
 

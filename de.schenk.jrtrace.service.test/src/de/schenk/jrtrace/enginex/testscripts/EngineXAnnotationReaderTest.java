@@ -17,10 +17,6 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import de.schenk.enginex.helper.EngineXMetadata;
-import de.schenk.enginex.helper.EngineXMethodMetadata;
-import de.schenk.enginex.helper.Injection;
-import de.schenk.enginex.helper.Injection.InjectionType;
 import de.schenk.jrtrace.annotations.XClass;
 import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
 import de.schenk.jrtrace.annotations.XLocation;
@@ -32,7 +28,11 @@ import de.schenk.jrtrace.enginex.testclasses.Script3;
 import de.schenk.jrtrace.enginex.testclasses.TestClass1;
 import de.schenk.jrtrace.enginex.testclasses.TestClass2;
 import de.schenk.jrtrace.enginex.testclasses.TestClass3;
-import de.schenk.jrtrace.helperagent.EngineXAnnotationReader;
+import de.schenk.jrtrace.helper.JRTraceClassMetadata;
+import de.schenk.jrtrace.helper.JRTraceMethodMetadata;
+import de.schenk.jrtrace.helper.Injection;
+import de.schenk.jrtrace.helper.Injection.InjectionType;
+import de.schenk.jrtrace.helperagent.JRTraceAnnotationReader;
 import de.schenk.jrtrace.service.test.utils.JavaUtil;
 import de.schenk.objectweb.asm.Opcodes;
 
@@ -43,16 +43,16 @@ public class EngineXAnnotationReaderTest {
 	@Test
 	public void testRegexread() throws Exception {
 		classBytes = new JavaUtil().getClassBytes(Script2.class);
-		EngineXAnnotationReader annoReader = new EngineXAnnotationReader();
-		EngineXMetadata metadata = annoReader.getMetaInformation(classBytes);
+		JRTraceAnnotationReader annoReader = new JRTraceAnnotationReader();
+		JRTraceClassMetadata metadata = annoReader.getMetaInformation(classBytes);
 		assertTrue(metadata.getUseRegEx());
 	}
 
 	@Test
 	public void testMayMatch() throws Exception {
 		classBytes = new JavaUtil().getClassBytes(Script1.class);
-		EngineXAnnotationReader annoReader = new EngineXAnnotationReader();
-		EngineXMetadata metadata = annoReader.getMetaInformation(classBytes);
+		JRTraceAnnotationReader annoReader = new JRTraceAnnotationReader();
+		JRTraceClassMetadata metadata = annoReader.getMetaInformation(classBytes);
 		assertTrue(metadata.mayMatch(TestClass1.class));
 		assertFalse(metadata.mayMatch(TestClass2.class));
 		assertFalse(metadata.mayMatch(TestClass3.class));
@@ -62,8 +62,8 @@ public class EngineXAnnotationReaderTest {
 	@Test
 	public void testprivatemethod() throws Exception {
 		classBytes = new JavaUtil().getClassBytes(Script1.class);
-		EngineXAnnotationReader annoReader = new EngineXAnnotationReader();
-		EngineXMetadata metadata = annoReader.getMetaInformation(classBytes);
+		JRTraceAnnotationReader annoReader = new JRTraceAnnotationReader();
+		JRTraceClassMetadata metadata = annoReader.getMetaInformation(classBytes);
 		assertTrue(metadata.mayMatch(TestClass1.class));
 
 	}
@@ -71,20 +71,20 @@ public class EngineXAnnotationReaderTest {
 	@Test
 	public void readAnnotationsTestOfInvokationAndFields() throws Exception {
 		classBytes = new JavaUtil().getClassBytes(Script3.class);
-		EngineXAnnotationReader annoReader = new EngineXAnnotationReader();
-		EngineXMetadata metadata = annoReader.getMetaInformation(classBytes);
+		JRTraceAnnotationReader annoReader = new JRTraceAnnotationReader();
+		JRTraceClassMetadata metadata = annoReader.getMetaInformation(classBytes);
 		Set<String> excludedClasses = metadata.getExcludedClasses();
 		assertTrue(excludedClasses.contains("abc.*"));
 		assertTrue(excludedClasses.contains("def.*"));
 
-		EngineXMethodMetadata theMethod2 = metadata.getMethod("method2");
+		JRTraceMethodMetadata theMethod2 = metadata.getMethod("method2");
 		assertNotNull(theMethod2);
 		assertEquals("a.b.C", theMethod2.getFieldAccessClass());
 		assertEquals("field", theMethod2.getFieldAccessName());
 		assertEquals(XModifier.STATIC, theMethod2.getMethodModifiers()[0]);
 
 		assertNotNull(metadata);
-		EngineXMethodMetadata theMethod = metadata.getMethod("method");
+		JRTraceMethodMetadata theMethod = metadata.getMethod("method");
 		assertNotNull(theMethod);
 		assertEquals(XLocation.BEFORE_INVOCATION, theMethod.getInjectLocation());
 		assertEquals("invokedMethod", theMethod.getInvokedMethodName());
@@ -105,8 +105,8 @@ public class EngineXAnnotationReaderTest {
 	@Test
 	public void readAnnotationsTest() throws Exception {
 		classBytes = new JavaUtil().getClassBytes(Script1.class);
-		EngineXAnnotationReader annoReader = new EngineXAnnotationReader();
-		EngineXMetadata metadata = annoReader.getMetaInformation(classBytes);
+		JRTraceAnnotationReader annoReader = new JRTraceAnnotationReader();
+		JRTraceClassMetadata metadata = annoReader.getMetaInformation(classBytes);
 		assertNotNull(metadata);
 		assertTrue(metadata.hasXClassAnnotation());
 
@@ -126,10 +126,10 @@ public class EngineXAnnotationReaderTest {
 		assertEquals(XClassLoaderPolicy.NAMED, metadata.getClassLoaderPolicy());
 		assertEquals("a.b.c", metadata.getClassLoaderName());
 
-		List<EngineXMethodMetadata> methods = metadata.getMethods();
+		List<JRTraceMethodMetadata> methods = metadata.getMethods();
 		assertEquals(3, methods.size());
 
-		for (EngineXMethodMetadata method : methods) {
+		for (JRTraceMethodMetadata method : methods) {
 			if ("(Ljava/lang/Object;)V".equals(method.getDescriptor())) {
 				Set<String> usedFor = method.getTargetMethodNames();
 				assertEquals(1, usedFor.size());
@@ -186,8 +186,8 @@ public class EngineXAnnotationReaderTest {
 	public void tryreadAnnotationsOfClassWithoutEngineXAnnotation()
 			throws Exception {
 		classBytes = new JavaUtil().getClassBytes(this.getClass());
-		EngineXAnnotationReader annoReader = new EngineXAnnotationReader();
-		EngineXMetadata metadata = annoReader.getMetaInformation(classBytes);
+		JRTraceAnnotationReader annoReader = new JRTraceAnnotationReader();
+		JRTraceClassMetadata metadata = annoReader.getMetaInformation(classBytes);
 		assertNotNull(metadata);
 		assertFalse(metadata.hasXClassAnnotation());
 
@@ -229,24 +229,24 @@ public class EngineXAnnotationReaderTest {
 	public void testMayMatchQualifier() throws Exception {
 
 		classBytes = new JavaUtil().getClassBytes(QualifierMatchScript.class);
-		EngineXAnnotationReader annoReader = new EngineXAnnotationReader();
-		EngineXMetadata metadata = annoReader.getMetaInformation(classBytes);
-		EngineXMethodMetadata methoda = metadata.getMethod("instr");
+		JRTraceAnnotationReader annoReader = new JRTraceAnnotationReader();
+		JRTraceClassMetadata metadata = annoReader.getMetaInformation(classBytes);
+		JRTraceMethodMetadata methoda = metadata.getMethod("instr");
 		assertTrue(methoda.mayMatch(QualifierMatch.class));
 		assertTrue(methoda.mayMatch("methoda", "()V", Opcodes.ACC_PUBLIC
 				| Opcodes.ACC_FINAL));
 
-		EngineXMethodMetadata methodb = metadata.getMethod("instr2");
+		JRTraceMethodMetadata methodb = metadata.getMethod("instr2");
 		assertFalse(methodb.mayMatch(QualifierMatch.class));
 		assertFalse(methodb.mayMatch("methoda", "()V", Opcodes.ACC_PUBLIC
 				| Opcodes.ACC_FINAL));
 
-		EngineXMethodMetadata methodc = metadata.getMethod("instr3");
+		JRTraceMethodMetadata methodc = metadata.getMethod("instr3");
 		assertFalse(methodc.mayMatch(QualifierMatch.class));
 		assertFalse(methodc.mayMatch("methoda", "()V", Opcodes.ACC_PUBLIC
 				| Opcodes.ACC_FINAL));
 
-		EngineXMethodMetadata method4 = metadata.getMethod("instr4");
+		JRTraceMethodMetadata method4 = metadata.getMethod("instr4");
 		assertTrue(method4.mayMatch(QualifierMatch.class));
 		assertTrue(method4.mayMatch("methoda", "()V", Opcodes.ACC_PUBLIC
 				| Opcodes.ACC_FINAL));

@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
-import de.schenk.enginex.helper.EngineXNameUtil;
+import de.schenk.jrtrace.helper.JRTraceNameUtil;
 import de.schenk.jrtrace.service.JarLocator;
 import de.schenk.jrtrace.service.internal.PortUtil;
 
@@ -129,7 +129,7 @@ public class JavaUtil {
 	private String getClassPathForClass(Class<TestProcess> class1)
 			throws URISyntaxException, IOException {
 		String file = getFileForClass(class1);
-		String internalclassname = EngineXNameUtil.getInternalName(class1
+		String internalclassname = JRTraceNameUtil.getInternalName(class1
 				.getName());
 		String pathLikeClassName=internalclassname.replace("/", File.separator);
 		int index = file.indexOf(pathLikeClassName);

@@ -6,8 +6,8 @@ package de.schenk.jrtrace.helperagent;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.schenk.enginex.helper.EngineXMetadata;
-import de.schenk.enginex.helper.EngineXMethodMetadata;
+import de.schenk.jrtrace.helper.JRTraceClassMetadata;
+import de.schenk.jrtrace.helper.JRTraceMethodMetadata;
 import de.schenk.jrtrace.helperagent.FieldList.FieldEntry;
 import de.schenk.objectweb.asm.ClassVisitor;
 import de.schenk.objectweb.asm.FieldVisitor;
@@ -17,16 +17,16 @@ import de.schenk.objectweb.asm.addons.CommonSuperClassUtil;
 import de.schenk.objectweb.asm.commons.JSRInlinerAdapter;
 import de.schenk.objectweb.asm.commons.LocalVariablesSorter;
 
-public class EngineXClassVisitor extends ClassVisitor {
+public class JRTraceClassVisitor extends ClassVisitor {
 
-	private EngineXMetadata metadata;
+	private JRTraceClassMetadata metadata;
 	private FieldList fieldList = new FieldList();
 	private String className;
 
 	private CommonSuperClassUtil superClassUtil;
 
-	public EngineXClassVisitor(CommonSuperClassUtil superClassUtil,
-			ClassVisitor classWriter, int api, EngineXMetadata metadata) {
+	public JRTraceClassVisitor(CommonSuperClassUtil superClassUtil,
+			ClassVisitor classWriter, int api, JRTraceClassMetadata metadata) {
 		super(Opcodes.ASM5, classWriter);
 		this.superClassUtil = superClassUtil;
 
@@ -58,8 +58,8 @@ public class EngineXClassVisitor extends ClassVisitor {
 		MethodVisitor currentVisitor = super.visitMethod(access, name, desc,
 				signature, exceptions);
 
-		List<EngineXMethodMetadata> matchingMethods = new ArrayList<EngineXMethodMetadata>();
-		for (EngineXMethodMetadata method : metadata.getMethods()) {
+		List<JRTraceMethodMetadata> matchingMethods = new ArrayList<JRTraceMethodMetadata>();
+		for (JRTraceMethodMetadata method : metadata.getMethods()) {
 			if (method.mayMatch(name, desc, access)) {
 
 				matchingMethods.add(method);
@@ -70,7 +70,7 @@ public class EngineXClassVisitor extends ClassVisitor {
 		if (!matchingMethods.isEmpty()) {
 
 			MethodVisitor oldVisitor = currentVisitor;
-			EngineXMethodVisitor newMethodVisitor = new EngineXMethodVisitor(
+			JRTraceMethodVisitor newMethodVisitor = new JRTraceMethodVisitor(
 					this, access, name, desc, oldVisitor, matchingMethods);
 			LocalVariablesSorter lvs = new LocalVariablesSorter(access, desc,
 					newMethodVisitor);

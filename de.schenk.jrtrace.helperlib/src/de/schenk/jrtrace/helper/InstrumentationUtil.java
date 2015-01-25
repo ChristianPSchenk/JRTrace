@@ -1,4 +1,4 @@
-package de.schenk.enginex.helper;
+package de.schenk.jrtrace.helper;
 
 import java.lang.instrument.Instrumentation;
 import java.util.Map;

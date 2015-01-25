@@ -1,7 +1,7 @@
 /*
  * Copyright (c) Christian P. Schenk
  */
-package de.schenk.enginex.helper;
+package de.schenk.jrtrace.helper;
 
 
 /**

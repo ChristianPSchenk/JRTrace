@@ -10,8 +10,8 @@ import java.io.StringWriter;
 
 import javax.management.Notification;
 
-import de.schenk.enginex.helper.INotificationSender;
-import de.schenk.enginex.helper.NotificationUtil;
+import de.schenk.jrtrace.helper.INotificationSender;
+import de.schenk.jrtrace.helper.NotificationUtil;
 import de.schenk.jrtrace.helperlib.NotificationConstants;
 
 public class RedirectingOutputStream extends OutputStream {

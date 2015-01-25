@@ -1,7 +1,7 @@
 /**
  * (c) 2014 by Christian Schenk
  **/
-package de.schenk.enginex.helper;
+package de.schenk.jrtrace.helper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,13 +10,13 @@ import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
 import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.NotificationMessages;
 
-public class EngineXClassHolder {
+public class JRTraceClassAndObjectCache {
 
-	private EngineXMetadata metadata;
+	private JRTraceClassMetadata metadata;
 	private Map<ClassLoader, Class<?>> classCache = new HashMap<ClassLoader, Class<?>>();
 	private Map<ClassLoader, Object> objectCache = new HashMap<ClassLoader, Object>();
 
-	public EngineXClassHolder(EngineXMetadata metadata) {
+	public JRTraceClassAndObjectCache(JRTraceClassMetadata metadata) {
 
 		this.metadata = metadata;
 
@@ -39,7 +39,7 @@ public class EngineXClassHolder {
 
 		if (!contained) {
 
-			EngineXClassLoader enginexclassloader = EngineXClassLoaderRegistry
+			JRTraceClassLoader enginexclassloader = JRTraceClassLoaderRegistry
 					.getInstance().getClassLoader(classLoader);
 			enginexclassloader.addMetadata(metadata);
 			Class<?> mainClass = null;
@@ -69,7 +69,7 @@ public class EngineXClassHolder {
 						.sendProblemNotification(
 								NotificationMessages.MESSAGE_MISSING_NO_ARGUMENT_CONSTRUCTOR,
 
-								EngineXNameUtil.getExternalName(metadata
+								JRTraceNameUtil.getExternalName(metadata
 										.getClassName()), "", "");
 			}
 		}
@@ -114,7 +114,7 @@ public class EngineXClassHolder {
 								.sendProblemNotification(
 										"ClassloaderPolicy is NAMED, but no 'classname' annotation was provided. Falling back to BOOT classloader",
 
-										EngineXNameUtil
+										JRTraceNameUtil
 												.getExternalName(metadata
 														.getClassName()), "",
 										"");
@@ -129,7 +129,7 @@ public class EngineXClassHolder {
 													+ classForLoader
 													+ ". Note: the class specified in the classloadername attribute must already be loaded when the instrumentation point is hit. Falling back to boot classloader",
 
-											EngineXNameUtil
+											JRTraceNameUtil
 													.getExternalName(metadata
 															.getClassName()),
 											"", "");
@@ -143,7 +143,7 @@ public class EngineXClassHolder {
 		return classLoader;
 	}
 
-	public EngineXMetadata getMetadata() {
+	public JRTraceClassMetadata getMetadata() {
 		return metadata;
 	}
 

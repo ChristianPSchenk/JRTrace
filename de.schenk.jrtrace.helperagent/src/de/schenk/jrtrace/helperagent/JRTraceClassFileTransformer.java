@@ -13,8 +13,8 @@ import java.security.ProtectionDomain;
 import java.util.Collection;
 import java.util.List;
 
-import de.schenk.enginex.helper.EngineXHelper;
-import de.schenk.enginex.helper.EngineXMetadata;
+import de.schenk.jrtrace.helper.JRTraceHelper;
+import de.schenk.jrtrace.helper.JRTraceClassMetadata;
 import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.objectweb.asm.ClassReader;
 import de.schenk.objectweb.asm.ClassVisitor;
@@ -25,7 +25,7 @@ import de.schenk.objectweb.asm.addons.ClassWriterForClassLoader;
 import de.schenk.objectweb.asm.addons.CommonSuperClassUtil;
 import de.schenk.objectweb.asm.addons.ExtendedCheckClassAdapter;
 
-public class EngineXClassFileTransformer implements ClassFileTransformer {
+public class JRTraceClassFileTransformer implements ClassFileTransformer {
 
 	@Override
 	public byte[] transform(ClassLoader classLoader, String className,
@@ -34,7 +34,7 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 
 		byte[] oldBytes = classBytes;
 		boolean transformed = false;
-		Collection<EngineXMetadata> allEngineXClasses = EngineXHelper
+		Collection<JRTraceClassMetadata> allEngineXClasses = JRTraceHelper
 				.getEngineXClasses();
 
 		Class<?> superClass = null;
@@ -58,7 +58,7 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 			interfaces = extractor.getInterfaces().toArray(new Class<?>[0]);
 		}
 
-		for (EngineXMetadata entry : allEngineXClasses) {
+		for (JRTraceClassMetadata entry : allEngineXClasses) {
 			try {
 			  String cname = className == null ? null : Type.getType(
                   "L" + className + ";").getClassName();
@@ -100,7 +100,7 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 			}
 		}
 		if (transformed) {
-			EngineXHelper.setTransformed(className, classLoader);
+			JRTraceHelper.setTransformed(className, classLoader);
 		}
 		try {
 			if (JRLog.getLogLevel() == JRLog.DEBUG && transformed) {
@@ -131,7 +131,7 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 	}
 
 	private byte[] applyEngineXClasses(ClassLoader classLoader,
-			String targetClassName, EngineXMetadata entry, String targetclass,
+			String targetClassName, JRTraceClassMetadata entry, String targetclass,
 			byte[] classBytes, Class<?> superClass, Class<?>[] interfaces) {
 
 		return applyEngineXMethods(classLoader, targetClassName, entry,
@@ -140,7 +140,7 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 	}
 
 	private byte[] applyEngineXMethods(ClassLoader classLoader,
-			String targetClassName, EngineXMetadata metadata,
+			String targetClassName, JRTraceClassMetadata metadata,
 			byte[] classBytes, Class<?> superClass, Class<?>[] interfaces) {
 		ClassReader classReader = new ClassReader(classBytes);
 
@@ -156,7 +156,7 @@ public class EngineXClassFileTransformer implements ClassFileTransformer {
 
 		ClassVisitor visitor = classWriter;
 
-		ClassVisitor classVisitor = new EngineXClassVisitor(superClassUtil,
+		ClassVisitor classVisitor = new JRTraceClassVisitor(superClassUtil,
 				visitor, Opcodes.ASM5, metadata);
 		classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES);
 

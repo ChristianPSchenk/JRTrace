@@ -1,7 +1,7 @@
 /**
  * (c) 2014 by Christian Schenk
  **/
-package de.schenk.enginex.helper;
+package de.schenk.jrtrace.helper;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.ConstantCallSite;
@@ -21,7 +21,7 @@ public class DynamicBinder {
 		try {
 
 			Class<?> o = Class.forName(
-					"de.schenk.enginex.helper.EngineXHelper", false, null);
+					"de.schenk.jrtrace.helper.JRTraceHelper", false, null);
 
 			method = o.getMethod("getEngineXObject", String.class,
 					ClassLoader.class);

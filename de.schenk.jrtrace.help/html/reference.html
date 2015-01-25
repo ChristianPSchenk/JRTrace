@@ -31,16 +31,16 @@ will be injected into the running application.
    </tr>
     <tr>
     <td></td> 
-    <td><code>names</code></td>
+    <td><code>classes</code></td>
     
-    <td>One or more fully qualified class names. If set, the methods in this class can only be injected into classes with the
-    same qualified name. If not set, this class can inject in all classes. Use with care: usually it is a bad idea to instrument all
-    classes including the java core classes.
+    <td>One or more fully qualified class names. Tracing code will only be injected into classes that match the provided <code>classes</code> entries.
+    
     <p>Example: injection of methods from this class is restricted to classes <code>a.b.C</code> and <code>d.e.F</code>
     <pre>
-    @XClass(names={"a.b.C","d.e.F"})
+    @XClass(classes={"a.b.C","d.e.F"})
     class Trace
     {
+    	...
     }
     </pre>
     </p>
@@ -52,11 +52,13 @@ will be injected into the running application.
     <td><code>exclude</code></td>
     
     <td>One or more <b>regular</b> expressions that can be used to exclude classes from instrumentation.
-    <p>Example: the below snippet will inject tracing statements into all classes that doesn't match "java.*".
+    <p>Example: the below snippet will inject tracing statements into all classes (<code>classes=".*"</code>)
+     that don't match "java.*" and "de\\.schenk\\.jrtrace
     <pre>
-    @XClass(exclude="java.*")
+    @XClass(exclude={"java.*","de\\.schenk\\.jrtrace.*"},classes=".*",regex=true)
     class Trace
     {
+    		...
     }
     </pre>
     </p>
@@ -71,9 +73,10 @@ will be injected into the running application.
     attribute is set to true. This attribute is defined once on classlevel and effects all contained annotations that refer to java names and types.
     <p>Example: the below class will inject code into all classes from the namespace "org.company". 
     <pre>
-    @XClass(names={"org\\.company\\..*"},regex=true)
+    @XClass(classes={"org\\.company\\..*"},regex=true)
     class Trace
     {
+    	...
     }
     </pre>
     </p>
@@ -89,9 +92,10 @@ will be injected into the running application.
     <p>Example: the code of the below class will always be loaded using the classloader of the class into which the code was injected. Note that this
     might imply, that the tracing code is loaded multiple times by multiple classloaders if it is injected into classes that use different classloaders. 
     <pre>
-    @XClass(names={"de.schenk.MyClass"},classloaderpolicy=XClassLoaderPolicy.TARGET)
+    @XClass(classes={"de.schenk.MyClass"},classloaderpolicy=XClassLoaderPolicy.TARGET)
     class Trace
     {
+    	...
     }
     </pre>
     </p>

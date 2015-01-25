@@ -10,7 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import de.schenk.enginex.helper.InstrumentationUtil;
+import de.schenk.jrtrace.helper.InstrumentationUtil;
 
 public class RunJavaCommand {
 

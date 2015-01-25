@@ -8,8 +8,8 @@ import java.util.jar.JarFile;
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
 
-import de.schenk.enginex.helper.EngineXHelper;
-import de.schenk.enginex.helper.INotificationSender;
+import de.schenk.jrtrace.helper.JRTraceHelper;
+import de.schenk.jrtrace.helper.INotificationSender;
 import de.schenk.jrtrace.helperagent.AgentMain;
 import de.schenk.jrtrace.helperagent.JRTraceMXBean;
 import de.schenk.jrtrace.helperlib.JRLog;
@@ -97,13 +97,13 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 
 	@Override
 	public void clearEngineX() {
-		EngineXHelper.clearEngineX();
+		JRTraceHelper.clearEngineX();
 
 	}
 
 	@Override
 	public void abort() {
-		EngineXHelper.abort();
+		JRTraceHelper.abort();
 
 	}
 }

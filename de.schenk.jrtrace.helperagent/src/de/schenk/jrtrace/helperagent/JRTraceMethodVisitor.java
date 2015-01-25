@@ -8,12 +8,12 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.List;
 
-import de.schenk.enginex.helper.EngineXMethodMetadata;
-import de.schenk.enginex.helper.EngineXNameUtil;
-import de.schenk.enginex.helper.Injection;
-import de.schenk.enginex.helper.Injection.InjectionType;
-import de.schenk.enginex.helper.NotificationUtil;
 import de.schenk.jrtrace.annotations.XLocation;
+import de.schenk.jrtrace.helper.JRTraceMethodMetadata;
+import de.schenk.jrtrace.helper.JRTraceNameUtil;
+import de.schenk.jrtrace.helper.Injection;
+import de.schenk.jrtrace.helper.Injection.InjectionType;
+import de.schenk.jrtrace.helper.NotificationUtil;
 import de.schenk.jrtrace.helperagent.FieldList.FieldEntry;
 import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.ReflectionUtil;
@@ -26,15 +26,15 @@ import de.schenk.objectweb.asm.commons.AdviceAdapter;
 import de.schenk.objectweb.asm.commons.LocalVariablesSorter;
 import de.schenk.objectweb.asm.commons.Method;
 
-public class EngineXMethodVisitor extends AdviceAdapter {
+public class JRTraceMethodVisitor extends AdviceAdapter {
 
-	private List<EngineXMethodMetadata> injectedMethods;
+	private List<JRTraceMethodMetadata> injectedMethods;
 	private String descriptor;
 	private boolean targetMethodStatic = false; // fixme: target injectedMethod
 	// may be
 	private Type targetReturnType;
 
-	private EngineXClassVisitor classVisitor;
+	private JRTraceClassVisitor classVisitor;
 	private Object targetMethodName;
 
 	private Type[] targetArguments;
@@ -43,9 +43,9 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 
 	/**
    */
-	public EngineXMethodVisitor(EngineXClassVisitor fieldList, int access,
+	public JRTraceMethodVisitor(JRTraceClassVisitor fieldList, int access,
 			String name, String desc, MethodVisitor visitMethod,
-			List<EngineXMethodMetadata> injectedMethods) {
+			List<JRTraceMethodMetadata> injectedMethods) {
 
 		super(Opcodes.ASM5, visitMethod, access, name, desc);
 		this.targetMethodName = name;
@@ -60,7 +60,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 		this.targetMethodStatic = isStatic;
 		this.targetMethodAccess = access;
 
-		for (EngineXMethodMetadata injectedMethod : injectedMethods) {
+		for (JRTraceMethodMetadata injectedMethod : injectedMethods) {
 
 			Method enginexMethod = new Method(injectedMethod.getMethodName(),
 					injectedMethod.getDescriptor());
@@ -89,7 +89,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 								String.format(
 										"Return type of injected method doesn't match the type %s of the target method %s in class %s.",
 										targetReturnType.getClassName(),
-										targetMethodName, EngineXNameUtil
+										targetMethodName, JRTraceNameUtil
 												.getExternalName(classVisitor
 														.getClassName())));
 
@@ -103,7 +103,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 
 	@Override
 	protected void onMethodEnter() {
-		for (EngineXMethodMetadata injectedMethod : injectedMethods) {
+		for (JRTraceMethodMetadata injectedMethod : injectedMethods) {
 			if (injectedMethod.getInjectLocation() == XLocation.ENTRY) {
 				injectEngineXCall(injectedMethod);
 			}
@@ -118,7 +118,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 	@Override
 	public void visitMethodInsn(int opcode, String owner, String name,
 			String desc, boolean itf) {
-		for (EngineXMethodMetadata injectedMethod : injectedMethods) {
+		for (JRTraceMethodMetadata injectedMethod : injectedMethods) {
 			if (injectedMethod.getInjectLocation() == XLocation.BEFORE_INVOCATION
 					|| injectedMethod.getInjectLocation() == XLocation.REPLACE_INVOCATION
 					|| injectedMethod.getInjectLocation() == XLocation.AFTER_INVOCATION) {
@@ -141,7 +141,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 			String desc) {
 
 		super.visitFieldInsn(opcode, owner, name, desc);
-		for (EngineXMethodMetadata injectedMethod : injectedMethods) {
+		for (JRTraceMethodMetadata injectedMethod : injectedMethods) {
 			XLocation loc = injectedMethod.getInjectLocation();
 			if (loc == XLocation.GETFIELD || loc == XLocation.PUTFIELD) {
 				if (injectedMethod.matchesField(owner, name)) {
@@ -164,7 +164,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 	 * @param itf
 	 */
 	private void applyOnInvokeInstrumentation(
-			EngineXMethodMetadata injectedMethod, int opcode, String owner,
+			JRTraceMethodMetadata injectedMethod, int opcode, String owner,
 			String name, String desc, boolean itf) {
 		boolean invokedMethodStatic = (opcode == Opcodes.INVOKESTATIC);
 
@@ -188,10 +188,10 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 				fatal(injectedMethod,
 						String.format(
 								"Type mismatch: @XLocation.REPLACE_INVOCATION requires that the return type %s of the injected method %s is assignable to the return type %s of the replaced method invocation to method %s.",
-								EngineXNameUtil
+								JRTraceNameUtil
 										.getExternalName(injectionMethodReturnTypes
 												.getClassName()),
-								injectedMethod.getMethodName(), EngineXNameUtil
+								injectedMethod.getMethodName(), JRTraceNameUtil
 										.getExternalName(Type.getReturnType(
 												desc).getClassName()), name));
 			}
@@ -270,7 +270,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 
 	@Override
 	protected void onMethodExit(int opcode) {
-		for (EngineXMethodMetadata injectedMethod : injectedMethods) {
+		for (JRTraceMethodMetadata injectedMethod : injectedMethods) {
 			if (injectedMethod.getInjectLocation() == XLocation.EXIT
 					&& opcode == targetReturnType.getOpcode(Opcodes.IRETURN)) {
 				injectEngineXCall(injectedMethod);
@@ -279,7 +279,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 		super.onMethodExit(opcode);
 	}
 
-	private void injectEngineXCall(EngineXMethodMetadata injectedMethod) {
+	private void injectEngineXCall(JRTraceMethodMetadata injectedMethod) {
 		injectEngineXCall(injectedMethod, null, null, null, null);
 	}
 
@@ -297,7 +297,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 	 *            the signature of the invoked method
 	 * @param invokeMethodOwner
 	 */
-	private void injectEngineXCall(EngineXMethodMetadata injectedMethod,
+	private void injectEngineXCall(JRTraceMethodMetadata injectedMethod,
 			int[] invokeArgPositions, String invokeMethodOwner,
 			String invokeMethodName, String invokeMethodDesc) {
 
@@ -312,7 +312,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 		createVirtualDynamicInvoke(injectedMethod);
 	}
 
-	private void prepareCallArgument(EngineXMethodMetadata injectedMethod,
+	private void prepareCallArgument(JRTraceMethodMetadata injectedMethod,
 			int i, int[] localArgPositions, String owner, String name,
 			String desc) {
 
@@ -393,7 +393,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 	 *            the type of the local variable slot.
 	 */
 	private void prepareCallerArgumentArgument(
-			EngineXMethodMetadata injectedMethod, int pos, int sourceLocalVar,
+			JRTraceMethodMetadata injectedMethod, int pos, int sourceLocalVar,
 			Type sourceType) {
 		Method enginexMethod = new Method(injectedMethod.getMethodName(),
 				injectedMethod.getDescriptor());
@@ -421,11 +421,11 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 					fatal(injectedMethod,
 							String.format(
 									"The type returned by the method %s is %s and cannot be assigned to the first argument of the method %s which is %s.",
-									targetMethodName, EngineXNameUtil
+									targetMethodName, JRTraceNameUtil
 											.getExternalName(sourceType
 													.getClassName()),
 									injectedMethod.getMethodName(),
-									EngineXNameUtil.getExternalName(argument
+									JRTraceNameUtil.getExternalName(argument
 											.getClassName())));
 				}
 			}
@@ -439,11 +439,11 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 				fatal(injectedMethod,
 						String.format(
 								"Argument Type mismatch:  method parameter of type %s is injected into type %s of method %s in class %s.",
-								EngineXNameUtil.getExternalName(sourceType
-										.getClassName()), EngineXNameUtil
+								JRTraceNameUtil.getExternalName(sourceType
+										.getClassName()), JRTraceNameUtil
 										.getExternalName(argument
 												.getClassName()),
-								injectedMethod.getMethodName(), EngineXNameUtil
+								injectedMethod.getMethodName(), JRTraceNameUtil
 										.getExternalName(classVisitor
 												.getClassName())));
 			}
@@ -453,7 +453,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 	}
 
 	private void prepareFieldInjectedArgument(
-			EngineXMethodMetadata injectedMethod, int pos,
+			JRTraceMethodMetadata injectedMethod, int pos,
 			String injectionSource) {
 		FieldEntry field = classVisitor.getFieldEntry(injectionSource);
 		Method enginexMethod = new Method(injectedMethod.getMethodName(),
@@ -471,7 +471,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 								"The type of the field "
 										+ injectionSource
 										+ " of the targetclass "
-										+ EngineXNameUtil
+										+ JRTraceNameUtil
 												.getExternalName(classVisitor
 														.getClassName())
 										+ " doesn't match the type of the argument %d of the injected method and cannot be injected with XField.",
@@ -510,7 +510,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 
 	}
 
-	private void castToTargetArgumentType(EngineXMethodMetadata injectedMethod,
+	private void castToTargetArgumentType(JRTraceMethodMetadata injectedMethod,
 			int pos) {
 		Method enginexMethod = new Method(injectedMethod.getMethodName(),
 				injectedMethod.getDescriptor());
@@ -568,12 +568,12 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 				+ descriptor, false);
 	}
 
-	private void createVirtualDynamicInvoke(EngineXMethodMetadata injectedMethod) {
+	private void createVirtualDynamicInvoke(JRTraceMethodMetadata injectedMethod) {
 		MethodType mt = MethodType.methodType(CallSite.class,
 				MethodHandles.Lookup.class, String.class, MethodType.class,
 				String.class, String.class, String.class);
 		Handle bootstrap = new Handle(Opcodes.H_INVOKESTATIC,
-				"de/schenk/enginex/helper/DynamicBinder", "bindEngineXMethods",
+				"de/schenk/jrtrace/helper/DynamicBinder", "bindEngineXMethods",
 				mt.toMethodDescriptorString());
 		JRLog.debug("Instrumentations is including call to class: "
 				+ injectedMethod.getClassMetadata().getExternalClassName()
@@ -584,7 +584,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 				injectedMethod.getMethodName(), injectedMethod.getDescriptor());
 	}
 
-	private int getLocalVariablePosition(EngineXMethodMetadata injectedMethod,
+	private int getLocalVariablePosition(JRTraceMethodMetadata injectedMethod,
 			Integer injectionSource) {
 		int pos = 0;
 		Method m = new Method("doesntmatter", descriptor);
@@ -597,7 +597,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 			if (injectionSource == 0) {
 				String msg = String
 						.format("Cannot use @XThis or @XParam(n=0) on static method %s in class %s.",
-								targetMethodName, EngineXNameUtil
+								targetMethodName, JRTraceNameUtil
 										.getExternalName(classVisitor
 												.getClassName()));
 
@@ -609,7 +609,7 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 			fatal(injectedMethod,
 					String.format(
 							"There is no argument at position %d on method %s of class %s that can be injected with @Param.",
-							injectionSource, targetMethodName, EngineXNameUtil
+							injectionSource, targetMethodName, JRTraceNameUtil
 									.getExternalName(classVisitor
 											.getClassName())));
 		}
@@ -622,12 +622,12 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 		return pos;
 	}
 
-	private void fatal(EngineXMethodMetadata injectedMethod, String msg) {
+	private void fatal(JRTraceMethodMetadata injectedMethod, String msg) {
 		Method enginexMethod = new Method(injectedMethod.getMethodName(),
 				injectedMethod.getDescriptor());
 
 		String injectionMethodDescriptor = enginexMethod.getDescriptor();
-		NotificationUtil.sendProblemNotification(msg, EngineXNameUtil
+		NotificationUtil.sendProblemNotification(msg, JRTraceNameUtil
 				.getExternalName(injectedMethod.getClassMetadata()
 						.getClassName()), injectedMethod.getMethodName(),
 				injectionMethodDescriptor);

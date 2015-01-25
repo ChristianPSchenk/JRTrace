@@ -1,4 +1,4 @@
-package de.schenk.enginex.helper;
+package de.schenk.jrtrace.helper;
 
 import java.io.IOException;
 import java.net.InetAddress;

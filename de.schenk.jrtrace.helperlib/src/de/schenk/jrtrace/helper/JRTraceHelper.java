@@ -1,7 +1,7 @@
 /**
  * (c) 2014 by Christian Schenk
  **/
-package de.schenk.enginex.helper;
+package de.schenk.jrtrace.helper;
 
 import java.lang.instrument.Instrumentation;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.Set;
 
 import de.schenk.jrtrace.helperlib.JRLog;
 
-public class EngineXHelper {
+public class JRTraceHelper {
 
 	public static final Object lock = new Object();
 
@@ -23,18 +23,18 @@ public class EngineXHelper {
 	 * stores the information for a specific EngineX class keyed on the external
 	 * name
 	 */
-	static Map<String, EngineXClassHolder> classCache = new HashMap<String, EngineXClassHolder>();
+	static Map<String, JRTraceClassAndObjectCache> classCache = new HashMap<String, JRTraceClassAndObjectCache>();
 
 	// static Class<?> mainClass;
 
-	// static private Map<String, EngineXMetadata> enginexclasses = new
-	// HashMap<String, EngineXMetadata>();
+	// static private Map<String, JRTraceClassMetadata> enginexclasses = new
+	// HashMap<String, JRTraceClassMetadata>();
 
-	public static Collection<EngineXMetadata> getEngineXClasses() {
+	public static Collection<JRTraceClassMetadata> getEngineXClasses() {
 		synchronized (lock) {
-			Collection<EngineXClassHolder> values = classCache.values();
-			ArrayList<EngineXMetadata> result = new ArrayList<EngineXMetadata>();
-			for (EngineXClassHolder value : values) {
+			Collection<JRTraceClassAndObjectCache> values = classCache.values();
+			ArrayList<JRTraceClassMetadata> result = new ArrayList<JRTraceClassMetadata>();
+			for (JRTraceClassAndObjectCache value : values) {
 				result.add(value.getMetadata());
 			}
 			return result;
@@ -51,7 +51,7 @@ public class EngineXHelper {
 	 */
 	public static Object getEngineXObject(String enginexclass,
 			ClassLoader classLoader) {
-		EngineXClassHolder o;
+		JRTraceClassAndObjectCache o;
 		synchronized (lock) {
 			o = classCache.get(enginexclass);
 		}
@@ -71,7 +71,7 @@ public class EngineXHelper {
 	 */
 	public static Class<?> getEngineXClass(String enginexclass,
 			ClassLoader classLoader) {
-		EngineXClassHolder o;
+		JRTraceClassAndObjectCache o;
 		synchronized (lock) {
 			o = classCache.get(enginexclass);
 		}
@@ -80,17 +80,17 @@ public class EngineXHelper {
 		return o.getEngineXClass(classLoader);
 	}
 
-	public static void addEngineXClass(List<EngineXMetadata> metadatalist) {
+	public static void addEngineXClass(List<JRTraceClassMetadata> metadatalist) {
 
 		Set<Class<?>> modifiableClasses = clearEngineXTransformationMap();
 		long start = System.nanoTime();
 		synchronized (lock) {
-			for (EngineXMetadata metadata : metadatalist) {
+			for (JRTraceClassMetadata metadata : metadatalist) {
 				classCache.put(metadata.getExternalClassName(),
-						new EngineXClassHolder(metadata));
+						new JRTraceClassAndObjectCache(metadata));
 			}
 		}
-		Collection<EngineXMetadata> currentenginex = getEngineXClasses();
+		Collection<JRTraceClassMetadata> currentenginex = getEngineXClasses();
 		Instrumentation inst = InstrumentationUtil.getInstrumentation();
 
 		Class<?>[] Allclasses = inst.getAllLoadedClasses();
@@ -118,7 +118,7 @@ public class EngineXHelper {
 		retransformClasses(modifiableClasses);
 		long ende = System.nanoTime();
 		JRLog.debug(String.format(
-				"EngineXHelper.addEngineXClass() took %d ms.",
+				"JRTraceHelper.addEngineXClass() took %d ms.",
 				(ende - start) / 1000 / 1000));
 
 	}
@@ -199,9 +199,9 @@ public class EngineXHelper {
 	 *         retranformation to apply enginex rules
 	 */
 	public static boolean potentialEngineXCandidate(Class<?> c,
-			Collection<EngineXMetadata> currentenginex) {
+			Collection<JRTraceClassMetadata> currentenginex) {
 
-		for (EngineXMetadata md : currentenginex) {
+		for (JRTraceClassMetadata md : currentenginex) {
 			if (md.mayMatch(c)) {
 
 				return true;
@@ -235,7 +235,7 @@ public class EngineXHelper {
 		synchronized (lock) {
 
 			classCache.clear();
-			EngineXClassLoaderRegistry.getInstance().clear();
+			JRTraceClassLoaderRegistry.getInstance().clear();
 
 			copyOfTransformed = new HashMap<String, Set<ClassLoader>>();
 			copyOfTransformed.putAll(transformedClassesMap);

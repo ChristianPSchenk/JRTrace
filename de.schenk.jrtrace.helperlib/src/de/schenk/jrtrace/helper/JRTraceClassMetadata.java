@@ -1,7 +1,7 @@
 /**
  * (c) 2014 by Christian Schenk
  **/
-package de.schenk.enginex.helper;
+package de.schenk.jrtrace.helper;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,7 +20,7 @@ import de.schenk.objectweb.asm.Type;
  * @author Christian Schenk
  *
  */
-public class EngineXMetadata {
+public class JRTraceClassMetadata {
 
 	/**
 	 * The fully qualified name of the EngineX class that this metadata
@@ -36,7 +36,7 @@ public class EngineXMetadata {
 	 */
 	private List<String> classes = new ArrayList<String>();
 
-	List<EngineXMethodMetadata> methods = new ArrayList<EngineXMethodMetadata>();
+	List<JRTraceMethodMetadata> methods = new ArrayList<JRTraceMethodMetadata>();
 	private byte[] classbytes;
 	private boolean derived = false;
 	private String classLoaderName;
@@ -52,7 +52,7 @@ public class EngineXMetadata {
 	public List<String> getClasses() {
 		List<String> erg = new ArrayList<String>();
 		for (String c : classes) {
-			erg.add(EngineXNameUtil.getInternalName(c));
+			erg.add(JRTraceNameUtil.getInternalName(c));
 		}
 		return erg;
 	}
@@ -84,13 +84,13 @@ public class EngineXMetadata {
 
 	}
 
-	public List<EngineXMethodMetadata> getMethods() {
+	public List<JRTraceMethodMetadata> getMethods() {
 
 		return methods;
 
 	}
 
-	public void addMethod(EngineXMethodMetadata method) {
+	public void addMethod(JRTraceMethodMetadata method) {
 
 		methods.add(method);
 
@@ -185,7 +185,7 @@ public class EngineXMetadata {
 
 	private boolean mayMatchMethods(Class<?> theclass) {
 
-		for (EngineXMethodMetadata method : methods) {
+		for (JRTraceMethodMetadata method : methods) {
 
 			if (method.mayMatch(theclass)) {
 				return true;
@@ -284,8 +284,8 @@ public class EngineXMetadata {
 	 * @return the metadata of the specified method or null if the injection
 	 *         class doesn't contain a method with this name
 	 */
-	public EngineXMethodMetadata getMethod(String methodName) {
-		for (EngineXMethodMetadata m : methods) {
+	public JRTraceMethodMetadata getMethod(String methodName) {
+		for (JRTraceMethodMetadata m : methods) {
 			if (m.getMethodName().equals(methodName)) {
 				return m;
 			}

@@ -3,10 +3,6 @@
  **/
 package de.schenk.jrtrace.helperagent;
 
-import de.schenk.enginex.helper.EngineXMetadata;
-import de.schenk.enginex.helper.EngineXMethodMetadata;
-import de.schenk.enginex.helper.Injection;
-import de.schenk.enginex.helper.Injection.InjectionType;
 import de.schenk.jrtrace.annotations.XClass;
 import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
 import de.schenk.jrtrace.annotations.XField;
@@ -19,6 +15,10 @@ import de.schenk.jrtrace.annotations.XModifier;
 import de.schenk.jrtrace.annotations.XParam;
 import de.schenk.jrtrace.annotations.XReturn;
 import de.schenk.jrtrace.annotations.XThis;
+import de.schenk.jrtrace.helper.JRTraceClassMetadata;
+import de.schenk.jrtrace.helper.JRTraceMethodMetadata;
+import de.schenk.jrtrace.helper.Injection;
+import de.schenk.jrtrace.helper.Injection.InjectionType;
 import de.schenk.objectweb.asm.AnnotationVisitor;
 import de.schenk.objectweb.asm.ClassReader;
 import de.schenk.objectweb.asm.ClassVisitor;
@@ -26,16 +26,16 @@ import de.schenk.objectweb.asm.MethodVisitor;
 import de.schenk.objectweb.asm.Opcodes;
 import de.schenk.objectweb.asm.Type;
 
-public class EngineXAnnotationReader {
+public class JRTraceAnnotationReader {
 
 	public class MetadataParameterAnnotationVisitor extends AnnotationVisitor {
 
-		private EngineXMethodMetadata method;
+		private JRTraceMethodMetadata method;
 		private int param;
 		private InjectionType iType;
 
 		public MetadataParameterAnnotationVisitor(
-				EngineXMethodMetadata methodmd, InjectionType iType,
+				JRTraceMethodMetadata methodmd, InjectionType iType,
 				int parameter, AnnotationVisitor visitParameterAnnotation) {
 
 			super(Opcodes.ASM5, visitParameterAnnotation);
@@ -76,9 +76,9 @@ public class EngineXAnnotationReader {
 
 	public class MetadataMethodMethodVisitor extends MethodVisitor {
 
-		private EngineXMethodMetadata methodmd;
+		private JRTraceMethodMetadata methodmd;
 
-		public MetadataMethodMethodVisitor(EngineXMethodMetadata md,
+		public MetadataMethodMethodVisitor(JRTraceMethodMetadata md,
 				MethodVisitor visitMethod) {
 			super(Opcodes.ASM5);
 			this.methodmd = md;
@@ -139,12 +139,12 @@ public class EngineXAnnotationReader {
 
 	public class MethodMetadataAnnotationVisitor extends AnnotationVisitor {
 
-		private EngineXMethodMetadata method;
+		private JRTraceMethodMetadata method;
 
 		private String context;
 		boolean dataAdded = false;
 
-		public MethodMetadataAnnotationVisitor(EngineXMethodMetadata md,
+		public MethodMetadataAnnotationVisitor(JRTraceMethodMetadata md,
 				String context, AnnotationVisitor visitor) {
 			super(Opcodes.ASM5, visitor);
 			this.context = context;
@@ -223,11 +223,11 @@ public class EngineXAnnotationReader {
 
 	public class ClassMetadataAnnotationVisitor extends AnnotationVisitor {
 
-		private EngineXMetadata md;
+		private JRTraceClassMetadata md;
 
 		private String context;
 
-		public ClassMetadataAnnotationVisitor(EngineXMetadata md,
+		public ClassMetadataAnnotationVisitor(JRTraceClassMetadata md,
 				String context, AnnotationVisitor visitor) {
 			super(Opcodes.ASM5, visitor);
 			this.context = context;
@@ -285,10 +285,10 @@ public class EngineXAnnotationReader {
 
 	public class MetadataClassVisitor extends ClassVisitor {
 
-		private EngineXMetadata md;
+		private JRTraceClassMetadata md;
 		private boolean foundEngineXAnnotation = false;
 
-		public MetadataClassVisitor(EngineXMetadata md) {
+		public MetadataClassVisitor(JRTraceClassMetadata md) {
 			super(Opcodes.ASM5);
 			this.md = md;
 		}
@@ -296,7 +296,7 @@ public class EngineXAnnotationReader {
 		@Override
 		public MethodVisitor visitMethod(int access, String name, String desc,
 				String signature, String[] exceptions) {
-			EngineXMethodMetadata methodMetadata = new EngineXMethodMetadata(
+			JRTraceMethodMetadata methodMetadata = new JRTraceMethodMetadata(
 					md, name, desc);
 			return new MetadataMethodMethodVisitor(
 					methodMetadata,
@@ -335,11 +335,11 @@ public class EngineXAnnotationReader {
 	 * 
 	 * @param classBytes
 	 *            the class from which to read the metadata
-	 * @return a a EngineXMetadata object that describes the processing
+	 * @return a a JRTraceClassMetadata object that describes the processing
 	 *         information in the class.
 	 */
-	public EngineXMetadata getMetaInformation(byte[] classBytes) {
-		final EngineXMetadata md = new EngineXMetadata();
+	public JRTraceClassMetadata getMetaInformation(byte[] classBytes) {
+		final JRTraceClassMetadata md = new JRTraceClassMetadata();
 
 		ClassReader cr = new ClassReader(classBytes);
 		MetadataClassVisitor mdcvisitor = new MetadataClassVisitor(md);

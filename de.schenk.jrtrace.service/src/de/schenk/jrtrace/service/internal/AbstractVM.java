@@ -21,7 +21,7 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
-import de.schenk.enginex.helper.NotificationUtil;
+import de.schenk.jrtrace.helper.NotificationUtil;
 import de.schenk.jrtrace.helperagent.JRTraceMXBean;
 import de.schenk.jrtrace.service.ICancelable;
 import de.schenk.jrtrace.service.IJRTraceVM;

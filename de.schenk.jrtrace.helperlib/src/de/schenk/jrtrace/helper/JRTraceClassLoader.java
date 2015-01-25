@@ -1,7 +1,7 @@
 /**
  * (c) 2014 by Christian Schenk
  **/
-package de.schenk.enginex.helper;
+package de.schenk.jrtrace.helper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,11 +18,11 @@ import java.util.Map;
  * @author Christian Schenk
  *
  */
-public class EngineXClassLoader extends ClassLoader {
+public class JRTraceClassLoader extends ClassLoader {
 
-	private Map<String, EngineXMetadata> entries = new HashMap<String, EngineXMetadata>();
+	private Map<String, JRTraceClassMetadata> entries = new HashMap<String, JRTraceClassMetadata>();
 
-	public EngineXClassLoader(ClassLoader classLoader) {
+	public JRTraceClassLoader(ClassLoader classLoader) {
 		super(classLoader);
 
 	}
@@ -30,19 +30,19 @@ public class EngineXClassLoader extends ClassLoader {
 	@Override
 	public Class<?> findClass(String className) throws ClassNotFoundException {
 
-		EngineXMetadata entry = entries.get(className);
+		JRTraceClassMetadata entry = entries.get(className);
 		if (entry != null) {
 			return defineClass(entry.getExternalClassName(),
 					entry.getClassBytes(), 0, entry.getClassBytes().length);
 		}
-		Class<?> c = EngineXHelper.getEngineXClass(className, getParent());
+		Class<?> c = JRTraceHelper.getEngineXClass(className, getParent());
 		if (c != null)
 			return c;
 		throw new ClassNotFoundException(className);
 
 	}
 
-	public void addMetadata(EngineXMetadata metadata) {
+	public void addMetadata(JRTraceClassMetadata metadata) {
 		this.entries.put(metadata.getExternalClassName(), metadata);
 	}
 

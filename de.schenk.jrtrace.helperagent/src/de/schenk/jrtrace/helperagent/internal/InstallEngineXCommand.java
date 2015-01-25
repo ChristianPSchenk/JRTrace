@@ -10,14 +10,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.schenk.enginex.helper.EngineXHelper;
-import de.schenk.enginex.helper.EngineXMetadata;
-import de.schenk.enginex.helper.NotificationUtil;
-import de.schenk.jrtrace.helperagent.EngineXAnnotationReader;
+import de.schenk.jrtrace.helper.JRTraceHelper;
+import de.schenk.jrtrace.helper.JRTraceClassMetadata;
+import de.schenk.jrtrace.helper.NotificationUtil;
+import de.schenk.jrtrace.helperagent.JRTraceAnnotationReader;
 
 public class InstallEngineXCommand {
 
-	EngineXAnnotationReader annotationReader = new EngineXAnnotationReader();
+	JRTraceAnnotationReader annotationReader = new JRTraceAnnotationReader();
 
 	public InstallEngineXCommand() {
 
@@ -30,14 +30,14 @@ public class InstallEngineXCommand {
 	}
 
 	private void setEngineXClasses(byte[][] jarFileBytes) {
-		List<EngineXMetadata> mdlist = new ArrayList<EngineXMetadata>();
+		List<JRTraceClassMetadata> mdlist = new ArrayList<JRTraceClassMetadata>();
 		for (int i = 0; i < jarFileBytes.length; i++) {
-			EngineXMetadata md = createMetadata(jarFileBytes[i]);
+			JRTraceClassMetadata md = createMetadata(jarFileBytes[i]);
 			if (md != null) {
 				mdlist.add(md);
 			}
 		}
-		EngineXHelper.addEngineXClass(mdlist);
+		JRTraceHelper.addEngineXClass(mdlist);
 
 	}
 
@@ -48,8 +48,8 @@ public class InstallEngineXCommand {
 	 * @return the metadata structure extracted from the annotations or null if
 	 *         there is a severe error.
 	 */
-	public EngineXMetadata createMetadata(byte[] enginexclassbytes) {
-		EngineXMetadata metadata = annotationReader
+	public JRTraceClassMetadata createMetadata(byte[] enginexclassbytes) {
+		JRTraceClassMetadata metadata = annotationReader
 				.getMetaInformation(enginexclassbytes);
 
 		String version = System.getProperty("java.version");

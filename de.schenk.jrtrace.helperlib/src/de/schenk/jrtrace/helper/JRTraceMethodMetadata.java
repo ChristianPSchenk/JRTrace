@@ -1,7 +1,7 @@
 /**
  * (c) 2014 by Christian Schenk
  **/
-package de.schenk.enginex.helper;
+package de.schenk.jrtrace.helper;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -17,9 +17,9 @@ import de.schenk.jrtrace.annotations.XLocation;
 import de.schenk.jrtrace.annotations.XModifier;
 import de.schenk.jrtrace.helperlib.JRLog;
 
-public class EngineXMethodMetadata {
+public class JRTraceMethodMetadata {
 
-	private EngineXMetadata parent;
+	private JRTraceClassMetadata parent;
 
 	/**
 	 * The UsedFor annotation values to determine for which target methods this
@@ -36,7 +36,7 @@ public class EngineXMethodMetadata {
 	 */
 	private String parameters;
 
-	public EngineXMethodMetadata(EngineXMetadata md, String name, String desc) {
+	public JRTraceMethodMetadata(JRTraceClassMetadata md, String name, String desc) {
 		this.name = name;
 		this.parameters = desc;
 		this.parent = md;
@@ -51,7 +51,7 @@ public class EngineXMethodMetadata {
 		return parameters;
 	}
 
-	public EngineXMetadata getClassMetadata() {
+	public JRTraceClassMetadata getClassMetadata() {
 		return parent;
 	}
 

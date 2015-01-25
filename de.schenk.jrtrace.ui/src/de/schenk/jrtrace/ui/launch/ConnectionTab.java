@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
-import de.schenk.enginex.helper.NetworkUtil;
+import de.schenk.jrtrace.helper.NetworkUtil;
 import de.schenk.jrtrace.jdk.init.Activator;
 import de.schenk.jrtrace.service.JRTraceControllerService;
 import de.schenk.jrtrace.service.JarLocator;
