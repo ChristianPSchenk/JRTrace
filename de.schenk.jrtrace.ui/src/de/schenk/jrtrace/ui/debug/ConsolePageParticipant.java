@@ -1,7 +1,10 @@
 package de.schenk.jrtrace.ui.debug;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IActionBars;
@@ -15,10 +18,12 @@ import org.eclipse.ui.part.IPageBookViewPage;
 import de.schenk.jrtrace.ui.Activator;
 import de.schenk.jrtrace.ui.handler.RunEngineXHandler;
 
-public class ConsolePageParticipant implements IConsolePageParticipant {
+public class ConsolePageParticipant implements IConsolePageParticipant,
+		IDebugEventSetListener {
 
 	private Action stopAction;
 	private JRTraceConsole myConsole;
+	private Action reinstallAction;
 
 	@Override
 	public Object getAdapter(Class adapter) {
@@ -57,7 +62,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant {
 		bar.getToolBarManager().appendToGroup(IConsoleConstants.LAUNCH_GROUP,
 				stopAction);
 
-		Action reinstallAction = new Action() {
+		reinstallAction = new Action() {
 			public void run() {
 
 				IProject theproject = myConsole.getDebugTarget().getProject();
@@ -85,6 +90,9 @@ public class ConsolePageParticipant implements IConsolePageParticipant {
 
 		bar.getToolBarManager().appendToGroup(IConsoleConstants.LAUNCH_GROUP,
 				reinstallAction);
+
+		DebugPlugin.getDefault().addDebugEventListener(this);
+
 	}
 
 	@Override
@@ -99,6 +107,20 @@ public class ConsolePageParticipant implements IConsolePageParticipant {
 
 	@Override
 	public void deactivated() {
+
+	}
+
+	@Override
+	public void handleDebugEvents(DebugEvent[] events) {
+		for (DebugEvent e : events) {
+			if (e.getSource() == myConsole.getDebugTarget()) {
+				if (myConsole.getDebugTarget().isDisconnected()) {
+
+					reinstallAction.setEnabled(false);
+					stopAction.setEnabled(false);
+				}
+			}
+		}
 
 	}
 

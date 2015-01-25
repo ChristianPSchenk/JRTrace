@@ -61,7 +61,7 @@ public interface IJRTraceVM {
 	 */
 	boolean setSystemProperties(Properties props);
 
-	void runJava(File jarFile, String theClassLoader, String className,
+	boolean runJava(File jarFile, String theClassLoader, String className,
 			String methodName);
 
 	/**
@@ -72,11 +72,11 @@ public interface IJRTraceVM {
 	 *            be installed, e.g. classByteArray[0] -> the bytes of the first
 	 *            class to install
 	 */
-	void installEngineXClass(byte[][] classByteArray);
+	boolean installEngineXClass(byte[][] classByteArray);
 
 	void setLogLevel(int i);
 
-	void clearEngineX();
+	boolean clearEngineX();
 
 	boolean attach();
 

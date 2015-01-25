@@ -7,6 +7,8 @@ import java.io.File;
 
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
@@ -17,6 +19,7 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Display;
 
 import de.schenk.jrtrace.service.IJRTraceVM;
@@ -243,13 +246,42 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 	public void installJar(byte[] bytes) {
 
-		machine.installJar(bytes);
+		if (!machine.installJar(bytes)) {
+			disconnectAfterConnectionProblem();
+		}
 
 	}
 
 	public void runJava(File jarFile, String theClassLoader, String className,
 			String methodName) {
-		machine.runJava(jarFile, theClassLoader, className, methodName);
+		if (!machine.runJava(jarFile, theClassLoader, className, methodName)) {
+			disconnectAfterConnectionProblem();
+		}
+
+	}
+
+	private void disconnectAfterConnectionProblem() {
+
+		Display.getDefault().asyncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				ErrorDialog.openError(Display.getDefault().getActiveShell(),
+						"Connection Problem",
+						"The connection to the target machine " + pid
+								+ " is broken. Disconnecting from target.",
+						new Status(IStatus.ERROR,
+								de.schenk.jrtrace.ui.Activator.BUNDLE_ID,
+								"Connection to target lost."));
+
+			}
+
+		});
+		try {
+			disconnect();
+		} catch (DebugException e) {
+			throw new RuntimeException(e);
+		}
 
 	}
 
@@ -258,7 +290,9 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 		byte[][] classFileBytes = JarByteUtil
 				.convertJarToClassByteArray(jarFile);
-		machine.installEngineXClass(classFileBytes);
+		if (!machine.installEngineXClass(classFileBytes)) {
+			disconnectAfterConnectionProblem();
+		}
 
 	}
 

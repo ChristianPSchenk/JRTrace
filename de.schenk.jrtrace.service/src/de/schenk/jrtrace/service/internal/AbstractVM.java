@@ -29,6 +29,27 @@ import de.schenk.jrtrace.service.IJRTraceVM;
 abstract public class AbstractVM implements IJRTraceVM {
 
 	/**
+	 * Helper Type: implement the runnable and call safeRun to properly set the
+	 * error state.
+	 * 
+	 * @author Christiann Schenk
+	 *
+	 */
+	abstract class SafeVMRunnable implements Runnable {
+
+		final public boolean safeRun() {
+			try {
+				run();
+			} catch (Exception e) {
+				lastException = e;
+				return false;
+			}
+			return true;
+
+		}
+	}
+
+	/**
 	 * will hold the last exception that occured during calls
 	 */
 	protected Exception lastException;
@@ -77,31 +98,53 @@ abstract public class AbstractVM implements IJRTraceVM {
 	}
 
 	@Override
-	synchronized public void runJava(File jarFile, String theClassLoader,
-			String className, String methodName) {
-		theClassLoader = theClassLoader == null ? "" : theClassLoader;
-		if (className == null)
-			throw new IllegalArgumentException(
-					"className has to be provided for runJava");
-		if (methodName == null)
-			throw new IllegalArgumentException(
-					"methodName has to be provided for runJava");
+	synchronized public boolean runJava(final File jarFile,
+			final String theClassLoader, final String className,
+			final String methodName) {
+		return new SafeVMRunnable() {
 
-		mbeanProxy.runJava(jarFile.toString(), theClassLoader, className,
-				methodName);
+			@Override
+			public void run() {
+				String useClassloader = theClassLoader == null ? ""
+						: theClassLoader;
+				if (className == null)
+					throw new IllegalArgumentException(
+							"className has to be provided for runJava");
+				if (methodName == null)
+					throw new IllegalArgumentException(
+							"methodName has to be provided for runJava");
+
+				mbeanProxy.runJava(jarFile.toString(), useClassloader,
+						className, methodName);
+
+			}
+		}.safeRun();
 	}
 
 	@Override
-	synchronized public void installEngineXClass(byte[][] classBytes) {
-		mbeanProxy.installEngineXClass(classBytes);
+	synchronized public boolean installEngineXClass(final byte[][] classBytes) {
+
+		return new SafeVMRunnable() {
+
+			@Override
+			public void run() {
+				mbeanProxy.installEngineXClass(classBytes);
+
+			}
+		}.safeRun();
 
 	}
 
 	@Override
-	synchronized public void clearEngineX() {
+	synchronized public boolean clearEngineX() {
+		return new SafeVMRunnable() {
 
-		mbeanProxy.clearEngineX();
+			@Override
+			public void run() {
+				mbeanProxy.clearEngineX();
 
+			}
+		}.safeRun();
 	}
 
 	/**
