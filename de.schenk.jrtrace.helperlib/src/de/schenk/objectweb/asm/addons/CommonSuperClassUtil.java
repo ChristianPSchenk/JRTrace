@@ -207,7 +207,7 @@ public class CommonSuperClassUtil {
 		SuperClassExtractVisitor readSuperTypeVisitor = null;
 		InputStream stream = null;
 		try {
-			stream = getClassBytesStream(theType);
+			stream = ClassByteUtil.getClassBytesStream(theType, classLoader);
 
 			ClassReader reader = new ClassReader(stream);
 
@@ -224,26 +224,6 @@ public class CommonSuperClassUtil {
 					+ theType);
 		}
 		return readSuperTypeVisitor;
-	}
-
-	private InputStream getClassBytesStream(String theClassName) {
-		InputStream stream;
-		if (classLoader != null) {
-			stream = classLoader
-					.getResourceAsStream(convertInteralNameToResourceName(theClassName));
-		} else {
-			stream = ClassLoader
-					.getSystemResourceAsStream(convertInteralNameToResourceName(theClassName));
-
-		}
-
-		return stream;
-	}
-
-	private String convertInteralNameToResourceName(String type1) {
-		String result = type1;
-
-		return result + ".class";
 	}
 
 	public boolean getIsInterface(String internalName) {

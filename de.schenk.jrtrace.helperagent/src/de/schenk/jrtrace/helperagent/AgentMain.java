@@ -218,7 +218,6 @@ public class AgentMain {
 		synchronized (AgentMain.class) {
 			if (enginextransformer != null)
 				return;
-
 			enginextransformer = new EngineXClassFileTransformer();
 			instrumentation.addTransformer(enginextransformer, true);
 

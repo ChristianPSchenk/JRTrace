@@ -53,8 +53,15 @@ public class JRTraceConnectToLaunchedAgentTest {
 	}
 
 	private void attachToMachineAndInstallTestProcessInstrumenter(
-			IJRTraceVM theMachine) throws IOException {
-		assertTrue(theMachine.attach());
+			IJRTraceVM theMachine) throws IOException, InterruptedException {
+		boolean result = false;
+		for (int i = 0; i < 10; i++) {
+			result = theMachine.attach();
+			if (result)
+				break;
+			Thread.sleep(100);
+		}
+		assertTrue(result);
 		assertNotNull(theMachine);
 
 		File theClass = TestUtils
@@ -74,7 +81,17 @@ public class JRTraceConnectToLaunchedAgentTest {
 		port = javaUtil.launchJavaProcessWithAgent(tempFile.getAbsolutePath());
 		IJRTraceVM mach = bmController.getMachine(port, null);
 
-		assertTrue(mach.attach());
+		boolean result = false;
+		for (int i = 0; i < 10; i++) {
+			result = mach.attach();
+			if (result)
+				break;
+			Thread.sleep(100);
+		}
+		Exception lastException = mach.getLastError();
+		if (lastException != null)
+			lastException.printStackTrace();
+		assertTrue(result);
 
 		assertTrue(mach.detach());
 

@@ -251,7 +251,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 
 	@Override
 	synchronized public boolean attach() {
-		return attach(null);
+		return attach(new DummyCancelable());
 	}
 
 	synchronized public boolean installJar(byte[] jar) {

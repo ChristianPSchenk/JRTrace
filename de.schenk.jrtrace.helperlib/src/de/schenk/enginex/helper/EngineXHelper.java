@@ -141,7 +141,8 @@ public class EngineXHelper {
 	 */
 	private static void retransformClasses(Set<Class<?>> modifiableClasses) {
 
-		Instrumentation inst2 = InstrumentationUtil.getInstrumentation();
+		Instrumentation instrumentation = InstrumentationUtil
+				.getInstrumentation();
 
 		if (modifiableClasses.size() > 0) {
 			NotificationUtil.sendProgressNotification(String.format(
@@ -157,10 +158,23 @@ public class EngineXHelper {
 					break;
 				try {
 
-					inst2.retransformClasses(m);
+					instrumentation.retransformClasses(m);
 
-					// inst.retransformClasses(modifiableClasses
-					// .toArray(new Class<?>[modifiableClasses.size()]));
+					/*
+					 * just a try to use redefine instead of retransform / but
+					 * doesn't improve the behaviour byte[] classBytes =
+					 * ClassByteUtil.getBytes(m); if (classBytes == null )
+					 * 
+					 * { JRLog.debug(
+					 * "It was not possible to get the class byte[] for class "
+					 * + m.getName() +
+					 * ". Only retransforming. Existing class instances will not be instrumented"
+					 * );
+					 * 
+					 * } else { ClassDefinition def = new ClassDefinition(m,
+					 * classBytes); instrumentation.redefineClasses(def); }
+					 */
+
 				} catch (Throwable e) {
 					// just print an error on the console for now about not
 					// being instrumented

@@ -605,15 +605,16 @@ public class EngineXMethodVisitor extends AdviceAdapter {
 			}
 		}
 		Type[] targetArgumentTypes = m.getArgumentTypes();
+		if (injectionSource - 1 >= targetArgumentTypes.length) {
+			fatal(injectedMethod,
+					String.format(
+							"There is no argument at position %d on method %s of class %s that can be injected with @Param.",
+							injectionSource, targetMethodName, EngineXNameUtil
+									.getExternalName(classVisitor
+											.getClassName())));
+		}
 		for (int j = 0; j < injectionSource - 1; j++) {
-			if (j >= targetArgumentTypes.length) {
-				fatal(injectedMethod,
-						String.format(
-								"There is no argument at position %d on method %s of class %s that can be injected with @Param.",
-								injectionSource, targetMethodName,
-								EngineXNameUtil.getExternalName(classVisitor
-										.getClassName())));
-			}
+
 			pos += targetArgumentTypes[j].getSize();
 
 		}
