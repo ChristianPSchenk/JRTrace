@@ -84,7 +84,6 @@ public class EngineXMetadata {
 
 	}
 
-	
 	public List<EngineXMethodMetadata> getMethods() {
 
 		return methods;
@@ -153,7 +152,8 @@ public class EngineXMetadata {
 		if (!getDerived()) {
 			return mayMatchClassName(className);
 		}
-		boolean result = mayMatchClassName(className)  || mayMatchClassHierarchy(superclass);
+		boolean result = mayMatchClassName(className)
+				|| mayMatchClassHierarchy(superclass);
 		if (result)
 			return true;
 		for (Class<?> iface : interfaces) {
@@ -242,7 +242,8 @@ public class EngineXMetadata {
 
 	XClassLoaderPolicy classLoaderPolicy = XClassLoaderPolicy.BOOT;
 	private boolean useRegex;
-  private HashSet<String> excludedClasses=new HashSet<String>();
+	private HashSet<String> excludedClasses = new HashSet<String>();
+	private int classVersion;
 
 	public XClassLoaderPolicy getClassLoaderPolicy() {
 		return classLoaderPolicy;
@@ -276,46 +277,60 @@ public class EngineXMetadata {
 		return getExternalClassName();
 	}
 
-  /**
-   * 
-   * 
-   * @param methodName
-   * @return the metadata of the specified method or null if the injection class doesn't contain a method with this name
-   */
-  public EngineXMethodMetadata getMethod(String methodName) {
-    for(EngineXMethodMetadata m: methods)
-    {
-      if(m.getMethodName().equals(methodName))
-      { return m; }
-    }
-    return null;
-  }
+	/**
+	 * 
+	 * 
+	 * @param methodName
+	 * @return the metadata of the specified method or null if the injection
+	 *         class doesn't contain a method with this name
+	 */
+	public EngineXMethodMetadata getMethod(String methodName) {
+		for (EngineXMethodMetadata m : methods) {
+			if (m.getMethodName().equals(methodName)) {
+				return m;
+			}
+		}
+		return null;
+	}
 
-  public void addExcludedClass(String exclude)
-  {
-    excludedClasses.add(exclude);
-  }
-  /**
-   * @return the set of regular expressions that excludes classes from instrumentation
-   */
-  public Set<String> getExcludedClasses() {
-   
-    return excludedClasses;
-  }
+	public void addExcludedClass(String exclude) {
+		excludedClasses.add(exclude);
+	}
 
-  /**
-   * 
-   * Checks whether a class of name classname is excluded from instrumentation via the {@link XClass#exclude} attribute
-   * @param classname
-   * @return true, if this class is excludes.
-   */
-  public boolean excludesClass(String classname) {
-	if(classname==null) return false;
-    for(String excludePattern: getExcludedClasses())
-    {
-      if(classname.matches(excludePattern)) return true;
-    }
-    return false;
-  }
+	/**
+	 * @return the set of regular expressions that excludes classes from
+	 *         instrumentation
+	 */
+	public Set<String> getExcludedClasses() {
+
+		return excludedClasses;
+	}
+
+	/**
+	 * 
+	 * Checks whether a class of name classname is excluded from instrumentation
+	 * via the {@link XClass#exclude} attribute
+	 * 
+	 * @param classname
+	 * @return true, if this class is excludes.
+	 */
+	public boolean excludesClass(String classname) {
+		if (classname == null)
+			return false;
+		for (String excludePattern : getExcludedClasses()) {
+			if (classname.matches(excludePattern))
+				return true;
+		}
+		return false;
+	}
+
+	public int getClassVersion() {
+		return classVersion;
+	}
+
+	public void setClassVersion(int version) {
+		this.classVersion = version;
+
+	}
 
 }

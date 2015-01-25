@@ -80,13 +80,6 @@ public class EngineXHelper {
 		return o.getEngineXClass(classLoader);
 	}
 
-	public static void addEngineXClass(EngineXMetadata metadata) {
-
-		List<EngineXMetadata> list = new ArrayList<EngineXMetadata>();
-		list.add(metadata);
-		addEngineXClass(list);
-	}
-
 	public static void addEngineXClass(List<EngineXMetadata> metadatalist) {
 
 		Set<Class<?>> modifiableClasses = clearEngineXTransformationMap();

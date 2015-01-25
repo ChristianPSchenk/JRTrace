@@ -199,12 +199,13 @@ public class EngineXAnnotationReaderTest {
 		public void instr() {
 		}
 
-		@XMethod(names = "methoda", modifier = XModifier.PRIVATE)
+		@XMethod(names = "methoda", modifier = { XModifier.PRIVATE,
+				XModifier.NOT_PROTECTED })
 		public void instr2() {
 		}
 
 		@XMethod(names = "methoda", modifier = { XModifier.NOT_PUBLIC,
-				XModifier.FINAL })
+				XModifier.NOT_PROTECTED, XModifier.FINAL })
 		public void instr3() {
 		}
 
@@ -216,8 +217,12 @@ public class EngineXAnnotationReaderTest {
 	}
 
 	class QualifierMatch {
+		protected void methoda(String x) {
+		};
+
 		final public void methoda() {
 		};
+
 	}
 
 	@Test

@@ -197,7 +197,9 @@ public class EngineXMethodMetadata {
 				int modifiers;
 				if (mayMatchParameters(ptypesStrings)) {
 					modifiers = theMethod.getModifiers();
-					return mayMatchModifier(modifiers);
+					boolean modifierresult = mayMatchModifier(modifiers);
+					if (modifierresult)
+						return modifierresult;
 				}
 			}
 		}

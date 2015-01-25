@@ -12,6 +12,7 @@ import java.util.List;
 
 import de.schenk.enginex.helper.EngineXHelper;
 import de.schenk.enginex.helper.EngineXMetadata;
+import de.schenk.enginex.helper.NotificationUtil;
 import de.schenk.jrtrace.helperagent.EngineXAnnotationReader;
 
 public class InstallEngineXCommand {
@@ -32,15 +33,40 @@ public class InstallEngineXCommand {
 		List<EngineXMetadata> mdlist = new ArrayList<EngineXMetadata>();
 		for (int i = 0; i < jarFileBytes.length; i++) {
 			EngineXMetadata md = createMetadata(jarFileBytes[i]);
-			mdlist.add(md);
+			if (md != null) {
+				mdlist.add(md);
+			}
 		}
 		EngineXHelper.addEngineXClass(mdlist);
 
 	}
 
+	/**
+	 * 
+	 * @param enginexclassbytes
+	 *            the jrtrace class
+	 * @return the metadata structure extracted from the annotations or null if
+	 *         there is a severe error.
+	 */
 	public EngineXMetadata createMetadata(byte[] enginexclassbytes) {
 		EngineXMetadata metadata = annotationReader
 				.getMetaInformation(enginexclassbytes);
+
+		String version = System.getProperty("java.version");
+		int maxClassFileVersion = 52;
+		if (version.startsWith("1.7")) {
+			maxClassFileVersion = 51;
+		}
+		if (metadata.getClassVersion() > maxClassFileVersion) {
+			NotificationUtil
+					.sendProblemNotification(
+							String.format(
+									"The JRTrace class has classfile version %d. But a the target JVM is version %s and supports a maximum of classfile version %d.",
+									metadata.getClassVersion(), version,
+									maxClassFileVersion), metadata
+									.getExternalClassName(), null, null);
+			return null;
+		}
 
 		return metadata;
 	}

@@ -15,8 +15,8 @@ import de.schenk.jrtrace.annotations.XInvokeReturn;
 import de.schenk.jrtrace.annotations.XInvokeThis;
 import de.schenk.jrtrace.annotations.XLocation;
 import de.schenk.jrtrace.annotations.XMethod;
-import de.schenk.jrtrace.annotations.XParam;
 import de.schenk.jrtrace.annotations.XModifier;
+import de.schenk.jrtrace.annotations.XParam;
 import de.schenk.jrtrace.annotations.XReturn;
 import de.schenk.jrtrace.annotations.XThis;
 import de.schenk.objectweb.asm.AnnotationVisitor;
@@ -307,6 +307,7 @@ public class EngineXAnnotationReader {
 		public void visit(int version, int access, String name,
 				String signature, String superName, String[] interfaces) {
 			md.setClassName(name);
+			md.setClassVersion(version);
 			super.visit(version, access, name, signature, superName, interfaces);
 		}
 
