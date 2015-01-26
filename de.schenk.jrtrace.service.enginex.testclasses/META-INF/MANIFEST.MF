@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Testclasses
 Bundle-SymbolicName: de.schenk.jrtrace.service.enginex.testclasses
-Bundle-Version: 1.0.4.qualifier
+Bundle-Version: 1.0.8.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: de.schenk.jrtrace.enginex.testclasses
 Require-Bundle: de.schenk.jrtrace.helperagent,
