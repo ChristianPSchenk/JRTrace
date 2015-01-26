@@ -25,8 +25,8 @@ import javax.management.remote.JMXConnectorServer;
 import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
 
-import de.schenk.jrtrace.helper.JRTraceHelper;
 import de.schenk.jrtrace.helper.InstrumentationUtil;
+import de.schenk.jrtrace.helper.JRTraceHelper;
 import de.schenk.jrtrace.helper.NotificationUtil;
 import de.schenk.jrtrace.helperagent.internal.JRTraceMXBeanImpl;
 import de.schenk.jrtrace.helperlib.JRLog;
@@ -41,8 +41,6 @@ public class AgentMain {
 	public static final String AGENT_READY = "READY";
 
 	public static AgentMain theAgent = null;
-
-	private static Instrumentation instrumentation;
 
 	private JRTraceMXBeanImpl jrtraceBean;
 
@@ -63,17 +61,16 @@ public class AgentMain {
 		JRLog.debug(String.format(
 				"JRTrace Agent launched port:%d on network interface: %s",
 				port, server == null ? "<auto>" : server));
-		InstrumentationUtil.setInstrumentation(inst);
-		AgentMain.instrumentation = inst;
+
 		if (theAgent != null) {
 			theAgent.stop(false);
 			theAgent = null;
 		}
-		if (theAgent == null) {
-			theAgent = new AgentMain();
-			theAgent.start(port, server);
 
-		}
+		InstrumentationUtil.setInstrumentation(inst);
+
+		theAgent = new AgentMain();
+		theAgent.start(port, server);
 
 	}
 
@@ -219,7 +216,8 @@ public class AgentMain {
 			if (enginextransformer != null)
 				return;
 			enginextransformer = new JRTraceClassFileTransformer();
-			instrumentation.addTransformer(enginextransformer, true);
+			InstrumentationUtil.getInstrumentation().addTransformer(
+					enginextransformer, true);
 
 			redirectStandardOut(true);
 
@@ -257,7 +255,8 @@ public class AgentMain {
 			redirectStandardOut(false);
 
 			if (enginextransformer != null)
-				instrumentation.removeTransformer(enginextransformer);
+				InstrumentationUtil.getInstrumentation().removeTransformer(
+						enginextransformer);
 			enginextransformer = null;
 
 			theAgent = null;
@@ -279,7 +278,8 @@ public class AgentMain {
 	}
 
 	public void appendToBootstrapClassLoaderSearch(JarFile jarFile) {
-		instrumentation.appendToBootstrapClassLoaderSearch(jarFile);
+		InstrumentationUtil.getInstrumentation()
+				.appendToBootstrapClassLoaderSearch(jarFile);
 
 	}
 

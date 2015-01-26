@@ -28,7 +28,12 @@ public class JRTraceConnectingImpl extends AbstractVM {
 
 	@Override
 	public String getPID() {
-		return String.format("Connected on port: %d", port);
+		return String.format("%s:%d", targetmachine == null ? "localhost"
+				: targetmachine, port);
+	}
+
+	public String toString() {
+		return "Connection to " + getPID();
 	}
 
 }

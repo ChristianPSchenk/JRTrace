@@ -235,7 +235,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 	@Override
 	public String getName() throws DebugException {
 
-		return machine.getPID();
+		return machine.toString();
 	}
 
 	@Override
