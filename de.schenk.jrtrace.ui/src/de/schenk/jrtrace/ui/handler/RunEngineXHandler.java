@@ -14,6 +14,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -42,8 +43,16 @@ public class RunEngineXHandler extends AbstractHandler implements IHandler {
 	}
 
 	static public void installJRTraceJar(IProject c) {
-		File jarFile = JarUtil.createJar(c, PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getShell());
+		Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+		if (shell == null) {
+			Shell[] allShells = PlatformUI.getWorkbench().getDisplay()
+					.getShells();
+			if (allShells.length == 0)
+				throw new RuntimeException("ups, no shell");
+			shell = allShells[0];
+
+		}
+		File jarFile = JarUtil.createJar(c, shell);
 
 		List<JRTraceDebugTarget> jrtraceTargets = JRTraceLaunchUtils
 				.getJRTraceDebugTargets();

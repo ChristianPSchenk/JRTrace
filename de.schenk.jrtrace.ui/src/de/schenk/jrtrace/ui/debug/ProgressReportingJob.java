@@ -53,6 +53,7 @@ abstract public class ProgressReportingJob extends Job implements
 
 	@Override
 	public void handleNotification(Notification notification, Object handback) {
+
 		AttributeChangeNotification a = (AttributeChangeNotification) notification;
 		Integer current = (Integer) a.getOldValue();
 		Integer total = (Integer) a.getNewValue();

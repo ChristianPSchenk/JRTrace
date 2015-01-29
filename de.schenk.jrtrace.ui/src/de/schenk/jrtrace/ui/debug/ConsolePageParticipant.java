@@ -1,6 +1,10 @@
 package de.schenk.jrtrace.ui.debug;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -42,13 +46,33 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 			@Override
 			public void run() {
 
-				JRTraceDebugTarget target = myConsole.getDebugTarget();
+				final JRTraceDebugTarget target = myConsole.getDebugTarget();
+
+				String name;
+				try {
+					name = target.getName();
+				} catch (DebugException e1) {
+					throw new RuntimeException(e1);
+				}
+
 				if (!target.isDisconnected() && !target.isTerminated()) {
-					try {
-						target.terminate();
-					} catch (DebugException e) {
-						throw new RuntimeException(e);
-					}
+					Job terminateJob = new Job("Terminating connection " + name) {
+
+						@Override
+						protected IStatus run(IProgressMonitor monitor) {
+							try {
+								target.terminate();
+							} catch (DebugException e) {
+								throw new RuntimeException(e);
+							}
+							return Status.OK_STATUS;
+						}
+
+					};
+
+					terminateJob.setSystem(true);
+					terminateJob.schedule();
+
 				}
 			}
 

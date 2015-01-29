@@ -19,7 +19,7 @@ import javax.management.NotificationListener;
 public interface IJRTraceVM {
 
 	/**
-	 * detaches from the virtual machine. Reconnection is not supported
+	 * detaches from the virtual machine.
 	 * 
 	 * @return true if detach was successful. False if error.
 	 */

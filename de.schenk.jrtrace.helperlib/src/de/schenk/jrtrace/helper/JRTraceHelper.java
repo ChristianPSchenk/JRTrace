@@ -211,13 +211,9 @@ public class JRTraceHelper {
 	}
 
 	public static void clearEngineX() {
+		JRLog.debug(String.format("Clearing JRTrace classes"));
 
-		Set<Class<?>> objects = clearEngineXTransformationMap();
-
-		JRLog.debug(String.format("Clear retransform of %d classes.",
-				objects.size()));
-		retransformClasses(objects);
-
+		addEngineXClass(new ArrayList<JRTraceClassMetadata>());
 	}
 
 	/**
