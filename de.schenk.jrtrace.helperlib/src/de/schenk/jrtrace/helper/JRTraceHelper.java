@@ -20,6 +20,11 @@ public class JRTraceHelper {
 	public static final Object lock = new Object();
 
 	/**
+	 * keep track of the classes that have been transformed.
+	 */
+	private static Map<String, Set<ClassLoader>> transformedClassesMap = new HashMap<String, Set<ClassLoader>>();
+
+	/**
 	 * stores the information for a specific EngineX class keyed on the external
 	 * name
 	 */
@@ -145,14 +150,23 @@ public class JRTraceHelper {
 					modifiableClasses.size()));
 			int i = 0;
 			long last = System.currentTimeMillis();
+			Set<Class<?>> remaining = new HashSet<Class<?>>();
+			remaining.addAll(modifiableClasses);
 			for (Class<?> m : modifiableClasses) {
 				i++;
-				if (checkAborted())
+				if (checkAborted()) {
+					synchronized (lock) {
+						for (Class<?> remainingClass : remaining) {
+							setTransformed(remainingClass);
+
+						}
+					}
 					break;
+				}
 				try {
 
 					instrumentation.retransformClasses(m);
-
+					remaining.remove(m);
 					/*
 					 * just a try to use redefine instead of retransform / but
 					 * doesn't improve the behaviour byte[] classBytes =
@@ -188,6 +202,12 @@ public class JRTraceHelper {
 				last = System.currentTimeMillis();
 			}
 		}
+	}
+
+	private static void setTransformed(Class<?> remainingClass) {
+		setTransformed(remainingClass.getName(),
+				remainingClass.getClassLoader());
+
 	}
 
 	/**
@@ -255,11 +275,6 @@ public class JRTraceHelper {
 		}
 		return objects;
 	}
-
-	/**
-	 * keep track of the classes that have been transformed.
-	 */
-	private static Map<String, Set<ClassLoader>> transformedClassesMap = new HashMap<String, Set<ClassLoader>>();
 
 	public static void setTransformed(String className, ClassLoader classLoader) {
 

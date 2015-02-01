@@ -74,6 +74,11 @@ public interface IJRTraceVM {
 	 */
 	boolean installEngineXClass(byte[][] classByteArray);
 
+	/**
+	 * set the agents log level. Levels defined in JRLog constants.
+	 * 
+	 * @param level
+	 */
 	void setLogLevel(int i);
 
 	boolean clearEngineX();
