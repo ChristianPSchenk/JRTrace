@@ -9,10 +9,11 @@ import java.lang.invoke.MethodType;
 import java.util.List;
 
 import de.schenk.jrtrace.annotations.XLocation;
-import de.schenk.jrtrace.helper.JRTraceMethodMetadata;
-import de.schenk.jrtrace.helper.JRTraceNameUtil;
 import de.schenk.jrtrace.helper.Injection;
 import de.schenk.jrtrace.helper.Injection.InjectionType;
+import de.schenk.jrtrace.helper.JRTraceHelper;
+import de.schenk.jrtrace.helper.JRTraceMethodMetadata;
+import de.schenk.jrtrace.helper.JRTraceNameUtil;
 import de.schenk.jrtrace.helper.NotificationUtil;
 import de.schenk.jrtrace.helperagent.FieldList.FieldEntry;
 import de.schenk.jrtrace.helperlib.JRLog;
@@ -571,7 +572,7 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 	private void createVirtualDynamicInvoke(JRTraceMethodMetadata injectedMethod) {
 		MethodType mt = MethodType.methodType(CallSite.class,
 				MethodHandles.Lookup.class, String.class, MethodType.class,
-				String.class, String.class, String.class);
+				String.class, int.class, String.class, String.class);
 		Handle bootstrap = new Handle(Opcodes.H_INVOKESTATIC,
 				"de/schenk/jrtrace/helper/DynamicBinder", "bindEngineXMethods",
 				mt.toMethodDescriptorString());
@@ -581,7 +582,8 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 		mv.visitInvokeDynamicInsn(injectedMethod.getMethodName(),
 				injectedMethod.getDescriptor(), bootstrap, injectedMethod
 						.getClassMetadata().getExternalClassName(),
-				injectedMethod.getMethodName(), injectedMethod.getDescriptor());
+				JRTraceHelper.getCurrentClassSetId(), injectedMethod
+						.getMethodName(), injectedMethod.getDescriptor());
 	}
 
 	private int getLocalVariablePosition(JRTraceMethodMetadata injectedMethod,

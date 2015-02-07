@@ -7,6 +7,9 @@ public class ReinstallBaseClass {
 	}
 
 	public int call(int a) {
-		return a * a;
+		int b = a;
+		for (int i = 0; i < 100; i++)
+			b += a;
+		return b;
 	}
 }

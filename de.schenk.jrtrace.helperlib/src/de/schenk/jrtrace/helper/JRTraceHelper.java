@@ -26,24 +26,51 @@ public class JRTraceHelper {
 
 	/**
 	 * stores the information for a specific EngineX class keyed on the external
-	 * name
+	 * name for the current (currentCacheId) set of jrtrace classes
 	 */
-	static Map<String, JRTraceClassAndObjectCache> classCache = new HashMap<String, JRTraceClassAndObjectCache>();
+	static JRTraceClassStore classStore = new JRTraceClassStore();
 
-	// static Class<?> mainClass;
-
-	// static private Map<String, JRTraceClassMetadata> enginexclasses = new
-	// HashMap<String, JRTraceClassMetadata>();
+	/**
+	 * Whenever a set of JRTrace classes is installed, this set forms a
+	 * consistent set of classes that work together and are stored in the
+	 * classStore. The currentCacheId is identifies one such set. The
+	 * instrumentation includes the current id into the transformed classes and
+	 * it will be used for lookup during call site binding (see DynamicBinder).
+	 * This id gives the engine the possibility to distinguish between
+	 * instrumented classes from an OLD set of JRTrace classes (and bind to the
+	 * old classes which are stored in previousClassCache) and the new
+	 * set/current set of classes which will bind to the NEW set of JRTrace
+	 * classes. This mechanism makes it possible to have only ONE
+	 * retransformation run to replace a set of JRTrace classes by a new set.
+	 * (The alternative would be: first remove the old instrumentation
+	 * completely. Then reinstall the new set of classes. Basically this would
+	 * double the transformation time during reinstallation)
+	 * 
+	 * A note on incremental behaviour: assume there are two JRTrace classes:
+	 * one injects into many target classes, a second into only a few. If the
+	 * second is changed, it would be nice to retransform only the classes that
+	 * are affected by the second JRTrace class. This will be difficult to
+	 * implement , because structural changes (adding methods/removing methods)
+	 * to JRTrace classes will require the use of a new classloader. However
+	 * unchanged JRTrace classes that use the same classloader must keep the old
+	 * classloader (because the classes are not retransformed, thus the old
+	 * classloader needs to be used). Thus for each target classloader a new
+	 * classloader has to be created for the new class that delegates to the old
+	 * ones. Potentially the number of classloaders accumulates after some
+	 * cycles. So basically this would complicate the whole runtime behaviour a
+	 * lot and won't be implemented unless absolutely necessary.
+	 * 
+	 * 
+	 * 
+	 */
+	static int currentCacheId = 0;
 
 	public static Collection<JRTraceClassMetadata> getEngineXClasses() {
 		synchronized (lock) {
-			Collection<JRTraceClassAndObjectCache> values = classCache.values();
-			ArrayList<JRTraceClassMetadata> result = new ArrayList<JRTraceClassMetadata>();
-			for (JRTraceClassAndObjectCache value : values) {
-				result.add(value.getMetadata());
-			}
-			return result;
+			return classStore.getAllForId(currentCacheId);
+
 		}
+
 	}
 
 	/**
@@ -51,15 +78,15 @@ public class JRTraceHelper {
 	 * obtain the proper jrtrace class to inject
 	 * 
 	 * @param enginexclass
+	 * @param cacheId
+	 *            the id of the current set of jrtrace classes.
 	 * @param classLoader
 	 * @return the object
 	 */
-	public static Object getEngineXObject(String enginexclass,
+	public static Object getEngineXObject(String enginexclass, int cacheId,
 			ClassLoader classLoader) {
-		JRTraceClassAndObjectCache o;
-		synchronized (lock) {
-			o = classCache.get(enginexclass);
-		}
+		JRTraceClassAndObjectCache o = getJRTraceClassAndObjectCache(
+				enginexclass, cacheId);
 		return o.getObject(classLoader);
 	}
 
@@ -67,6 +94,8 @@ public class JRTraceHelper {
 	 * 
 	 * @param enginexclass
 	 *            the name of an enginex class
+	 * @param cacheId
+	 *            the id of the set of JRTrace classes that this refers to.
 	 * @param classLoader
 	 *            the classloader of the class that triggered the class loading
 	 * @return the Class<?> object, if exactly one class can be identified.
@@ -74,25 +103,37 @@ public class JRTraceHelper {
 	 *         classloaders) or none (e.g. because a named classloader has not
 	 *         been loaded yet)
 	 */
-	public static Class<?> getEngineXClass(String enginexclass,
+	public static Class<?> getEngineXClass(String enginexclass, int cacheId,
 			ClassLoader classLoader) {
 		JRTraceClassAndObjectCache o;
-		synchronized (lock) {
-			o = classCache.get(enginexclass);
-		}
+		o = getJRTraceClassAndObjectCache(enginexclass, cacheId);
 		if (o == null)
 			return null;
 		return o.getEngineXClass(classLoader);
 	}
 
-	public static void addEngineXClass(List<JRTraceClassMetadata> metadatalist) {
+	private static JRTraceClassAndObjectCache getJRTraceClassAndObjectCache(
+			String enginexclass, int cacheId) {
 
-		Set<Class<?>> modifiableClasses = clearEngineXTransformationMap();
+		synchronized (lock) {
+			return classStore.get(cacheId, enginexclass);
+
+		}
+
+	}
+
+	public static void addEngineXClass(List<JRTraceClassMetadata> metadatalist) {
+		Set<Class<?>> modifiableClasses = null;
 		long start = System.nanoTime();
 		synchronized (lock) {
+
+			modifiableClasses = clearEngineXTransformationMap();
+
 			for (JRTraceClassMetadata metadata : metadatalist) {
-				classCache.put(metadata.getExternalClassName(),
-						new JRTraceClassAndObjectCache(metadata));
+				classStore
+						.put(currentCacheId, metadata.getExternalClassName(),
+								new JRTraceClassAndObjectCache(metadata,
+										currentCacheId));
 			}
 		}
 		Collection<JRTraceClassMetadata> currentenginex = getEngineXClasses();
@@ -121,6 +162,7 @@ public class JRTraceHelper {
 		}
 
 		retransformClasses(modifiableClasses);
+
 		long ende = System.nanoTime();
 		JRLog.debug(String.format(
 				"JRTraceHelper.addEngineXClass() took %d ms.",
@@ -167,6 +209,7 @@ public class JRTraceHelper {
 
 					instrumentation.retransformClasses(m);
 					remaining.remove(m);
+
 					/*
 					 * just a try to use redefine instead of retransform / but
 					 * doesn't improve the behaviour byte[] classBytes =
@@ -240,6 +283,9 @@ public class JRTraceHelper {
 	 * Will clear the list of all registered transfomrations and done
 	 * instrumentations (without actually retransforming them)
 	 * 
+	 * Clears the current classStore and provides a new id for the classset to
+	 * be installed.
+	 * 
 	 * 
 	 * @return the list of all classes that have been instrumented by the
 	 *         removed jrtrace classes
@@ -250,9 +296,8 @@ public class JRTraceHelper {
 		Map<String, Set<ClassLoader>> copyOfTransformed = null;
 		synchronized (lock) {
 
-			classCache.clear();
-			JRTraceClassLoaderRegistry.getInstance().clear();
-
+			JRTraceClassLoaderRegistry.getInstance(currentCacheId).clear();
+			currentCacheId++;
 			copyOfTransformed = new HashMap<String, Set<ClassLoader>>();
 			copyOfTransformed.putAll(transformedClassesMap);
 			transformedClassesMap.clear();
@@ -301,6 +346,12 @@ public class JRTraceHelper {
 		boolean returnvalue = abortFlagSet;
 		abortFlagSet = false;
 		return returnvalue;
+	}
+
+	public static int getCurrentClassSetId() {
+		synchronized (lock) {
+			return currentCacheId;
+		}
 	}
 
 }

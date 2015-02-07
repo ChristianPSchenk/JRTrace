@@ -15,9 +15,11 @@ public class JRTraceClassAndObjectCache {
 	private JRTraceClassMetadata metadata;
 	private Map<ClassLoader, Class<?>> classCache = new HashMap<ClassLoader, Class<?>>();
 	private Map<ClassLoader, Object> objectCache = new HashMap<ClassLoader, Object>();
+	private int cacheId;
 
-	public JRTraceClassAndObjectCache(JRTraceClassMetadata metadata) {
-
+	public JRTraceClassAndObjectCache(JRTraceClassMetadata metadata,
+			int currentCacheId) {
+		this.cacheId = currentCacheId;
 		this.metadata = metadata;
 
 	}
@@ -40,7 +42,7 @@ public class JRTraceClassAndObjectCache {
 		if (!contained) {
 
 			JRTraceClassLoader enginexclassloader = JRTraceClassLoaderRegistry
-					.getInstance().getClassLoader(classLoader);
+					.getInstance(cacheId).getClassLoader(classLoader);
 			enginexclassloader.addMetadata(metadata);
 			Class<?> mainClass = null;
 

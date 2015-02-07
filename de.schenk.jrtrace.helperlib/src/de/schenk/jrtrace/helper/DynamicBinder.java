@@ -23,7 +23,7 @@ public class DynamicBinder {
 			Class<?> o = Class.forName(
 					"de.schenk.jrtrace.helper.JRTraceHelper", false, null);
 
-			method = o.getMethod("getEngineXObject", String.class,
+			method = o.getMethod("getEngineXObject", String.class, int.class,
 					ClassLoader.class);
 
 		} catch (ClassNotFoundException e) {
@@ -38,16 +38,18 @@ public class DynamicBinder {
 
 	public static CallSite bindEngineXMethods(MethodHandles.Lookup caller,
 			String name, MethodType type, String enginexclass,
-			String enginexmethodname, String enginexmethoddescriptor)
-			throws NoSuchMethodException, IllegalAccessException {
+			int jrtraceClasssetId, String enginexmethodname,
+			String enginexmethoddescriptor) throws NoSuchMethodException,
+			IllegalAccessException {
 
 		initHelper();
 		MethodHandles.Lookup lookup = MethodHandles.lookup();
 
 		Object object;
 		try {
-			object = method.invoke(null, enginexclass, caller.lookupClass()
-					.getClassLoader());
+
+			object = method.invoke(null, enginexclass, jrtraceClasssetId,
+					caller.lookupClass().getClassLoader());
 		} catch (IllegalArgumentException | InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}
@@ -61,7 +63,7 @@ public class DynamicBinder {
 			enginexMethod = lookup.bind(object, enginexmethodname, MethodType
 					.fromMethodDescriptorString(enginexmethoddescriptor, caller
 							.lookupClass().getClassLoader()));
-		} catch (IllegalAccessException e) {
+		} catch (IllegalAccessException | NoSuchMethodException e) {
 
 			NotificationUtil
 					.sendProblemNotification(
@@ -71,10 +73,8 @@ public class DynamicBinder {
 							enginexmethodname, enginexmethoddescriptor);
 			e.printStackTrace();
 		}
-		// System.out.println("bootstrapping " + lookup.getClass().toString()
-		// + " to " + enginexclass + " / " + enginexmethodname);
+
 		return new ConstantCallSite(enginexMethod.asType(type));
 
 	}
-
 }

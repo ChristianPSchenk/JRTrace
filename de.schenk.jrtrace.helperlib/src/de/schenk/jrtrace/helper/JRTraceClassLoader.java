@@ -21,9 +21,11 @@ import java.util.Map;
 public class JRTraceClassLoader extends ClassLoader {
 
 	private Map<String, JRTraceClassMetadata> entries = new HashMap<String, JRTraceClassMetadata>();
+	private int classSetId;
 
-	public JRTraceClassLoader(ClassLoader classLoader) {
+	public JRTraceClassLoader(ClassLoader classLoader, int jrtraceClassSetId) {
 		super(classLoader);
+		this.classSetId = jrtraceClassSetId;
 
 	}
 
@@ -35,7 +37,8 @@ public class JRTraceClassLoader extends ClassLoader {
 			return defineClass(entry.getExternalClassName(),
 					entry.getClassBytes(), 0, entry.getClassBytes().length);
 		}
-		Class<?> c = JRTraceHelper.getEngineXClass(className, getParent());
+		Class<?> c = JRTraceHelper.getEngineXClass(className, classSetId,
+				getParent());
 		if (c != null)
 			return c;
 		throw new ClassNotFoundException(className);

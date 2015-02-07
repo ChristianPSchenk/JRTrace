@@ -13,8 +13,8 @@ import java.security.ProtectionDomain;
 import java.util.Collection;
 import java.util.List;
 
-import de.schenk.jrtrace.helper.JRTraceHelper;
 import de.schenk.jrtrace.helper.JRTraceClassMetadata;
+import de.schenk.jrtrace.helper.JRTraceHelper;
 import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.objectweb.asm.ClassReader;
 import de.schenk.objectweb.asm.ClassVisitor;
@@ -34,8 +34,12 @@ public class JRTraceClassFileTransformer implements ClassFileTransformer {
 
 		byte[] oldBytes = classBytes;
 		boolean transformed = false;
-		Collection<JRTraceClassMetadata> allEngineXClasses = JRTraceHelper
-				.getEngineXClasses();
+		Collection<JRTraceClassMetadata> allEngineXClasses = null;
+		int id = 0;
+		synchronized (JRTraceHelper.lock) {
+			allEngineXClasses = JRTraceHelper.getEngineXClasses();
+			id = JRTraceHelper.getCurrentClassSetId();
+		}
 
 		Class<?> superClass = null;
 		Class<?>[] interfaces = null;
@@ -60,16 +64,14 @@ public class JRTraceClassFileTransformer implements ClassFileTransformer {
 
 		for (JRTraceClassMetadata entry : allEngineXClasses) {
 			try {
-			  String cname = className == null ? null : Type.getType(
-                  "L" + className + ";").getClassName();
-			    if(entry.excludesClass(cname))
-			    {
-			      continue;
-			    }
-			  
+				String cname = className == null ? null : Type.getType(
+						"L" + className + ";").getClassName();
+				if (entry.excludesClass(cname)) {
+					continue;
+				}
+
 				List<String> classes = entry.getClasses();
 				for (String targetclass : classes) {
-					
 
 					if (superClass == null) {
 						JRLog.error(String.format("Superclass null for class: "
@@ -131,8 +133,9 @@ public class JRTraceClassFileTransformer implements ClassFileTransformer {
 	}
 
 	private byte[] applyEngineXClasses(ClassLoader classLoader,
-			String targetClassName, JRTraceClassMetadata entry, String targetclass,
-			byte[] classBytes, Class<?> superClass, Class<?>[] interfaces) {
+			String targetClassName, JRTraceClassMetadata entry,
+			String targetclass, byte[] classBytes, Class<?> superClass,
+			Class<?>[] interfaces) {
 
 		return applyEngineXMethods(classLoader, targetClassName, entry,
 				classBytes, superClass, interfaces);

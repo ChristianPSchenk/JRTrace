@@ -39,22 +39,23 @@ import de.schenk.jrtrace.service.JRTraceControllerService;
  */
 public class ReinstallStressTest {
 
+	private static final int REPEAT = 10;
 	protected Throwable exception;
+	protected Object theFamily = new Object();
 
 	@Test
 	public void frequentReinstallSameTest() throws Exception {
 
-		Job worker = startWorkerJobToDoALotOfWork();
+		Job[] workers = startWorkerJobToDoALotOfWork();
 
 		byte[][] classBytes = getClassBytesA();
 
-		while (worker.getState() != Job.RUNNING) {
-			Thread.sleep(100);
-		}
+		waitForAllJobsRunning(workers);
 
-		for (int i = 0; i < 150; i++) {
+		for (int i = 0; i < 10 * REPEAT; i++) {
+			System.out.println(i);
 			machine.installEngineXClass(classBytes);
-			if (worker.getState() != Job.RUNNING) {
+			if (oneWorkerHasStopped(workers)) {
 				System.out.println(String.format(
 						"Worker not running after %d iterations of reinstall",
 						i));
@@ -62,12 +63,36 @@ public class ReinstallStressTest {
 			}
 		}
 
-		worker.cancel();
-		worker.join();
+		cancelall(workers);
+		Job.getJobManager().join(theFamily, null);
 		if (exception != null)
 
 			throw new RuntimeException("Strange exceptions in worker thread.",
 					exception);
+	}
+
+	private void cancelall(Job[] workers) {
+		for (Job w : workers) {
+			w.cancel();
+		}
+
+	}
+
+	private boolean oneWorkerHasStopped(Job[] workers) {
+		for (Job w : workers) {
+			if (w.getState() != Job.RUNNING)
+				return true;
+		}
+		return false;
+	}
+
+	private void waitForAllJobsRunning(Job[] workers)
+			throws InterruptedException {
+		for (Job worker : workers) {
+			while (worker.getState() != Job.RUNNING) {
+				Thread.sleep(100);
+			}
+		}
 	}
 
 	/**
@@ -79,19 +104,18 @@ public class ReinstallStressTest {
 	@Test
 	public void frequentReinstallIncompatibleVersions() throws Exception {
 
-		Job worker = startWorkerJobToDoALotOfWork();
+		Job[] workers = startWorkerJobToDoALotOfWork();
 
 		byte[][] classBytesA = getClassBytesA();
-		byte[][] classBytesB = getClassBytesA();
+		byte[][] classBytesB = getClassBytesB();
 
-		while (worker.getState() != Job.RUNNING) {
-			Thread.sleep(100);
-		}
+		waitForAllJobsRunning(workers);
 
-		for (int i = 0; i < 75; i++) {
+		for (int i = 0; i < 5 * REPEAT; i++) {
+			System.out.println(i);
 			machine.installEngineXClass(classBytesB);
 			machine.installEngineXClass(classBytesA);
-			if (worker.getState() != Job.RUNNING) {
+			if (oneWorkerHasStopped(workers)) {
 				System.out.println(String.format(
 						"Worker not running after %d iterations of reinstall",
 						i));
@@ -99,8 +123,15 @@ public class ReinstallStressTest {
 			}
 		}
 
-		worker.cancel();
-		worker.join();
+		cancelall(workers);
+		while (true) {
+			try {
+				Job.getJobManager().join(theFamily, null);
+				break;
+			} catch (InterruptedException e) {
+				// do nothing
+			}
+		}
 		if (exception != null)
 
 			throw new RuntimeException("Strange exceptions in worker thread.",
@@ -110,20 +141,19 @@ public class ReinstallStressTest {
 	@Test
 	public void frequentReinstallAndClearTest() throws Exception {
 
-		Job worker = startWorkerJobToDoALotOfWork();
+		Job[] workers = startWorkerJobToDoALotOfWork();
 
 		byte[][] classBytes = getClassBytesA();
+		waitForAllJobsRunning(workers);
 
-		while (worker.getState() != Job.RUNNING) {
-			Thread.sleep(100);
-		}
+		for (int i = 0; i < 5 * REPEAT; i++) {
+			System.out.println(i);
 
-		for (int i = 0; i < 75; i++) {
 			machine.clearEngineX();
 			machine.installEngineXClass(classBytes);
 
 			Thread.sleep(1);
-			if (worker.getState() != Job.RUNNING) {
+			if (oneWorkerHasStopped(workers)) {
 				System.out
 						.println(String
 								.format("Worker not running after %d iterations of clear/install",
@@ -132,32 +162,44 @@ public class ReinstallStressTest {
 			}
 		}
 
-		worker.cancel();
-		worker.join();
+		cancelall(workers);
+		Job.getJobManager().join(theFamily, null);
 		if (exception != null)
 
 			throw new RuntimeException("Strange exceptions in worker thread.",
 					exception);
 	}
 
-	private Job startWorkerJobToDoALotOfWork() {
-		Job worker = new Job("do a lot of Work") {
+	private Job[] startWorkerJobToDoALotOfWork() {
+		int njobs = 10;
+		Job[] workers = new Job[njobs];
+		for (int i = 0; i < njobs; i++) {
+			Job worker = new Job("do a lot of Work") {
 
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				try {
-					doWork(monitor);
-				} catch (Throwable t) {
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					try {
+						doWork(monitor);
+					} catch (Throwable t) {
 
-					exception = t;
+						exception = t;
+					}
+					return Status.OK_STATUS;
 				}
-				return Status.OK_STATUS;
-			}
 
-		};
-		worker.schedule(0);
-		;
-		return worker;
+				@Override
+				public boolean belongsTo(Object family) {
+					return family == theFamily;
+				}
+
+			};
+
+			worker.setPriority(Job.SHORT);
+			worker.schedule();
+			workers[i] = worker;
+			;
+		}
+		return workers;
 	}
 
 	long total = 0;
@@ -168,7 +210,7 @@ public class ReinstallStressTest {
 	private void doWork(IProgressMonitor monitor) {
 		while (true) {
 			Set<ReinstallBaseClass> set = new HashSet<ReinstallBaseClass>();
-			for (int i = 0; i < 300; i++) {
+			while (set.size() < 100) {
 				int x = (int) (Math.random() * 5);
 				switch (x) {
 				case 0:
@@ -193,7 +235,13 @@ public class ReinstallStressTest {
 					return;
 				}
 				total += workOn(set);
-				set.clear();
+				Set<ReinstallBaseClass> remaining = new HashSet<ReinstallBaseClass>();
+				for (ReinstallBaseClass s : set) {
+					if (Math.random() * 100.0 > 50) {
+						remaining.add(s);
+					}
+				}
+				set = remaining;
 			}
 
 		}
@@ -250,8 +298,10 @@ public class ReinstallStressTest {
 	private long workOn(Set<ReinstallBaseClass> set) {
 		long result = 0;
 		for (ReinstallBaseClass x : set) {
-			result += x.call((int) (result % 100));
-			x.method();
+			if (Math.random() * 100 < 50) {
+				result += x.call((int) (result % 100));
+				x.method();
+			}
 		}
 
 		return result;

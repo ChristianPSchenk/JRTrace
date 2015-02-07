@@ -8,6 +8,10 @@ public class ReinstallClass3 extends ReinstallBaseClass {
 
 	@Override
 	public int call(int a) {
+		for (int i = 0; i < 30; i++) {
+			method();
+			a = a + i;
+		}
 		return 3 * super.call(a);
 	}
 }
