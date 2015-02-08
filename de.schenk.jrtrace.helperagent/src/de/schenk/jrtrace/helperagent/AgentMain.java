@@ -26,7 +26,6 @@ import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
 
 import de.schenk.jrtrace.helper.InstrumentationUtil;
-import de.schenk.jrtrace.helper.JRTraceHelper;
 import de.schenk.jrtrace.helper.NotificationUtil;
 import de.schenk.jrtrace.helperagent.internal.JRTraceMXBeanImpl;
 import de.schenk.jrtrace.helperlib.JRLog;
@@ -250,7 +249,6 @@ public class AgentMain {
 		synchronized (AgentMain.class) {
 			JRLog.debug(String.format("AgentMain.stop(disconnect:%b)",
 					disconnect));
-			JRTraceHelper.clearEngineX();
 
 			redirectStandardOut(false);
 

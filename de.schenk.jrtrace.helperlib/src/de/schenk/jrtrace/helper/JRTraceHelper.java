@@ -123,6 +123,7 @@ public class JRTraceHelper {
 	}
 
 	public static void addEngineXClass(List<JRTraceClassMetadata> metadatalist) {
+		clearAbortFlag();
 		Set<Class<?>> modifiableClasses = null;
 		long start = System.nanoTime();
 		synchronized (lock) {
@@ -168,6 +169,10 @@ public class JRTraceHelper {
 				"JRTraceHelper.addEngineXClass() took %d ms.",
 				(ende - start) / 1000 / 1000));
 
+	}
+
+	private static void clearAbortFlag() {
+		abortFlagSet = false;
 	}
 
 	/**

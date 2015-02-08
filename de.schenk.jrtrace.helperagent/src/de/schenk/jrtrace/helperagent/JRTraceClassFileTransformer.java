@@ -35,32 +35,14 @@ public class JRTraceClassFileTransformer implements ClassFileTransformer {
 		byte[] oldBytes = classBytes;
 		boolean transformed = false;
 		Collection<JRTraceClassMetadata> allEngineXClasses = null;
-		int id = 0;
+
 		synchronized (JRTraceHelper.lock) {
 			allEngineXClasses = JRTraceHelper.getEngineXClasses();
-			id = JRTraceHelper.getCurrentClassSetId();
+
 		}
 
 		Class<?> superClass = null;
 		Class<?>[] interfaces = null;
-		if (classObject != null) {
-
-			if (classObject.isInterface()) {
-				superClass = Object.class;
-			} else
-
-			{
-				superClass = classObject.getSuperclass();
-			}
-
-			interfaces = classObject.getInterfaces();
-		} else {
-			SuperClassExtractor extractor = new SuperClassExtractor(
-					classLoader, classBytes);
-			extractor.analyze();
-			superClass = extractor.getSuperclass();
-			interfaces = extractor.getInterfaces().toArray(new Class<?>[0]);
-		}
 
 		for (JRTraceClassMetadata entry : allEngineXClasses) {
 			try {
@@ -74,8 +56,32 @@ public class JRTraceClassFileTransformer implements ClassFileTransformer {
 				for (String targetclass : classes) {
 
 					if (superClass == null) {
-						JRLog.error(String.format("Superclass null for class: "
-								+ cname));
+
+						if (classObject != null) {
+
+							if (classObject.isInterface()) {
+								superClass = Object.class;
+							} else
+
+							{
+								superClass = classObject.getSuperclass();
+							}
+
+							interfaces = classObject.getInterfaces();
+						} else {
+							SuperClassExtractor extractor = new SuperClassExtractor(
+									classLoader, classBytes);
+							extractor.analyze();
+							superClass = extractor.getSuperclass();
+							interfaces = extractor.getInterfaces().toArray(
+									new Class<?>[0]);
+						}
+
+						if (superClass == null) {
+							JRLog.error(String
+									.format("Superclass null for class: "
+											+ cname));
+						}
 					}
 					if (entry.mayMatchClassHierarchy(cname, superClass,
 							interfaces)) {
