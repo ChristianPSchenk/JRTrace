@@ -1,13 +1,8 @@
 /**
-* (c) 2014 by Christian Schenk
-**/
+ * (c) 2014 by Christian Schenk
+ **/
 package de.schenk.jrtrace.ui.wizard;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -16,13 +11,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 
 import de.schenk.jrtrace.ui.Activator;
 
 public class RunJavaPage extends WizardPage {
-
-	private Text javaProjectName;
 
 	private LastChoicesCombo clc;
 
@@ -49,28 +41,6 @@ public class RunJavaPage extends WizardPage {
 		GridLayout gl = new GridLayout(3, false);
 
 		box.setLayout(gl);
-
-		{
-			Label description = new Label(box, SWT.NONE);
-			description.setText("Java Project:");
-			description
-					.setToolTipText("The name of the java project to use to upload");
-			javaProjectName = new Text(box, SWT.BORDER);
-			javaProjectName.addModifyListener(new ModifyListener() {
-
-				@Override
-				public void modifyText(ModifyEvent e) {
-					updateWizardModel();
-
-				}
-
-			});
-			GridData gd = new GridData();
-			gd.horizontalSpan = 2;
-			gd.grabExcessHorizontalSpace = true;
-			gd.horizontalAlignment = SWT.FILL;
-			javaProjectName.setLayoutData(gd);
-		}
 
 		{
 
@@ -143,9 +113,7 @@ public class RunJavaPage extends WizardPage {
 	}
 
 	private void updatePageControls() {
-		String filePath = getRunJavaWizard().getProject().getFullPath()
-				.toString();
-		javaProjectName.setText(filePath);
+
 		clc.setText(getRunJavaWizard().getTheClassLoader());
 		mainclass.setText(getRunJavaWizard().getMainClass());
 		runMethod.setText(getRunJavaWizard().getRunMethod());
@@ -155,18 +123,6 @@ public class RunJavaPage extends WizardPage {
 	private void updateWizardModel() {
 		setErrorMessage(null);
 		boolean complete = true;
-		IPath p = new Path(javaProjectName.getText());
-		IResource f = ResourcesPlugin.getWorkspace().getRoot().findMember(p);
-
-		if (f instanceof IProject) {
-			getRunJavaWizard().setProject((IProject) f);
-
-		} else {
-			setErrorMessage("Java project " + javaProjectName.getText()
-					+ " doesn't exist.");
-			getRunJavaWizard().setProject(null);
-			complete = false;
-		}
 
 		getRunJavaWizard().setTheClassLoader(clc.getText());
 

@@ -28,9 +28,11 @@ public interface JRTraceMXBean {
 	 *            the fully qualified name of the class
 	 * @param mainMethod
 	 *            the method name to execute from mainClass
+	 * @throws RuntimeException
+	 *             on error.
 	 */
-	public void runJava(String pathToJar, String referenceClassName,
-			String mainClass, String mainMethod);
+	public void runJava(String referenceClassName, String mainClass,
+			String mainMethod);
 
 	/**
 	 * set the agents log level. Levels defined in JRLog constants.

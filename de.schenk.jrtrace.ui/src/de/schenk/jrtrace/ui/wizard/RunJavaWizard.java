@@ -1,34 +1,21 @@
 /**
-* (c) 2014 by Christian Schenk
-**/
+ * (c) 2014 by Christian Schenk
+ **/
 package de.schenk.jrtrace.ui.wizard;
 
-import java.io.File;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.PlatformUI;
 
 import de.schenk.jrtrace.ui.debug.JRTraceDebugTarget;
 import de.schenk.jrtrace.ui.launch.JRTraceLaunchUtils;
-import de.schenk.jrtrace.ui.util.JarUtil;
 
 public class RunJavaWizard extends Wizard {
 
 	private String theClassLoader = "";
-	private IProject theProject;
 	private RunJavaPage scriptPage;
 	private String mainClass;
 	private String runMethod;
-
-	public IProject getProject() {
-		return theProject;
-	}
-
-	public void setProject(IProject theProject) {
-		this.theProject = theProject;
-	}
 
 	String getTheClassLoader() {
 		return theClassLoader;
@@ -38,9 +25,9 @@ public class RunJavaWizard extends Wizard {
 		this.theClassLoader = theClassLoader;
 	}
 
-	public RunJavaWizard(IProject project) {
-		setProject(project);
-		this.setWindowTitle("Run Java on Target");
+	public RunJavaWizard() {
+
+		this.setWindowTitle("Execute static void method on any JRTrace Class");
 
 	}
 
@@ -70,13 +57,10 @@ public class RunJavaWizard extends Wizard {
 
 		scriptPage.storeSettings();
 
-		File jarFile = JarUtil.createJar(this.getProject(), PlatformUI
-				.getWorkbench().getActiveWorkbenchWindow().getShell());
-
 		List<JRTraceDebugTarget> jrtraceTargets = getJRTraceTargets();
 
 		for (JRTraceDebugTarget btarget : jrtraceTargets) {
-			btarget.runJava(jarFile, theClassLoader, mainClass, runMethod);
+			btarget.runJava(theClassLoader, mainClass, runMethod);
 		}
 		return true;
 	}

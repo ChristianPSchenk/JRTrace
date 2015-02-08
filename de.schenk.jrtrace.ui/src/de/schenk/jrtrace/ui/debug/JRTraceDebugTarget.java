@@ -252,10 +252,38 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 	}
 
-	public void runJava(File jarFile, String theClassLoader, String className,
-			String methodName) {
-		if (!machine.runJava(jarFile, theClassLoader, className, methodName)) {
-			disconnectAfterConnectionProblem();
+	/**
+	 * 
+	 * @param theClassLoader
+	 *            for classloaderpolicy TARGET: the name of the class to use for
+	 *            the invocation.
+	 * @param className
+	 *            name of the class to invoke a method on
+	 * @param methodName
+	 *            static method name (void void)
+	 */
+	public void runJava(String theClassLoader, final String className,
+			final String methodName) {
+		if (!machine.runJava(theClassLoader, className, methodName)) {
+
+			Display.getDefault().asyncExec(new Runnable() {
+
+				@Override
+				public void run() {
+					ErrorDialog.openError(
+							Display.getDefault().getActiveShell(),
+							"Execution Problem",
+							"It was not possible to run the method "
+									+ methodName + " of class " + className
+									+ " on the target.",
+							new Status(IStatus.ERROR,
+									de.schenk.jrtrace.ui.Activator.BUNDLE_ID,
+									"Error during java call.", machine
+											.getLastError()));
+
+				}
+
+			});
 		}
 
 	}
@@ -266,13 +294,15 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 			@Override
 			public void run() {
-				ErrorDialog.openError(Display.getDefault().getActiveShell(),
+				ErrorDialog.openError(
+						Display.getDefault().getActiveShell(),
 						"Connection Problem",
 						"The connection to the target machine " + pid
 								+ " is broken. Disconnecting from target.",
 						new Status(IStatus.ERROR,
 								de.schenk.jrtrace.ui.Activator.BUNDLE_ID,
-								"Connection to target lost."));
+								"Connection to target lost.", machine
+										.getLastError()));
 
 			}
 

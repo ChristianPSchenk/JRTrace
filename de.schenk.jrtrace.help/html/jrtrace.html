@@ -260,6 +260,16 @@ There is no restrictions on changes to the classes (e.g. including/removing stat
 
 </p>
 
+<h4>Run a Method on a JRTrace Class</h4>
+
+<p>It is possible to explicitly invoke a static method without arguments on any 
+JRTrace class using the <img src="pics/run_java_16.gif"/>-menu/toolbar. A dialog will ask for the name of the JRTrace class
+(fully qualified name), the name of the method to invoke (a static method without parameters!). Optionally it is also possible to
+specify the name of a class to use to obtain the classloader. This is only relevant if the <code>classloaderpolicy</code> of the specified
+JRTrace class is <code>TARGET</code>. In this case it will be used to determine the classloader to use. For policies <code>BOOT</code> and <code>NAMED</code>
+the classloader is determined from the JRTrace class as specified (boot classloader or named classloader).
+
+
  
 
 <h3>JRTrace Helper Class</h3>
@@ -356,6 +366,13 @@ In some cases I observed that the target vm terminated when uploading the JRTrac
 </pre>
 This is a JDK bug <a href="https://bugs.openjdk.java.net/browse/JDK-8035150">JDK-8035150</a> and resolved in Java 1.8.0_b4. Try running your application with a 
 more recent java version.
+<h3>Internal Error (ci/ciEnv.hpp:172) Error: ShouldNotReachHere()</h3>
+
+In some cases (fortunately happened only in heavy load test cases for me until now) the JVM might crash with the above error. This is unfortunately not fixed until 1.8.0_31. The bug was already
+reported to Oracle as <a href="https://bugs.openjdk.java.net/browse/JDK-8023901">JDK-8023901</a> but closed as "Cannot Reproduce". I have filed another request.
+ 
+
+
 <h3>Unsupported Class Version</h3>
  If a helper library is compiled on Java 8 or higher and jrtrace injects it into a running Java 7, this will result in the <code>UnsupportedClassVersionError</code>.
  Ensure that all your helper libraries are compiled for java 7 compliance. If jrtrace runs on Java 8, ensure that the java settings for the helper libraries are set to produce

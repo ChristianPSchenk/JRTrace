@@ -3,7 +3,6 @@
  **/
 package de.schenk.jrtrace.service;
 
-import java.io.File;
 import java.util.Properties;
 
 import javax.management.NotificationListener;
@@ -61,8 +60,18 @@ public interface IJRTraceVM {
 	 */
 	boolean setSystemProperties(Properties props);
 
-	boolean runJava(File jarFile, String theClassLoader, String className,
-			String methodName);
+	/**
+	 * 
+	 * @param theClassLoader
+	 *            if the jrtrace class has classloaderpolicy TARGET: the name of
+	 *            the class to use to obtain the classloader
+	 * @param className
+	 *            the name of the jrtrace class to invoke a static method on
+	 * @param methodName
+	 *            the name of the static method to invoke
+	 * @return true on success, use getLastException on false
+	 */
+	boolean runJava(String theClassLoader, String className, String methodName);
 
 	/**
 	 * Install the class or all classes from the jar file (depends on parameter)

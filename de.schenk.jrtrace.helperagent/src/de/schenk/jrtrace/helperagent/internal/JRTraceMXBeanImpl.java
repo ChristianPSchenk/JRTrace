@@ -8,8 +8,8 @@ import java.util.jar.JarFile;
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
 
-import de.schenk.jrtrace.helper.JRTraceHelper;
 import de.schenk.jrtrace.helper.INotificationSender;
+import de.schenk.jrtrace.helper.JRTraceHelper;
 import de.schenk.jrtrace.helperagent.AgentMain;
 import de.schenk.jrtrace.helperagent.JRTraceMXBean;
 import de.schenk.jrtrace.helperlib.JRLog;
@@ -76,10 +76,9 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 	}
 
 	@Override
-	public void runJava(String pathToJar, String referenceClassName,
-			String mainClass, String mainMethod) {
-		new RunJavaCommand().runJava(pathToJar, referenceClassName, mainClass,
-				mainMethod);
+	public void runJava(String referenceClassName, String mainClass,
+			String mainMethod) {
+		new RunJavaCommand().runJava(referenceClassName, mainClass, mainMethod);
 
 	}
 

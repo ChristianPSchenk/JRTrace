@@ -1,6 +1,5 @@
 package de.schenk.jrtrace.service.internal;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Enumeration;
@@ -98,9 +97,8 @@ abstract public class AbstractVM implements IJRTraceVM {
 	}
 
 	@Override
-	synchronized public boolean runJava(final File jarFile,
-			final String theClassLoader, final String className,
-			final String methodName) {
+	synchronized public boolean runJava(final String theClassLoader,
+			final String className, final String methodName) {
 		return new SafeVMRunnable() {
 
 			@Override
@@ -114,8 +112,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 					throw new IllegalArgumentException(
 							"methodName has to be provided for runJava");
 
-				mbeanProxy.runJava(jarFile.toString(), useClassloader,
-						className, methodName);
+				mbeanProxy.runJava(useClassloader, className, methodName);
 
 			}
 		}.safeRun();

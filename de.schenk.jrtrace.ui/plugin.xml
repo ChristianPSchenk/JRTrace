@@ -45,7 +45,7 @@
                commandId="de.schenk.jrtrace.ui.commands.installhelperjar"
                icon="icons/run_java_16.gif"
                id="de.schenk.jrtrace.ui.popup.runjava"
-               label="Run a class from Java Project"
+               label="Run static method of a JRTrace class"
                style="push">
             <visibleWhen>
                <iterate
@@ -157,7 +157,7 @@
       <command
             categoryId="de.schenk.jrtrace.ui.category"
             defaultHandler="de.schenk.jrtrace.ui.handler.RunJavaHandler"
-            description="Installs the selected project as jar and runs a class to start it."
+            description="Invoke a static method on any JRTrace class"
             id="de.schenk.jrtrace.ui.commands.runjava"
             name="Run Java in Target">
       </command>
