@@ -7,14 +7,15 @@
 </head>
 
 <body style="font-family:sans-serif">
-<h1>Annotation Reference   - incomplete, refer to the JavaDoc for now -</h1>
+<h1>JRTrace Annotation Quick Reference</h1>
 
+<p>
 The general concept of JRTrace requires one or more classes that are annotated. The annotations specify if, where and which methods
 will be injected into the running application.
+</p>
 
-
-
- <table border="1" style="width:100%"  >
+<div>
+ <table border="1">
   <tr>
     <th>Annotation</th>
     <th>Attribute</th>
@@ -121,7 +122,259 @@ will be injected into the running application.
     </td>
     
   </tr>
+  
+   <tr>
+    <td><code>@XMethod</code></td>
+    <td></td>
+    <td>Methods that are annotated with <code>@XMethod</code> will be injected into the target system based on the parameters. 
+   If no attributes are specified, this method is injected into all methods of all class selected using the <code>@XClass</code> annotation.
+   The default location for code injection is the method entry point.
+   <p> Note that the injected code usually will have a <code>void</code> return value. In certain locations values may be returned to replace
+   the actual return values by the values provided by the actual code.
+    
+    </td>
+ 
+   
+   </tr>
+   
+   </tr>
+    <tr>
+    <td></td> 
+    <td><code>names</code></td>
+    
+    <td>One or more method names can be specified using this attribute. The method <code>tracingCode</code> will be injected into all methods
+    with name <code>setVisible</code> or <code>isVisible</code>.
+    <pre>
+    @XMethod(names={"setVisible","isVisible"})
+    public void tracingCode()
+    {
+    	...
+    }
+    </pre>
+    </p>
+    </td>
+    
+  </tr>
+   
+   </tr>
+   
+   </tr>
+    <tr>
+    <td></td> 
+    <td><code>arguments</code></td>
+    
+    <td>A list of arguments with fully qualified class names. The tracing code will only be injected if the parameters of the method match the provided list. If <code>regex</code> is
+    set to <code>true</code> on the <code>@XClass</code>, also regular expressions are possible, e.g. <code>.*String</code> instead of <code>java.lang.String</code>.
+    <p>The below example will inject the tracing code into all methods that take exactly one <code>java.lang.String</code> as parameter</p>
+    <pre>
+    @XMethod(arguments={"java.lang.String"})
+    public void tracingCode()
+    {
+    	...
+    }
+    </pre>
+    </p>
+    </td>
+    
+  </tr>
+  
+  <tr>
+    <td></td> 
+    <td><code>location</code></td>
+    
+    <td>Using <code>location</code> a different injection location can be specified for the tracing code. The default is to inject at method
+    entry. Possible values are the values of <code>XLocation</code>
+    <p>
+    <code>ENTRY</code>,<code>EXIT</code> will inject at method entry or exit.
+    </p>
+    <p>
+    <code>BEFORE_INVOCATION</code>,<code>AFTER_INVOCATION</code>, <code>REPLACE_INVOCATION</code> will inject the code before, after or instead of a call
+    to any function with the specified methods. Which function calls shall be instrumented can be specified in detail using <code>invokedname</code> and <code>invokedclass</code>.
+    </p>
+    
+    <p>
+    <code>GETFIELD</code> and <code>PUTFIELD</code> will inject the code after getting or setting a field. The default is to insert the code after every field access. Use
+    <code>fieldname</code> and <code>fieldclass</code> to restrict to specific fields or classes.
+    <pre>
+    @XMethod(names="setValue",location=XLocation.EXIT)
+    public void tracingCode()
+    {
+    	...
+    }
+    </pre>
+    </p>
+    </td>
+    
+  </tr>
+ 
+    <tr>
+    <td></td> 
+    <td><code>modifier</code></td>
+    
+    <td>A list of modifier restrictions to inject the tracing code only in private, public or protected, static or final methods. Can be one or
+    more entries of the <code>XModifier</code> enum: <code>STATIC, NOT_STATIC, PRIVATE, PUBLIC, PROTECTED, NOT_PRIVATE, NOT_PUBLIC, NOT_PROTECTED, FINAL, NOT_FINAL</code>
+    <p>The below example will inject the tracing code only in methods with name starting with <code>set</code> that are public.</p>
+    <pre>
+    @XMethod(names={"set.*"},modifier=XModifier.PUBLIC)
+    public void tracingCode()
+    {
+    	...
+    }
+    </pre>
+    </p>
+    </td>
+    
+  </tr>
+  
+    <tr>
+    <td></td> 
+    <td><code>invokedname</br>invokedclass</br>fieldname</br>fieldclass</code></td>
+    
+    <td>If method calls or field access is traced, these fields specify restrictions to the invoked methods / accessed fields.
+    <p>
+    The below example will inject the tracing code before any write access to the field <code>counter</code> of the class <code>my.test.Counter</code>.
+    </p>
+    <pre>
+    @XMethod(location=XLocation.PUTFIELD,fieldname="counter",fieldclass="my.test.Counter")
+    public void tracingCode()
+    {
+    	...
+    }
+    </pre>
+    </p>
+    </td>
+    
+  </tr>
+  
+    <tr>
+    <td><code>@XThis</code></td> 
+    <td></td>
+    
+    <td>A parameter may be annotated with <code>@XThis</code> to inject the current instance variable into the parameter.
+    <p>
+    The below example will bind <code>theObject</code> to the instance variable on which the method was invoked. The type of the parameter
+    must be such, that the type of the instance variable can assigned to it. <code>Object</code> will always do. However if the JRTrace class
+    has access to the proper type of <code>this</code> it can be used as well. The same rule is valid for all parameter and return type injections. 
+    </p>
+    <pre>
+    @XMethod(location=XLocation.EXIT,names="getValue")
+    public void tracingCode(@XThis Object theObject)
+    {
+    	...
+    }
+    </pre>
+    </p>
+    </td>
+    
+  </tr>
+  
+    <tr>
+    <td><code>@XReturn</code></td> 
+    <td></td>
+    
+    <td>A parameter may be annotated with <code>@XReturn</code> to inject the return value of the instrumented method (or invoked method). Note
+    that this is only possible for injection locations that return a value: <code>EXIT</code>, <code>AFTER_INVOKE</code> and <code>REPLACE_INVOKE</code>.
+   
+    <pre>
+    @XMethod(location=XLocation.EXIT,names="getValue")
+    public void tracingCode(@XReturn Object theObject)
+    {
+    	...
+    }
+    </pre>
+    </p>
+    </td>
+    
+  </tr>
+ 
+ <tr>
+    <td><code>Return a value</code></td> 
+    <td></td>
+    
+    <td>For injection locations that return a value ( <code>EXIT</code>, <code>AFTER_INVOKE</code> and <code>REPLACE_INVOKE</code>) the
+    tracing method may have a non-void return parameter that can be assigned to the actual return value type in the target code. This actually 
+    allows to replace the return value from a method invocation with the value returned by the tracingCode.
+    <p>
+    The below example will replace <code>null</code> return values by a 0 return value for all invocations of <code>getValue</code>.
+    </p>
+   
+    <pre>
+    @XMethod(location=XLocation.EXIT,names="getValue")
+    public Integer tracingCode(@XReturn Integer theNumber)
+    {
+    	if(theNumber==null) return new Integer(0);
+    	return theNumber;
+    }
+    </pre>
+    </p>
+    </td>
+    
+  </tr>
+ <tr>
+    <td><code>@XParam</code></td> 
+    <td>n</td>
+    
+    <td>If the instrumented method has call parameters <code>@XParam</code> may be used to obtain their value.
+    <p>
+    The below example will inject the first parameter of the method <code>setValue</code> into the first parameter.
+    </p>
+   
+    <pre>
+    @XMethod(location=XLocation.EXIT,names="setValue")
+    public void tracingCode(@XParam(n=1) Integer theNumber)
+    {
+    	....
+    }
+    </pre>
+    </p>
+    </td>
+    
+  </tr>
+   <tr>
+    <td><code>@XField</code></td> 
+    <td>name</td>
+    
+    <td>The <code>@XField</code> annotation allows to access the fields of the calling instance. The injection will return values for private and static
+    fields as well and will also return values of fields of the superclasses. 
+    <p>
+    The below example will inject the field <code>counter</code> into the first parameter.
+    </p>
+   
+    <pre>
+    @XMethod(location=XLocation.EXIT,names="getValue")
+    public Integer tracingCode(@XField(name="counter") theCounter)
+    {
+    		...
+    }
+    </pre>
+    </p>
+    </td>
+    
+  </tr>
+  
+    <tr>
+    <td><code>@XInvokeParam</br>@XInvokeReturn</br>@XInvokeThis</code></td> 
+    <td>...</td>
+    
+    <td>When injecting into method invocations within a method, the parameter annotations <code>@XInvokeParam</code>,<code>@XInvokeThis</code> and
+    <code>@XInvokeReturn</code> maybe used to get access to a invocation parameter, the object on which the method was invoked or the return value. 
+    <p>
+    The below example will inject the value returned from any invocation to a method named <code>getValue</code> to the parameter value.
+    </p>
+   
+    <pre>
+    @XMethod(location=XLocation.AFTER_INVOKE,invokedname="getValue")
+    public void tracingCode(@XInvokeReturn Integer value)
+    {
+    	
+    }
+    </pre>
+    </p>
+    </td>
+    
+  </tr>  
 </table> 
+</div>
  
 </body>
 </html>
