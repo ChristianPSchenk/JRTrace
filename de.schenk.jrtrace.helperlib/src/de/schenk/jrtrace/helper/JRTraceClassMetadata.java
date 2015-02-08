@@ -206,6 +206,10 @@ public class JRTraceClassMetadata {
 		String classname = theclass.getName();
 		if (classname == null)
 			return false;
+		for (String excludedName : excludedClasses) {
+			if (classname.matches(excludedName))
+				return false;
+		}
 		return mayMatchClassName(classname);
 	}
 
