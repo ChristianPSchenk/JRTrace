@@ -94,10 +94,9 @@ public interface IJRTraceVM {
 
 	boolean attach();
 
-	void addClientListener(String notifyStdout,
-			NotificationListener streamReceiver);
+	void addClientListener(String notifyId, NotificationListener streamReceiver);
 
-	void removeClientListener(String notifyStderr,
+	void removeClientListener(String notifyId,
 			NotificationListener errorstreamReceiver);
 
 	/**

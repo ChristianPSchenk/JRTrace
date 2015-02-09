@@ -34,8 +34,27 @@ public class AgentStarter {
 			throw new RuntimeException("didn't find helperlib jar "
 					+ agentArgs.getBootJar());
 		}
+
+		primePattern();
+
 		AgentMain.launch(agentArgs.getPort(), agentArgs.getServer(), inst);
 
+	}
+
+	/**
+	 * For small applications the Pattern classes might not be loaded when the
+	 * first jrtrace transformation is triggered. That will cause a
+	 * ClassCircularityException.
+	 * 
+	 * This method just makes sure that the Pattern and related classes are
+	 * loaded.
+	 */
+	private static void primePattern() {
+
+		String string = "ateststring";
+		if (string.matches("\\.a.*b\n")) {
+
+		}
 	}
 
 }

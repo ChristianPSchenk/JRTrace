@@ -54,4 +54,17 @@ public class NotificationUtil {
 				NotificationConstants.NOTIFY_PROBLEM, className, methodName);
 		sendNotification(not);
 	}
+
+	/**
+	 * Sends tool error messages to the receivers.
+	 * 
+	 * @param errormessage
+	 */
+	public static void sendErrorNotification(String errormessage) {
+		Notification not = new AttributeChangeNotification(
+				NotificationUtil.getJRTraceObjectName(), sequenceNumber++,
+				System.nanoTime(), errormessage, "Error",
+				NotificationConstants.NOTIFY_ERROR, 0, 0);
+		sendNotification(not);
+	}
 }
