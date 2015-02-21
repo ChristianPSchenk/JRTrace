@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import de.schenk.jrtrace.annotations.XClass;
 import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
@@ -321,6 +322,10 @@ public class JRTraceClassMetadata {
 	public boolean excludesClass(String classname) {
 		if (classname == null)
 			return false;
+		if (useRegex && classname.startsWith(Pattern.class.getCanonicalName())) {
+			return true;
+		}
+
 		for (String excludePattern : getExcludedClasses()) {
 			if (classname.matches(excludePattern))
 				return true;

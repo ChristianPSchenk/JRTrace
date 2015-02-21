@@ -95,7 +95,7 @@ public class JavaUtil {
 		commandParameters.add(javaHome + File.separator + "bin"
 				+ File.separator + "java");
 		commandParameters.add(parameters);
-
+		// commandParameters.add("-XX:+TraceClassLoading");
 		commandParameters.add("-cp");
 		commandParameters.add(fullPath);
 		commandParameters.add(TestProcess.class.getName());
