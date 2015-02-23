@@ -110,32 +110,39 @@ public class JRTraceClassFileTransformer implements ClassFileTransformer {
 		if (transformed) {
 			JRTraceHelper.setTransformed(className, classLoader);
 		}
+
+		if (JRLog.getLogLevel() == JRLog.DEBUG && transformed) {
+			logTransformedClassBytes(className, classBytes, oldBytes);
+
+		}
+
+		return transformed ? classBytes : null;
+
+	}
+
+	private void logTransformedClassBytes(String className, byte[] classBytes,
+			byte[] oldBytes) {
 		try {
-			if (JRLog.getLogLevel() == JRLog.DEBUG && transformed) {
-				if (className != null) {
-					String tmpdir = System.getProperty("java.io.tmpdir");
-
-					FileOutputStream fileOutputStream = new FileOutputStream(
-							tmpdir + "\\" + className.replace('/', '_')
-									+ "before.class");
-					fileOutputStream.write(oldBytes);
-					fileOutputStream.close();
-					FileOutputStream fileOutputStream2 = new FileOutputStream(
-							tmpdir + "\\" + className.replace('/', '_')
-									+ "after.class");
-					fileOutputStream2.write(classBytes);
-					fileOutputStream2.close();
-
-					JRLog.debug("Writing bytes before/after transformation of class "
-							+ className + " to directory " + tmpdir);
-				}
-
+			String classId = className;
+			if (className == null) {
+				classId = String.format("null%d", System.currentTimeMillis());
 			}
+			String tmpdir = System.getProperty("java.io.tmpdir");
+
+			FileOutputStream fileOutputStream = new FileOutputStream(tmpdir
+					+ "\\" + classId.replace('/', '_') + "before.class");
+			fileOutputStream.write(oldBytes);
+			fileOutputStream.close();
+			FileOutputStream fileOutputStream2 = new FileOutputStream(tmpdir
+					+ "\\" + classId.replace('/', '_') + "after.class");
+			fileOutputStream2.write(classBytes);
+			fileOutputStream2.close();
+
+			JRLog.debug("Writing bytes before/after transformation of class "
+					+ classId + " to directory " + tmpdir);
 		} catch (IOException e) {
 			JRLog.error("Error when trying to write transformed classbytes.");
 		}
-		return transformed ? classBytes : null;
-
 	}
 
 	private byte[] applyEngineXClasses(ClassLoader classLoader,

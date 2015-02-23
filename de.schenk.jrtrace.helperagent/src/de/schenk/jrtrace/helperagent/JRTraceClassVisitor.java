@@ -47,7 +47,11 @@ public class JRTraceClassVisitor extends ClassVisitor {
 			String superName, String[] interfaces) {
 		this.className = name;
 
-		super.visit(Opcodes.V1_7, access, name, signature, superName,
+		int targetVersion = Opcodes.V1_7;
+		if ((version & 0xffff) > Opcodes.V1_7)
+			targetVersion = version;
+
+		super.visit(targetVersion, access, name, signature, superName,
 				interfaces);
 	}
 
