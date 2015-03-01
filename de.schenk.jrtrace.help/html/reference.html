@@ -54,14 +54,19 @@ will be injected into the running application.
     
     <td>One or more <b>regular</b> expressions that can be used to exclude classes from instrumentation.
     <p>Example: the below snippet will inject tracing statements into all classes (<code>classes=".*"</code>)
-     that don't match "java.*" and "de\\.schenk\\.jrtrace
+     that don't match "java.*".
+    
     <pre>
-    @XClass(exclude={"java.*","de\\.schenk\\.jrtrace.*"},classes=".*",regex=true)
+    @XClass(exclude={"java.*"},classes=".*",regex=true)
     class Trace
     {
     		...
     }
     </pre>
+    </p>
+    <p>
+    Note: a core set of classes cannot be instrumented at all with JRTrace. The most important ones are ArrayList, HashSet and ConcurrentHashSet. Others
+    are: Integer, Byte, Object, Class, ClassLoader and all invoke and reflect packages from java and sun. 
     </p>
     </td>
     

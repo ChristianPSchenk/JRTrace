@@ -48,7 +48,7 @@ public class JRTraceClassFileTransformer implements ClassFileTransformer {
 			try {
 				String cname = className == null ? null : Type.getType(
 						"L" + className + ";").getClassName();
-				if (entry.excludesClass(cname)) {
+				if (entry.isExcludedClassName(cname)) {
 					continue;
 				}
 

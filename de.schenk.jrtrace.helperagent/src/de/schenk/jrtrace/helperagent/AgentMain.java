@@ -182,8 +182,26 @@ public class AgentMain {
 
 	private void start(int port, String server) {
 
+		loadClass("sun.invoke.util.ValueConversions");
+		loadClass("java.lang.invoke.LambdaForm");
+		loadClass("java.lang.ref.ReferenceQueue");
+
 		startMXBeanServer(port, server);
 
+	}
+
+	/**
+	 * Try to load the specified classes to force initialization
+	 * 
+	 * @param className
+	 *            the fully qualified classname.
+	 */
+	private void loadClass(String className) {
+		try {
+			Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			// do nothing
+		}
 	}
 
 	public void redirectStandardOut(boolean enable) {

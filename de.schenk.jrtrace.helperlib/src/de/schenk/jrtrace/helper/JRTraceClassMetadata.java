@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import de.schenk.jrtrace.annotations.XClass;
 import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
@@ -205,12 +204,8 @@ public class JRTraceClassMetadata {
 	 */
 	private boolean mayMatchClass(Class<?> theclass) {
 		String classname = theclass.getName();
-		if (classname == null)
+		if (isExcludedClassName(classname))
 			return false;
-		for (String excludedName : excludedClasses) {
-			if (classname.matches(excludedName))
-				return false;
-		}
 		return mayMatchClassName(classname);
 	}
 
@@ -249,6 +244,7 @@ public class JRTraceClassMetadata {
 	private boolean useRegex;
 	private HashSet<String> excludedClasses = new HashSet<String>();
 	private int classVersion;
+	private BuiltInExcludes builtInExcludes = new BuiltInExcludes();
 
 	public XClassLoaderPolicy getClassLoaderPolicy() {
 		return classLoaderPolicy;
@@ -313,16 +309,23 @@ public class JRTraceClassMetadata {
 
 	/**
 	 * 
-	 * Checks whether a class of name classname is excluded from instrumentation
-	 * via the {@link XClass#exclude} attribute
+	 * Checks whether a class of name classname is excluded from
+	 * instrumentation.
+	 * 
+	 * This can be because (a) it is excluded via the {@link XClass#exclude}
+	 * attribute or (b) because it is a "built-in" exclude that cannot be
+	 * instrumented (like the jrtrace code itself.) (c) because it is one of the
+	 * JRTrace classes itself.
 	 * 
 	 * @param classname
 	 * @return true, if this class is excludes.
 	 */
-	public boolean excludesClass(String classname) {
+	public boolean isExcludedClassName(String classname) {
 		if (classname == null)
 			return false;
-		if (useRegex && classname.startsWith(Pattern.class.getCanonicalName())) {
+		if (builtInExcludes.isBuiltInExclude(classname))
+			return true;
+		if (JRTraceHelper.isJRTraceClass(classname)) {
 			return true;
 		}
 

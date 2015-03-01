@@ -122,6 +122,20 @@ public class JRTraceHelper {
 
 	}
 
+	/**
+	 * 
+	 * @param className
+	 *            a fully qualified classname
+	 * @return true, if the fully qualified name is the name of one of the
+	 *         installed JRTrace script classes
+	 */
+	public static boolean isJRTraceClass(String className) {
+		synchronized (lock) {
+			return null != classStore.get(currentCacheId, className);
+		}
+
+	}
+
 	public static void addEngineXClass(List<JRTraceClassMetadata> metadatalist) {
 		clearAbortFlag();
 		Set<Class<?>> modifiableClasses = null;

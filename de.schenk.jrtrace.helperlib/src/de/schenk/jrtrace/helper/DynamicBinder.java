@@ -39,8 +39,7 @@ public class DynamicBinder {
 	public static CallSite bindEngineXMethods(MethodHandles.Lookup caller,
 			String name, MethodType type, String enginexclass,
 			int jrtraceClasssetId, String enginexmethodname,
-			String enginexmethoddescriptor) throws NoSuchMethodException,
-			IllegalAccessException {
+			String enginexmethoddescriptor) {
 
 		initHelper();
 		MethodHandles.Lookup lookup = MethodHandles.lookup();
@@ -50,10 +49,13 @@ public class DynamicBinder {
 
 			object = method.invoke(null, enginexclass, jrtraceClasssetId,
 					caller.lookupClass().getClassLoader());
-		} catch (IllegalArgumentException | InvocationTargetException e) {
+		} catch (IllegalArgumentException | InvocationTargetException
+				| IllegalAccessException e) {
+			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 		if (object == null) {
+
 			throw new RuntimeException("Fatal: Lookup of enginex class "
 					+ enginexclass + " failed!");
 		}
