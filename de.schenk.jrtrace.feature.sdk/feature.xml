@@ -2,7 +2,7 @@
 <feature
       id="de.schenk.jrtrace.feature.sdk"
       label="JRTrace SDK Feature"
-      version="0.6.0.qualifier"
+      version="0.7.0.qualifier"
       provider-name="Christian Schenk"
       plugin="de.schenk.jrtrace.ui">
 
@@ -64,7 +64,7 @@ limitations under the License.
 
    <plugin
          id="de.schenk.jrtrace.service.enginex.targets"
-         ws="win32"
+         os="linux,win32"
          download-size="0"
          install-size="0"
          version="1.0.8.qualifier"/>
@@ -79,6 +79,6 @@ limitations under the License.
          id="de.schenk.jrtrace.service.test"
          download-size="0"
          install-size="0"
-         version="1.0.9.qualifier"/>
+         version="1.1.0.qualifier"/>
 
 </feature>
