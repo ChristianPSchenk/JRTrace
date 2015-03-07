@@ -3,7 +3,6 @@
  **/
 package de.schenk.jrtrace.helperagent.internal;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import de.schenk.jrtrace.helper.InstrumentationUtil;
@@ -35,17 +34,27 @@ public class RunJavaCommand {
 				throw new RuntimeException(String.format(
 						"Unable to obtain class %s for execution.", mainClass));
 			}
-			Method method = gclClass.getMethod(mainMethod);
-			method.invoke(null);
+			final Method method = gclClass.getMethod(mainMethod);
+			Thread runnerThread = new Thread("runJRTRaceCode") {
+				@Override
+				public void run() {
+					try {
+						method.invoke(null);
+					} catch (Throwable e) {
+						// currently no feedback to jrtrace UI. Just report
+						// anything on the console.
+						e.printStackTrace();
+					}
+
+				}
+			};
+			runnerThread.start();
+
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
 		} catch (IllegalArgumentException e) {
-			throw new RuntimeException(e);
-		} catch (InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}
 

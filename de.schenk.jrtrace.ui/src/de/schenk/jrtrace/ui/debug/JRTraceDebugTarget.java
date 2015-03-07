@@ -4,10 +4,12 @@
 package de.schenk.jrtrace.ui.debug;
 
 import java.io.File;
+import java.lang.reflect.UndeclaredThrowableException;
 
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugEvent;
@@ -270,16 +272,25 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 				@Override
 				public void run() {
+					MultiStatus m = new MultiStatus(
+							de.schenk.jrtrace.ui.Activator.BUNDLE_ID,
+							IStatus.ERROR, "Error during java call.", machine
+									.getLastError());
+					if (machine.getLastError() instanceof UndeclaredThrowableException) {
+						UndeclaredThrowableException t = (UndeclaredThrowableException) machine
+								.getLastError();
+						m.add(new Status(IStatus.ERROR,
+								de.schenk.jrtrace.ui.Activator.BUNDLE_ID,
+								"Undeclared Throwable:", t
+										.getUndeclaredThrowable()));
+
+					}
 					ErrorDialog.openError(
 							Display.getDefault().getActiveShell(),
 							"Execution Problem",
 							"It was not possible to run the method "
 									+ methodName + " of class " + className
-									+ " on the target.",
-							new Status(IStatus.ERROR,
-									de.schenk.jrtrace.ui.Activator.BUNDLE_ID,
-									"Error during java call.", machine
-											.getLastError()));
+									+ " on the target.", m);
 
 				}
 
