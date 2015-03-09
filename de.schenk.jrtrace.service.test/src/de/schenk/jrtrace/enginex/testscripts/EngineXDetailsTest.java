@@ -443,6 +443,16 @@ public class EngineXDetailsTest implements NotificationListener {
 	}
 
 	@Test
+	public void test32INVOKEBEFOREandINVOKEAFTERForTheSameMethod()
+			throws Exception {
+
+		Test32 test32 = new Test32();
+		int result = test32.test32();
+		assertEquals(2, result);
+
+	}
+
+	@Test
 	public void test24ErrorMessageForXThisOnStaticMethod() throws Exception {
 		notificationBarrier = new CyclicBarrier(2);
 

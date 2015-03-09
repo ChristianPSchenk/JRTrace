@@ -4,8 +4,11 @@
 package de.schenk.jrtrace.helperagent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import de.schenk.jrtrace.annotations.XLocation;
 import de.schenk.jrtrace.helper.JRTraceClassMetadata;
 import de.schenk.jrtrace.helper.JRTraceMethodMetadata;
 import de.schenk.jrtrace.helperagent.FieldList.FieldEntry;
@@ -62,11 +65,16 @@ public class JRTraceClassVisitor extends ClassVisitor {
 		MethodVisitor currentVisitor = super.visitMethod(access, name, desc,
 				signature, exceptions);
 
-		List<JRTraceMethodMetadata> matchingMethods = new ArrayList<JRTraceMethodMetadata>();
+		Map<XLocation, List<JRTraceMethodMetadata>> matchingMethods = new HashMap<XLocation, List<JRTraceMethodMetadata>>();
+		for (XLocation l : XLocation.values()) {
+			matchingMethods.put(l, new ArrayList<JRTraceMethodMetadata>());
+		}
 		for (JRTraceMethodMetadata method : metadata.getMethods()) {
 			if (method.mayMatch(name, desc, access)) {
 
-				matchingMethods.add(method);
+				List<JRTraceMethodMetadata> list = matchingMethods.get(method
+						.getInjectLocation());
+				list.add(method);
 
 			}
 		}

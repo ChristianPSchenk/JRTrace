@@ -6,7 +6,9 @@ package de.schenk.jrtrace.helperagent;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import de.schenk.jrtrace.annotations.XLocation;
 import de.schenk.jrtrace.helper.Injection;
@@ -29,7 +31,7 @@ import de.schenk.objectweb.asm.commons.Method;
 
 public class JRTraceMethodVisitor extends AdviceAdapter {
 
-	private List<JRTraceMethodMetadata> injectedMethods;
+	private Map<XLocation, List<JRTraceMethodMetadata>> injectedMethodsMap;
 	private String descriptor;
 	private boolean targetMethodStatic = false; // fixme: target injectedMethod
 	// may be
@@ -46,7 +48,7 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
    */
 	public JRTraceMethodVisitor(JRTraceClassVisitor fieldList, int access,
 			String name, String desc, MethodVisitor visitMethod,
-			List<JRTraceMethodMetadata> injectedMethods) {
+			Map<XLocation, List<JRTraceMethodMetadata>> injectedMethods) {
 
 		super(Opcodes.ASM5, visitMethod, access, name, desc);
 		this.targetMethodName = name;
@@ -56,58 +58,61 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 		this.targetReturnType = targetMethod.getReturnType();
 		this.targetArguments = targetMethod.getArgumentTypes();
 
-		this.injectedMethods = injectedMethods;
+		this.injectedMethodsMap = injectedMethods;
 		boolean isStatic = ((access & Opcodes.ACC_STATIC) != 0) ? true : false;
 		this.targetMethodStatic = isStatic;
 		this.targetMethodAccess = access;
 
-		for (JRTraceMethodMetadata injectedMethod : injectedMethods) {
+		for (XLocation loc : XLocation.values())
+			for (JRTraceMethodMetadata injectedMethod : injectedMethods
+					.get(loc)) {
 
-			Method enginexMethod = new Method(injectedMethod.getMethodName(),
-					injectedMethod.getDescriptor());
+				Method enginexMethod = new Method(
+						injectedMethod.getMethodName(),
+						injectedMethod.getDescriptor());
 
-			Type injectionMethodReturnTypes = enginexMethod.getReturnType();
+				Type injectionMethodReturnTypes = enginexMethod.getReturnType();
 
-			if (injectedMethod.getInjectLocation() != XLocation.EXIT
-					&& injectedMethod.getInjectLocation() != XLocation.REPLACE_INVOCATION
-					&& injectedMethod.getInjectLocation() != XLocation.AFTER_INVOCATION) {
-				if (!injectionMethodReturnTypes.equals(Type.VOID_TYPE)) {
-					fatal(injectedMethod,
-							String.format("The injected method has a non-empty return type. This is only allowed for methods injected in location XLocation.EXIT"));
-
-				}
-
-			} else {
-				if (!injectionMethodReturnTypes.equals(Type.VOID_TYPE)
-						&& injectedMethod.getInjectLocation() == XLocation.EXIT) {
-
-					if (!TypeCheckUtil.isAssignable(injectionMethodReturnTypes,
-							targetReturnType,
-							classVisitor.getCommonSuperClassUtil()))
-
-					{
+				if (injectedMethod.getInjectLocation() != XLocation.EXIT
+						&& injectedMethod.getInjectLocation() != XLocation.REPLACE_INVOCATION
+						&& injectedMethod.getInjectLocation() != XLocation.AFTER_INVOCATION) {
+					if (!injectionMethodReturnTypes.equals(Type.VOID_TYPE)) {
 						fatal(injectedMethod,
-								String.format(
-										"Return type of injected method doesn't match the type %s of the target method %s in class %s.",
-										targetReturnType.getClassName(),
-										targetMethodName, JRTraceNameUtil
-												.getExternalName(classVisitor
-														.getClassName())));
+								String.format("The injected method has a non-empty return type. This is only allowed for methods injected in location XLocation.EXIT"));
 
 					}
-				}
 
+				} else {
+					if (!injectionMethodReturnTypes.equals(Type.VOID_TYPE)
+							&& injectedMethod.getInjectLocation() == XLocation.EXIT) {
+
+						if (!TypeCheckUtil.isAssignable(
+								injectionMethodReturnTypes, targetReturnType,
+								classVisitor.getCommonSuperClassUtil()))
+
+						{
+							fatal(injectedMethod,
+									String.format(
+											"Return type of injected method doesn't match the type %s of the target method %s in class %s.",
+											targetReturnType.getClassName(),
+											targetMethodName,
+											JRTraceNameUtil
+													.getExternalName(classVisitor
+															.getClassName())));
+
+						}
+					}
+
+				}
 			}
-		}
 
 	}
 
 	@Override
 	protected void onMethodEnter() {
-		for (JRTraceMethodMetadata injectedMethod : injectedMethods) {
-			if (injectedMethod.getInjectLocation() == XLocation.ENTRY) {
-				injectEngineXCall(injectedMethod);
-			}
+		for (JRTraceMethodMetadata injectedMethod : injectedMethodsMap
+				.get(XLocation.ENTRY)) {
+			injectEngineXCall(injectedMethod);
 		}
 
 		super.onMethodEnter();
@@ -119,19 +124,92 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 	@Override
 	public void visitMethodInsn(int opcode, String owner, String name,
 			String desc, boolean itf) {
-		for (JRTraceMethodMetadata injectedMethod : injectedMethods) {
-			if (injectedMethod.getInjectLocation() == XLocation.BEFORE_INVOCATION
-					|| injectedMethod.getInjectLocation() == XLocation.REPLACE_INVOCATION
-					|| injectedMethod.getInjectLocation() == XLocation.AFTER_INVOCATION) {
-				if (injectedMethod.matchesInvoker(owner, name)) {
-					applyOnInvokeInstrumentation(injectedMethod, opcode, owner,
-							name, desc, itf);
-					return;
+		List<JRTraceMethodMetadata> beforeInvokeInjections = getMatchingInjections(
+				owner, name, XLocation.BEFORE_INVOCATION);
+		List<JRTraceMethodMetadata> replaceInvokes = getMatchingInjections(
+				owner, name, XLocation.REPLACE_INVOCATION);
+		List<JRTraceMethodMetadata> afterInvokes = getMatchingInjections(owner,
+				name, XLocation.AFTER_INVOCATION);
+		if (afterInvokes.size() == 0 && beforeInvokeInjections.size() == 0
+				&& replaceInvokes.size() == 0) {
+			super.visitMethodInsn(opcode, owner, name, desc, itf);
+			return;
+		}
+
+		boolean invokedMethodStatic = (opcode == Opcodes.INVOKESTATIC);
+
+		int[] localArgPositions = moveCallArgumentsFromStackToLocals(desc,
+				owner, invokedMethodStatic);
+
+		for (JRTraceMethodMetadata injectedMethod : beforeInvokeInjections) {
+			injectEngineXCall(injectedMethod, localArgPositions, owner, name,
+					desc);
+		}
+
+		if (replaceInvokes.size() > 1) {
+			fatal(replaceInvokes.get(0),
+					String.format(
+							"Multiple methods of type XLocation.REPLACE_INVOKE match the invokation of method %s of class %s which is called from within the method %s of the class %s",
+							name, JRTraceNameUtil.getExternalName(owner),
+							targetMethodName, JRTraceNameUtil
+									.getExternalName(classVisitor
+											.getClassName())));
+
+		} else {
+			if (replaceInvokes.size() == 1) {
+				JRTraceMethodMetadata injectedMethod = replaceInvokes.get(0);
+
+				injectEngineXCall(injectedMethod, localArgPositions, owner,
+						name, desc);
+				Method enginexMethod = new Method(
+						injectedMethod.getMethodName(),
+						injectedMethod.getDescriptor());
+
+				Type injectionMethodReturnTypes = enginexMethod.getReturnType();
+
+				if (!TypeCheckUtil.isAssignable(injectionMethodReturnTypes,
+						Type.getReturnType(desc),
+						classVisitor.getCommonSuperClassUtil())) {
+					fatal(injectedMethod,
+							String.format(
+									"Type mismatch: @XLocation.REPLACE_INVOCATION requires that the return type %s of the injected method %s is assignable to the return type %s of the replaced method invocation to method %s.",
+									JRTraceNameUtil
+											.getExternalName(injectionMethodReturnTypes
+													.getClassName()),
+									injectedMethod.getMethodName(),
+									JRTraceNameUtil
+											.getExternalName(Type
+													.getReturnType(desc)
+													.getClassName()), name));
+
 				}
+
+			} else {
+				moveCallArgumentsFromLocalsToStack(desc, invokedMethodStatic,
+						localArgPositions);
+				super.visitMethodInsn(opcode, owner, name, desc, itf);
 			}
 		}
 
-		super.visitMethodInsn(opcode, owner, name, desc, itf);
+		for (JRTraceMethodMetadata injectedMethod : injectedMethodsMap
+				.get(XLocation.AFTER_INVOCATION)) {
+			injectEngineXCall(injectedMethod, localArgPositions, owner, name,
+					desc);
+		}
+
+	}
+
+	public List<JRTraceMethodMetadata> getMatchingInjections(String owner,
+			String name, XLocation location) {
+		List<JRTraceMethodMetadata> replaceInvokes = new ArrayList<JRTraceMethodMetadata>();
+		for (JRTraceMethodMetadata injectedMethod : injectedMethodsMap
+				.get(location)) {
+			if (injectedMethod.matchesInvoker(owner, name)) {
+				replaceInvokes.add(injectedMethod);
+			}
+
+		}
+		return replaceInvokes;
 	}
 
 	/**
@@ -142,70 +220,22 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 			String desc) {
 
 		super.visitFieldInsn(opcode, owner, name, desc);
-		for (JRTraceMethodMetadata injectedMethod : injectedMethods) {
-			XLocation loc = injectedMethod.getInjectLocation();
-			if (loc == XLocation.GETFIELD || loc == XLocation.PUTFIELD) {
-				if (injectedMethod.matchesField(owner, name)) {
-					if ((loc == XLocation.GETFIELD && (opcode == Opcodes.GETFIELD || opcode == Opcodes.GETSTATIC))
-							|| (loc == XLocation.PUTFIELD && (opcode == Opcodes.PUTFIELD || opcode == Opcodes.PUTSTATIC)))
-						injectEngineXCall(injectedMethod);
-				}
+		for (JRTraceMethodMetadata injectedMethod : injectedMethodsMap
+				.get(XLocation.GETFIELD)) {
+
+			if (injectedMethod.matchesField(owner, name)) {
+				if (((opcode == Opcodes.GETFIELD || opcode == Opcodes.GETSTATIC)))
+					injectEngineXCall(injectedMethod);
 			}
-
 		}
-
-	}
-
-	/**
-	 * @param injectedMethod
-	 * @param opcode
-	 * @param owner
-	 * @param name
-	 * @param desc
-	 * @param itf
-	 */
-	private void applyOnInvokeInstrumentation(
-			JRTraceMethodMetadata injectedMethod, int opcode, String owner,
-			String name, String desc, boolean itf) {
-		boolean invokedMethodStatic = (opcode == Opcodes.INVOKESTATIC);
-
-		int[] localArgPositions = moveCallArgumentsFromStackToLocals(desc,
-				owner, invokedMethodStatic);
-		if (injectedMethod.getInjectLocation() == XLocation.BEFORE_INVOCATION) {
-			injectEngineXCall(injectedMethod, localArgPositions, owner, name,
-					desc);
-		}
-		if (injectedMethod.getInjectLocation() == XLocation.REPLACE_INVOCATION) {
-			injectEngineXCall(injectedMethod, localArgPositions, owner, name,
-					desc);
-			Method enginexMethod = new Method(injectedMethod.getMethodName(),
-					injectedMethod.getDescriptor());
-
-			Type injectionMethodReturnTypes = enginexMethod.getReturnType();
-
-			if (!TypeCheckUtil.isAssignable(injectionMethodReturnTypes,
-					Type.getReturnType(desc),
-					classVisitor.getCommonSuperClassUtil())) {
-				fatal(injectedMethod,
-						String.format(
-								"Type mismatch: @XLocation.REPLACE_INVOCATION requires that the return type %s of the injected method %s is assignable to the return type %s of the replaced method invocation to method %s.",
-								JRTraceNameUtil
-										.getExternalName(injectionMethodReturnTypes
-												.getClassName()),
-								injectedMethod.getMethodName(), JRTraceNameUtil
-										.getExternalName(Type.getReturnType(
-												desc).getClassName()), name));
+		for (JRTraceMethodMetadata injectedMethod : injectedMethodsMap
+				.get(XLocation.PUTFIELD)) {
+			if (injectedMethod.matchesField(owner, name)) {
+				if (((opcode == Opcodes.PUTFIELD || opcode == Opcodes.PUTSTATIC)))
+					injectEngineXCall(injectedMethod);
 			}
-		} else {
-			moveCallArgumentsFromLocalsToStack(desc, invokedMethodStatic,
-					localArgPositions);
-			super.visitMethodInsn(opcode, owner, name, desc, itf);
-			// TODO return replace
 		}
-		if (injectedMethod.getInjectLocation() == XLocation.AFTER_INVOCATION) {
-			injectEngineXCall(injectedMethod, localArgPositions, owner, name,
-					desc);
-		}
+
 	}
 
 	/**
@@ -271,9 +301,9 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 
 	@Override
 	protected void onMethodExit(int opcode) {
-		for (JRTraceMethodMetadata injectedMethod : injectedMethods) {
-			if (injectedMethod.getInjectLocation() == XLocation.EXIT
-					&& opcode == targetReturnType.getOpcode(Opcodes.IRETURN)) {
+		for (JRTraceMethodMetadata injectedMethod : injectedMethodsMap
+				.get(XLocation.EXIT)) {
+			if (opcode == targetReturnType.getOpcode(Opcodes.IRETURN)) {
 				injectEngineXCall(injectedMethod);
 			}
 		}
