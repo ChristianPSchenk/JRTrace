@@ -3,8 +3,10 @@
  **/
 package de.schenk.jrtrace.helper;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.GenericDeclaration;
+import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,7 +38,8 @@ public class JRTraceMethodMetadata {
 	 */
 	private String parameters;
 
-	public JRTraceMethodMetadata(JRTraceClassMetadata md, String name, String desc) {
+	public JRTraceMethodMetadata(JRTraceClassMetadata md, String name,
+			String desc) {
 		this.name = name;
 		this.parameters = desc;
 		this.parent = md;
@@ -180,29 +183,50 @@ public class JRTraceMethodMetadata {
 	 *         in the transformation scope of this enginexmethod
 	 */
 	public boolean mayMatch(Class<?> theclass) {
-		Method[] methods = null;
+
+		Member[] methods = null;
+		Member[] constructors = null;
 		try {
+			constructors = theclass.getDeclaredConstructors();
 			methods = theclass.getDeclaredMethods();
+
 		} catch (NoClassDefFoundError e) {
 			JRLog.error("getDeclaredMethods failed on Class<?> "
 					+ theclass
 					+ " with NoClassDefFoundError. The class can anyway probably not load and will therefore be ignored. Known cases when this happens: DynamicImport-Package in Osgi (probably also optional dependencies.)");
 			return false;
 		}
+
 		for (int i = 0; i < methods.length; i++) {
-			String name = methods[i].getName();
+			Member theMethod = methods[i];
+			String name = theMethod.getName();
 			if (mayMatchMethodName(name)) {
-				Method theMethod = methods[i];
-				String[] ptypesStrings = getParameterList(theMethod);
-				int modifiers;
-				if (mayMatchParameters(ptypesStrings)) {
-					modifiers = theMethod.getModifiers();
-					boolean modifierresult = mayMatchModifier(modifiers);
-					if (modifierresult)
-						return modifierresult;
-				}
+				if (mayMatchMethod(theMethod))
+					return true;
+			}
+
+		}
+		for (int i = 0; i < constructors.length; i++) {
+			Member theMethod = constructors[i];
+			if (mayMatchMethodName("<init>")) {
+				if (mayMatchMethod(theMethod))
+					return true;
 			}
 		}
+		return false;
+	}
+
+	public boolean mayMatchMethod(Member theMethod) {
+
+		String[] ptypesStrings = getParameterList((GenericDeclaration) theMethod);
+		int modifiers;
+		if (mayMatchParameters(ptypesStrings)) {
+			modifiers = theMethod.getModifiers();
+			boolean modifierresult = mayMatchModifier(modifiers);
+			if (modifierresult)
+				return true;
+		}
+
 		return false;
 	}
 
@@ -262,8 +286,8 @@ public class JRTraceMethodMetadata {
 	 * @param theMethod
 	 * @return a string array containing the parameters of this method
 	 */
-	private String[] getParameterList(Method theMethod) {
-		Class<?>[] ptypes = theMethod.getParameterTypes();
+	private String[] getParameterList(GenericDeclaration theMethod) {
+		TypeVariable<?>[] ptypes = theMethod.getTypeParameters();
 		String[] ptypesStrings = new String[ptypes.length];
 		for (int j = 0; j < ptypes.length; j++) {
 			ptypesStrings[j] = ptypes[j].getName();
