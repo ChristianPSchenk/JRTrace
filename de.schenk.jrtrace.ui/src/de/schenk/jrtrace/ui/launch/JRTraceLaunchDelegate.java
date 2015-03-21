@@ -11,6 +11,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
@@ -115,10 +116,23 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 
 			boolean uploadHelperOnConnect = launch.getLaunchConfiguration()
 					.getAttribute(ConnectionTab.BM_AUTOUPLOAD, false);
-			JRTraceDebugTarget dbt = new JRTraceDebugTarget(machine, launch,
-					theProject, uploadHelperOnConnect);
+			final JRTraceDebugTarget dbt = new JRTraceDebugTarget(machine,
+					launch, theProject, uploadHelperOnConnect);
 
 			launch.addDebugTarget(dbt);
+
+			machine.addFailListener(new Runnable() {
+
+				@Override
+				public void run() {
+					try {
+						dbt.disconnect();
+					} catch (DebugException e) {
+						throw new RuntimeException(e);
+					}
+
+				}
+			});
 
 			return true;
 

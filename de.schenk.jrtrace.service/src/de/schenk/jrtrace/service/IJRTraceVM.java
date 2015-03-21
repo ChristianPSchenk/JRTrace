@@ -96,6 +96,13 @@ public interface IJRTraceVM {
 
 	void addClientListener(String notifyId, NotificationListener streamReceiver);
 
+	/**
+	 * Add a listener that will be informed on connection loss.
+	 * 
+	 * @param r
+	 */
+	void addFailListener(Runnable r);
+
 	void removeClientListener(String notifyId,
 			NotificationListener errorstreamReceiver);
 

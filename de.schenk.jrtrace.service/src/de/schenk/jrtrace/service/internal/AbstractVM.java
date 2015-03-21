@@ -14,8 +14,10 @@ import javax.management.InstanceNotFoundException;
 import javax.management.JMX;
 import javax.management.ListenerNotFoundException;
 import javax.management.MBeanServerConnection;
+import javax.management.Notification;
 import javax.management.NotificationListener;
 import javax.management.ObjectName;
+import javax.management.remote.JMXConnectionNotification;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
@@ -46,6 +48,25 @@ abstract public class AbstractVM implements IJRTraceVM {
 			return true;
 
 		}
+	}
+
+	@Override
+	public void addFailListener(final Runnable r) {
+
+		jmxc.addConnectionNotificationListener(new NotificationListener() {
+
+			@Override
+			public void handleNotification(Notification notification,
+					Object handback) {
+
+				JMXConnectionNotification not = (JMXConnectionNotification) notification;
+				if (not.getType().equals(JMXConnectionNotification.FAILED)) {
+					r.run();
+				}
+
+			}
+		}, null, null);
+
 	}
 
 	/**
@@ -319,4 +340,5 @@ abstract public class AbstractVM implements IJRTraceVM {
 		mxbeanListener.removeClientListener(notifyId, listener);
 
 	}
+
 }
