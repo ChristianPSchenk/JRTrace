@@ -262,12 +262,14 @@ There is no restrictions on changes to the classes (e.g. including/removing stat
 
 <h4>Run a Method on a JRTrace Class</h4>
 
-<p>It is possible to explicitly invoke a static method without arguments on any 
+<p>It is possible to explicitly invoke a method without arguments on any 
 JRTrace class using the <img src="pics/run_java_16.gif"/>-menu/toolbar. A dialog will ask for the name of the JRTrace class
-(fully qualified name), the name of the method to invoke (a static method without parameters!). Optionally it is also possible to
+(fully qualified name), the name of the method to invoke (a method without parameters!). Optionally it is also possible to
 specify the name of a class to use to obtain the classloader. This is only relevant if the <code>classloaderpolicy</code> of the specified
 JRTrace class is <code>TARGET</code>. In this case it will be used to determine the classloader to use. For policies <code>BOOT</code> and <code>NAMED</code>
 the classloader is determined from the JRTrace class as specified (boot classloader or named classloader).
+
+<p>The classes/objects on which the code is invoked are created in the manner as for normal JRTrace instrumentations. </p>
 
 
  

@@ -4,6 +4,7 @@
 package de.schenk.jrtrace.helperagent.internal;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import de.schenk.jrtrace.helper.InstrumentationUtil;
 import de.schenk.jrtrace.helper.JRTraceHelper;
@@ -35,11 +36,22 @@ public class RunJavaCommand {
 						"Unable to obtain class %s for execution.", mainClass));
 			}
 			final Method method = gclClass.getMethod(mainMethod);
+			if (method == null) {
+				System.err.println("Method " + mainMethod + " not found.");
+				return;
+			}
+			final Object targetObject;
+			if (!Modifier.isStatic(method.getModifiers())) {
+				targetObject = JRTraceHelper.getEngineXObject(mainClass,
+						JRTraceHelper.getCurrentClassSetId(), classLoader);
+			} else {
+				targetObject = null;
+			}
 			Thread runnerThread = new Thread("runJRTRaceCode") {
 				@Override
 				public void run() {
 					try {
-						method.invoke(null);
+						method.invoke(targetObject);
 					} catch (Throwable e) {
 						// currently no feedback to jrtrace UI. Just report
 						// anything on the console.

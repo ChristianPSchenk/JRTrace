@@ -22,6 +22,8 @@ public class RunJavaPage extends WizardPage {
 
 	private LastChoicesCombo runMethod;
 
+	private boolean noupdate;
+
 	public RunJavaPage() {
 		super("Run Java");
 		setTitle("Run Java");
@@ -41,28 +43,6 @@ public class RunJavaPage extends WizardPage {
 		GridLayout gl = new GridLayout(3, false);
 
 		box.setLayout(gl);
-
-		{
-
-			Label description = new Label(box, SWT.NONE);
-			description.setText("Classloader-Class:");
-			description
-					.setToolTipText("Enter the fully qualified name of any class. The classloader of this class will be used to execute the java code. Empty will use the root classloader");
-			clc = new LastChoicesCombo(box, SWT.NONE, "classloader");
-			GridData gd = new GridData();
-			gd.horizontalSpan = 2;
-			gd.grabExcessHorizontalSpace = true;
-			gd.horizontalAlignment = SWT.FILL;
-			clc.setLayoutData(gd);
-			clc.addModifyListener(new ModifyListener() {
-
-				@Override
-				public void modifyText(ModifyEvent e) {
-					updateWizardModel();
-
-				}
-			});
-		}
 
 		{
 
@@ -106,21 +86,58 @@ public class RunJavaPage extends WizardPage {
 				}
 			});
 		}
+
+		{
+
+			Label info = new Label(box, SWT.NONE);
+			GridData infogd = new GridData();
+			infogd.verticalSpan = 1;
+			infogd.horizontalSpan = 3;
+			info.setLayoutData(infogd);
+			info.setText("Only required to execute code from classes that use XClassloaderPolicy.TARGET:");
+			Label description = new Label(box, SWT.NONE);
+			description.setText("Classloader-Class:");
+			description
+					.setToolTipText("Only required if the invoked class is of XClassLoaderPolicy.TARGET type. Specify the fully qualified name of the class that is used to get the classloader for executing the code.");
+			clc = new LastChoicesCombo(box, SWT.NONE, "classloader");
+			GridData gd = new GridData();
+			gd.horizontalSpan = 2;
+			gd.grabExcessHorizontalSpace = true;
+			gd.horizontalAlignment = SWT.FILL;
+			clc.setLayoutData(gd);
+			clc.addModifyListener(new ModifyListener() {
+
+				@Override
+				public void modifyText(ModifyEvent e) {
+					updateWizardModel();
+
+				}
+			});
+		}
+
 		setControl(box);
 
 		updatePageControls();
 		restoreSettings();
 	}
 
-	private void updatePageControls() {
+	/**
+	 * Updates the page with the current settings from the wizard model
+	 */
+	protected void updatePageControls() {
 
-		clc.setText(getRunJavaWizard().getTheClassLoader());
+		noupdate = true;
 		mainclass.setText(getRunJavaWizard().getMainClass());
 		runMethod.setText(getRunJavaWizard().getRunMethod());
+		clc.setText(getRunJavaWizard().getTheClassLoader());
+		noupdate = false;
+		updateWizardModel();
 
 	}
 
 	private void updateWizardModel() {
+		if (noupdate)
+			return;
 		setErrorMessage(null);
 		boolean complete = true;
 
@@ -128,14 +145,14 @@ public class RunJavaPage extends WizardPage {
 
 		if (mainclass.getText().isEmpty()) {
 			setErrorMessage("Plesae specify the main class to run.");
-			getRunJavaWizard().setMainClass("");
+
 			complete = false;
 		} else
 			getRunJavaWizard().setMainClass(mainclass.getText());
 
 		if (runMethod.getText().isEmpty()) {
 			setErrorMessage("Please specify the name of the static method to run.");
-			getRunJavaWizard().setRunMethod("");
+
 			complete = false;
 		} else
 			getRunJavaWizard().setRunMethod(runMethod.getText());
@@ -143,6 +160,9 @@ public class RunJavaPage extends WizardPage {
 		setPageComplete(complete);
 	}
 
+	/**
+	 * restores the stored/persistet settings to the controls
+	 */
 	private void restoreSettings() {
 		clc.restoreSettings();
 		mainclass.restoreSettings();
@@ -152,6 +172,9 @@ public class RunJavaPage extends WizardPage {
 		getRunJavaWizard().setRunMethod(runMethod.getText());
 	}
 
+	/**
+	 * stores the settings of the controls for the next session
+	 */
 	public void storeSettings() {
 		clc.storeSettings();
 		mainclass.storeSettings();

@@ -14,8 +14,8 @@ public class RunJavaWizard extends Wizard {
 
 	private String theClassLoader = "";
 	private RunJavaPage scriptPage;
-	private String mainClass;
-	private String runMethod;
+	private String mainClass = "";
+	private String runMethod = "";
 
 	String getTheClassLoader() {
 		return theClassLoader;
@@ -66,7 +66,9 @@ public class RunJavaWizard extends Wizard {
 	}
 
 	public void setMainClass(String text) {
-		this.mainClass = text;
+		if (text != null) {
+			this.mainClass = text;
+		}
 
 	}
 
@@ -80,6 +82,14 @@ public class RunJavaWizard extends Wizard {
 
 	public void setRunMethod(String text) {
 		this.runMethod = text;
+
+	}
+
+	public void setSelection(String className, String functionName) {
+
+		setMainClass(className);
+		setRunMethod(functionName);
+		scriptPage.updatePageControls();
 
 	}
 }
