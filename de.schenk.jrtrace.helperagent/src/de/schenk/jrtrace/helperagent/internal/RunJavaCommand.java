@@ -35,7 +35,7 @@ public class RunJavaCommand {
 				throw new RuntimeException(String.format(
 						"Unable to obtain class %s for execution.", mainClass));
 			}
-			final Method method = gclClass.getMethod(mainMethod);
+			final Method method = gclClass.getDeclaredMethod(mainMethod);
 			if (method == null) {
 				System.err.println("Method " + mainMethod + " not found.");
 				return;
@@ -51,6 +51,7 @@ public class RunJavaCommand {
 				@Override
 				public void run() {
 					try {
+						method.setAccessible(true);
 						method.invoke(targetObject);
 					} catch (Throwable e) {
 						// currently no feedback to jrtrace UI. Just report
@@ -63,11 +64,12 @@ public class RunJavaCommand {
 			runnerThread.start();
 
 		} catch (NoSuchMethodException e) {
-			throw new RuntimeException(e);
+			System.err.println("The method " + mainMethod
+					+ " wasn't found in the class " + mainClass);
 		} catch (SecurityException e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
 
 	}

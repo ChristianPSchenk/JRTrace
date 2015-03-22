@@ -58,15 +58,13 @@ public class RunJavaHandler extends AbstractHandler implements IHandler {
 			IStructuredSelection currentStructuredSelection = (IStructuredSelection) currentSelection;
 			Object element = currentStructuredSelection.getFirstElement();
 			if (element instanceof IMember) {
-				System.out.println("Identified from selection");
-				System.out.println(element);
+
 				return (IMember) element;
 			}
 			Object adapted = Platform.getAdapterManager().getAdapter(element,
 					IMember.class);
 			if (adapted != null) {
-				System.out.println("Identified from adapted selection");
-				System.out.println(element);
+
 				return (IMember) element;
 			}
 		}
@@ -83,8 +81,7 @@ public class RunJavaHandler extends AbstractHandler implements IHandler {
 						.getOffset());
 				if (selected != null
 						&& selected.getElementType() == IJavaElement.METHOD) {
-					System.out.println("IDentified member from Editor");
-					System.out.println((IMethod) selected);
+
 					return (IMethod) selected;
 				}
 			} catch (JavaModelException e) {
@@ -93,7 +90,6 @@ public class RunJavaHandler extends AbstractHandler implements IHandler {
 
 		}
 
-		System.out.println("no IMember active");
 		return null;
 	}
 

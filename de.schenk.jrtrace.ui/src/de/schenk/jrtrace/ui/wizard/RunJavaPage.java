@@ -3,18 +3,136 @@
  **/
 package de.schenk.jrtrace.ui.wizard;
 
+import java.util.HashSet;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.search.IJavaSearchConstants;
+import org.eclipse.jdt.core.search.IJavaSearchScope;
+import org.eclipse.jdt.core.search.SearchEngine;
+import org.eclipse.jdt.core.search.SearchMatch;
+import org.eclipse.jdt.core.search.SearchParticipant;
+import org.eclipse.jdt.core.search.SearchPattern;
+import org.eclipse.jdt.core.search.SearchRequestor;
+import org.eclipse.jdt.ui.IJavaElementSearchConstants;
+import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.ui.dialogs.SelectionDialog;
 
 import de.schenk.jrtrace.ui.Activator;
 
 public class RunJavaPage extends WizardPage {
+
+	public class TypeSelection extends SelectionAdapter {
+
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+
+			IJavaSearchScope scope = SearchEngine.createWorkspaceScope();
+			try {
+				SelectionDialog typeDialog = JavaUI.createTypeDialog(
+						mainclass.getShell(), null,
+
+						scope, IJavaElementSearchConstants.CONSIDER_CLASSES,
+						false, "*", null);
+				int result = typeDialog.open();
+				if (result == SelectionDialog.OK) {
+					Object[] o = typeDialog.getResult();
+					if (o.length < 1) {
+						return;
+					}
+					if (o[0] instanceof IType) {
+						IType theType = (IType) (o[0]);
+						mainclass.setText(theType.getFullyQualifiedName());
+					}
+				}
+
+			} catch (JavaModelException e1) {
+				throw new RuntimeException(e1);
+			}
+
+		}
+	}
+
+	public class MethodSelection extends SelectionAdapter {
+
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+
+			final HashSet<IType> foundTypes = new HashSet<IType>();
+			findTypesMatchingTheClassName(foundTypes);
+
+			HashSet<IMethod> foundMethods = new HashSet<IMethod>();
+			for (IType t : foundTypes) {
+				IMethod[] methods;
+				try {
+					methods = t.getMethods();
+				} catch (JavaModelException e1) {
+					throw new RuntimeException(e1);
+				}
+				for (IMethod method : methods) {
+					try {
+						if (method.getNumberOfParameters() == 0
+								&& !method.isConstructor()) {
+							foundMethods.add(method);
+						}
+					} catch (JavaModelException e1) {
+						throw new RuntimeException(e1);
+					}
+				}
+
+			}
+
+			FilteredMethodsSelectionDialog dialog = new FilteredMethodsSelectionDialog(
+					runMethod.getShell(), getRunJavaWizard().getMainClass(),
+					foundMethods);
+			int status = dialog.open();
+			if (status == dialog.OK) {
+				Object[] result = dialog.getResult();
+				if (result.length > 0) {
+					IMethod method = (IMethod) result[0];
+					runMethod.setText(method.getElementName());
+				}
+
+			}
+
+		}
+
+		public void findTypesMatchingTheClassName(
+				final HashSet<IType> foundTypes) {
+			SearchPattern types = SearchPattern.createPattern(
+					getRunJavaWizard().getMainClass(),
+					IJavaSearchConstants.TYPE,
+					IJavaSearchConstants.DECLARATIONS,
+					SearchPattern.R_EXACT_MATCH);
+			IJavaSearchScope scope = SearchEngine.createWorkspaceScope();
+			SearchRequestor requestor = new SearchRequestor() {
+				public void acceptSearchMatch(SearchMatch match) {
+					foundTypes.add((IType) match.getElement());
+				}
+			};
+			SearchEngine engine = new SearchEngine();
+			try {
+				engine.search(types, new SearchParticipant[] { SearchEngine
+						.getDefaultSearchParticipant() }, scope, requestor,
+						null);
+			} catch (CoreException e1) {
+				throw new RuntimeException(e1);
+			}
+		}
+	}
 
 	private LastChoicesCombo clc;
 
@@ -46,10 +164,11 @@ public class RunJavaPage extends WizardPage {
 
 		{
 
-			Label description = new Label(box, SWT.NONE);
-			description.setText("Main-Class:");
+			Link description = new Link(box, SWT.NONE);
+			description.setText("<A>Invoked Class</A>:");
+			description.addSelectionListener(new TypeSelection());
 			description
-					.setToolTipText("The fully qualified name of the 'Main' class");
+					.setToolTipText("The fully qualified name of the JRTrace class on which to invoke code.");
 			mainclass = new LastChoicesCombo(box, SWT.NONE, "mainclass");
 			GridData gd = new GridData();
 			gd.horizontalSpan = 2;
@@ -67,10 +186,11 @@ public class RunJavaPage extends WizardPage {
 		}
 		{
 
-			Label description = new Label(box, SWT.NONE);
-			description.setText("Run-Method:");
+			Link description = new Link(box, SWT.NONE);
+			description.setText("<A>Invoked Method:</A>");
+			description.addSelectionListener(new MethodSelection());
 			description
-					.setToolTipText("The name of the static method in the main class to invoke");
+					.setToolTipText("The name of the no-argument method that will be invoked");
 			runMethod = new LastChoicesCombo(box, SWT.NONE, "runmethod");
 			GridData gd = new GridData();
 			gd.horizontalSpan = 2;
