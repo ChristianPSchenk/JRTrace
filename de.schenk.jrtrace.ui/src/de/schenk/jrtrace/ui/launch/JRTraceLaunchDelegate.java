@@ -10,7 +10,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -125,11 +127,22 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 
 				@Override
 				public void run() {
-					try {
-						dbt.disconnect();
-					} catch (DebugException e) {
-						throw new RuntimeException(e);
-					}
+
+					Job disconnector = new Job(
+							"Connection Fail. Terminating Connection.") {
+
+						@Override
+						protected IStatus run(IProgressMonitor monitor) {
+							try {
+								dbt.disconnect();
+							} catch (DebugException e) {
+								throw new RuntimeException(e);
+							}
+							return Status.OK_STATUS;
+						}
+
+					};
+					disconnector.schedule(0);
 
 				}
 			});
