@@ -25,7 +25,7 @@ public class RunJavaWizard extends Wizard {
 
 	public RunJavaWizard() {
 
-		this.setWindowTitle("Execute static void method on any JRTrace Class");
+		this.setWindowTitle("Execute Method on JRTrace Class");
 
 	}
 
