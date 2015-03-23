@@ -24,7 +24,7 @@ import org.eclipse.jdt.ui.jarpackager.JarPackageData;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.widgets.Shell;
 
-import de.schenk.jrtrace.ui.Activator;
+import de.schenk.jrtrace.ui.JRTraceUIActivator;
 import de.schenk.jrtrace.ui.handler.FileCollector;
 
 public class JarUtil {
@@ -89,11 +89,11 @@ public class JarUtil {
 			new ProgressMonitorDialog(parentShell).run(true, true, runnable);
 		} catch (InvocationTargetException e) {
 			IStatus status = runnable.getStatus();
-			Activator.getInstance().getLog().log(status);
+			JRTraceUIActivator.getInstance().getLog().log(status);
 			throw new RuntimeException("Error during jar creation.", e);
 		} catch (InterruptedException e) {
 			IStatus status = runnable.getStatus();
-			Activator.getInstance().getLog().log(status);
+			JRTraceUIActivator.getInstance().getLog().log(status);
 			throw new RuntimeException("Error during jar creation.", e);
 		}
 		return description.getAbsoluteJarLocation().toFile();

@@ -273,14 +273,14 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 				@Override
 				public void run() {
 					MultiStatus m = new MultiStatus(
-							de.schenk.jrtrace.ui.Activator.BUNDLE_ID,
+							de.schenk.jrtrace.ui.JRTraceUIActivator.BUNDLE_ID,
 							IStatus.ERROR, "Error during java call.", machine
 									.getLastError());
 					if (machine.getLastError() instanceof UndeclaredThrowableException) {
 						UndeclaredThrowableException t = (UndeclaredThrowableException) machine
 								.getLastError();
 						m.add(new Status(IStatus.ERROR,
-								de.schenk.jrtrace.ui.Activator.BUNDLE_ID,
+								de.schenk.jrtrace.ui.JRTraceUIActivator.BUNDLE_ID,
 								"Undeclared Throwable:", t
 										.getUndeclaredThrowable()));
 
@@ -311,7 +311,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 						"The connection to the target machine " + pid
 								+ " is broken. Disconnecting from target.",
 						new Status(IStatus.ERROR,
-								de.schenk.jrtrace.ui.Activator.BUNDLE_ID,
+								de.schenk.jrtrace.ui.JRTraceUIActivator.BUNDLE_ID,
 								"Connection to target lost.", machine
 										.getLastError()));
 

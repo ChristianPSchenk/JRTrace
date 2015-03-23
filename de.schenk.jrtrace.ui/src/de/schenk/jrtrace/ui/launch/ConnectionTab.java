@@ -3,6 +3,8 @@
  **/
 package de.schenk.jrtrace.ui.launch;
 
+import java.util.HashSet;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -36,6 +38,7 @@ import de.schenk.jrtrace.helper.NetworkUtil;
 import de.schenk.jrtrace.jdk.init.Activator;
 import de.schenk.jrtrace.service.JRTraceControllerService;
 import de.schenk.jrtrace.service.JarLocator;
+import de.schenk.jrtrace.ui.JRTraceUIActivator;
 
 public class ConnectionTab extends AbstractLaunchConfigurationTab {
 
@@ -243,11 +246,22 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 				public void widgetSelected(SelectionEvent e) {
 					ElementListSelectionDialog selectRules = new ElementListSelectionDialog(
 							box.getShell(), new WorkbenchLabelProvider());
-					selectRules.setElements(ResourcesPlugin.getWorkspace()
-							.getRoot().getProjects(0));
-					selectRules.setTitle("Rules and Helper Project Selection");
+					IProject[] projects = ResourcesPlugin.getWorkspace()
+							.getRoot().getProjects(0);
+
+					HashSet<IProject> targetProjects = new HashSet<IProject>();
+
+					for (IProject p : projects) {
+						if (isJRTraceProject(p)) {
+							targetProjects.add(p);
+						}
+					}
+
+					selectRules.setElements(targetProjects
+							.toArray(new IProject[0]));
+					selectRules.setTitle("JRTrace Project Selection");
 					selectRules
-							.setMessage("Select the project that will hold the rules and helper jar files that you need for this launch configuration.");
+							.setMessage("Select the JRTrace Project that will be used to instrument the Target JVM.");
 					selectRules.setMultipleSelection(false);
 					selectRules.open();
 
@@ -258,8 +272,23 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 						setDirty();
 					}
 				}
+
 			});
 		}
+	}
+
+	private boolean isJRTraceProject(IProject p) {
+		try {
+			String[] natureIds = p.getDescription().getNatureIds();
+			for (String id : natureIds) {
+				if (id.equals(JRTraceUIActivator.NATURE_ID)) {
+					return true;
+				}
+			}
+		} catch (CoreException e) {
+			throw new RuntimeException(e);
+		}
+		return false;
 	}
 
 	private void createPortText(final Composite box) {

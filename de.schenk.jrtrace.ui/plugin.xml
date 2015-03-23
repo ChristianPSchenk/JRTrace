@@ -35,28 +35,69 @@
             type="de.schenk.jrtrace.ui.launch">
       </launchConfigurationTabGroup>
    </extension>
+   <extension point="org.eclipse.debug.ui.launchShortcuts">
+    <shortcut
+        id="de.schenk.jrtrace.launchshortcut"
+        class="de.schenk.jrtrace.ui.launch.JRTraceLaunchShortcut"
+        label="JRTrace Session"
+        icon="icons/jrtrace_icon_16px.gif"
+        modes="run, debug">
+           
+            <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+                <iterate>
+                 <and>
+                 
+	
+<adapt type="org.eclipse.core.resources.IProject"> 
+	<test property="org.eclipse.core.resources.projectNature" value="de.schenk.jrtrace.nature.id"/> 
+</adapt>
+               
+                 </and>
+                </iterate>
+               </with>
+           </enablement>
+  		 </contextualLaunch>
+         <configurationType
+               id="de.schenk.jrtrace.ui.launch">
+         </configurationType>
+    </shortcut>
+</extension>
    <extension
          point="org.eclipse.ui.menus">
       
       <menuContribution
             allPopups="false"
-            locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
+            locationURI="popup:org.eclipse.ui.projectConfigure">
          <command
-               commandId="de.schenk.jrtrace.ui.commands.installhelperjar"
-               icon="icons/run_java_16.gif"
-               id="de.schenk.jrtrace.ui.popup.runjava"
-               label="Run static method of a JRTrace class"
+               commandId="de.schenk.jrtrace.ui.commands.convert2jrtrace"
+               icon="icons/jrtrace_icon_16px.gif"
+               id="de.schenk.jrtrace.ui.menu.convert2jrtrace"
+               label="Convert to JRTrace Project"
                style="push">
-            <visibleWhen>
-               <iterate
-                     ifEmpty="false">
-                  <with
-                        variable="jrtraceSessionActive">
-                     <equals
-                           value="true">
-                     </equals>
-                  </with>
-               </iterate>
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <count
+                        value="1">
+                  </count>
+                  <iterate>
+                     <and>
+                        <not>
+                           <adapt
+                                 type="org.eclipse.core.resources.IProject">
+                              <test
+                                    property="org.eclipse.core.resources.projectNature"
+                                    value="de.schenk.jrtrace.nature.id">
+                              </test>
+                           </adapt>
+                        </not>
+                     </and>
+                  </iterate>
+               </with>
             </visibleWhen>
          </command>
       </menuContribution>
@@ -168,6 +209,13 @@
             id="de.schenk.jrtrace.ui.commands.runenginex"
             name="Run Project as JRTrace project in Target">
       </command>
+            <command
+                  categoryId="de.schenk.jrtrace.ui.category"
+                  defaultHandler="de.schenk.jrtrace.ui.handler.ConvertJRTraceHandler"
+                  description="Converts this project to a JRTrace Project"
+                  id="de.schenk.jrtrace.ui.commands.convert2jrtrace"
+                  name="Convert to JRTrace Project">
+            </command>
    
    </extension>
    <extension
@@ -263,5 +311,15 @@
          </enablement>
     </consolePageParticipant>
  </extension>
+ <extension
+ 
+      point="org.eclipse.core.resources.natures"
+      id="de.schenk.jrtrace.nature.id"
+      name="JRTrace Nature">
+      <runtime>
+         <run class="de.schenk.jrtrace.JRTraceNature">
+         </run>
+      </runtime>
+   </extension>
 
 </plugin>

@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.dialogs.SelectionDialog;
 
-import de.schenk.jrtrace.ui.Activator;
+import de.schenk.jrtrace.ui.JRTraceUIActivator;
 import de.schenk.jrtrace.ui.debug.JRTraceDebugTarget;
 import de.schenk.jrtrace.ui.launch.JRTraceLaunchUtils;
 
@@ -225,7 +225,7 @@ public class RunJavaPage extends WizardPage {
 		super("Run Java");
 		setTitle("Run Java");
 		setDescription("Select the java project and the class loader to use for it.");
-		setImageDescriptor(Activator.getInstance().getDescriptor(
+		setImageDescriptor(JRTraceUIActivator.getInstance().getDescriptor(
 				"jrtrace_icon_48px.gif"));
 
 	}
@@ -428,7 +428,7 @@ public class RunJavaPage extends WizardPage {
 		getRunJavaWizard().setTheClassLoader(clc.getText());
 		getRunJavaWizard().setMainClass(mainclass.getText());
 		getRunJavaWizard().setRunMethod(runMethod.getText());
-		IDialogSettings settings = Activator.getInstance().getDialogSettings();
+		IDialogSettings settings = JRTraceUIActivator.getInstance().getDialogSettings();
 		String storedLaunchName = settings.get("runjava.targetmachine");
 		if (storedLaunchName != null) {
 			List<JRTraceDebugTarget> targets = getJRTraceTargets();
@@ -449,7 +449,7 @@ public class RunJavaPage extends WizardPage {
 	 */
 	public void storeSettings() {
 
-		IDialogSettings settings = Activator.getInstance().getDialogSettings();
+		IDialogSettings settings = JRTraceUIActivator.getInstance().getDialogSettings();
 		settings.put("runjava.targetmachine", targetMachine.getCombo()
 				.getText());
 		clc.storeSettings();

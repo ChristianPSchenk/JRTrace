@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,7 +35,7 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 
-import de.schenk.jrtrace.ui.Activator;
+import de.schenk.jrtrace.ui.JRTraceUIActivator;
 import de.schenk.jrtrace.ui.java.JRTraceClassPathContainer;
 
 public class JRTraceProjectCreationJob extends Job {
@@ -93,13 +94,7 @@ public class JRTraceProjectCreationJob extends Job {
 		project.create(progressMonitor);
 		project.open(progressMonitor);
 
-		IProjectDescription description = project.getDescription();
-		String[] natures = description.getNatureIds();
-		String[] newNatures = new String[natures.length + 1];
-		System.arraycopy(natures, 0, newNatures, 0, natures.length);
-		newNatures[natures.length] = JavaCore.NATURE_ID;
-		description.setNatureIds(newNatures);
-		project.setDescription(description, progressMonitor);
+		addJRTraceNature(progressMonitor, project);
 
 		IJavaProject javaProject = JavaCore.create(project);
 
@@ -143,6 +138,20 @@ public class JRTraceProjectCreationJob extends Job {
 				progressMonitor);
 	}
 
+	public void addJRTraceNature(IProgressMonitor progressMonitor,
+			IProject project) throws CoreException {
+		IProjectDescription description = project.getDescription();
+		String[] natures = description.getNatureIds();
+		Set<String> newNatures = new HashSet<String>();
+		newNatures.addAll(Arrays.asList(natures));
+
+		newNatures.add(JavaCore.NATURE_ID);
+		newNatures.add(JRTraceUIActivator.NATURE_ID);
+
+		description.setNatureIds(newNatures.toArray(new String[0]));
+		project.setDescription(description, progressMonitor);
+	}
+
 	private void createSampleHelperLib(IJavaProject javaProject,
 			IFolder sourceFolder) throws JavaModelException {
 		IPackageFragment pack = javaProject
@@ -179,10 +188,11 @@ public class JRTraceProjectCreationJob extends Job {
 	}
 
 	private void showError(final String message, final Exception e) {
-		Activator
+		JRTraceUIActivator
 				.getInstance()
 				.getLog()
-				.log(new Status(IStatus.ERROR, Activator.BUNDLE_ID, message, e));
+				.log(new Status(IStatus.ERROR, JRTraceUIActivator.BUNDLE_ID,
+						message, e));
 		Display.getDefault().asyncExec(new Runnable() {
 
 			@Override

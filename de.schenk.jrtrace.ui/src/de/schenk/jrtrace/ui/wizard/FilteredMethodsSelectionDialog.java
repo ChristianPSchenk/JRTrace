@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 
-import de.schenk.jrtrace.ui.Activator;
+import de.schenk.jrtrace.ui.JRTraceUIActivator;
 
 public class FilteredMethodsSelectionDialog extends
 		FilteredItemsSelectionDialog {
@@ -92,7 +92,7 @@ public class FilteredMethodsSelectionDialog extends
 
 	@Override
 	protected IDialogSettings getDialogSettings() {
-		IDialogSettings settings = Activator.getInstance().getDialogSettings();
+		IDialogSettings settings = JRTraceUIActivator.getInstance().getDialogSettings();
 		IDialogSettings section = settings.getSection(METHOD_SETTINGS_ID);
 		if (section == null) {
 			section = settings.addNewSection(METHOD_SETTINGS_ID);

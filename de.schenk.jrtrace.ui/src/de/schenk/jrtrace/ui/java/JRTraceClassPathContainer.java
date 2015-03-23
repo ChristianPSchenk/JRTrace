@@ -15,7 +15,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 
 import de.schenk.jrtrace.service.JarLocator;
-import de.schenk.jrtrace.ui.Activator;
+import de.schenk.jrtrace.ui.JRTraceUIActivator;
 
 // FIXME: after close and reload teh class path container is gone
 public class JRTraceClassPathContainer implements IClasspathContainer {
@@ -40,12 +40,12 @@ public class JRTraceClassPathContainer implements IClasspathContainer {
 
 			return classPaths;
 		} catch (URISyntaxException | IOException e) {
-			Activator
+			JRTraceUIActivator
 					.getInstance()
 					.getLog()
 					.log(new Status(
 							IStatus.ERROR,
-							Activator.BUNDLE_ID,
+							JRTraceUIActivator.BUNDLE_ID,
 							"Error creating jrtrace classpath entries in JRTraceClassPathContainer",
 							e));
 			return new IClasspathEntry[] {};

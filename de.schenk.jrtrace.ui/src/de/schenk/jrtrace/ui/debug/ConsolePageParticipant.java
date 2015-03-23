@@ -19,7 +19,7 @@ import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.console.IConsolePageParticipant;
 import org.eclipse.ui.part.IPageBookViewPage;
 
-import de.schenk.jrtrace.ui.Activator;
+import de.schenk.jrtrace.ui.JRTraceUIActivator;
 import de.schenk.jrtrace.ui.handler.RunEngineXHandler;
 
 public class ConsolePageParticipant implements IConsolePageParticipant,
@@ -98,7 +98,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 
 			@Override
 			public ImageDescriptor getImageDescriptor() {
-				return Activator.getInstance().getDescriptor(
+				return JRTraceUIActivator.getInstance().getDescriptor(
 						"upload_java_16.gif");
 			}
 
