@@ -112,4 +112,11 @@ public interface IJRTraceVM {
 	 */
 	void abort();
 
+	/**
+	 * 
+	 * @return a string array containing the fully qualified names of all
+	 *         classes.
+	 */
+	String[] getLoadedClasses();
+
 }

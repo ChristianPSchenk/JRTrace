@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -155,8 +154,7 @@ public class JRTraceProjectCreationJob extends Job {
 		data = data.replaceAll("###package###", packageName);
 		data = data.replaceAll("###classname###", className);
 
-		ICompilationUnit cu = pack.createCompilationUnit(className + ".java",
-				data, false, null);
+		pack.createCompilationUnit(className + ".java", data, false, null);
 	}
 
 	private String getResourceAsString(String string) {

@@ -3,12 +3,9 @@
  **/
 package de.schenk.jrtrace.ui.wizard;
 
-import java.util.List;
-
 import org.eclipse.jface.wizard.Wizard;
 
 import de.schenk.jrtrace.ui.debug.JRTraceDebugTarget;
-import de.schenk.jrtrace.ui.launch.JRTraceLaunchUtils;
 
 public class RunJavaWizard extends Wizard {
 
@@ -16,6 +13,7 @@ public class RunJavaWizard extends Wizard {
 	private RunJavaPage scriptPage;
 	private String mainClass = "";
 	private String runMethod = "";
+	private JRTraceDebugTarget debugTarget = null;
 
 	String getTheClassLoader() {
 		return theClassLoader;
@@ -37,15 +35,9 @@ public class RunJavaWizard extends Wizard {
 
 	}
 
-	private List<JRTraceDebugTarget> getJRTraceTargets() {
-		List<JRTraceDebugTarget> jrtraceTargets = JRTraceLaunchUtils
-				.getJRTraceDebugTargets();
-		return jrtraceTargets;
-	}
-
 	public boolean canFinish() {
 		boolean allPagesComplete = super.canFinish();
-		if (allPagesComplete && !getJRTraceTargets().isEmpty())
+		if (allPagesComplete && debugTarget != null)
 			return true;
 
 		return false;
@@ -57,11 +49,8 @@ public class RunJavaWizard extends Wizard {
 
 		scriptPage.storeSettings();
 
-		List<JRTraceDebugTarget> jrtraceTargets = getJRTraceTargets();
+		debugTarget.runJava(theClassLoader, mainClass, runMethod);
 
-		for (JRTraceDebugTarget btarget : jrtraceTargets) {
-			btarget.runJava(theClassLoader, mainClass, runMethod);
-		}
 		return true;
 	}
 
@@ -91,5 +80,14 @@ public class RunJavaWizard extends Wizard {
 		setRunMethod(functionName);
 		scriptPage.updatePageControls();
 
+	}
+
+	public JRTraceDebugTarget getDebugTarget() {
+		return debugTarget;
+	}
+
+	public void setDebugTarget(JRTraceDebugTarget firstElement) {
+
+		debugTarget = firstElement;
 	}
 }

@@ -81,6 +81,11 @@ abstract public class AbstractVM implements IJRTraceVM {
 	}
 
 	@Override
+	public String[] getLoadedClasses() {
+		return mbeanProxy.getLoadedClasses();
+	}
+
+	@Override
 	public void abort() {
 		mbeanProxy.abort();
 

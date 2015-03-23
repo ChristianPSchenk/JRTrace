@@ -3,12 +3,14 @@ package de.schenk.jrtrace.helperagent.internal;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.instrument.Instrumentation;
 import java.util.jar.JarFile;
 
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
 
 import de.schenk.jrtrace.helper.INotificationSender;
+import de.schenk.jrtrace.helper.InstrumentationUtil;
 import de.schenk.jrtrace.helper.JRTraceHelper;
 import de.schenk.jrtrace.helperagent.AgentMain;
 import de.schenk.jrtrace.helperagent.JRTraceMXBean;
@@ -104,5 +106,16 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 	public void abort() {
 		JRTraceHelper.abort();
 
+	}
+
+	@Override
+	public String[] getLoadedClasses() {
+		Instrumentation instr = InstrumentationUtil.getInstrumentation();
+		Class<?>[] loadedClasses = instr.getAllLoadedClasses();
+		String[] loadedClassesNames = new String[loadedClasses.length];
+		for (int i = 0; i < loadedClasses.length; i++) {
+			loadedClassesNames[i] = loadedClasses[i].getName();
+		}
+		return loadedClassesNames;
 	}
 }

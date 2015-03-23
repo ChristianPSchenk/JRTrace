@@ -43,6 +43,16 @@ public interface JRTraceMXBean {
 
 	public void clearEngineX();
 
+	/**
+	 * long running operations (clear, install) can be aborted using this api.
+	 */
 	public void abort();
+
+	/**
+	 * 
+	 * @return an array with the fully qualified names of all classes currently
+	 *         loaded.
+	 */
+	public String[] getLoadedClasses();
 
 }
