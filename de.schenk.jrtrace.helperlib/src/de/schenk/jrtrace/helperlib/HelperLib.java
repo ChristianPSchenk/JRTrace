@@ -6,6 +6,8 @@ package de.schenk.jrtrace.helperlib;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import de.schenk.jrtrace.helper.InstrumentationUtil;
+
 public class HelperLib {
 
 	/**
@@ -21,6 +23,76 @@ public class HelperLib {
 	 */
 	public void setField(Object target, String name, Object value) {
 		ReflectionUtil.setField(target, name, value);
+
+	}
+
+	/**
+	 * Utility method to get the value of an instance variable (even private)
+	 * using reflection.
+	 * 
+	 * @param target
+	 *            the target object or target Class<?> (for static method
+	 *            calls), must not be null.
+	 * @param name
+	 *            the name of the field * @return the value of the field or a
+	 *            RuntimeException object if there was a problem.
+	 * */
+	public Object getField(Object target, String name) {
+		try {
+			Object o = ReflectionUtil.getPrivateField(target,
+					target.getClass(), name);
+			return o;
+		} catch (RuntimeException e) {
+			return e;
+		}
+
+	}
+
+	/**
+	 * Utility method to get the value of a static class variable (even private)
+	 * using reflection.
+	 * 
+	 * @param target
+	 *            the Class<?> for which the field should be fetched.
+	 * @param name
+	 *            the name of the field @ *
+	 * @return the value of the field or a RuntimeException object if there was
+	 *         a problem.
+	 */
+	public Object getField(Class<?> target, String name) {
+		try {
+			Object o = ReflectionUtil.getPrivateField(null, target, name);
+			return o;
+		} catch (RuntimeException e) {
+			return e;
+		}
+
+	}
+
+	/**
+	 * Utility method to get the value of a static class variable (even private)
+	 * using reflection.
+	 * 
+	 * @param target
+	 *            the fully qualified name of the class
+	 * @param name
+	 *            the name of the field
+	 * @return the value of the field or a RuntimeException object if there was
+	 *         a problem.
+	 * */
+	public Object getField(String target, String name) {
+		try {
+			Class<?>[] classes = InstrumentationUtil.getClassesByName(target);
+			if (classes.length != 1) {
+				throw new RuntimeException(
+						String.format("getField: Not exactly one class that matches name "
+								+ target));
+			}
+			Object o = ReflectionUtil.getPrivateField(null, classes[0], name);
+			return o;
+		} catch (RuntimeException e) {
+			return e;
+		}
 
 	}
 
