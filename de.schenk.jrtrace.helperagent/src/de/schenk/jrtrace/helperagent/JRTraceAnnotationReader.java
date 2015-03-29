@@ -11,14 +11,15 @@ import de.schenk.jrtrace.annotations.XInvokeReturn;
 import de.schenk.jrtrace.annotations.XInvokeThis;
 import de.schenk.jrtrace.annotations.XLocation;
 import de.schenk.jrtrace.annotations.XMethod;
+import de.schenk.jrtrace.annotations.XMethodName;
 import de.schenk.jrtrace.annotations.XModifier;
 import de.schenk.jrtrace.annotations.XParam;
 import de.schenk.jrtrace.annotations.XReturn;
 import de.schenk.jrtrace.annotations.XThis;
-import de.schenk.jrtrace.helper.JRTraceClassMetadata;
-import de.schenk.jrtrace.helper.JRTraceMethodMetadata;
 import de.schenk.jrtrace.helper.Injection;
 import de.schenk.jrtrace.helper.Injection.InjectionType;
+import de.schenk.jrtrace.helper.JRTraceClassMetadata;
+import de.schenk.jrtrace.helper.JRTraceMethodMetadata;
 import de.schenk.objectweb.asm.AnnotationVisitor;
 import de.schenk.objectweb.asm.ClassReader;
 import de.schenk.objectweb.asm.ClassVisitor;
@@ -42,6 +43,11 @@ public class JRTraceAnnotationReader {
 			this.iType = iType;
 			this.param = parameter;
 			this.method = methodmd;
+
+			if (iType == InjectionType.METHODNAME) {
+				method.addInjection(param,
+						Injection.createMethodNameInjection());
+			}
 		}
 
 		@Override
@@ -126,6 +132,9 @@ public class JRTraceAnnotationReader {
 			}
 			if (Type.getType(XInvokeParam.class).equals(Type.getType(desc))) {
 				iType = InjectionType.INVOKE_PARAMETER;
+			}
+			if (Type.getType(XMethodName.class).equals(Type.getType(desc))) {
+				iType = InjectionType.METHODNAME;
 			}
 
 			if (iType != null) {

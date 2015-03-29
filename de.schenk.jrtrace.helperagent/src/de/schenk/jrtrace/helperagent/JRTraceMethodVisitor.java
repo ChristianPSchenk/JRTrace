@@ -38,7 +38,7 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 	private Type targetReturnType;
 
 	private JRTraceClassVisitor classVisitor;
-	private Object targetMethodName;
+	private String targetMethodName;
 
 	private Type[] targetArguments;
 	private LocalVariablesSorter localVariableSorter;
@@ -361,6 +361,21 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 			int localVarIndex = -1;
 			Type localVarType = null;
 			switch (iType) {
+			case METHODNAME:
+				StringBuffer buffer = new StringBuffer();
+				boolean first = true;
+				for (Type arg : targetArguments) {
+					if (!first)
+						buffer.append(",");
+					buffer.append(arg.getClassName());
+					first = false;
+				}
+
+				mv.visitLdcInsn(String.format("%s %s.%s(%s)", targetReturnType
+						.getClassName(), JRTraceNameUtil
+						.getExternalName(classVisitor.getClassName()),
+						targetMethodName, buffer.toString()));
+				break;
 			case PARAMETER:
 				localVarType = targetReturnType;
 				if (injectionSource != -1) {

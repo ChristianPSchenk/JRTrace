@@ -15,6 +15,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.NotificationConstants;
 import de.schenk.jrtrace.service.internal.JRTraceVMImpl;
 import de.schenk.jrtrace.service.test.utils.JavaUtil;
@@ -93,8 +94,10 @@ public class JRTraceControllerTest {
 		VMInfo vm = getJavaVMInfo();
 
 		IJRTraceVM mach = bmController.getMachine(vm.getId(), null);
+
 		assertTrue(mach.attach());
 
+		mach.setLogLevel(JRLog.DEBUG);
 		ErrorReceiver receiver = new ErrorReceiver();
 		mach.addClientListener(NotificationConstants.NOTIFY_ERROR, receiver);
 

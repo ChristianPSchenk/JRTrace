@@ -453,6 +453,17 @@ public class EngineXDetailsTest implements NotificationListener {
 	}
 
 	@Test
+	public void test33InjectMethodSignature() throws Exception {
+
+		Test33 test33 = new Test33();
+		String result = test33.test33(null, 5);
+		assertEquals(
+				"java.lang.String de.schenk.jrtrace.enginex.testscripts.Test33.test33(de.schenk.jrtrace.enginex.testscripts.Test33,int)",
+				result);
+
+	}
+
+	@Test
 	public void test24ErrorMessageForXThisOnStaticMethod() throws Exception {
 		notificationBarrier = new CyclicBarrier(2);
 

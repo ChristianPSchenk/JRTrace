@@ -21,6 +21,7 @@ import de.schenk.jrtrace.annotations.XClass;
 import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
 import de.schenk.jrtrace.annotations.XLocation;
 import de.schenk.jrtrace.annotations.XMethod;
+import de.schenk.jrtrace.annotations.XMethodName;
 import de.schenk.jrtrace.annotations.XModifier;
 import de.schenk.jrtrace.enginex.testclasses.Script1;
 import de.schenk.jrtrace.enginex.testclasses.Script2;
@@ -220,6 +221,29 @@ public class EngineXAnnotationReaderTest {
 		assertNotNull(metadata);
 		assertFalse(metadata.hasXClassAnnotation());
 
+	}
+
+	@XClass(classes = "de.schenk.jrtrace.enginex.testscripts.EngineXAnnotationReaderTest$XMethodNameReadTest")
+	class XMethodNameReadTest {
+
+		@XMethod(names = "methoda")
+		public void methoda(@XMethodName String name) {
+
+		}
+	}
+
+	@Test
+	public void testXMethodName() throws Exception {
+
+		classBytes = new JavaUtil().getClassBytes(XMethodNameReadTest.class);
+		JRTraceAnnotationReader annoReader = new JRTraceAnnotationReader();
+		JRTraceClassMetadata metadata = annoReader
+				.getMetaInformation(classBytes);
+		JRTraceMethodMetadata methoda = metadata.getMethod("methoda");
+		Map<Integer, Injection> injections = methoda.getInjections();
+		assertEquals(1, injections.size());
+		Injection i = injections.get(0);
+		assertEquals(InjectionType.METHODNAME, i.getType());
 	}
 
 	@XClass(classes = "de.schenk.jrtrace.enginex.testscripts.EngineXAnnotationReaderTest$QualifierMatch")
