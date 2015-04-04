@@ -5,6 +5,7 @@ package de.schenk.jrtrace.helperagent;
 
 import de.schenk.jrtrace.annotations.XClass;
 import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
+import de.schenk.jrtrace.annotations.XException;
 import de.schenk.jrtrace.annotations.XField;
 import de.schenk.jrtrace.annotations.XInvokeParam;
 import de.schenk.jrtrace.annotations.XInvokeReturn;
@@ -117,6 +118,10 @@ public class JRTraceAnnotationReader {
 			if (Type.getType(XInvokeReturn.class).equals(Type.getType(desc))) {
 				methodmd.addInjection(parameter,
 						Injection.createInvokeParameterInjection(-1));
+			}
+			if (Type.getType(XException.class).equals(Type.getType(desc))) {
+				methodmd.addInjection(parameter,
+						Injection.createExceptionInjection());
 			}
 			if (Type.getType(XReturn.class).equals(Type.getType(desc))) {
 

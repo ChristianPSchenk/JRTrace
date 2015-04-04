@@ -32,7 +32,12 @@ public class Injection {
 		/**
 		 * Injection of the name and signature of the instrumented method
 		 */
-		METHODNAME
+		METHODNAME,
+		/**
+		 * Injection of the thrown exception into the first parameter of the
+		 * method
+		 */
+		EXCEPTION
 	}
 
 	/**
@@ -86,5 +91,9 @@ public class Injection {
 
 	public static Injection createMethodNameInjection() {
 		return new Injection(-1, null, InjectionType.METHODNAME);
+	}
+
+	public static Injection createExceptionInjection() {
+		return new Injection(-1, null, InjectionType.EXCEPTION);
 	}
 }

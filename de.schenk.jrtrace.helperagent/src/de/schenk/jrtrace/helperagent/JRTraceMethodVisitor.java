@@ -75,10 +75,11 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 
 				if (injectedMethod.getInjectLocation() != XLocation.EXIT
 						&& injectedMethod.getInjectLocation() != XLocation.REPLACE_INVOCATION
-						&& injectedMethod.getInjectLocation() != XLocation.AFTER_INVOCATION) {
+						&& injectedMethod.getInjectLocation() != XLocation.AFTER_INVOCATION
+						&& injectedMethod.getInjectLocation() != XLocation.EXCEPTION) {
 					if (!injectionMethodReturnTypes.equals(Type.VOID_TYPE)) {
 						fatal(injectedMethod,
-								String.format("The injected method has a non-empty return type. This is only allowed for methods injected in location XLocation.EXIT"));
+								String.format("The injected method has a non-empty return type. This is only allowed for methods injected in locations: XLocation.EXIT,REPLACE_INVOCATION,AFTER_INVOCATION and EXCEPTION"));
 
 					}
 
@@ -307,6 +308,13 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 				injectEngineXCall(injectedMethod);
 			}
 		}
+		for (JRTraceMethodMetadata injectedMethod : injectedMethodsMap
+				.get(XLocation.EXCEPTION)) {
+			if (opcode == Opcodes.ATHROW) {
+				injectEngineXCall(injectedMethod);
+			}
+		}
+
 		super.onMethodExit(opcode);
 	}
 
@@ -377,8 +385,11 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 						targetMethodName, buffer.toString()));
 				break;
 			case PARAMETER:
+			case EXCEPTION:
 				localVarType = targetReturnType;
-				if (injectionSource != -1) {
+				if (iType == InjectionType.EXCEPTION) {
+					localVarType = Type.getType(Throwable.class);
+				} else if (injectionSource != -1) {
 					if (injectionSource == 0) {
 						localVarIndex = getLocalVariablePosition(
 								injectedMethod, injectionSource);
@@ -390,8 +401,8 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 						localVarType = targetArguments[injectionSource - 1];
 					}
 				}
-				prepareCallerArgumentArgument(injectedMethod, i, localVarIndex,
-						localVarType);
+				prepareArgumentAndReturnInjection(injectedMethod, i,
+						localVarIndex, localVarType);
 				break;
 			case FIELD:
 
@@ -418,8 +429,8 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 						localVarType = (Type.getArgumentTypes(desc))[injectionSource - 1];
 					}
 				}
-				prepareCallerArgumentArgument(injectedMethod, i, localVarIndex,
-						localVarType);
+				prepareArgumentAndReturnInjection(injectedMethod, i,
+						localVarIndex, localVarType);
 				break;
 
 			}
@@ -429,7 +440,7 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 
 	/**
 	 * 
-	 * @param pos
+	 * @param targetParameter
 	 *            the position of the argument of the injected method for which
 	 *            this call argument is intended
 	 * @param sourceLocalVar
@@ -438,56 +449,32 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 	 * @param sourceType
 	 *            the type of the local variable slot.
 	 */
-	private void prepareCallerArgumentArgument(
-			JRTraceMethodMetadata injectedMethod, int pos, int sourceLocalVar,
-			Type sourceType) {
+	private void prepareArgumentAndReturnInjection(
+			JRTraceMethodMetadata injectedMethod, int targetParameter,
+			int sourceLocalVar, Type sourceType) {
 		Method enginexMethod = new Method(injectedMethod.getMethodName(),
 				injectedMethod.getDescriptor());
 		Type[] injectionMethodArgumentTypes = enginexMethod.getArgumentTypes();
 		Type injectionMethodReturnTypes = enginexMethod.getReturnType();
 
-		Type argument = injectionMethodArgumentTypes[pos];
+		Type targetParameterType = injectionMethodArgumentTypes[targetParameter];
 		if (sourceLocalVar == -1) {
-			if (pos != 0)
-				fatal(injectedMethod,
-						"@XReturn/@XInvokeReturn is only allowed on the first parameter.");
-			if (injectedMethod.getInjectLocation() != XLocation.EXIT
-					&& injectedMethod.getInjectLocation() != XLocation.AFTER_INVOCATION)
-				fatal(injectedMethod,
-						"@XReturn/@XInvokeReturn is only allowed on inject location XLocation.EXIT/XLocation.AFTER_INVOKATION");
-			if (injectionMethodReturnTypes.equals(Type.VOID_TYPE)) {
-				if (sourceType.getSize() == 1) {
-					mv.visitInsn(Opcodes.DUP);
-				} else {
-					mv.visitInsn(Opcodes.DUP2);
-				}
-			} else {
-				if (!TypeCheckUtil.isAssignable(sourceType, argument,
-						classVisitor.getCommonSuperClassUtil())) {
-					fatal(injectedMethod,
-							String.format(
-									"The type returned by the method %s is %s and cannot be assigned to the first argument of the method %s which is %s.",
-									targetMethodName, JRTraceNameUtil
-											.getExternalName(sourceType
-													.getClassName()),
-									injectedMethod.getMethodName(),
-									JRTraceNameUtil.getExternalName(argument
-											.getClassName())));
-				}
-			}
+
+			injectReturnOrThrowsInParameter(injectedMethod, targetParameter,
+					sourceType, injectionMethodReturnTypes, targetParameterType);
 		} else {
 			int localVarIndex = sourceLocalVar;
 
-			int code = argument.getOpcode(Opcodes.ILOAD);
+			int code = targetParameterType.getOpcode(Opcodes.ILOAD);
 
-			if (!TypeCheckUtil.isAssignable(sourceType, argument,
+			if (!TypeCheckUtil.isAssignable(sourceType, targetParameterType,
 					classVisitor.getCommonSuperClassUtil())) {
 				fatal(injectedMethod,
 						String.format(
 								"Argument Type mismatch:  method parameter of type %s is injected into type %s of method %s in class %s.",
 								JRTraceNameUtil.getExternalName(sourceType
 										.getClassName()), JRTraceNameUtil
-										.getExternalName(argument
+										.getExternalName(targetParameterType
 												.getClassName()),
 								injectedMethod.getMethodName(), JRTraceNameUtil
 										.getExternalName(classVisitor
@@ -495,6 +482,60 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 			}
 
 			mv.visitIntInsn(code, localVarIndex);
+		}
+
+	}
+
+	public void injectReturnOrThrowsInParameter(
+			JRTraceMethodMetadata injectedMethod, int targetParameter,
+			Type sourceType, Type injectionMethodReturnType,
+			Type targetParameterType) {
+		if (targetParameter != 0)
+			fatal(injectedMethod,
+					"@XReturn/@XInvokeReturn/@XException is only allowed on the first parameter.");
+		if (injectedMethod.getInjection(targetParameter).getType() == InjectionType.EXCEPTION) {
+			if (injectedMethod.getInjectLocation() != XLocation.EXCEPTION) {
+				fatal(injectedMethod,
+						"@Exception is only allowed on inject location @XLocation.EXCEPTION");
+			}
+		} else if (injectedMethod.getInjectLocation() != XLocation.EXIT
+				&& injectedMethod.getInjectLocation() != XLocation.AFTER_INVOCATION)
+			fatal(injectedMethod,
+					"@XReturn/@XInvokeReturn is only allowed on inject location XLocation.EXIT/XLocation.AFTER_INVOKATION");
+
+		if (!TypeCheckUtil.isAssignable(sourceType, targetParameterType,
+				classVisitor.getCommonSuperClassUtil())) {
+			fatal(injectedMethod,
+					String.format(
+							"The type returned/thrown by the method %s is %s and cannot be assigned to the first argument of the method %s which is %s.",
+							targetMethodName,
+							JRTraceNameUtil.getExternalName(sourceType
+									.getClassName()), injectedMethod
+									.getMethodName(), JRTraceNameUtil
+									.getExternalName(targetParameterType
+											.getClassName())));
+		}
+		if (injectionMethodReturnType.equals(Type.VOID_TYPE)) {
+			if (sourceType.getSize() == 1) {
+				mv.visitInsn(Opcodes.DUP);
+			} else {
+				mv.visitInsn(Opcodes.DUP2);
+			}
+
+		} else {
+			if (!TypeCheckUtil.isAssignable(sourceType,
+					injectionMethodReturnType,
+					classVisitor.getCommonSuperClassUtil())) {
+				fatal(injectedMethod,
+						String.format(
+								"The type returned /thrown by the method %s is %s and cannot be assigned to the return value of the method %s which is %s.",
+								targetMethodName, JRTraceNameUtil
+										.getExternalName(sourceType
+												.getClassName()),
+								injectedMethod.getMethodName(), JRTraceNameUtil
+										.getExternalName(targetParameterType
+												.getClassName())));
+			}
 		}
 	}
 

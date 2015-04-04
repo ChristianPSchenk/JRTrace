@@ -296,9 +296,12 @@ will be injected into the running application.
     <td><code>Return a value</code></td> 
     <td></td>
     
-    <td>For injection locations that return a value ( <code>EXIT</code>, <code>AFTER_INVOKE</code> and <code>REPLACE_INVOKE</code>) the
+    <td>For injection locations that return a value ( <code>EXIT</code>, <code>AFTER_INVOKE</code> and <code>REPLACE_INVOKE</code> and <code>EXCEPTION</code>) the
     tracing method may have a non-void return parameter that can be assigned to the actual return value type in the target code. This actually 
-    allows to replace the return value from a method invocation with the value returned by the tracingCode.
+    allows to replace the return value from a method invocation with the value returned by the tracingCode. 
+    <p>
+    For <code>EXCEPTION</code> the returned value has to be a <code>Throwable</code> that will be thrown instead of the original exception.
+    </p>
     <p>
     The below example will replace <code>null</code> return values by a 0 return value for all invocations of <code>getValue</code>.
     </p>
@@ -316,6 +319,37 @@ will be injected into the running application.
     
   </tr>
  <tr>
+    <td><code>@XMethodName</code></td> 
+    <td></td>
+    
+    <td>Injects the full signature of the current method into the parameter.
+    <pre>
+    @XMethod(location=XLocation.EXIT,names="setValue")
+    public void tracingCode(@XMethodName String name)
+    {
+    	....
+    }
+    </pre>
+    </p>
+    </td>
+    
+    <tr>
+    <td><code>@XException</code></td> 
+    <td></td>
+    
+    <td>Only valid for <code>XLocation.EXCEPTION</code>. This will inject the Exception that is thrown by the method into the parameter. 
+    This annotation 
+    has to be put on the first parameter and it has to be of type <code>java.lang.Throwable</code>.
+    <pre>
+    @XMethod(location=XLocation.EXCEPTION,names="setValue")
+    public void tracingCode(@XException Throwable name)
+    {
+    	...
+    }
+    </pre>
+    </p>
+    </td>
+ 
     <td><code>@XParam</code></td> 
     <td>n</td>
     
