@@ -4,6 +4,7 @@
 package de.schenk.jrtrace.enginex.testscripts;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -13,13 +14,9 @@ import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import javax.management.Notification;
-import javax.management.NotificationListener;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -27,8 +24,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.actions.OpenResourceAction;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkEvent;
@@ -53,19 +50,20 @@ import de.schenk.jrtrace.ui.util.JarByteUtil;
  * @author Christian Schenk
  *
  */
-public class EngineXDetailsTest implements NotificationListener {
+public class EngineXDetailsTest {
 
-	private JRTraceController bmController;
-	private String pid;
-	private IJRTraceVM machine;
+	private static JRTraceController bmController;
+	private static String pid;
+	private static IJRTraceVM machine;
+	private static TestNotificationListener theNotificationListener;
 
-	@After
-	public void after() throws Exception {
+	@AfterClass
+	static public void after() throws Exception {
 		machine.detach();
 	}
 
-	@Before
-	public void before() throws Exception {
+	@BeforeClass
+	static public void before() throws Exception {
 
 		bmController = JRTraceControllerService.getInstance();
 		String javaName = ManagementFactory.getRuntimeMXBean().getName();
@@ -83,7 +81,9 @@ public class EngineXDetailsTest implements NotificationListener {
 		URL fileURL = FileLocator.find(bundle,
 				new Path("lib/EngineXTests.jar"), null);
 		File theFile = new File(FileLocator.resolve(fileURL).toURI());
-		machine.addClientListener(NotificationConstants.NOTIFY_PROBLEM, this);
+		theNotificationListener = new TestNotificationListener();
+		machine.addClientListener(NotificationConstants.NOTIFY_PROBLEM,
+				theNotificationListener);
 
 		byte[] jarBytes = Files.readAllBytes(Paths.get(theFile.toURI()));
 		byte[][] classBytes = JarByteUtil.convertJarToClassByteArray(jarBytes);
@@ -479,12 +479,30 @@ public class EngineXDetailsTest implements NotificationListener {
 	}
 
 	@Test
+	public void test35EnsureTypeOfXExceptionIsChecked() throws Exception {
+
+		theNotificationListener.reset();
+		Test35 test35 = new Test35();
+		try {
+			String result = test35.test35();
+		} catch (Throwable e) {
+
+		}
+
+		Notification not = theNotificationListener.waitForNotification();
+		assertNotNull(not);
+		assertTrue("Notificationdoesn't contain text 'cannot be assigned'", not
+				.getMessage().contains("cannot be assigned"));
+
+	}
+
+	@Test
 	public void test24ErrorMessageForXThisOnStaticMethod() throws Exception {
-		notificationBarrier = new CyclicBarrier(2);
+		theNotificationListener.reset();
 
 		Test24.test24();
 		try {
-			notificationBarrier.await(10, TimeUnit.SECONDS);
+			theNotificationListener.waitForNotification();
 		} catch (TimeoutException t) {
 			fail("no problem detected by the agent in Test24");
 		}
@@ -494,7 +512,7 @@ public class EngineXDetailsTest implements NotificationListener {
 	@Test
 	public void test27ErrorMessageForXClassWithoutPublicConstructor()
 			throws Exception {
-		notificationBarrier = new CyclicBarrier(2);
+		theNotificationListener.reset();
 		try {
 			Test27 test27 = new Test27();
 			test27.test27();
@@ -504,7 +522,8 @@ public class EngineXDetailsTest implements NotificationListener {
 
 		}
 		try {
-			notificationBarrier.await(15, TimeUnit.SECONDS);
+			Notification lastNotification = theNotificationListener
+					.waitForNotification();
 			assertTrue(lastNotification
 					.getMessage()
 					.contains(
@@ -533,24 +552,6 @@ public class EngineXDetailsTest implements NotificationListener {
 		Class<?> c2 = Display.class;
 		Class<?> jsv = JavaSourceViewerConfiguration.class;
 		assertTrue(true);
-	}
-
-	CyclicBarrier notificationBarrier = new CyclicBarrier(2);
-	Notification lastNotification = null;
-
-	@Override
-	public void handleNotification(Notification notification, Object handback) {
-		if (notificationBarrier == null)
-			return;
-		lastNotification = notification;
-
-		try {
-			notificationBarrier.await();
-		} catch (InterruptedException | BrokenBarrierException e) {
-			throw new RuntimeException("test");
-		}
-		notificationBarrier = null;
-
 	}
 
 }
