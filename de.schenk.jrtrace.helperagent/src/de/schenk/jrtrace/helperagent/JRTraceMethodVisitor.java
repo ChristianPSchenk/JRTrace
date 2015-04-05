@@ -13,6 +13,7 @@ import java.util.Map;
 import de.schenk.jrtrace.annotations.XLocation;
 import de.schenk.jrtrace.helper.Injection;
 import de.schenk.jrtrace.helper.Injection.InjectionType;
+import de.schenk.jrtrace.helper.InstantiationPolicy;
 import de.schenk.jrtrace.helper.JRTraceHelper;
 import de.schenk.jrtrace.helper.JRTraceMethodMetadata;
 import de.schenk.jrtrace.helper.JRTraceNameUtil;
@@ -43,6 +44,13 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 	private Type[] targetArguments;
 	private LocalVariablesSorter localVariableSorter;
 	private int targetMethodAccess;
+	/**
+	 * If the @XClass is annoted with methodinstance=true, a local variable is
+	 * created at the start of each method which will get a new instance of the
+	 * JRTrace class. This variable stores the local variable index where this
+	 * variable is available.
+	 */
+	private int localJRTraceInstancePos = -1;
 
 	/**
    */
@@ -111,12 +119,42 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 
 	@Override
 	protected void onMethodEnter() {
+
+		if (classVisitor.getInstantiationPolicy() == InstantiationPolicy.METHOD) {
+			createLocalJRTraceInstance();
+		}
+
 		for (JRTraceMethodMetadata injectedMethod : injectedMethodsMap
 				.get(XLocation.ENTRY)) {
 			injectEngineXCall(injectedMethod);
 		}
 
 		super.onMethodEnter();
+	}
+
+	/**
+	 * create a local variable that will hold a new instance of the current
+	 * JRTrace class. Used for InstantiationPolicy.METHOD.
+	 */
+	private void createLocalJRTraceInstance() {
+		Type jrtraceType = Type.getType("L"
+				+ classVisitor.getClassMetadata().getClassName() + ";");
+		localJRTraceInstancePos = localVariableSorter.newLocal(jrtraceType);
+		Type instrumentedType = Type.getType("L" + classVisitor.getClassName()
+				+ ";");
+
+		mv.visitLdcInsn(classVisitor.getClassMetadata().getExternalClassName());
+		mv.visitIntInsn(SIPUSH, JRTraceHelper.getCurrentClassSetId());
+		mv.visitLdcInsn(instrumentedType);
+		mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Class", "getClassLoader",
+				"()Ljava/lang/ClassLoader;", false);
+		mv.visitMethodInsn(
+				INVOKESTATIC,
+				"de/schenk/jrtrace/helper/JRTraceHelper",
+				"createEngineXObject",
+				"(Ljava/lang/String;ILjava/lang/ClassLoader;)Ljava/lang/Object;",
+				false);
+		mv.visitVarInsn(jrtraceType.getOpcode(ISTORE), localJRTraceInstancePos);
 	}
 
 	/**
@@ -200,7 +238,7 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 
 	}
 
-	public List<JRTraceMethodMetadata> getMatchingInjections(String owner,
+	private List<JRTraceMethodMetadata> getMatchingInjections(String owner,
 			String name, XLocation location) {
 		List<JRTraceMethodMetadata> replaceInvokes = new ArrayList<JRTraceMethodMetadata>();
 		for (JRTraceMethodMetadata injectedMethod : injectedMethodsMap
@@ -344,9 +382,26 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 				injectedMethod.getDescriptor());
 		Type[] injectionMethodArgumentTypes = enginexMethod.getArgumentTypes();
 
+		if (classVisitor.getInstantiationPolicy() == InstantiationPolicy.METHOD) {
+			if (injectionMethodArgumentTypes.length == 0) {
+				super.visitVarInsn(ALOAD, localJRTraceInstancePos);
+			}
+		}
 		for (int i = 0; i < injectionMethodArgumentTypes.length; i++) {
 			prepareCallArgument(injectedMethod, i, invokeArgPositions,
 					invokeMethodOwner, invokeMethodName, invokeMethodDesc);
+			if (i == 0
+					&& classVisitor.getInstantiationPolicy() == InstantiationPolicy.METHOD) {
+
+				super.visitVarInsn(ALOAD, localJRTraceInstancePos);
+				if (injectionMethodArgumentTypes[0].getSize() == 1) {
+					mv.visitInsn(Opcodes.DUP_X1);
+				} else {
+					mv.visitInsn(Opcodes.DUP_X2);
+				}
+				mv.visitInsn(Opcodes.POP);
+			}
+
 		}
 		createVirtualDynamicInvoke(injectedMethod);
 	}
@@ -486,7 +541,7 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 
 	}
 
-	public void injectReturnOrThrowsInParameter(
+	private void injectReturnOrThrowsInParameter(
 			JRTraceMethodMetadata injectedMethod, int targetParameter,
 			Type sourceType, Type injectionMethodReturnType,
 			Type targetParameterType) {
@@ -656,20 +711,44 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 	}
 
 	private void createVirtualDynamicInvoke(JRTraceMethodMetadata injectedMethod) {
+		JRLog.debug("Instrumentations is including call to class: "
+				+ injectedMethod.getClassMetadata().getExternalClassName()
+				+ " method: " + injectedMethod.getMethodName());
+
+		String bindingMethodName = "bindEngineXMethods";
+
+		Type methodDescriptorType = Type.getMethodType(injectedMethod
+				.getDescriptor());
+
+		if (classVisitor.getInstantiationPolicy() == InstantiationPolicy.METHOD) {
+			bindingMethodName = "bindEngineXMethodsToVirtual";
+
+			Type[] argumentTypes = methodDescriptorType.getArgumentTypes();
+			Type[] newArgumentTypes = new Type[argumentTypes.length + 1];
+			newArgumentTypes[0] = Type.getType("L"
+					+ classVisitor.getClassMetadata().getClassName() + ";");
+			newArgumentTypes[0] = Type.getType("Ljava/lang/Object;");
+			for (int i = 0; i < argumentTypes.length; i++) {
+				newArgumentTypes[i + 1] = argumentTypes[i];
+			}
+			methodDescriptorType = Type.getMethodType(
+					methodDescriptorType.getReturnType(), newArgumentTypes);
+
+		}
+
 		MethodType mt = MethodType.methodType(CallSite.class,
 				MethodHandles.Lookup.class, String.class, MethodType.class,
 				String.class, int.class, String.class, String.class);
 		Handle bootstrap = new Handle(Opcodes.H_INVOKESTATIC,
-				"de/schenk/jrtrace/helper/DynamicBinder", "bindEngineXMethods",
+				"de/schenk/jrtrace/helper/DynamicBinder", bindingMethodName,
 				mt.toMethodDescriptorString());
-		JRLog.debug("Instrumentations is including call to class: "
-				+ injectedMethod.getClassMetadata().getExternalClassName()
-				+ " method: " + injectedMethod.getMethodName());
+
 		mv.visitInvokeDynamicInsn(injectedMethod.getMethodName(),
-				injectedMethod.getDescriptor(), bootstrap, injectedMethod
+				methodDescriptorType.getDescriptor(), bootstrap, injectedMethod
 						.getClassMetadata().getExternalClassName(),
 				JRTraceHelper.getCurrentClassSetId(), injectedMethod
 						.getMethodName(), injectedMethod.getDescriptor());
+
 	}
 
 	private int getLocalVariablePosition(JRTraceMethodMetadata injectedMethod,

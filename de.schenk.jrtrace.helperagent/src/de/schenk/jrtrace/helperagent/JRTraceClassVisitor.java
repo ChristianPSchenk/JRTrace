@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.schenk.jrtrace.annotations.XLocation;
+import de.schenk.jrtrace.helper.InstantiationPolicy;
 import de.schenk.jrtrace.helper.JRTraceClassMetadata;
 import de.schenk.jrtrace.helper.JRTraceMethodMetadata;
 import de.schenk.jrtrace.helperagent.FieldList.FieldEntry;
@@ -69,17 +70,19 @@ public class JRTraceClassVisitor extends ClassVisitor {
 		for (XLocation l : XLocation.values()) {
 			matchingMethods.put(l, new ArrayList<JRTraceMethodMetadata>());
 		}
+		boolean hasMatchingMethod = false;
 		for (JRTraceMethodMetadata method : metadata.getMethods()) {
 			if (method.mayMatch(name, desc, access)) {
 
 				List<JRTraceMethodMetadata> list = matchingMethods.get(method
 						.getInjectLocation());
 				list.add(method);
+				hasMatchingMethod = true;
 
 			}
 		}
 
-		if (!matchingMethods.isEmpty()) {
+		if (hasMatchingMethod) {
 
 			MethodVisitor oldVisitor = currentVisitor;
 			JRTraceMethodVisitor newMethodVisitor = new JRTraceMethodVisitor(
@@ -105,6 +108,15 @@ public class JRTraceClassVisitor extends ClassVisitor {
 
 	public CommonSuperClassUtil getCommonSuperClassUtil() {
 		return this.superClassUtil;
+	}
+
+	public InstantiationPolicy getInstantiationPolicy() {
+
+		return metadata.getInstantiationPolicy();
+	}
+
+	public JRTraceClassMetadata getClassMetadata() {
+		return metadata;
 	}
 
 }

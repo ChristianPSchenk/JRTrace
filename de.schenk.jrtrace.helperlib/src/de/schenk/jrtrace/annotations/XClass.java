@@ -120,4 +120,28 @@ public @interface XClass {
 	 */
 	String[] exclude() default "";
 
+	/**
+	 * 
+	 * @return true, if one instance of this tracing class shall be created for
+	 *         each instrumented method in this class. The instance will
+	 *         internally be like a local variable to the class that is
+	 *         instrumented. Thus instance fields of the JRTrace class can carry
+	 *         state that is valid for one method scope.
+	 *         <p>
+	 *         Note: it is not possible to share the state of instance variables
+	 *         between multiple methods using this mechanism since there is one
+	 *         instance of the JRTrace class for each method that is
+	 *         instrumented. However the benefit is that a logging class can
+	 *         store a state even for recursive invocations of the method which
+	 *         is bound to the individual invocation.
+	 *         </p>
+	 *         <p>
+	 *         Note: the default behaviour of JRTrace is to create one instance
+	 *         of a JRTrace class per classloader for which the class is
+	 *         requested
+	 *         </p>
+	 */
+
+	boolean methodinstance() default false;
+
 }

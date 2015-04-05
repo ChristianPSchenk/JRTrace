@@ -345,4 +345,15 @@ public class JRTraceClassMetadata {
 
 	}
 
+	InstantiationPolicy instantiationPolicy = InstantiationPolicy.CLASSLOADER;
+
+	public InstantiationPolicy getInstantiationPolicy() {
+		return instantiationPolicy;
+	}
+
+	public void setInstantiationPolicy(InstantiationPolicy method) {
+		instantiationPolicy = InstantiationPolicy.METHOD;
+
+	}
+
 }

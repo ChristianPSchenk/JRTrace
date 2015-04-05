@@ -91,6 +91,32 @@ public class JRTraceHelper {
 	}
 
 	/**
+	 * creates a new enginex object using the no-arg-constructor.
+	 * 
+	 * @param enginexclass
+	 *            the fully qualified name of the JRTrace class
+	 * @param cacheId
+	 *            the id of the current set of JRTrace classes
+	 * @param classLoader
+	 *            the classloader to use (required for
+	 *            classloaderPolicy=XClassloaderPolicy.TARGET)
+	 * @return a newly created object
+	 */
+	public static Object createEngineXObject(String enginexclass, int cacheId,
+			ClassLoader classLoader) {
+		Class<?> clazz = getEngineXClass(enginexclass, cacheId, classLoader);
+		try {
+			return clazz.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			throw new RuntimeException(
+					String.format(
+							"Failed to create new instance of JRTrace class %s for classLoader %s.",
+							enginexclass, (classLoader == null ? "null"
+									: classLoader.toString())));
+		}
+	}
+
+	/**
 	 * 
 	 * @param enginexclass
 	 *            the name of an enginex class

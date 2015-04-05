@@ -13,19 +13,22 @@ import java.lang.reflect.Method;
 
 public class DynamicBinder {
 
-	private static Method method;
+	private static Method getEngineXObjectMethod;
+	private static Method getEngineXClassMethod;
 
 	static void initHelper() {
-		if (method != null)
+		if (getEngineXObjectMethod != null)
 			return;
 		try {
 
 			Class<?> o = Class.forName(
 					"de.schenk.jrtrace.helper.JRTraceHelper", false, null);
 
-			method = o.getMethod("getEngineXObject", String.class, int.class,
-					ClassLoader.class);
+			getEngineXObjectMethod = o.getMethod("getEngineXObject",
+					String.class, int.class, ClassLoader.class);
 
+			getEngineXClassMethod = o.getMethod("getEngineXClass",
+					String.class, int.class, ClassLoader.class);
 		} catch (ClassNotFoundException e) {
 
 			throw new RuntimeException(e);
@@ -36,6 +39,76 @@ public class DynamicBinder {
 		}
 	}
 
+	/**
+	 * 
+	 * @param caller
+	 * @param name
+	 * @param type
+	 * @param enginexclassname
+	 * @param jrtraceClasssetId
+	 * @param enginexmethodname
+	 * @param enginexmethoddescriptor
+	 * @return a CallSite which represents a MethodHandle for a Virtual call.
+	 */
+	public static CallSite bindEngineXMethodsToVirtual(
+			MethodHandles.Lookup caller, String name, MethodType type,
+			String enginexclassname, int jrtraceClasssetId,
+			String enginexmethodname, String enginexmethoddescriptor) {
+
+		initHelper();
+		MethodHandles.Lookup lookup = MethodHandles.lookup();
+
+		Class<?> enginexclass;
+		try {
+
+			enginexclass = (Class<?>) getEngineXClassMethod.invoke(null,
+					enginexclassname, jrtraceClasssetId, caller.lookupClass()
+							.getClassLoader());
+		} catch (IllegalArgumentException | InvocationTargetException
+				| IllegalAccessException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		if (enginexclass == null) {
+
+			throw new RuntimeException("Fatal: Lookup of enginex class "
+					+ enginexclassname + " failed!");
+		}
+
+		MethodHandle enginexMethod = null;
+		try {
+			enginexMethod = lookup.findVirtual(enginexclass, enginexmethodname,
+					MethodType.fromMethodDescriptorString(
+							enginexmethoddescriptor, caller.lookupClass()
+									.getClassLoader()));
+
+		} catch (IllegalAccessException | NoSuchMethodException e) {
+
+			NotificationUtil
+					.sendProblemNotification(
+							String.format(
+									"It is not possible to inject into %s due to an IllegalAccessException. This indicates that the injected method requires classes that are either not present or not accessible. Check your classloader settings.",
+									caller.toString()), enginexclassname,
+							enginexmethodname, enginexmethoddescriptor);
+			e.printStackTrace();
+		}
+
+		return new ConstantCallSite(enginexMethod.asType(type));
+
+	}
+
+	/**
+	 * 
+	 * @param caller
+	 * @param name
+	 * @param type
+	 * @param enginexclass
+	 * @param jrtraceClasssetId
+	 * @param enginexmethodname
+	 * @param enginexmethoddescriptor
+	 * @return a callsite which returns a pre-bound method handle: a method that
+	 *         can be invoked without putting the instance on the stack.
+	 */
 	public static CallSite bindEngineXMethods(MethodHandles.Lookup caller,
 			String name, MethodType type, String enginexclass,
 			int jrtraceClasssetId, String enginexmethodname,
@@ -47,8 +120,8 @@ public class DynamicBinder {
 		Object object;
 		try {
 
-			object = method.invoke(null, enginexclass, jrtraceClasssetId,
-					caller.lookupClass().getClassLoader());
+			object = getEngineXObjectMethod.invoke(null, enginexclass,
+					jrtraceClasssetId, caller.lookupClass().getClassLoader());
 		} catch (IllegalArgumentException | InvocationTargetException
 				| IllegalAccessException e) {
 			e.printStackTrace();
@@ -65,6 +138,7 @@ public class DynamicBinder {
 			enginexMethod = lookup.bind(object, enginexmethodname, MethodType
 					.fromMethodDescriptorString(enginexmethoddescriptor, caller
 							.lookupClass().getClassLoader()));
+
 		} catch (IllegalAccessException | NoSuchMethodException e) {
 
 			NotificationUtil

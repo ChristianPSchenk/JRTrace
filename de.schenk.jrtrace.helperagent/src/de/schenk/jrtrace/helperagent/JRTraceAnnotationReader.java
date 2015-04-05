@@ -19,6 +19,7 @@ import de.schenk.jrtrace.annotations.XReturn;
 import de.schenk.jrtrace.annotations.XThis;
 import de.schenk.jrtrace.helper.Injection;
 import de.schenk.jrtrace.helper.Injection.InjectionType;
+import de.schenk.jrtrace.helper.InstantiationPolicy;
 import de.schenk.jrtrace.helper.JRTraceClassMetadata;
 import de.schenk.jrtrace.helper.JRTraceMethodMetadata;
 import de.schenk.objectweb.asm.AnnotationVisitor;
@@ -272,6 +273,9 @@ public class JRTraceAnnotationReader {
 			}
 			if ("regex".equals(name)) {
 				md.setUseRegex((boolean) value);
+			}
+			if ("methodinstance".equals(name)) {
+				md.setInstantiationPolicy(InstantiationPolicy.METHOD);
 			}
 			if ("classloadername".equals(name)) {
 				md.setClassLoaderName((String) value);

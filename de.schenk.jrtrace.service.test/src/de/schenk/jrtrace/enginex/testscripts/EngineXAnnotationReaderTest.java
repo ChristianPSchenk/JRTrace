@@ -34,6 +34,7 @@ import de.schenk.jrtrace.enginex.testclasses.TestClass3;
 import de.schenk.jrtrace.enginex.testclasses.TestClass4;
 import de.schenk.jrtrace.helper.Injection;
 import de.schenk.jrtrace.helper.Injection.InjectionType;
+import de.schenk.jrtrace.helper.InstantiationPolicy;
 import de.schenk.jrtrace.helper.JRTraceClassMetadata;
 import de.schenk.jrtrace.helper.JRTraceMethodMetadata;
 import de.schenk.jrtrace.helperagent.JRTraceAnnotationReader;
@@ -246,6 +247,24 @@ public class EngineXAnnotationReaderTest {
 		assertEquals(InjectionType.METHODNAME, i.getType());
 	}
 
+	@XClass(classes = "doesntmatter", methodinstance = true)
+	class InstantiationPolicyReaderTest {
+
+	}
+
+	@Test
+	public void testInstationPolicyReader() throws Exception {
+
+		classBytes = new JavaUtil()
+				.getClassBytes(InstantiationPolicyReaderTest.class);
+		JRTraceAnnotationReader annoReader = new JRTraceAnnotationReader();
+		JRTraceClassMetadata metadata = annoReader
+				.getMetaInformation(classBytes);
+		assertEquals(InstantiationPolicy.METHOD,
+				metadata.getInstantiationPolicy());
+
+	}
+
 	@XClass(classes = "de.schenk.jrtrace.enginex.testscripts.EngineXAnnotationReaderTest$QualifierMatch")
 	class QualifierMatchScript {
 		@XMethod(names = "methoda", modifier = XModifier.PUBLIC)
@@ -285,6 +304,8 @@ public class EngineXAnnotationReaderTest {
 		JRTraceAnnotationReader annoReader = new JRTraceAnnotationReader();
 		JRTraceClassMetadata metadata = annoReader
 				.getMetaInformation(classBytes);
+		assertEquals(InstantiationPolicy.CLASSLOADER,
+				metadata.getInstantiationPolicy());
 		JRTraceMethodMetadata methoda = metadata.getMethod("instr");
 		assertTrue(methoda.mayMatch(QualifierMatch.class));
 		assertTrue(methoda.mayMatch("methoda", "()V", Opcodes.ACC_PUBLIC

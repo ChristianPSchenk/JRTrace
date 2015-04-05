@@ -479,6 +479,15 @@ public class EngineXDetailsTest {
 	}
 
 	@Test
+	public void test36methodinstance() throws Exception {
+
+		Test36 test36 = new Test36();
+
+		int erg = test36.test36();
+		assertEquals(40, erg);
+	}
+
+	@Test
 	public void test35EnsureTypeOfXExceptionIsChecked() throws Exception {
 
 		theNotificationListener.reset();
