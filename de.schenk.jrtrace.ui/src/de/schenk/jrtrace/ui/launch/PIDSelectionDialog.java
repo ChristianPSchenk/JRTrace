@@ -240,10 +240,11 @@ public class PIDSelectionDialog extends TitleAreaDialog {
 
 		if (showFilterTextButton) {
 			useFilterButton = createButton(parent, USEFILTER_ID,
-					"Use Filter Text", false);
+					"Use Filter Text", true);
+
 		}
 		usePIDButton = createButton(parent, IDialogConstants.OK_ID,
-				"Use Process ID", true);
+				"Use Process ID", !showFilterTextButton);
 		createButton(parent, IDialogConstants.CANCEL_ID,
 				IDialogConstants.CANCEL_LABEL, false);
 	}
@@ -384,6 +385,7 @@ public class PIDSelectionDialog extends TitleAreaDialog {
    * 
    */
 	protected void refreshEnablement() {
+
 		StructuredSelection strucSel = (StructuredSelection) viewer
 				.getSelection();
 
@@ -395,6 +397,12 @@ public class PIDSelectionDialog extends TitleAreaDialog {
 			if (useFilterButton != null)
 				useFilterButton.setEnabled(false);
 			usePIDButton.setEnabled(false);
+			Object firstElement = viewer.getElementAt(0);
+			if (firstElement != null) {
+				StructuredSelection sel = new StructuredSelection(firstElement);
+
+				viewer.setSelection(sel);
+			}
 
 		}
 	}
