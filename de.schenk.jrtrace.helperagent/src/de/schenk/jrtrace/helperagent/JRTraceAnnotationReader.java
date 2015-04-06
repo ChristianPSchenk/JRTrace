@@ -166,15 +166,6 @@ public class JRTraceAnnotationReader {
 			this.method = md;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public AnnotationVisitor visitAnnotation(String name, String desc) {
-
-			return super.visitAnnotation(name, desc);
-		}
-
 		@Override
 		public void visitEnd() {
 
