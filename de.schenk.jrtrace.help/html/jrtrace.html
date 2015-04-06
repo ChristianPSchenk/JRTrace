@@ -43,7 +43,7 @@ and you need the new code and basically include again the same tracing code. Lat
 somewere else to inject it in the same code later again.
 </p>  
 <p>
-The Solution: at least for Windows and Oracle JVM this JRTrace Add-On for Eclipse can help.
+The Solution: at least for Windows/Linux and Oracle JVM this JRTrace Add-On for Eclipse can help.
 You can select an arbitrary class and method and instruct JRTrace to add tracing, inspect variables, print the stacktrace. The basic 
 features are pretty easy to use, but the tool allows for nearly everything...
 
@@ -192,11 +192,11 @@ testproject.Main.main(Main.java:7)
 There are two options provided to connect to a target machine:
 <ul>
 <li>
-By specifying the operating system process based on the process id or by a part of the text in its process description. If this option is used, JRTrace will require to
+Upload JRTrace Agent: By specifying the operating system process based on the process id or by a part of the text in its process description. If this option is used, JRTrace will require to
 run with a JDK and will upload the required JRTrace agent into the target process itself and connect to it.
 </li>
 <li>
-By launching the target JVM with parameters to include the JRTrace java agent and by specifying the port. JRTrace will then expect a running target machine JRTrace agent to which
+Connnect to JRTrace Agent: By launching the target JVM with parameters to include the JRTrace java agent and by specifying the port. JRTrace will then expect a running target machine JRTrace agent to which
 it can connect.
 </li>
 </ul>
@@ -222,7 +222,7 @@ starting the debug session.
 </li>
 </ul>
 
-<h4>Connect JRTrace Agent</h4>
+<h4>Connect to JRTrace Agent</h4>
 
 <p>
 If the "Connect" option is selected, the target JVM in which the code is to be injected needs to be started with the proper
@@ -245,8 +245,21 @@ upload the project connected to the launch configuration and deploy it as JRTrac
 
 <h4>Associating a Project with a JRTrace Launch</h4>
 
-It is generally recommended to associate a project with a launch. This project can be used to
-store the classes that are related to the task at hand, e.g. tracing a specific functionality.
+A JRTrace tracing session relies on the tracing code from the selected JRTrace project. Basically all Java classes from the selected project will be uploaded
+as JRTrace classes into the target JVM. If a project doesn't appear in the selection dialog, it most likely isn't a JRTrace project yet. Any Java or Plugin
+project can be converted to a JRTrace project using the project context menu "Configure as  -> JRTrace Project".
+
+<p>
+Note: the "New JRTrace Project" wizard will create a Java project, add the JRTrace nature to mark it as a JRTrace project and add the required JRTrace libraries
+to the projects library path. These libraries contain the JRTrace annotations and the helper libraries. Such a project can be converted to a Plugin
+project any time. Or vice versa: a Plugin-Project can be configured as JRTrace project. However to add JRTrace annotations it is also required to add the
+JRTrace libraries to the build path via Build Path -> Add Library -> JRTrace Libraries
+</p>
+
+<p>
+Note: as of today, only the classes from the bin folder will be deployed into the target VM. Additional Jar files need to be present in the target already 
+since they will not be injected.
+</p>
 
 
 
@@ -254,8 +267,8 @@ store the classes that are related to the task at hand, e.g. tracing a specific 
 <h3>JRTrace Commands</h3>
 <h4>Deploy JRTrace project</h4>
 
-<p>The <img src="pics/upload_java_16.gif"/>-menu/toolbar will deploy the selected java project into the target 
-application. This will effectively remove all previously deployed JRTrace classes from the target and replace them with the contents of the selected project.
+<p>The <img src="pics/upload_java_16.gif"/>-menu/toolbar will re-/deploy the connected java project into the target 
+application. This will effectively remove all previously deployed JRTrace classes from the target and replace them with the contents of the project.
 There is no restrictions on changes to the classes (e.g. including/removing static fields is always possible).
 
 </p>
@@ -317,7 +330,7 @@ get the formatted value. To use this feature, <code>HelperLib</code> has to be e
 <h4>setField</h4>
 
 
-While <code>XField</code> can be used to obtain the values of fields of the currently instrumented object, it is not possible to manipulate those values. <code>setField</code> reflectively modifies a given field:
+While <code>@XField</code> can be used to obtain the values of fields of the currently instrumented object, it is not possible to manipulate those values. <code>setField</code> reflectively modifies a given field:
 <pre>
 setField(target,fieldname, value);
 </pre>
@@ -326,6 +339,21 @@ setField(target,fieldname, value);
 <code>fieldname</code>: the name of the field to set</br>
 <code>value</code>: the new value</br>
 
+<h4>getField</h4>
+
+
+Even though <code>@XField</code> can be used to obtain the values of fields of the currently instrumented object, sometimes it is just more convenient to 
+use plain reflection. The <code>getField</code> methods use reflection to obtain the specified fields:
+<pre>
+getField(String className,String fieldName);
+getField(Class<?> clazz,String fieldName);
+getField(Object object,String fieldName);
+</pre>
+
+
+<code>className, clazz</code>: the name of the class / class to access static fields</br>
+<code>object</code>: the object for instance fields</br>
+<code>fieldname</code>: the name of the field to set</br>
 
 
 

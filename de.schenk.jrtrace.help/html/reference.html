@@ -68,6 +68,9 @@ will be injected into the running application.
     Note: a core set of classes cannot be instrumented at all with JRTrace. The most important ones are ArrayList, HashSet and ConcurrentHashSet. Others
     are: Integer, Byte, Object, Class, ClassLoader and all invoke and reflect packages from java and sun. 
     </p>
+    <p>
+    Note: the <code>exclude</code> attribute takes precedence over the <code>classes</code> attribute. I.e.: if a class matches one of the <code>exclude</code> expressions, it will never be instrumented. 
+    </p>
     </td>
     
      <tr>
@@ -94,7 +97,8 @@ will be injected into the running application.
     <td><code>classloaderpolicy</code></td>
     
     <td>The classloaderpolicy attribute can be used to define which classloader should load the injected code. By default this attribute is set to
-    <code>XClassLoaderPolicy.BOOT</code> which corresponds using the boot classpath. 
+    <code>XClassLoaderPolicy.BOOT</code> which corresponds to using the boot classpath. In this case exactly one instance of the JRTrace class will be created by the system and 
+    the tracing methods are invoked on this instance.
     <p>Example: the code of the below class will always be loaded using the classloader of the class into which the code was injected. Note that this
     might imply, that the tracing code is loaded multiple times by multiple classloaders if it is injected into classes that use different classloaders. 
     <pre>
@@ -118,7 +122,7 @@ will be injected into the running application.
     <p>Example: In the below example the injected code will be loaded using the classloader that loaded the <code>ResourcesPlugin</code>. Note that if the specified class
     hasn't been loaded yet, this will fail. Effectively the injected code will now be allowed to use all classes that are accessible to the org.eclipse.core.resources plugin. 
     <pre>
-    @XClass(names={"de.schenk.MyClass"},classloaderpolicy=XClassLoaderPolicy.NAMED,classloadername="org.eclipse.core.resources.ResourcesPlugin")
+    @XClass(classes={"de.schenk.MyClass"},classloaderpolicy=XClassLoaderPolicy.NAMED,classloadername="org.eclipse.core.resources.ResourcesPlugin")
     class Trace
     {
     }
@@ -127,6 +131,37 @@ will be injected into the running application.
     </td>
     
   </tr>
+  
+  </tr>
+    </tr>
+    <tr>
+    <td></td> 
+    <td><code>methodinstance</code></td>
+    
+    <td>The <code>methodinstance=true</code> attribute can be set to specify, that for each instrumented method a local variable with a new instance of this JRTrace class should be used and 
+    the methods that are injected are invoked on this instance instead of using the global/classloaderspecific instance of the JRTrace class.
+    
+    <p>
+    Example: the below example prints the time for each invocation of the method <code>de.schenk.MyClass.recursiveMethod</code> and the code will work even for recursive invocations of the method, 
+    since each method invocation will cause the creation of a new local instance of the <code>Trace</code> class.
+    </p>
+    <pre>
+    @XClass(classes={"de.schenk.MyClass"},methodinstance=true")
+    class Trace
+    {   long time=-1;
+    	@XMethod(names="recursiveMethod",location=XLocation.ENTER)
+    	public void entermethod()
+    	{ time=System.currentTimeMilles(); }
+    	@XMethod(names="recursiveMethod",location=XLocation.EXIT)
+    	public void exitmethod()
+    	{ System.out.println(System.currentTimeMilles()-time); }
+    }
+    </pre>
+    </p>
+    </td>
+    
+  </tr>
+  
   
    <tr>
     <td><code>@XMethod</code></td>
@@ -200,6 +235,13 @@ will be injected into the running application.
     <p>
     <code>GETFIELD</code> and <code>PUTFIELD</code> will inject the code after getting or setting a field. The default is to insert the code after every field access. Use
     <code>fieldname</code> and <code>fieldclass</code> to restrict to specific fields or classes.
+    </p>
+    
+    <p>
+    <code>EXCEPTION</code> will call the tracing code if the method throws an excpetion.
+    </p>
+    
+    <p>The below example will call <code>tracingCode</code> when the method <code>setValue</code> exits regularly.</p>
     <pre>
     @XMethod(names="setValue",location=XLocation.EXIT)
     public void tracingCode()
@@ -235,7 +277,7 @@ will be injected into the running application.
     <td></td> 
     <td><code>invokedname</br>invokedclass</br>fieldname</br>fieldclass</code></td>
     
-    <td>If method calls or field access is traced, these fields specify restrictions to the invoked methods / accessed fields.
+    <td>If method calls or field access is traced, these attributes allow to specify the class and name of the invoked method / field to match.
     <p>
     The below example will inject the tracing code before any write access to the field <code>counter</code> of the class <code>my.test.Counter</code>.
     </p>
@@ -340,16 +382,20 @@ will be injected into the running application.
     <td>Only valid for <code>XLocation.EXCEPTION</code>. This will inject the Exception that is thrown by the method into the parameter. 
     This annotation 
     has to be put on the first parameter and it has to be of type <code>java.lang.Throwable</code>.
+    <p>
+    Example: the method will be invoked if the instrumented method <code>setValue</code> throws an exception. The exception will be passed in via the variable <code>e</code>.
+    </p>
     <pre>
     @XMethod(location=XLocation.EXCEPTION,names="setValue")
-    public void tracingCode(@XException Throwable name)
+    public void tracingCode(@XException Throwable e)
     {
     	...
     }
     </pre>
     </p>
+    
     </td>
- 
+ </tr>
     <td><code>@XParam</code></td> 
     <td>n</td>
     
@@ -398,7 +444,7 @@ will be injected into the running application.
     <td>When injecting into method invocations within a method, the parameter annotations <code>@XInvokeParam</code>,<code>@XInvokeThis</code> and
     <code>@XInvokeReturn</code> maybe used to get access to a invocation parameter, the object on which the method was invoked or the return value. 
     <p>
-    The below example will inject the value returned from any invocation to a method named <code>getValue</code> to the parameter value.
+    The below example will inject tracing code that will be called after every invocation of a method <code>getValue</code> and the value returned from this method will be assigned to the parameter <code>value</code>.
     </p>
    
     <pre>
