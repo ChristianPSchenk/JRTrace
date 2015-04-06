@@ -19,7 +19,6 @@ import de.schenk.objectweb.asm.MethodVisitor;
 import de.schenk.objectweb.asm.Opcodes;
 import de.schenk.objectweb.asm.addons.CommonSuperClassUtil;
 import de.schenk.objectweb.asm.commons.JSRInlinerAdapter;
-import de.schenk.objectweb.asm.commons.LocalVariablesSorter;
 
 public class JRTraceClassVisitor extends ClassVisitor {
 
@@ -87,10 +86,8 @@ public class JRTraceClassVisitor extends ClassVisitor {
 			MethodVisitor oldVisitor = currentVisitor;
 			JRTraceMethodVisitor newMethodVisitor = new JRTraceMethodVisitor(
 					this, access, name, desc, oldVisitor, matchingMethods);
-			LocalVariablesSorter lvs = new LocalVariablesSorter(access, desc,
-					newMethodVisitor);
-			newMethodVisitor.setLocalVariableSorter(lvs);
-			currentVisitor = lvs;
+
+			currentVisitor = newMethodVisitor;
 		}
 
 		return new JSRInlinerAdapter(currentVisitor, access, name, desc,

@@ -27,7 +27,6 @@ import de.schenk.objectweb.asm.Opcodes;
 import de.schenk.objectweb.asm.Type;
 import de.schenk.objectweb.asm.addons.TypeCheckUtil;
 import de.schenk.objectweb.asm.commons.AdviceAdapter;
-import de.schenk.objectweb.asm.commons.LocalVariablesSorter;
 import de.schenk.objectweb.asm.commons.Method;
 
 public class JRTraceMethodVisitor extends AdviceAdapter {
@@ -42,7 +41,7 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 	private String targetMethodName;
 
 	private Type[] targetArguments;
-	private LocalVariablesSorter localVariableSorter;
+
 	private int targetMethodAccess;
 	/**
 	 * If the @XClass is annoted with methodinstance=true, a local variable is
@@ -296,11 +295,11 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 		Type[] invokedMethodType = Type.getArgumentTypes(desc);
 		if (!invokedMethodStatic) {
 
-			super.visitVarInsn(ALOAD, localArgPositions[0]);
+			mv.visitVarInsn(ALOAD, localArgPositions[0]);
 		}
 		for (int i = 0; i < invokedMethodType.length; i++) {
 			Type t = invokedMethodType[i];
-			super.visitVarInsn(t.getOpcode(ILOAD), localArgPositions[i + 1]);
+			mv.visitVarInsn(t.getOpcode(ILOAD), localArgPositions[i + 1]);
 		}
 
 	}
@@ -325,15 +324,14 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 		int[] localVariablePositions = new int[invokedMethodType.length + 1];
 		for (int i = invokedMethodType.length - 1; i >= 0; i--) {
 			Type t = invokedMethodType[i];
-			int theLocal = localVariableSorter.newLocal(t);
+			int theLocal = newLocal(t);
 			localVariablePositions[i + 1] = theLocal;
-			super.visitVarInsn(t.getOpcode(ISTORE), theLocal);
+			mv.visitVarInsn(t.getOpcode(ISTORE), theLocal);
 		}
 		if (!invokedMethodStatic) {
-			int thisPos = localVariableSorter.newLocal(Type
-					.getType(invocationTarget));
+			int thisPos = newLocal(Type.getType(invocationTarget));
 			localVariablePositions[0] = thisPos;
-			super.visitVarInsn(ASTORE, thisPos);
+			mv.visitVarInsn(ASTORE, thisPos);
 		}
 		return localVariablePositions;
 	}
@@ -416,7 +414,7 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 
 		Injection injectionObject = injectedMethod.getInjection(i);
 		if (injectionObject == null) {
-			mv.visitInsn(getNullOperand(injectionMethodArgumentTypes[i]));
+			visitInsn(getNullOperand(injectionMethodArgumentTypes[i]));
 		} else {
 			InjectionType iType = injectionObject.getType();
 			int injectionSource = injectionObject.getN();
@@ -434,7 +432,7 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 					first = false;
 				}
 
-				mv.visitLdcInsn(String.format("%s %s.%s(%s)", targetReturnType
+				visitLdcInsn(String.format("%s %s.%s(%s)", targetReturnType
 						.getClassName(), JRTraceNameUtil
 						.getExternalName(classVisitor.getClassName()),
 						targetMethodName, buffer.toString()));
@@ -536,7 +534,7 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 												.getClassName())));
 			}
 
-			mv.visitIntInsn(code, localVarIndex);
+			visitIntInsn(code, localVarIndex);
 		}
 
 	}
@@ -572,9 +570,9 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 		}
 		if (injectionMethodReturnType.equals(Type.VOID_TYPE)) {
 			if (sourceType.getSize() == 1) {
-				mv.visitInsn(Opcodes.DUP);
+				visitInsn(Opcodes.DUP);
 			} else {
-				mv.visitInsn(Opcodes.DUP2);
+				visitInsn(Opcodes.DUP2);
 			}
 
 		} else {
@@ -624,23 +622,23 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 
 			if (!field.isStatic()) {
 				opCode = GETFIELD;
-				mv.visitIntInsn(ALOAD, 0);
+				visitIntInsn(ALOAD, 0);
 			}
-			mv.visitFieldInsn(opCode, classVisitor.getClassName(),
+			super.visitFieldInsn(opCode, classVisitor.getClassName(),
 					injectionSource, desc);
 		} else {
 
 			if (!targetMethodStatic) {
-				mv.visitVarInsn(ALOAD, 0);
+				visitVarInsn(ALOAD, 0);
 			} else {
-				mv.visitInsn(ACONST_NULL);
+				visitInsn(ACONST_NULL);
 			}
 			String className = classVisitor.getClassName();
-			mv.visitLdcInsn(Type.getType("L" + className + ";"));
+			visitLdcInsn(Type.getType("L" + className + ";"));
 
-			mv.visitLdcInsn(injectionSource);
+			visitLdcInsn(injectionSource);
 
-			mv.visitMethodInsn(
+			visitMethodInsn(
 					INVOKESTATIC,
 					Type.getType(ReflectionUtil.class).getInternalName(),
 					"getPrivateField",
@@ -693,10 +691,10 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 					targetType.getDescriptor());
 			break;
 		case Type.ARRAY:
-			mv.visitTypeInsn(CHECKCAST, targetType.getInternalName());
+			visitTypeInsn(CHECKCAST, targetType.getInternalName());
 			break;
 		case Type.OBJECT:
-			mv.visitTypeInsn(CHECKCAST, targetType.getInternalName());
+			visitTypeInsn(CHECKCAST, targetType.getInternalName());
 			break;
 
 		}
@@ -705,8 +703,8 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 
 	private void castToPrimitive(String objecttype, String conversionMethod,
 			String descriptor) {
-		mv.visitTypeInsn(CHECKCAST, objecttype);
-		mv.visitMethodInsn(INVOKEVIRTUAL, objecttype, conversionMethod, "()"
+		visitTypeInsn(CHECKCAST, objecttype);
+		visitMethodInsn(INVOKEVIRTUAL, objecttype, conversionMethod, "()"
 				+ descriptor, false);
 	}
 
@@ -743,11 +741,11 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 				"de/schenk/jrtrace/helper/DynamicBinder", bindingMethodName,
 				mt.toMethodDescriptorString());
 
-		mv.visitInvokeDynamicInsn(injectedMethod.getMethodName(),
+		visitInvokeDynamicInsn(injectedMethod.getMethodName(),
 				methodDescriptorType.getDescriptor(), bootstrap, injectedMethod
 						.getClassMetadata().getExternalClassName(),
-				JRTraceHelper.getCurrentClassSetId(), injectedMethod
-						.getMethodName(), injectedMethod.getDescriptor());
+				JRTraceHelper.getCurrentClassSetId(),
+				injectedMethod.getMethodName(), injectedMethod.getDescriptor());
 
 	}
 
@@ -831,13 +829,4 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 				+ arguments.toString());
 	}
 
-	/**
-	 * @param lvs
-	 *            set the instance of the variable sorter to create new local
-	 *            variables
-	 */
-	public void setLocalVariableSorter(LocalVariablesSorter lvs) {
-		this.localVariableSorter = lvs;
-
-	}
 }
