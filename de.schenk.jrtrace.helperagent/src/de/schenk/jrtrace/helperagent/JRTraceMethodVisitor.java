@@ -139,7 +139,7 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 	private void createLocalJRTraceInstance() {
 		Type jrtraceType = Type.getType("L"
 				+ classVisitor.getClassMetadata().getClassName() + ";");
-		localJRTraceInstancePos = localVariableSorter.newLocal(jrtraceType);
+		localJRTraceInstancePos = newLocal(jrtraceType);
 		Type instrumentedType = Type.getType("L" + classVisitor.getClassName()
 				+ ";");
 
@@ -154,8 +154,7 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 				"createEngineXObject",
 				"(Ljava/lang/String;ILjava/lang/ClassLoader;)Ljava/lang/Object;",
 				false);
-		localVariableSorter.visitVarInsn(jrtraceType.getOpcode(ISTORE),
-				localJRTraceInstancePos);
+		mv.visitVarInsn(jrtraceType.getOpcode(ISTORE), localJRTraceInstancePos);
 	}
 
 	/**
@@ -385,8 +384,7 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 
 		if (classVisitor.getInstantiationPolicy() == InstantiationPolicy.METHOD) {
 			if (injectionMethodArgumentTypes.length == 0) {
-				localVariableSorter
-						.visitVarInsn(ALOAD, localJRTraceInstancePos);
+				mv.visitVarInsn(ALOAD, localJRTraceInstancePos);
 			}
 		}
 		for (int i = 0; i < injectionMethodArgumentTypes.length; i++) {
@@ -395,14 +393,13 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 			if (i == 0
 					&& classVisitor.getInstantiationPolicy() == InstantiationPolicy.METHOD) {
 
-				localVariableSorter
-						.visitVarInsn(ALOAD, localJRTraceInstancePos);
+				mv.visitVarInsn(ALOAD, localJRTraceInstancePos);
 				if (injectionMethodArgumentTypes[0].getSize() == 1) {
-					mv.visitInsn(Opcodes.DUP_X1);
+					visitInsn(Opcodes.DUP_X1);
 				} else {
-					mv.visitInsn(Opcodes.DUP_X2);
+					visitInsn(Opcodes.DUP_X2);
 				}
-				mv.visitInsn(Opcodes.POP);
+				visitInsn(Opcodes.POP);
 			}
 
 		}
