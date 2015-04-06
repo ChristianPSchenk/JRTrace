@@ -293,6 +293,8 @@ public class EngineXDetailsTest {
 		test14.test14();
 		assertTrue(Test14.success);
 
+		Test14.staticTest14();
+		assertTrue(Test14.staticsuccess);
 	}
 
 	@Test
@@ -485,6 +487,24 @@ public class EngineXDetailsTest {
 
 		int erg = test36.test36();
 		assertEquals(40, erg);
+	}
+
+	@Test
+	public void test37multipleFieldAccessesSomeMatchSomeNot() throws Exception {
+
+		Test37 test37 = new Test37();
+
+		int erg = test37.test37();
+		assertEquals(16, erg);
+	}
+
+	@Test
+	public void test38testAfterInvokeTraceOnStaticMethod() throws Exception {
+
+		Test38 test38 = new Test38();
+
+		long erg = test38.test38();
+		assertEquals(6, erg);
 	}
 
 	@Test

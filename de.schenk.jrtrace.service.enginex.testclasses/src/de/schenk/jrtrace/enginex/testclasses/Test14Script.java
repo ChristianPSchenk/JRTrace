@@ -59,4 +59,16 @@ public class Test14Script {
 
 	}
 
+	@XMethod(names = { "staticTest14" }, arguments = {})
+	public void testinstrumentation(@XField(name = "static_test14") int m2,
+			@XField(name = "static_test14base") int m3) {
+
+		boolean a2 = (m2 == 1234);
+		boolean a3 = (m3 == 1234);
+
+		if (a2 && a3)
+			Test14.staticsuccess = true;
+
+	}
+
 }
