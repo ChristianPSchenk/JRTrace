@@ -31,8 +31,8 @@ public enum XLocation {
 	 * instrumented method will return the value returned by the jrtrace method
 	 * instead of the original return type.
 	 * <p>
-	 * Note: The EXIT location will not be triggered, if the target method
-	 * throws an exception.
+	 * Note: the EXIT point might not be triggered if the method (or any method
+	 * it calls) triggers an exception that is not caught.
 	 * </p>
 	 */
 	EXIT,
@@ -63,6 +63,13 @@ public enum XLocation {
 	PUTFIELD,
 	/**
 	 * Insertion when a method is left by throwing an exception
+	 * 
+	 * <p>
+	 * Note: this will only trigger for methods that actually throw an
+	 * exception. Example: method a calls b calls c. c throws an exception, a
+	 * catches it. Then on method b, no EXIT nor an EXCEPTION trigger point will
+	 * be hit.
+	 * </p>
 	 */
 	EXCEPTION
 
