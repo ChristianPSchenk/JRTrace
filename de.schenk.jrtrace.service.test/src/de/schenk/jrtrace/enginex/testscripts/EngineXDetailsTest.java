@@ -7,14 +7,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.concurrent.TimeoutException;
 
 import javax.management.Notification;
 
@@ -530,11 +528,10 @@ public class EngineXDetailsTest {
 		theNotificationListener.reset();
 
 		Test24.test24();
-		try {
-			theNotificationListener.waitForNotification();
-		} catch (TimeoutException t) {
-			fail("no problem detected by the agent in Test24");
-		}
+
+		Notification lastNotification = theNotificationListener
+				.waitForNotification();
+		assertNotNull(lastNotification);
 
 	}
 
@@ -550,16 +547,12 @@ public class EngineXDetailsTest {
 			// with fitting signature...
 
 		}
-		try {
-			Notification lastNotification = theNotificationListener
-					.waitForNotification();
-			assertTrue(lastNotification
-					.getMessage()
-					.contains(
-							NotificationMessages.MESSAGE_MISSING_NO_ARGUMENT_CONSTRUCTOR));
-		} catch (TimeoutException t) {
-			fail("no problem detected by the agent in Test27");
-		}
+
+		Notification lastNotification = theNotificationListener
+				.waitForNotification();
+		assertNotNull(lastNotification);
+		assertTrue(lastNotification.getMessage().contains(
+				NotificationMessages.MESSAGE_MISSING_NO_ARGUMENT_CONSTRUCTOR));
 
 	}
 
@@ -581,6 +574,25 @@ public class EngineXDetailsTest {
 		Class<?> c2 = Display.class;
 		Class<?> jsv = JavaSourceViewerConfiguration.class;
 		assertTrue(true);
+	}
+
+	@Test
+	public void test39ErrorMessageForInvalidReturnTypeOnReplaceInvoke()
+			throws Exception {
+		theNotificationListener.reset();
+		try {
+			Test39 test39 = new Test39();
+			test39.test39();
+		} catch (Throwable e) {
+
+		}
+
+		Notification lastNotification = theNotificationListener
+				.waitForNotification();
+		assertNotNull(lastNotification);
+		assertTrue(lastNotification.getMessage().contains(
+				"REPLACE_INVOCATION requires that the return type"));
+
 	}
 
 }

@@ -28,9 +28,23 @@ public class TestNotificationListener implements NotificationListener {
 	CyclicBarrier notificationBarrier = new CyclicBarrier(2);
 	Notification lastNotification = null;
 
-	public Notification waitForNotification() throws InterruptedException,
-			BrokenBarrierException, TimeoutException {
-		notificationBarrier.await(10, TimeUnit.SECONDS);
+	/**
+	 * waits 10 seconds to get an error message and will return the message or
+	 * null if no message was received in time
+	 * 
+	 * @return
+	 */
+	public Notification waitForNotification() {
+
+		try {
+			notificationBarrier.await(10, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			return null;
+		} catch (BrokenBarrierException e) {
+			return null;
+		} catch (TimeoutException e) {
+			return null;
+		}
 		return lastNotification;
 	}
 

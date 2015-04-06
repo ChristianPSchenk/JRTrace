@@ -208,9 +208,8 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 				if (!TypeCheckUtil.isAssignable(injectionMethodReturnTypes,
 						Type.getReturnType(desc),
 						classVisitor.getCommonSuperClassUtil())) {
-					fatal(injectedMethod,
-							String.format(
-									"Type mismatch: @XLocation.REPLACE_INVOCATION requires that the return type %s of the injected method %s is assignable to the return type %s of the replaced method invocation to method %s.",
+					String msg = String
+							.format("Type mismatch: @XLocation.REPLACE_INVOCATION requires that the return type %s of the injected method %s is assignable to the return type %s of the replaced method invocation to method %s.",
 									JRTraceNameUtil
 											.getExternalName(injectionMethodReturnTypes
 													.getClassName()),
@@ -218,7 +217,8 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 									JRTraceNameUtil
 											.getExternalName(Type
 													.getReturnType(desc)
-													.getClassName()), name));
+													.getClassName()), name);
+					fatal(injectedMethod, msg);
 
 				}
 
