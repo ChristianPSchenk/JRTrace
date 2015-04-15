@@ -78,7 +78,7 @@ public class EngineXDetailsTest {
 
 		URL fileURL = FileLocator.find(bundle,
 				new Path("lib/EngineXTests.jar"), null);
-		File theFile = new File(FileLocator.resolve(fileURL).toURI());
+		File theFile = new File(FileLocator.toFileURL(fileURL).toURI());
 		theNotificationListener = new TestNotificationListener();
 		machine.addClientListener(NotificationConstants.NOTIFY_PROBLEM,
 				theNotificationListener);

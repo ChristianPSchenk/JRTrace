@@ -6,10 +6,34 @@
     <groupId>de.schenk</groupId>
     <artifactId>JRTrace</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-     <relativePath>../de.schenk.jrtrace.updatesite/pom.xml</relativePath>
+     <relativePath>../JRTrace/pom.xml</relativePath>
   </parent>
   <groupId>de.schenk</groupId>
   <artifactId>de.schenk.jrtrace.service.enginex.testclasses</artifactId>
-  <version>1.0.3-SNAPSHOT</version>
+  <version>1.1.1-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
+  
+   <build><plugins>
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.6</version>
+        <executions>
+          <execution>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+           
+            <finalName>EngineXTests</finalName>
+       
+       
+              <outputDirectory>lib</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+ 
+  </plugins></build>
 </project>

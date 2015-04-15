@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.schenk.jrtrace.service.test.utils.JavaUtil;
-import de.schenk.jrtrace.service.test.utils.TestUtils;
+import de.schenk.jrtrace.service.test.utils.TestProcessInstrumenter;
 
 public class JRTraceConnectToLaunchedAgentTest {
 
@@ -64,8 +64,9 @@ public class JRTraceConnectToLaunchedAgentTest {
 		assertTrue(result);
 		assertNotNull(theMachine);
 
-		File theClass = TestUtils
-				.getResource("bin/de/schenk/jrtrace/service/test/utils/TestProcessInstrumenter.class");
+		File theClass = (new JavaUtil())
+				.getFileForClass(TestProcessInstrumenter.class,
+						"de.schenk.jrtrace.service.test");
 
 		byte[][] classBytes = new byte[1][];
 		classBytes[0] = Files.readAllBytes(Paths.get(theClass.toURI()));

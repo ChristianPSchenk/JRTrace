@@ -14,9 +14,9 @@ import java.net.InetAddress;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
@@ -129,7 +129,7 @@ public class JavaUtil {
 	 */
 	private String getClassPathForClass(Class<TestProcess> class1)
 			throws URISyntaxException, IOException {
-		String file = getFileForClass(class1);
+		String file = getFilePathFromClassOfTestBundle(class1);
 		String internalclassname = JRTraceNameUtil.getInternalName(class1
 				.getName());
 		String pathLikeClassName = internalclassname.replace("/",
@@ -153,7 +153,7 @@ public class JavaUtil {
 			IOException {
 		String fullPath = null;
 
-		fullPath = getFileForClass(theclass);
+		fullPath = getFilePathFromClassOfTestBundle(theclass);
 
 		int index = fullPath.lastIndexOf("/");
 		fullPath = fullPath.substring(0, index);
@@ -169,14 +169,13 @@ public class JavaUtil {
 	 * @throws URISyntaxException
 	 * @throws IOException
 	 */
-	public String getFileForClass(Class<?> theclass) throws URISyntaxException,
+	public String getFilePathFromClassOfTestBundle(Class<?> theclass) throws URISyntaxException,
 			IOException {
-		return getFileForClass(theclass, "de.schenk.jrtrace.service.test");
+		return getFilepathForClass(theclass, "de.schenk.jrtrace.service.test");
 	}
 
 	/**
-	 * return a file for the given class from the specified bundle. (assuming
-	 * standard file layout: class is in bin folder...)
+	 * return a file for the given class from the specified bundle.
 	 * 
 	 * @param theclass
 	 * @param bundleid
@@ -184,21 +183,29 @@ public class JavaUtil {
 	 * @throws URISyntaxException
 	 * @throws IOException
 	 */
-	public String getFileForClass(Class<?> theclass, String bundleid)
+	public String getFilepathForClass(Class<?> theclass, String bundleid)
 			throws URISyntaxException, IOException {
-		String fullPath;
-		String classname = theclass.getName();
-		String qualifiedTestProcessClassFile = classname.replace(".", "/")
-				+ ".class";
-		Path path = new Path("/bin/" + qualifiedTestProcessClassFile);
 
-		// TODO: not nice to have the hard coded bundle name
-		Bundle bundle = Platform.getBundle(bundleid);
-		URL fileURL = FileLocator.find(bundle, path, null);
-
-		fullPath = new File(FileLocator.resolve(fileURL).toURI())
-				.getAbsolutePath();
+		File theFile = getFileForClass(theclass, bundleid);
+		String fullPath = theFile.getAbsolutePath();
 		return fullPath;
+	}
+
+	public File getFileForClass(Class<?> theclass, String bundleid) {
+		String classname = theclass.getSimpleName();
+
+		Bundle bundle = Platform.getBundle(bundleid);
+		Enumeration<URL> urls = bundle.findEntries("/", classname + ".class",
+				true);
+
+		File theFile;
+		try {
+			theFile = new File(FileLocator.toFileURL(urls.nextElement())
+					.toURI());
+		} catch (URISyntaxException | IOException e) {
+			throw new RuntimeException(e);
+		}
+		return theFile;
 	}
 
 	/**

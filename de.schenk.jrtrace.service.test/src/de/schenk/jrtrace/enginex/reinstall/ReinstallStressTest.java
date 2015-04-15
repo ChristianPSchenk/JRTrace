@@ -9,13 +9,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
@@ -282,12 +282,11 @@ public class ReinstallStressTest {
 
 	private byte[][] getClassBytes(Bundle bundle) throws URISyntaxException,
 			IOException {
-		URL fileURL = FileLocator
-				.find(bundle,
-						new Path(
-								"bin/de/schenk/jrtrace/enginex/reinstall/ReinstallScript.class"),
-						null);
-		File theFile = new File(FileLocator.resolve(fileURL).toURI());
+		Enumeration<URL> entries = bundle.findEntries("/",
+				"ReinstallScript.class", true);
+
+		URL fileURL = entries.nextElement();
+		File theFile = new File(FileLocator.toFileURL(fileURL).toURI());
 
 		byte[] jarBytes = Files.readAllBytes(Paths.get(theFile.toURI()));
 		byte[][] classBytes = new byte[1][];

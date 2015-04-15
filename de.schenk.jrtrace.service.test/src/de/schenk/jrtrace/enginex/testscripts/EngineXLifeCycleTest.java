@@ -13,6 +13,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -69,17 +70,9 @@ public class EngineXLifeCycleTest {
 
 		DoneListener doneListener = createDoneListener();
 
-		Bundle bundle = Platform
-				.getBundle("de.schenk.jrtrace.service.enginex.testclasses");
-
-		URL fileURL = FileLocator
-				.find(bundle,
-						new Path(
-								"bin/de/schenk/jrtrace/enginex/testclasses/JobInstrument.class"),
-						null);
-
+		URL url = getFileForClassFromTestClassesBundle("JobInstrument.class");
 		byte[][] classBytes = new byte[1][];
-		classBytes[0] = getBytesFromURL(fileURL);
+		classBytes[0] = getBytesFromURL(url);
 		machine.installEngineXClass(classBytes);
 
 		Job c = new Job("test") {
@@ -96,7 +89,8 @@ public class EngineXLifeCycleTest {
 
 	private byte[] getBytesFromURL(URL fileURL) throws URISyntaxException,
 			IOException {
-		File fullPath = new File(FileLocator.resolve(fileURL).toURI());
+
+		File fullPath = new File(FileLocator.toFileURL(fileURL).toURI());
 		byte[] bytes = Files.readAllBytes(Paths.get(fullPath.toURI()));
 		return bytes;
 	}
@@ -137,17 +131,10 @@ public class EngineXLifeCycleTest {
 
 		DoneListener doneListener = createDoneListener();
 
-		Bundle bundle = Platform
-				.getBundle("de.schenk.jrtrace.service.enginex.testclasses");
-
-		URL fileURL = FileLocator
-				.find(bundle,
-						new Path(
-								"bin/de/schenk/jrtrace/enginex/testclasses/EngineXTestClass.class"),
-						null);
+		URL url = getFileForClassFromTestClassesBundle("EngineXTestClass.class");
 
 		byte[][] classBytes = new byte[1][];
-		classBytes[0] = getBytesFromURL(fileURL);
+		classBytes[0] = getBytesFromURL(url);
 		machine.installEngineXClass(classBytes);
 
 		// InstrumentedClass is not loaded yet after installing the enginex
@@ -173,6 +160,17 @@ public class EngineXLifeCycleTest {
 		c2.doit();
 		assertTrue(c2.getResult());
 
+	}
+
+	public URL getFileForClassFromTestClassesBundle(String className) {
+		URL url = null;
+		Bundle bundle = Platform
+				.getBundle("de.schenk.jrtrace.service.enginex.testclasses");
+
+		Enumeration<URL> allEntries = bundle.findEntries("/", className, true);
+
+		url = allEntries.nextElement();
+		return url;
 	}
 
 	public DoneListener createDoneListener() {

@@ -83,11 +83,16 @@ public class Activator extends Plugin {
 			throws URISyntaxException, IOException {
 
 		Bundle bundle = Platform.getBundle(bundleId);
+		System.out.println(bundleId);
+		System.out.println(jarpath);
+		System.out.println(bundle);
 		Path path = new Path(jarpath);
-		URL fileURL = FileLocator.find(bundle, path, null);
+		System.out.println(path);
 
-		
-		return new File(FileLocator.toFileURL(fileURL).toURI()).getAbsolutePath();
+		URL fileURL = FileLocator.find(bundle, path, null);
+		System.out.println(fileURL);
+		return new File(FileLocator.toFileURL(fileURL).toURI())
+				.getAbsolutePath();
 	}
 
 }

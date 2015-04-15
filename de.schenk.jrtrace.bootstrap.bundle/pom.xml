@@ -6,10 +6,10 @@
     <groupId>de.schenk</groupId>
     <artifactId>JRTrace</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-     <relativePath>../de.schenk.jrtrace.updatesite/pom.xml</relativePath>
+     <relativePath>../JRTrace/pom.xml</relativePath>
   </parent>
   <groupId>de.schenk</groupId>
   <artifactId>de.schenk.jrtrace.bootstrap.bundle</artifactId>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.0.3-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>

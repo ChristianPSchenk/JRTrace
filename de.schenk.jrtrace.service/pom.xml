@@ -6,10 +6,27 @@
     <groupId>de.schenk</groupId>
     <artifactId>JRTrace</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-     <relativePath>../de.schenk.jrtrace.updatesite/pom.xml</relativePath>
+     <relativePath>../JRTrace/pom.xml</relativePath>
   </parent>
   <groupId>de.schenk</groupId>
   <artifactId>de.schenk.jrtrace.service</artifactId>
-  <version>1.1.3-SNAPSHOT</version>
+  <version>1.1.9-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
+  <build><plugins><plugin>
+ <groupId>org.eclipse.tycho</groupId>
+ <artifactId>tycho-compiler-plugin</artifactId>
+ <version>0.22.0</version>
+ <configuration>
+  <extraClasspathElements>
+   <extraClasspathElement>
+    <groupId>jdk</groupId>
+    <artifactId>tools.jar</artifactId>
+    <version>${java.version}</version>
+    <scope>system</scope>
+    <systemPath>${java.home}/../lib/tools.jar</systemPath>
+   </extraClasspathElement>
+  </extraClasspathElements>
+ </configuration>
+</plugin></plugins></build>
+  
 </project>
