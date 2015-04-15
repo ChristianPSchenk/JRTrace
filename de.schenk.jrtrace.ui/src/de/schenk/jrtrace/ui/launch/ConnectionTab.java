@@ -3,6 +3,8 @@
  **/
 package de.schenk.jrtrace.ui.launch;
 
+import java.util.HashSet;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -25,15 +27,18 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
+import de.schenk.jrtrace.helper.NetworkUtil;
 import de.schenk.jrtrace.jdk.init.Activator;
 import de.schenk.jrtrace.service.JRTraceControllerService;
 import de.schenk.jrtrace.service.JarLocator;
+import de.schenk.jrtrace.ui.JRTraceUIActivator;
 
 public class ConnectionTab extends AbstractLaunchConfigurationTab {
 
@@ -46,6 +51,8 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 	public static final String BM_AUTOCONNECT = "autoconnect";
 	public static final String BM_UPLOADAGENT = "uploadagent";
 	public static final String BM_UPLOADAGENT_PORT = "uploadagentport";
+	public static final String BM_SERVER_MACHINE = "targetservermachine";
+	public static final String BM_MY_NETWORK_INTERFACE = "mynetwork";
 	private Text pidText;
 	private Text identifyText;
 	private Text rulesProjectName;
@@ -60,9 +67,12 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 	private Text portText;
 	private Button pidSelectButton;
 	private Button copyJavaParameterButton;
+	private Text serverText;
+	private Combo networkCombo;
 
 	@Override
 	public void createControl(final Composite parent) {
+
 		final Composite box = new Composite(parent, SWT.FILL);
 		GridLayout gl = new GridLayout(3, false);
 		box.setLayout(gl);
@@ -70,12 +80,18 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 		if (!Activator.hasJDK()) {
 			createNoJDKWarningText(box);
 		}
+		String[] networkAddressNames = NetworkUtil
+				.getNonLoopbackAndNonLinkLocalAddresses();
+		if (networkAddressNames.length > 1) {
+			createSelectNetworkAddressNameCombo(box, networkAddressNames);
+		}
 		createUploadAgentButton(box);
 		createIdentifyByTextText(box);
 		createPIDText(box);
 		createAutoConnectCheckBox(box);
 
 		createConnectAgentButton(box);
+		createServerText(box);
 		createPortText(box);
 
 		createSelectProject(box);
@@ -87,6 +103,23 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 
 		connectAgent.setSelection(!uploadAgent.getSelection());
 		updateUI();
+
+	}
+
+	private void createSelectNetworkAddressNameCombo(Composite box,
+			String[] networkAddressNames) {
+		Label description = new Label(box, SWT.READ_ONLY);
+		description.setText("Select network interface:");
+		description
+				.setToolTipText("Your computes has more than 1 network addresses. In order to reach the agent from a remote computer you need to select the network address through which the request will come. If JRTrace is used locally, any address will do.");
+		networkCombo = new Combo(box, SWT.BORDER);
+		networkCombo.setItems(networkAddressNames);
+		networkCombo.select(0);
+		GridData gd = new GridData();
+		gd.horizontalSpan = 2;
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalAlignment = SWT.FILL;
+		networkCombo.setLayoutData(gd);
 
 	}
 
@@ -213,11 +246,22 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 				public void widgetSelected(SelectionEvent e) {
 					ElementListSelectionDialog selectRules = new ElementListSelectionDialog(
 							box.getShell(), new WorkbenchLabelProvider());
-					selectRules.setElements(ResourcesPlugin.getWorkspace()
-							.getRoot().getProjects(0));
-					selectRules.setTitle("Rules and Helper Project Selection");
+					IProject[] projects = ResourcesPlugin.getWorkspace()
+							.getRoot().getProjects(0);
+
+					HashSet<IProject> targetProjects = new HashSet<IProject>();
+
+					for (IProject p : projects) {
+						if (isJRTraceProject(p)) {
+							targetProjects.add(p);
+						}
+					}
+
+					selectRules.setElements(targetProjects
+							.toArray(new IProject[0]));
+					selectRules.setTitle("JRTrace Project Selection");
 					selectRules
-							.setMessage("Select the project that will hold the rules and helper jar files that you need for this launch configuration.");
+							.setMessage("Select the JRTrace Project that will be used to instrument the Target JVM.");
 					selectRules.setMultipleSelection(false);
 					selectRules.open();
 
@@ -228,8 +272,23 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 						setDirty();
 					}
 				}
+
 			});
 		}
+	}
+
+	private boolean isJRTraceProject(IProject p) {
+		try {
+			String[] natureIds = p.getDescription().getNatureIds();
+			for (String id : natureIds) {
+				if (id.equals(JRTraceUIActivator.NATURE_ID)) {
+					return true;
+				}
+			}
+		} catch (CoreException e) {
+			throw new RuntimeException(e);
+		}
+		return false;
 	}
 
 	private void createPortText(final Composite box) {
@@ -298,24 +357,23 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 			pidSelectButton.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					PIDSelectionDialog pidDialog = new PIDSelectionDialog(box.getShell(),true);
+					PIDSelectionDialog pidDialog = new PIDSelectionDialog(box
+							.getShell(), true);
 					pidDialog.setVMs(JRTraceControllerService.getInstance()
 							.getVMs());
 					pidDialog.setFilterText(identifyText.getText());
 					pidDialog.open();
-					if(pidDialog.getReturnCode()==IDialogConstants.OK_ID)
-					{
-					if(pidDialog.useFilterText())
-					{
-					  identifyText.setText(pidDialog.getFilterText());
-					  pidText.setText("");
-					} else
-					
-					{
-					  identifyText.setText("");
-					  pidText.setText(pidDialog.getPID());
-					}
-					setDirty();
+					if (pidDialog.getReturnCode() == IDialogConstants.OK_ID) {
+						if (pidDialog.useFilterText()) {
+							identifyText.setText(pidDialog.getFilterText());
+							pidText.setText("");
+						} else
+
+						{
+							identifyText.setText("");
+							pidText.setText(pidDialog.getPID());
+						}
+						setDirty();
 					}
 				}
 			});
@@ -344,6 +402,32 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 
 			};
 			identifyText.addModifyListener(mod);
+
+		}
+	}
+
+	private void createServerText(final Composite box) {
+		{
+			Label description = new Label(box, SWT.NONE);
+			description.setText("Target Machine:");
+			description
+					.setToolTipText("To connect to a target JVM on a different server enter the server address. Empty defaults to the local machine.");
+			serverText = new Text(box, SWT.BORDER);
+			GridData gd = new GridData();
+			gd.horizontalSpan = 2;
+			gd.grabExcessHorizontalSpace = true;
+			gd.horizontalAlignment = SWT.FILL;
+			serverText.setLayoutData(gd);
+			ModifyListener mod = new ModifyListener() {
+
+				@Override
+				public void modifyText(ModifyEvent e) {
+					setDirty();
+
+				}
+
+			};
+			serverText.addModifyListener(mod);
 
 		}
 	}
@@ -415,8 +499,9 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 		pidSelectButton.setEnabled(upload);
 		autoconnectButton.setEnabled(upload);
 		portText.setEnabled(!upload);
+		serverText.setEnabled(!upload);
 		copyJavaParameterButton.setEnabled(!upload);
-		
+
 		boolean noProjectSelected = rulesProjectName.getText().isEmpty();
 		autouploadButton.setEnabled(!noProjectSelected);
 
@@ -424,10 +509,18 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 
 	private String getAgentInfoLabel() {
 
-		return String.format("-javaagent:%s=port=%s,bootjar=%s", JarLocator
+		String serverArgument = "";
+		if (networkCombo != null) {
+			String servername = networkCombo.getText();
+			if (!servername.isEmpty()) {
+				serverArgument = ",server=" + servername;
+			}
+		}
+
+		return String.format("-javaagent:%s=port=%s,bootjar=%s%s", JarLocator
 				.getJRTraceHelperAgent(),
 				portText.getText().isEmpty() ? "<port>" : portText.getText(),
-				JarLocator.getHelperLibJar());
+				JarLocator.getHelperLibJar(), serverArgument);
 	}
 
 	@Override
@@ -441,6 +534,8 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 		configuration.setAttribute(BM_VERBOSE, false);
 		configuration.setAttribute(BM_UPLOADAGENT, true);
 		configuration.setAttribute(BM_UPLOADAGENT_PORT, 0);
+		configuration.setAttribute(BM_SERVER_MACHINE, "");
+		configuration.setAttribute(BM_MY_NETWORK_INTERFACE, "");
 
 	}
 
@@ -472,8 +567,17 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 			connectAgent.setSelection(!configuration.getAttribute(
 					BM_UPLOADAGENT, true));
 			int port = configuration.getAttribute(BM_UPLOADAGENT_PORT, 0);
+
 			if (port != 0)
 				portText.setText(String.format("%d", port));
+			String targetmachine = configuration.getAttribute(
+					BM_SERVER_MACHINE, "");
+			serverText.setText(targetmachine);
+
+			String myinterface = configuration.getAttribute(
+					BM_MY_NETWORK_INTERFACE, "");
+			if (networkCombo != null)
+				networkCombo.setText(myinterface);
 		} catch (CoreException e) {
 			throw new RuntimeException(
 					"Problem in ConnectionTab.intializeFrom", e);
@@ -490,12 +594,14 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 		configuration
 				.setAttribute(BM_PROJECT_IDENT, rulesProjectName.getText());
 		configuration.setAttribute(BM_VERBOSE, verboseButton.getSelection());
-		configuration.setAttribute(BM_AUTOUPLOAD,autouploadButton.isEnabled()?
-				autouploadButton.getSelection():false);
+		configuration.setAttribute(BM_AUTOUPLOAD,
+				autouploadButton.isEnabled() ? autouploadButton.getSelection()
+						: false);
 		configuration.setAttribute(BM_AUTOCONNECT,
 				autoconnectButton.getSelection());
 		configuration.setAttribute(BM_DEBUG, debugButton.getSelection());
 		configuration.setAttribute(BM_UPLOADAGENT, uploadAgent.getSelection());
+		configuration.setAttribute(BM_SERVER_MACHINE, serverText.getText());
 		int port = 0;
 		try {
 			port = Integer.parseInt(portText.getText());
@@ -503,6 +609,12 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 			// do nothing
 		}
 		configuration.setAttribute(BM_UPLOADAGENT_PORT, port);
+		if (networkCombo == null)
+			configuration.setAttribute(BM_MY_NETWORK_INTERFACE, "");
+		else {
+			configuration.setAttribute(BM_MY_NETWORK_INTERFACE,
+					networkCombo.getText());
+		}
 
 	}
 

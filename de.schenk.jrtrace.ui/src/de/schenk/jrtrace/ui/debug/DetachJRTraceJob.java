@@ -12,6 +12,7 @@ public class DetachJRTraceJob extends ProgressReportingJob {
 
 	@Override
 	protected IStatus run() {
+		getMachine().clearEngineX();
 		getMachine().detach();
 		return Status.OK_STATUS;
 	}

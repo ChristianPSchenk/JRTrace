@@ -10,7 +10,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
@@ -79,12 +82,17 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 		ILaunchConfiguration launchconfig = launch.getLaunchConfiguration();
 		int port;
 		port = launchconfig.getAttribute(ConnectionTab.BM_UPLOADAGENT_PORT, 0);
-
+		String targetmachine = launchconfig.getAttribute(
+				ConnectionTab.BM_SERVER_MACHINE, "");
+		if (targetmachine.isEmpty())
+			targetmachine = null;
 		JRTraceController controller = JRTraceControllerService.getInstance();
-		final IJRTraceVM machine = controller.getMachine(port);
+		final IJRTraceVM machine = controller.getMachine(port, targetmachine);
 		if (runTarget(launch, machine, monitor))
 			return machine;
-		showUnableToConnectDialog(String.format("Port:%d", port), machine);
+		showUnableToConnectDialog(String.format("Machine %s on Port %d",
+				targetmachine == null ? "localhost" : targetmachine, port),
+				machine);
 
 		throw new CoreException(Status.CANCEL_STATUS);
 
@@ -108,14 +116,36 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 
 		if (machine.attach(stopper)) {
 
-			
-				boolean uploadHelperOnConnect = launch.getLaunchConfiguration()
-						.getAttribute(ConnectionTab.BM_AUTOUPLOAD, false);
-				JRTraceDebugTarget dbt = new JRTraceDebugTarget(machine,
-						launch, theProject, uploadHelperOnConnect);
+			boolean uploadHelperOnConnect = launch.getLaunchConfiguration()
+					.getAttribute(ConnectionTab.BM_AUTOUPLOAD, false);
+			final JRTraceDebugTarget dbt = new JRTraceDebugTarget(machine,
+					launch, theProject, uploadHelperOnConnect);
 
-				launch.addDebugTarget(dbt);
-			
+			launch.addDebugTarget(dbt);
+
+			machine.addFailListener(new Runnable() {
+
+				@Override
+				public void run() {
+
+					Job disconnector = new Job(
+							"Connection Fail. Terminating Connection.") {
+
+						@Override
+						protected IStatus run(IProgressMonitor monitor) {
+							try {
+								dbt.disconnect();
+							} catch (DebugException e) {
+								throw new RuntimeException(e);
+							}
+							return Status.OK_STATUS;
+						}
+
+					};
+					disconnector.schedule(0);
+
+				}
+			});
 
 			return true;
 
@@ -156,7 +186,11 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 		}
 
 		JRTraceController controller = JRTraceControllerService.getInstance();
-		final IJRTraceVM machine = controller.getMachine(pid);
+		String mynetwork = launchconfig.getAttribute(
+				ConnectionTab.BM_MY_NETWORK_INTERFACE, "");
+		if (mynetwork.isEmpty())
+			mynetwork = null;
+		final IJRTraceVM machine = controller.getMachine(pid, mynetwork);
 
 		if (runTarget(launch, machine, monitor))
 			return machine;
@@ -236,22 +270,19 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 
 				@Override
 				public void run() {
-				  try
-				  {
-					PIDSelectionDialog dialog = new PIDSelectionDialog(Display.getDefault().getActiveShell(),false);
-					dialog.setVMs(usedVMs);
-					dialog.open();
-					if(dialog.getReturnCode()==IDialogConstants.OK_ID)
-					{
-					resultpid[0] = dialog.getPID();
-					} else
-					{
-					  resultpid[0]="";
+					try {
+						PIDSelectionDialog dialog = new PIDSelectionDialog(
+								Display.getDefault().getActiveShell(), false);
+						dialog.setVMs(usedVMs);
+						dialog.open();
+						if (dialog.getReturnCode() == IDialogConstants.OK_ID) {
+							resultpid[0] = dialog.getPID();
+						} else {
+							resultpid[0] = "";
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-				  } catch(Exception e)
-				  {
-				    e.printStackTrace();
-				  }
 
 				}
 
@@ -331,6 +362,5 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 		}
 
 	}
-
 
 }

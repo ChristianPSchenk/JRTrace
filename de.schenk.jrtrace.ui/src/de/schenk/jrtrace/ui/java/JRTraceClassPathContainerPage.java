@@ -16,7 +16,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import de.schenk.jrtrace.ui.Activator;
+import de.schenk.jrtrace.ui.JRTraceUIActivator;
 
 public class JRTraceClassPathContainerPage extends WizardPage implements
 		IClasspathContainerPage {
@@ -27,7 +27,7 @@ public class JRTraceClassPathContainerPage extends WizardPage implements
 
 	public JRTraceClassPathContainerPage() {
 		super("JRTrace Libraries");
-		ImageDescriptor des = Activator.getInstance().getDescriptor("jrtrace_icon_48px.gif");
+		ImageDescriptor des = JRTraceUIActivator.getInstance().getDescriptor("jrtrace_icon_48px.gif");
 		super.setImageDescriptor(des);
 		super.setTitle("JRTrace Agent and Helper Libraries");
 		

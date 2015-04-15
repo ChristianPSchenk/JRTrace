@@ -16,6 +16,7 @@ public class Test13Script {
 	public void testinstrumentation(@XThis Object m) {
 		if (m == null)
 			throw new RuntimeException("this was null");
+
 		Test13.a = 1;
 
 	}

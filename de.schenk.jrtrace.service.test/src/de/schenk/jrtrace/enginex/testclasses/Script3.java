@@ -10,20 +10,20 @@ import de.schenk.jrtrace.annotations.XInvokeReturn;
 import de.schenk.jrtrace.annotations.XInvokeThis;
 import de.schenk.jrtrace.annotations.XLocation;
 import de.schenk.jrtrace.annotations.XMethod;
+import de.schenk.jrtrace.annotations.XModifier;
 
-@XClass(exclude={"abc.*","def.*"},classes = { "de.schenk.jrtrace.enginex.testclasses.TestClass1" })
+@XClass(exclude = { "abc.*", "def.*" }, classes = { "de.schenk.jrtrace.enginex.testclasses.TestClass1" })
 public class Script3 {
 
-	@XMethod(location=XLocation.BEFORE_INVOCATION,invokedname="invokedMethod",invokedclass="a.b.C")
-	public void method(@XInvokeReturn Object x, @XInvokeParam(n=3) Object i,@XField(name="field") int field,@XInvokeThis Object o) {
+	@XMethod(location = XLocation.BEFORE_INVOCATION, invokedname = "invokedMethod", invokedclass = "a.b.C")
+	public void method(@XInvokeReturn Object x, @XInvokeParam(n = 3) Object i,
+			@XField(name = "field") int field, @XInvokeThis Object o) {
 
 	}
-	
-	@XMethod(location=XLocation.GETFIELD,fieldclass="a.b.C",fieldname="field")
-	public void method2()
-	{
-	  
+
+	@XMethod(location = XLocation.GETFIELD, fieldclass = "a.b.C", fieldname = "field", modifier = XModifier.STATIC)
+	public void method2() {
+
 	}
 
-	
 }

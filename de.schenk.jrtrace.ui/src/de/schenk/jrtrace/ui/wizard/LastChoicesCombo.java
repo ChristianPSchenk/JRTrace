@@ -14,7 +14,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 
-import de.schenk.jrtrace.ui.Activator;
+import de.schenk.jrtrace.ui.JRTraceUIActivator;
 
 /**
  * a combo box that stores the last choices in the .settings.
@@ -60,7 +60,7 @@ public class LastChoicesCombo extends Composite {
 	}
 
 	public void restoreSettings() {
-		IDialogSettings settings = Activator.getInstance().getDialogSettings();
+		IDialogSettings settings = JRTraceUIActivator.getInstance().getDialogSettings();
 		String paths = settings.get(prefix + LAST_CHOICES);
 		if (paths != null) {
 			String[] cl = paths.split("@@");
@@ -80,7 +80,7 @@ public class LastChoicesCombo extends Composite {
 	}
 
 	public void storeSettings() {
-		IDialogSettings settings = Activator.getInstance().getDialogSettings();
+		IDialogSettings settings = JRTraceUIActivator.getInstance().getDialogSettings();
 
 		String[] items = combo.getItems();
 		String current = combo.getText();

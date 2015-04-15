@@ -3,56 +3,73 @@
  **/
 package de.schenk.jrtrace.helperagent.internal;
 
-import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.lang.reflect.Modifier;
 
-import de.schenk.jrtrace.helperlib.HelperLib;
+import de.schenk.jrtrace.helper.InstrumentationUtil;
+import de.schenk.jrtrace.helper.JRTraceHelper;
 
 public class RunJavaCommand {
 
-	public void runJava(String pathToJar, String referenceClassName,
-			String mainClass, String mainMethod) {
-		URL u;
-		try {
+	/**
+	 * 
+	 * @param referenceClassName
+	 *            the fully qualified name of a class that shall be used to
+	 *            identify the classloader. (only applicable for
+	 *            XClassLoaderPolicy.TARGET)
+	 * 
+	 * @param mainClass
+	 * @param mainMethod
+	 */
+	public void runJava(String referenceClassName, String mainClass,
+			String mainMethod) {
 
-			File fu = new File(pathToJar);
-			u = fu.toURI().toURL();
-		} catch (MalformedURLException e) {
-			throw new RuntimeException("invalid url", e);
-		}
-		ClassLoader classLoader = HelperLib
+		ClassLoader classLoader = InstrumentationUtil
 				.getCachedClassLoader(referenceClassName);
-		URLClassLoader jarLoader = URLClassLoader.newInstance(new URL[] { u },
-				classLoader);
 
 		Class<?> gclClass;
 		try {
-			gclClass = Class.forName(mainClass, true, jarLoader);
-			Method method = gclClass.getMethod(mainMethod);
-			method.invoke(null);
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Exception while invoking " + mainClass
-					+ "." + mainMethod + ".", e);
+			gclClass = JRTraceHelper.getEngineXClass(mainClass,
+					JRTraceHelper.getCurrentClassSetId(), classLoader);
+			if (gclClass == null) {
+				throw new RuntimeException(String.format(
+						"Unable to obtain class %s for execution.", mainClass));
+			}
+			final Method method = gclClass.getDeclaredMethod(mainMethod);
+			if (method == null) {
+				System.err.println("Method " + mainMethod + " not found.");
+				return;
+			}
+			final Object targetObject;
+			if (!Modifier.isStatic(method.getModifiers())) {
+				targetObject = JRTraceHelper.getEngineXObject(mainClass,
+						JRTraceHelper.getCurrentClassSetId(), classLoader);
+			} else {
+				targetObject = null;
+			}
+			Thread runnerThread = new Thread("runJRTRaceCode") {
+				@Override
+				public void run() {
+					try {
+						method.setAccessible(true);
+						method.invoke(targetObject);
+					} catch (Throwable e) {
+						// currently no feedback to jrtrace UI. Just report
+						// anything on the console.
+						e.printStackTrace();
+					}
+
+				}
+			};
+			runnerThread.start();
 
 		} catch (NoSuchMethodException e) {
-			throw new RuntimeException("Exception while invoking " + mainClass
-					+ "." + mainMethod + ".", e);
+			System.err.println("The method " + mainMethod
+					+ " wasn't found in the class " + mainClass);
 		} catch (SecurityException e) {
-			throw new RuntimeException("Exception while invoking " + mainClass
-					+ "." + mainMethod + ".", e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException("Exception while invoking " + mainClass
-					+ "." + mainMethod + ".", e);
+			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			throw new RuntimeException("Exception while invoking " + mainClass
-					+ "." + mainMethod + ".", e);
-		} catch (InvocationTargetException e) {
-			throw new RuntimeException("Exception while invoking " + mainClass
-					+ "." + mainMethod + ".", e);
+			e.printStackTrace();
 		}
 
 	}

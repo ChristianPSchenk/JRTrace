@@ -34,7 +34,8 @@ public class AgentStarter {
 			throw new RuntimeException("didn't find helperlib jar "
 					+ agentArgs.getBootJar());
 		}
-		AgentMain.launch(agentArgs.getPort(), inst);
+
+		AgentMain.launch(agentArgs.getPort(), agentArgs.getServer(), inst);
 
 	}
 

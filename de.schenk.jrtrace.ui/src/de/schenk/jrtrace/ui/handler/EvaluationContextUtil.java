@@ -1,6 +1,6 @@
 /**
-* (c) 2014 by Christian Schenk
-**/
+ * (c) 2014 by Christian Schenk
+ **/
 package de.schenk.jrtrace.ui.handler;
 
 import org.eclipse.core.expressions.IEvaluationContext;
@@ -8,8 +8,20 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.ISources;
+import org.eclipse.ui.part.WorkbenchPart;
 
 public class EvaluationContextUtil {
+
+	/**
+	 * 
+	 * @param evaluationContext
+	 * @return the currently active part
+	 */
+	static public WorkbenchPart getPart(Object evaluationContext) {
+		IEvaluationContext e = (IEvaluationContext) evaluationContext;
+		return (WorkbenchPart) e.getVariable(ISources.ACTIVE_PART_NAME);
+	}
+
 	/**
 	 * 
 	 * @param evaluationContext

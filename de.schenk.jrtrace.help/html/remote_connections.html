@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>JRTrace Remote Connection Hints</title>
+</head>
+
+<body style="font-family:sans-serif">
+<h1>How to perform a Remote Connection</h1>
+
+
+If you want to connect to a remote host you need a several steps:
+
+<ul>
+<li>
+It is required to install JRTRace on the target machine on which process is running.
+</li>
+<li>
+On the target machine, install the agent into the target process to which you want to connect. 
+</li>
+<li>
+Last select the proper connection parameters on the machine from which you want to connect (the development machine).
+</li>
+</ul>
+
+<h2>
+Instrumenting the Target Process
+</h2>
+<p>
+Basically there are two options: if you have a JDK for JRTrace to run: just select the target process in JRTrace on the target machine. In this case you
+shouldn't select any project because the actual instrumentation will be done from the development machine.
+If there is no JDK: use the "Copy Agent Parameters" button on the launch configuration tab and start the target process with the additional parameters 
+that were copied to the clipboard.
+</p>
+<p>
+The settings in the screenshot below will install the JRTrace agent into the JVM which contains "rcp/dev.pro" in the description of the process. Since no project is selected 
+nothing will happen yet except the installation of the agent into the target JVM. The network interface is selected as "192.168.178.39". Therefore on the development
+machine it is required to use "192.168.178.39" as "Target Machine".
+</p>
+
+<img src="pics/launchdialog_for_remote.png"></img>
+<p>
+Note: if your computer has more than one network interface, an additional drop down box will appear on top of the launch dialog, see the screenshot before. In this case it is
+important to select the network interface to which the development machine will connect. 
+</p>
+<h2>
+Connecting to the Target Process
+</h2>
+<p>
+On the development machine, choose."Connect JRTrace Agent" and enter the ip address of the target machine which should match the "Select Network Interface" setting. The port should be visible in the debug 
+target description on the remote machine, see the screenshots below: here the port is 52846.
+</p>
+<img src="pics/remote_port.png"></img>
+
+<p> For the example shown above, the picture below shows the proper settings:
+</p>
+
+<img src="pics/remote_settings_on_dev.png"></img>
+
+
+</body>
+</html>

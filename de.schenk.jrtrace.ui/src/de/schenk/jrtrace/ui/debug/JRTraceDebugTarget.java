@@ -4,14 +4,13 @@
 package de.schenk.jrtrace.ui.debug;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
+import java.lang.reflect.UndeclaredThrowableException;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
@@ -22,10 +21,12 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Display;
 
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.ui.markers.JRTraceMarkerManager;
+import de.schenk.jrtrace.ui.util.JarByteUtil;
 import de.schenk.jrtrace.ui.util.JarUtil;
 
 public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
@@ -40,6 +41,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 	private JRTraceConsoleConnector JRTraceConsole;
 	IProcess process;
 	private JRTraceMarkerManager markerManager;
+	private IProject theProject;
 
 	public JRTraceDebugTarget(IJRTraceVM vm, ILaunch launch,
 			final IProject theProject, boolean uploadHelperOnConnect) {
@@ -52,6 +54,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 		markerManager = new JRTraceMarkerManager(this);
 
+		this.theProject = theProject;
 		if (theProject != null) {
 			if (uploadHelperOnConnect) {
 				final File jarFile[] = new File[1];
@@ -67,6 +70,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 				});
 
 				Job installEngineXJob = new InstallJRTraceJob(this, jarFile[0]);
+
 				installEngineXJob.schedule();
 
 			}
@@ -76,8 +80,8 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 	}
 
 	private void createConsole() {
-		JRTraceConsole = new JRTraceConsoleConnector(machine);
-		JRTraceConsole.start();
+		JRTraceConsole = new JRTraceConsoleConnector();
+		JRTraceConsole.start(this);
 
 	}
 
@@ -210,7 +214,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 	@Override
 	public IMemoryBlock getMemoryBlock(long startAddress, long length)
 			throws DebugException {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -233,7 +237,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 	@Override
 	public String getName() throws DebugException {
 
-		return machine.getPID();
+		return machine.toString();
 	}
 
 	@Override
@@ -242,40 +246,99 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 		return false;
 	}
 
-	public void installJar(File jar) {
+	public void installJar(byte[] bytes) {
 
-		machine.installJar(jar.toString());
-
-	}
-
-	public void installJar(IFile jar) {
-		try {
-			installJar(new File(FileLocator.toFileURL(
-					jar.getLocationURI().toURL()).toURI()));
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(
-					"Error installing jar " + jar.toString(), e);
-		} catch (IOException e) {
-			throw new RuntimeException(
-					"Error installing jar " + jar.toString(), e);
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(
-					"Error installing jar " + jar.toString(), e);
+		if (!machine.installJar(bytes)) {
+			disconnectAfterConnectionProblem();
 		}
 
 	}
 
-	
+	/**
+	 * 
+	 * @param theClassLoader
+	 *            for classloaderpolicy TARGET: the name of the class to use for
+	 *            the invocation.
+	 * @param className
+	 *            name of the class to invoke a method on
+	 * @param methodName
+	 *            static method name (void void)
+	 */
+	public void runJava(String theClassLoader, final String className,
+			final String methodName) {
+		if (!machine.runJava(theClassLoader, className, methodName)) {
 
-	public void runJava(File jarFile, String theClassLoader, String className,
-			String methodName) {
-		machine.runJava(jarFile, theClassLoader, className, methodName);
+			Display.getDefault().asyncExec(new Runnable() {
+
+				@Override
+				public void run() {
+					MultiStatus m = new MultiStatus(
+							de.schenk.jrtrace.ui.JRTraceUIActivator.BUNDLE_ID,
+							IStatus.ERROR, "Error during java call.", machine
+									.getLastError());
+					if (machine.getLastError() instanceof UndeclaredThrowableException) {
+						UndeclaredThrowableException t = (UndeclaredThrowableException) machine
+								.getLastError();
+						m.add(new Status(IStatus.ERROR,
+								de.schenk.jrtrace.ui.JRTraceUIActivator.BUNDLE_ID,
+								"Undeclared Throwable:", t
+										.getUndeclaredThrowable()));
+
+					}
+					ErrorDialog.openError(
+							Display.getDefault().getActiveShell(),
+							"Execution Problem",
+							"It was not possible to run the method "
+									+ methodName + " of class " + className
+									+ " on the target.", m);
+
+				}
+
+			});
+		}
+
+	}
+
+	private void disconnectAfterConnectionProblem() {
+
+		Display.getDefault().asyncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				ErrorDialog.openError(
+						Display.getDefault().getActiveShell(),
+						"Connection Problem",
+						"The connection to the target machine " + pid
+								+ " is broken. Disconnecting from target.",
+						new Status(IStatus.ERROR,
+								de.schenk.jrtrace.ui.JRTraceUIActivator.BUNDLE_ID,
+								"Connection to target lost.", machine
+										.getLastError()));
+
+			}
+
+		});
+		try {
+			disconnect();
+		} catch (DebugException e) {
+			throw new RuntimeException(e);
+		}
 
 	}
 
 	public void installEngineX(File jarFile) {
 		markerManager.clearAllMarkers();
-		machine.installEngineXClass(jarFile.getAbsolutePath());
+
+		byte[][] classFileBytes = JarByteUtil
+				.convertJarToClassByteArray(jarFile);
+		if (!machine.installEngineXClass(classFileBytes)) {
+			disconnectAfterConnectionProblem();
+		}
+
+	}
+
+	public IProject getProject() {
+		return theProject;
 
 	}
 

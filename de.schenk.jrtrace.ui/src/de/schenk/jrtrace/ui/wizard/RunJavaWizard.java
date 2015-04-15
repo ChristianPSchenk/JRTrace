@@ -1,34 +1,19 @@
 /**
-* (c) 2014 by Christian Schenk
-**/
+ * (c) 2014 by Christian Schenk
+ **/
 package de.schenk.jrtrace.ui.wizard;
 
-import java.io.File;
-import java.util.List;
-
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.PlatformUI;
 
 import de.schenk.jrtrace.ui.debug.JRTraceDebugTarget;
-import de.schenk.jrtrace.ui.launch.JRTraceLaunchUtils;
-import de.schenk.jrtrace.ui.util.JarUtil;
 
 public class RunJavaWizard extends Wizard {
 
 	private String theClassLoader = "";
-	private IProject theProject;
 	private RunJavaPage scriptPage;
-	private String mainClass;
-	private String runMethod;
-
-	public IProject getProject() {
-		return theProject;
-	}
-
-	public void setProject(IProject theProject) {
-		this.theProject = theProject;
-	}
+	private String mainClass = "";
+	private String runMethod = "";
+	private JRTraceDebugTarget debugTarget = null;
 
 	String getTheClassLoader() {
 		return theClassLoader;
@@ -38,9 +23,9 @@ public class RunJavaWizard extends Wizard {
 		this.theClassLoader = theClassLoader;
 	}
 
-	public RunJavaWizard(IProject project) {
-		setProject(project);
-		this.setWindowTitle("Run Java on Target");
+	public RunJavaWizard() {
+
+		this.setWindowTitle("Execute Method on JRTrace Class");
 
 	}
 
@@ -50,15 +35,9 @@ public class RunJavaWizard extends Wizard {
 
 	}
 
-	private List<JRTraceDebugTarget> getJRTraceTargets() {
-		List<JRTraceDebugTarget> jrtraceTargets = JRTraceLaunchUtils
-				.getJRTraceDebugTargets();
-		return jrtraceTargets;
-	}
-
 	public boolean canFinish() {
 		boolean allPagesComplete = super.canFinish();
-		if (allPagesComplete && !getJRTraceTargets().isEmpty())
+		if (allPagesComplete && debugTarget != null)
 			return true;
 
 		return false;
@@ -70,19 +49,15 @@ public class RunJavaWizard extends Wizard {
 
 		scriptPage.storeSettings();
 
-		File jarFile = JarUtil.createJar(this.getProject(), PlatformUI
-				.getWorkbench().getActiveWorkbenchWindow().getShell());
+		debugTarget.runJava(theClassLoader, mainClass, runMethod);
 
-		List<JRTraceDebugTarget> jrtraceTargets = getJRTraceTargets();
-
-		for (JRTraceDebugTarget btarget : jrtraceTargets) {
-			btarget.runJava(jarFile, theClassLoader, mainClass, runMethod);
-		}
 		return true;
 	}
 
 	public void setMainClass(String text) {
-		this.mainClass = text;
+		if (text != null) {
+			this.mainClass = text;
+		}
 
 	}
 
@@ -97,5 +72,22 @@ public class RunJavaWizard extends Wizard {
 	public void setRunMethod(String text) {
 		this.runMethod = text;
 
+	}
+
+	public void setSelection(String className, String functionName) {
+
+		setMainClass(className);
+		setRunMethod(functionName);
+		scriptPage.updatePageControls();
+
+	}
+
+	public JRTraceDebugTarget getDebugTarget() {
+		return debugTarget;
+	}
+
+	public void setDebugTarget(JRTraceDebugTarget firstElement) {
+
+		debugTarget = firstElement;
 	}
 }

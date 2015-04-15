@@ -17,11 +17,27 @@ public class JRTraceVMImpl extends AbstractVM {
 
 	VirtualMachine vm;
 	private String thePID;
+	private String servernetworkaddress;
+	/* the MX Bean registry port on which the agent is listening */
+	private int port;
 
 	//
 
-	public JRTraceVMImpl(String pid) {
+	public int getPort() {
+		return port;
+	}
+
+	/**
+	 * 
+	 * @param pid
+	 *            the pid to upload the agent to.
+	 * @param servernetwork
+	 *            the ip address name on which the server will expect a
+	 *            connection or null for local connections
+	 */
+	public JRTraceVMImpl(String pid, String servernetwork) {
 		thePID = pid;
+		this.servernetworkaddress = servernetwork;
 	}
 
 	/**
@@ -38,7 +54,7 @@ public class JRTraceVMImpl extends AbstractVM {
 		if (port == -1)
 			return false;
 
-		return connectToAgent(port, stopper);
+		return connectToAgent(port, null, stopper);
 	}
 
 	private boolean attachVM() {
@@ -60,12 +76,14 @@ public class JRTraceVMImpl extends AbstractVM {
 
 	private int installAgent() {
 
-		int port = PortUtil.getFreePort();
+		port = PortUtil.getFreePort();
 		try {
 			String agent = JarLocator.getJRTraceHelperAgent();
 			String helperPath = JarLocator.getHelperLibJar();
-			vm.loadAgent(agent,
-					String.format("port=%d,bootjar=%s", port, helperPath));
+			String mynetwork = servernetworkaddress == null ? ""
+					: (",server=" + servernetworkaddress);
+			vm.loadAgent(agent, String.format("port=%d,bootjar=%s%s", port,
+					helperPath, mynetwork));
 
 		} catch (AgentInitializationException e) {
 			lastException = e;
@@ -83,10 +101,11 @@ public class JRTraceVMImpl extends AbstractVM {
 	public boolean detach() {
 		boolean result = true;
 		boolean result2 = true;
-		result = stopConnection(false);
+
 		if (!detachVM()) {
 			result2 = false;
 		}
+		result = stopConnection(false);
 		return result & result2;
 
 	}
@@ -106,6 +125,13 @@ public class JRTraceVMImpl extends AbstractVM {
 	@Override
 	public String getPID() {
 		return thePID;
+	}
+
+	@Override
+	public String toString() {
+		return String
+				.format("Agent installed into process:%s  (JRTrace Server on port: %d)",
+						thePID, port);
 	}
 
 }

@@ -18,6 +18,7 @@ public class InstallJRTraceJob extends ProgressReportingJob {
 
 	protected IStatus run() {
 		getTarget().installEngineX(jarFile);
+		jarFile.delete();
 		return Status.OK_STATUS;
 	}
 

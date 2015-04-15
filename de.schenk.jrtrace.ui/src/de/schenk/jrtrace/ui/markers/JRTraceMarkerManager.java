@@ -22,7 +22,7 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.search.SearchMatch;
 
 import de.schenk.jrtrace.helperlib.NotificationConstants;
-import de.schenk.jrtrace.ui.Activator;
+import de.schenk.jrtrace.ui.JRTraceUIActivator;
 import de.schenk.jrtrace.ui.debug.JRTraceDebugTarget;
 import de.schenk.jrtrace.ui.debug.MarkerCreateInfo;
 
@@ -137,8 +137,8 @@ public class JRTraceMarkerManager implements NotificationListener {
 	}
 
 	private void logError(String msg, Exception e) {
-		Activator.getInstance().getLog()
-				.log(new Status(IStatus.ERROR, Activator.BUNDLE_ID, msg, e));
+		JRTraceUIActivator.getInstance().getLog()
+				.log(new Status(IStatus.ERROR, JRTraceUIActivator.BUNDLE_ID, msg, e));
 	}
 
 	private void updateMarkers() {

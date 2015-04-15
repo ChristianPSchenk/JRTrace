@@ -15,8 +15,8 @@ import java.lang.annotation.Target;
  * ability to inject method calls into methods of the target java application
  * (into "target methods" of "target classes").
  * <p>
- * The classes and methods that are inserted into the target application are referred
- * to as the "injected classes" or "injected methods".
+ * The classes and methods that are inserted into the target application are
+ * referred to as the "injected classes" or "injected methods".
  * <p>
  * 
  * The XClass annotation annotates classes that contain methods that should be
@@ -41,9 +41,9 @@ public @interface XClass {
 	 * 
 	 * @return This annotation can specify one ore more fully qualified
 	 *         classnames. Only target classes or interfaces that match one of
-	 *         these classnames are potential targets for code injection from this class. Which
-	 *         classes qualify as targets for injection can also be influenced
-	 *         using the annotation {@link #derived()}.
+	 *         these classnames are potential targets for code injection from
+	 *         this class. Which classes qualify as targets for injection can
+	 *         also be influenced using the annotation {@link #derived()}.
 	 *         <p>
 	 *         If not set, this class will not inject any code. An XClass might
 	 *         still be useful, since it can be used by other code injected and
@@ -63,17 +63,20 @@ public @interface XClass {
 	 *         with a classloader that can access the bootclasspath only.
 	 *         <p>
 	 *         Example:
+	 * 
 	 *         <pre>
-	 *         @XClass(classloaderpolicy=XClassLoaderPolicy.BOOT)</pre
-	 *         
-	 *         
+	 *         @XClass(classloaderpolicy=XClassLoaderPolicy.BOOT)
+	 * </pre
+	 * 
+	 * 
 	 */
 	XClassLoaderPolicy classloaderpolicy() default XClassLoaderPolicy.BOOT;
 
 	/**
 	 * 
-	 * @return if {@link XClassLoaderPolicy#NAMED} is selected the name of a class has to be specified. The ClassLoader
-	 * of this class will be the used for the injected code.
+	 * @return if {@link XClassLoaderPolicy#NAMED} is selected the name of a
+	 *         class has to be specified. The ClassLoader of this class will be
+	 *         the used for the injected code.
 	 */
 	String classloadername() default "";
 
@@ -89,22 +92,56 @@ public @interface XClass {
 	 * 
 	 * @return if set to true, regular expressions will be used to test
 	 *         classnames, methodnames and argument names.
-	 *         
+	 * 
 	 *         <p>
 	 *         Example:
 	 *         </p>
-	 *         <pre>@XClass(classes="org\\.eclipse.*",regex=true)</pre>
-	 *         Methods from this Class maybe injected in all classes from the namespace <b>org.eclipse</b>
+	 * 
+	 *         <pre>
+	 * @XClass(classes="org\\.eclipse.*",regex=true)
+	 * </pre>
+	 * 
+	 *         Methods from this Class maybe injected in all classes from the
+	 *         namespace <b>org.eclipse</b>
+	 *         <p>
+	 *         Note: if regex is set to true, the java.util.regex.Pattern class
+	 *         is excluded from including tracing code.
 	 * 
 	 */
 	boolean regex() default false;
 
 	/**
 	 * 
-	 * @return a collection of regular expressions. All classes matching will be excluded from potential instrumentation from
-	 * this {@link XClass}. Note that this is always a regular expression and the {@link XClass#regex()} flag has no influence here.
+	 * @return a collection of regular expressions. All classes matching will be
+	 *         excluded from potential instrumentation from this {@link XClass}.
+	 *         Note that this is always a regular expression and the
+	 *         {@link XClass#regex()} flag has no influence here.
 	 * 
 	 */
-  String[] exclude() default "";
+	String[] exclude() default "";
+
+	/**
+	 * 
+	 * @return true, if one instance of this tracing class shall be created for
+	 *         each instrumented method in this class. The instance will
+	 *         internally be like a local variable to the class that is
+	 *         instrumented. Thus instance fields of the JRTrace class can carry
+	 *         state that is valid for one method scope.
+	 *         <p>
+	 *         Note: it is not possible to share the state of instance variables
+	 *         between multiple methods using this mechanism since there is one
+	 *         instance of the JRTrace class for each method that is
+	 *         instrumented. However the benefit is that a logging class can
+	 *         store a state even for recursive invocations of the method which
+	 *         is bound to the individual invocation.
+	 *         </p>
+	 *         <p>
+	 *         Note: the default behaviour of JRTrace is to create one instance
+	 *         of a JRTrace class per classloader for which the class is
+	 *         requested
+	 *         </p>
+	 */
+
+	boolean methodinstance() default false;
 
 }

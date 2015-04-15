@@ -30,17 +30,19 @@ public class JRTraceConsoleConnector {
 	private StreamReceiver errorstreamReceiver;
 	private StreamReceiver streamReceiver;
 
-	public JRTraceConsoleConnector(IJRTraceVM machine) {
-		title = machine.getPID();
-		this.machine = machine;
+	public JRTraceConsoleConnector() {
+
 	}
 
-	public void start() {
+	public void start(JRTraceDebugTarget jrTraceDebugTarget) {
+		this.machine = jrTraceDebugTarget.getJRTraceMachine();
+		title = machine.getPID();
 
 		MessageConsole console;
 		try {
 			console = new JRTraceConsole(
 					"JRTrace",
+					jrTraceDebugTarget,
 					ImageDescriptor
 							.createFromURL(new URL(
 									"platform:/plugin/de.schenk.jrtrace.ui/icons/jrtrace_icon_16px.gif")));
@@ -51,6 +53,7 @@ public class JRTraceConsoleConnector {
 		console.activate();
 		theConsole = new IConsole[] { console };
 		ConsolePlugin.getDefault().getConsoleManager().addConsoles(theConsole);
+
 		stream = console.newMessageStream();
 		streamReceiver = new StreamReceiver(stream);
 		errorstream = console.newMessageStream();

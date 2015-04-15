@@ -2,6 +2,8 @@ package de.schenk.jrtrace.helperlib;
 
 import java.util.Date;
 
+import de.schenk.jrtrace.helper.NotificationUtil;
+
 public class JRLog {
 
 	public final static int ERROR = 0;
@@ -43,6 +45,7 @@ public class JRLog {
 	}
 
 	public static void error(String string) {
+		NotificationUtil.sendErrorNotification(string);
 		log(ERROR, string);
 
 	}

@@ -6,13 +6,13 @@ public interface JRTraceMXBean {
 
 	public boolean disconnect();
 
-	public void installEngineXClass(String classOrJarLocation);
+	public void installEngineXClass(byte[][] classBytes);
 
 	public boolean stop(boolean disconnectOnly);
 
 	public void setEnvironmentVariable(String key, String value);
 
-	public void addToBootClassPath(String jarFile);
+	public void addToBootClassPath(byte[] jar);
 
 	/**
 	 * Execute a static method of a specified class from a jarfile in the
@@ -28,11 +28,11 @@ public interface JRTraceMXBean {
 	 *            the fully qualified name of the class
 	 * @param mainMethod
 	 *            the method name to execute from mainClass
+	 * @throws RuntimeException
+	 *             on error.
 	 */
-	public void runJava(String pathToJar, String referenceClassName,
-			String mainClass, String mainMethod);
-
-	
+	public void runJava(String referenceClassName, String mainClass,
+			String mainMethod);
 
 	/**
 	 * set the agents log level. Levels defined in JRLog constants.
@@ -43,6 +43,16 @@ public interface JRTraceMXBean {
 
 	public void clearEngineX();
 
+	/**
+	 * long running operations (clear, install) can be aborted using this api.
+	 */
 	public void abort();
+
+	/**
+	 * 
+	 * @return an array with the fully qualified names of all classes currently
+	 *         loaded.
+	 */
+	public String[] getLoadedClasses();
 
 }

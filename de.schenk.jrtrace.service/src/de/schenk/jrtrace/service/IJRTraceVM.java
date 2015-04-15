@@ -3,7 +3,6 @@
  **/
 package de.schenk.jrtrace.service;
 
-import java.io.File;
 import java.util.Properties;
 
 import javax.management.NotificationListener;
@@ -19,7 +18,7 @@ import javax.management.NotificationListener;
 public interface IJRTraceVM {
 
 	/**
-	 * detaches from the virtual machine. Reconnection is not supported
+	 * detaches from the virtual machine.
 	 * 
 	 * @return true if detach was successful. False if error.
 	 */
@@ -39,11 +38,11 @@ public interface IJRTraceVM {
 	/**
 	 * installs a new jar file into the target machine
 	 * 
-	 * @param jar
-	 *            the path to the jar file
+	 * @param bytes
+	 *            the bytes of the jar file
 	 * @return true on success
 	 */
-	public boolean installJar(String jar);
+	public boolean installJar(byte[] bytes);
 
 	/**
 	 * The last exception that occured (e.g. after an unsuccessful, return code
@@ -61,28 +60,50 @@ public interface IJRTraceVM {
 	 */
 	boolean setSystemProperties(Properties props);
 
-
-	void runJava(File jarFile, String theClassLoader, String className,
-			String methodName);
+	/**
+	 * 
+	 * @param theClassLoader
+	 *            if the jrtrace class has classloaderpolicy TARGET: the name of
+	 *            the class to use to obtain the classloader
+	 * @param className
+	 *            the name of the jrtrace class to invoke a static method on
+	 * @param methodName
+	 *            the name of the static method to invoke
+	 * @return true on success, use getLastException on false
+	 */
+	boolean runJava(String theClassLoader, String className, String methodName);
 
 	/**
 	 * Install the class or all classes from the jar file (depends on parameter)
 	 * 
-	 * @param fileForClass
-	 *            a class file or a jar file
+	 * @param classByteArray
+	 *            an array with the array byte[], one for each JRTrace class to
+	 *            be installed, e.g. classByteArray[0] -> the bytes of the first
+	 *            class to install
 	 */
-	void installEngineXClass(String fileForClass);
+	boolean installEngineXClass(byte[][] classByteArray);
 
+	/**
+	 * set the agents log level. Levels defined in JRLog constants.
+	 * 
+	 * @param level
+	 */
 	void setLogLevel(int i);
 
-	void clearEngineX();
+	boolean clearEngineX();
 
 	boolean attach();
 
-	void addClientListener(String notifyStdout,
-			NotificationListener streamReceiver);
+	void addClientListener(String notifyId, NotificationListener streamReceiver);
 
-	void removeClientListener(String notifyStderr,
+	/**
+	 * Add a listener that will be informed on connection loss.
+	 * 
+	 * @param r
+	 */
+	void addFailListener(Runnable r);
+
+	void removeClientListener(String notifyId,
 			NotificationListener errorstreamReceiver);
 
 	/**
@@ -90,5 +111,12 @@ public interface IJRTraceVM {
 	 * interrupted. Might leave the machine in an inconsistent state .
 	 */
 	void abort();
+
+	/**
+	 * 
+	 * @return a string array containing the fully qualified names of all
+	 *         classes.
+	 */
+	String[] getLoadedClasses();
 
 }

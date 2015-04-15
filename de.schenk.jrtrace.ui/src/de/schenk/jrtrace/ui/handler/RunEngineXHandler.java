@@ -14,6 +14,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -35,19 +36,31 @@ public class RunEngineXHandler extends AbstractHandler implements IHandler {
 
 		if (c != null) {
 
-			File jarFile = JarUtil.createJar(c, PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getShell());
-
-			List<JRTraceDebugTarget> jrtraceTargets = JRTraceLaunchUtils
-					.getJRTraceDebugTargets();
-
-			for (JRTraceDebugTarget btarget : jrtraceTargets) {
-				InstallJRTraceJob job = new InstallJRTraceJob(btarget, jarFile);
-				job.schedule();
-			}
+			installJRTraceJar(c);
 			return true;
 		}
 		return null;
+	}
+
+	static public void installJRTraceJar(IProject c) {
+		Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+		if (shell == null) {
+			Shell[] allShells = PlatformUI.getWorkbench().getDisplay()
+					.getShells();
+			if (allShells.length == 0)
+				throw new RuntimeException("ups, no shell");
+			shell = allShells[0];
+
+		}
+		File jarFile = JarUtil.createJar(c, shell);
+
+		List<JRTraceDebugTarget> jrtraceTargets = JRTraceLaunchUtils
+				.getJRTraceDebugTargets();
+
+		for (JRTraceDebugTarget btarget : jrtraceTargets) {
+			InstallJRTraceJob job = new InstallJRTraceJob(btarget, jarFile);
+			job.schedule();
+		}
 	}
 
 	/**

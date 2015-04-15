@@ -21,7 +21,7 @@ public class JRTraceClasPathContainerInitializer extends
            JavaCore.setClasspathContainer(arg0, new IJavaProject[] {project},
            new IClasspathContainer[] {container}, null);
            //} else {
-        	//   Activator.getInstance().getLog().log(new Status(IStatus.ERROR,Activator.BUNDLE_ID,"Problem installing jrtrace classpath container"));
+        	//   JRTraceUIActivator.getInstance().getLog().log(new Status(IStatus.ERROR,JRTraceUIActivator.BUNDLE_ID,"Problem installing jrtrace classpath container"));
            
            //}
 		

@@ -25,37 +25,52 @@ public enum XLocation {
 	 */
 	ENTRY,
 	/**
-	 * Injected code will be called before target method return.
-	 * For EXIT, the method may have a return type (which needs to be assignable to the return
-	 * type of the instrumented method). If it has a return type, the instrumented method will
-	 * return the value returned by the jrtrace method instead of the original return type.
+	 * Injected code will be called before target method return. For EXIT, the
+	 * method may have a return type (which needs to be assignable to the return
+	 * type of the instrumented method). If it has a return type, the
+	 * instrumented method will return the value returned by the jrtrace method
+	 * instead of the original return type.
+	 * <p>
+	 * Note: the EXIT point might not be triggered if the method (or any method
+	 * it calls) triggers an exception that is not caught.
+	 * </p>
 	 */
-	EXIT, 
+	EXIT,
 	/**
-	 * Injected code will be called before any method is invoked. 
-	 * (restrict 
-     * method names to {@link XMethod.invokedname}.)
+	 * Injected code will be called before any method is invoked. (restrict
+	 * method names to {@link XMethod.invokedname}.)
 	 */
 	BEFORE_INVOCATION,
 	/**
-     * Injected code will be called after any method is invoked. (restrict 
-     * method names to {@link XMethod.invokedname}.) 
-     */
-    AFTER_INVOCATION,
-    /**
-     * Injected code will be called instead of invoking any method (restrict 
-     * method names to {@link XMethod.invokedname}.)
-     */
-    REPLACE_INVOCATION,
-    
-    /**
-     * Insertion after getting a field value
-     */
-    GETFIELD,
-    
-    /**
-     * Insertion after setting a field value
-     */
-    PUTFIELD
-	
+	 * Injected code will be called after any method is invoked. (restrict
+	 * method names to {@link XMethod.invokedname}.)
+	 */
+	AFTER_INVOCATION,
+	/**
+	 * Injected code will be called instead of invoking any method (restrict
+	 * method names to {@link XMethod.invokedname}.)
+	 */
+	REPLACE_INVOCATION,
+
+	/**
+	 * Insertion after getting a field value
+	 */
+	GETFIELD,
+
+	/**
+	 * Insertion after setting a field value
+	 */
+	PUTFIELD,
+	/**
+	 * Insertion when a method is left by throwing an exception
+	 * 
+	 * <p>
+	 * Note: this will only trigger for methods that actually throw an
+	 * exception. Example: method a calls b calls c. c throws an exception, a
+	 * catches it. Then on method b, no EXIT nor an EXCEPTION trigger point will
+	 * be hit.
+	 * </p>
+	 */
+	EXCEPTION
+
 }

@@ -1,6 +1,6 @@
 /**
-* (c) 2014 by Christian Schenk
-**/
+ * (c) 2014 by Christian Schenk
+ **/
 package de.schenk.jrtrace.ui.handler;
 
 import java.util.HashMap;
@@ -22,7 +22,7 @@ import de.schenk.jrtrace.ui.launch.JRTraceLaunchUtils;
 public class JRTraceSourceProvider extends AbstractSourceProvider implements
 		ILaunchesListener, IDebugEventSetListener {
 
-	private static final String JRTRACE_SESSION_ACTIVE = "jrtraceSessionActive";
+	public static final String JRTRACE_SESSION_ACTIVE = "jrtraceSessionActive";
 
 	public JRTraceSourceProvider() {
 		DebugPlugin.getDefault().getLaunchManager().addLaunchListener(this);

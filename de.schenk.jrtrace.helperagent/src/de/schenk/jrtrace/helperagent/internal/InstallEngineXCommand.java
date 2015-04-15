@@ -3,101 +3,71 @@
  **/
 package de.schenk.jrtrace.helperagent.internal;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
-import de.schenk.enginex.helper.EngineXHelper;
-import de.schenk.enginex.helper.EngineXMetadata;
-import de.schenk.jrtrace.helperagent.EngineXAnnotationReader;
+import de.schenk.jrtrace.helper.JRTraceHelper;
+import de.schenk.jrtrace.helper.JRTraceClassMetadata;
+import de.schenk.jrtrace.helper.NotificationUtil;
+import de.schenk.jrtrace.helperagent.JRTraceAnnotationReader;
 
 public class InstallEngineXCommand {
 
-	EngineXAnnotationReader annotationReader = new EngineXAnnotationReader();
+	JRTraceAnnotationReader annotationReader = new JRTraceAnnotationReader();
 
 	public InstallEngineXCommand() {
 
 	}
 
-	public void installEngineX(String classOrJarFilePath) {
+	public void installEngineX(byte[][] jarBytes) {
 
-		if (classOrJarFilePath.endsWith(".jar")) {
-			addEngineXJar(classOrJarFilePath);
-		} else {
-
-			addEngineXFile(classOrJarFilePath);
-		}
+		setEngineXClasses(jarBytes);
 
 	}
 
-	private void addEngineXJar(String jarFileName) {
-		List<EngineXMetadata> mdlist = parseEngineXJarFile(jarFileName);
-		EngineXHelper.addEngineXClass(mdlist);
-
-	}
-
-	private List<EngineXMetadata> parseEngineXJarFile(String jarFileName) {
-		List<EngineXMetadata> mdlist = null;
-
-		JarFile jar = null;
-
-		try {
-			mdlist = new ArrayList<EngineXMetadata>();
-			jar = new JarFile(jarFileName);
-			Enumeration<JarEntry> entries = jar.entries();
-			while (entries.hasMoreElements()) {
-				JarEntry jarentry = entries.nextElement();
-				String name = jarentry.getName();
-				if (!jarentry.isDirectory() && name.endsWith(".class")) {
-
-					InputStream in = new BufferedInputStream(
-							jar.getInputStream(jarentry));
-					ByteArrayOutputStream out = new ByteArrayOutputStream(
-							(int) jarentry.getSize());
-					byte[] buffer = new byte[2048];
-					while (true) {
-						int bytes = in.read(buffer);
-						if (bytes <= 0)
-							break;
-						out.write(buffer, 0, bytes);
-					}
-					EngineXMetadata metadata = createMetadata(out.toByteArray());
-					mdlist.add(metadata);
-				}
+	private void setEngineXClasses(byte[][] jarFileBytes) {
+		List<JRTraceClassMetadata> mdlist = new ArrayList<JRTraceClassMetadata>();
+		for (int i = 0; i < jarFileBytes.length; i++) {
+			JRTraceClassMetadata md = createMetadata(jarFileBytes[i]);
+			if (md != null) {
+				mdlist.add(md);
 			}
-
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (jar != null)
-				try {
-					jar.close();
-				} catch (IOException e) {
-					// do nothing more.
-				}
-
 		}
-		return mdlist;
+		JRTraceHelper.addEngineXClass(mdlist);
+
 	}
 
-	public void addEngineXFile(String clientSentence) {
-		byte[] enginexclass = getFileAsByteArray(clientSentence);
-		EngineXMetadata metadata = createMetadata(enginexclass);
-		EngineXHelper.addEngineXClass(metadata);
-	}
+	/**
+	 * 
+	 * @param enginexclassbytes
+	 *            the jrtrace class
+	 * @return the metadata structure extracted from the annotations or null if
+	 *         there is a severe error.
+	 */
+	public JRTraceClassMetadata createMetadata(byte[] enginexclassbytes) {
+		JRTraceClassMetadata metadata = annotationReader
+				.getMetaInformation(enginexclassbytes);
 
-	public EngineXMetadata createMetadata(byte[] enginexclass) {
-		EngineXMetadata metadata = annotationReader
-				.getMetaInformation(enginexclass);
-		
+		String version = System.getProperty("java.version");
+		int maxClassFileVersion = 52;
+		if (version.startsWith("1.7")) {
+			maxClassFileVersion = 51;
+		}
+		if (metadata.getClassVersion() > maxClassFileVersion) {
+			NotificationUtil
+					.sendProblemNotification(
+							String.format(
+									"The JRTrace class has classfile version %d. But a the target JVM is version %s and supports a maximum of classfile version %d.",
+									metadata.getClassVersion(), version,
+									maxClassFileVersion), metadata
+									.getExternalClassName(), null, null);
+			return null;
+		}
+
 		return metadata;
 	}
 

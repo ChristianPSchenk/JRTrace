@@ -7,8 +7,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -25,6 +29,7 @@ import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.JRTraceControllerService;
 import de.schenk.jrtrace.service.test.utils.JavaUtil;
+import de.schenk.jrtrace.ui.util.JarByteUtil;
 
 public class EngineXLifeCycleTest {
 
@@ -46,7 +51,7 @@ public class EngineXLifeCycleTest {
 		String javaName = ManagementFactory.getRuntimeMXBean().getName();
 		String[] javaSplit = javaName.split("@");
 		pid = javaSplit[0];
-		machine = bmController.getMachine(pid);
+		machine = bmController.getMachine(pid, null);
 		assertTrue(machine.attach());
 
 	}
@@ -73,9 +78,9 @@ public class EngineXLifeCycleTest {
 								"bin/de/schenk/jrtrace/enginex/testclasses/JobInstrument.class"),
 						null);
 
-		String fullPath = new File(FileLocator.resolve(fileURL).toURI()).getAbsolutePath();
-
-		machine.installEngineXClass(fullPath);
+		byte[][] classBytes = new byte[1][];
+		classBytes[0] = getBytesFromURL(fileURL);
+		machine.installEngineXClass(classBytes);
 
 		Job c = new Job("test") {
 
@@ -89,6 +94,13 @@ public class EngineXLifeCycleTest {
 
 	}
 
+	private byte[] getBytesFromURL(URL fileURL) throws URISyntaxException,
+			IOException {
+		File fullPath = new File(FileLocator.resolve(fileURL).toURI());
+		byte[] bytes = Files.readAllBytes(Paths.get(fullPath.toURI()));
+		return bytes;
+	}
+
 	@Test
 	public void testBasicEnginexjarinstall() throws Exception {
 		instrumented = false;
@@ -100,9 +112,10 @@ public class EngineXLifeCycleTest {
 
 		URL fileURL = FileLocator.find(bundle,
 				new Path("lib/EngineXTests.jar"), null);
-		String fullPath = new File(FileLocator.resolve(fileURL).toURI()).getAbsolutePath();
-				
-		machine.installEngineXClass(fullPath);
+
+		byte[] jarBytes = getBytesFromURL(fileURL);
+		machine.installEngineXClass(JarByteUtil
+				.convertJarToClassByteArray(jarBytes));
 
 		InstrumentedClass2 c = new InstrumentedClass2();
 		c.doit();
@@ -133,9 +146,9 @@ public class EngineXLifeCycleTest {
 								"bin/de/schenk/jrtrace/enginex/testclasses/EngineXTestClass.class"),
 						null);
 
-		String fullPath =new File( FileLocator.resolve(fileURL).toURI()).getAbsolutePath();
-				
-		machine.installEngineXClass(fullPath);
+		byte[][] classBytes = new byte[1][];
+		classBytes[0] = getBytesFromURL(fileURL);
+		machine.installEngineXClass(classBytes);
 
 		// InstrumentedClass is not loaded yet after installing the enginex
 		// script.
@@ -155,7 +168,7 @@ public class EngineXLifeCycleTest {
 		// InstrumentedClass is already loaded. Will XClass still work?
 		InstrumentedClass c2 = new InstrumentedClass();
 		DoneListener doneListener3 = createDoneListener();
-		machine.installEngineXClass(fullPath);
+		machine.installEngineXClass(classBytes);
 
 		c2.doit();
 		assertTrue(c2.getResult());
