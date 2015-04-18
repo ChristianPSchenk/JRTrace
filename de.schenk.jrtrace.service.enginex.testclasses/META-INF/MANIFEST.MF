@@ -9,3 +9,4 @@ Require-Bundle: de.schenk.jrtrace.helperagent,
  de.schenk.jrtrace.service.enginex.targets,
  de.schenk.jrtrace.helperlib,
  org.eclipse.osgi
+Bundle-Vendor: Christian Schenk

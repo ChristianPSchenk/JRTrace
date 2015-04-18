@@ -59,7 +59,7 @@ limitations under the License.
 
    <plugin
          id="de.schenk.jrtrace.service.enginex.targets"
-         os="linux,win32"
+         os="win32"
          download-size="0"
          install-size="0"
          version="1.1.0.qualifier"/>

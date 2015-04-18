@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tools.jar
 Bundle-SymbolicName: de.schenk.toolsjar
-Bundle-Version: 1.7.0.55
+Bundle-Version: 1.8.0.qualifier
 Bundle-Activator: de.schenk.toolsjar.Activator
-Bundle-Vendor: Oracle Jar wrapped by Christian Schenk
+Bundle-Vendor: Christian Schenk
 Require-Bundle: org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Eclipse-BundleShape: dir
