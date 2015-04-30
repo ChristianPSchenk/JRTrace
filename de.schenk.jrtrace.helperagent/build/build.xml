@@ -2,7 +2,7 @@
 <!-- Configuration of the Ant build system to generate a Jar file --> 
 <project name="HelperAgent" default="CreateJar">
   <target name="CreateJar" description="Create the customized helper">
-        <jar jarfile="lib\HelperAgent.jar" basedir="bin" manifest="META-INF/agent.mf" />
+        <jar jarfile="lib\HelperAgent.jar" basedir="target/classes" manifest="META-INF/agent.mf" />
   </target>
 </project>
 
