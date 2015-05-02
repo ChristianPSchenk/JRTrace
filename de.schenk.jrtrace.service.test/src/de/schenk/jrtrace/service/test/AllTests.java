@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import de.schenk.jrtrace.enginex.reinstall.SimpleReinstallTest;
 import de.schenk.jrtrace.enginex.testscripts.EngineXAnnotationReaderTest;
 import de.schenk.jrtrace.enginex.testscripts.EngineXDetailsTest;
 import de.schenk.jrtrace.enginex.testscripts.EngineXLifeCycleTest;
@@ -20,7 +21,8 @@ import de.schenk.jrtrace.service.test.utils.JavaUtilTest;
 @SuiteClasses({ JRTraceConnectToLaunchedAgentTest.class,
 		EngineXAnnotationReaderTest.class, EngineXLifeCycleTest.class,
 		JRTraceControllerTest.class, JavaUtilTest.class, InspectUtilTest.class,
-		EngineXDetailsTest.class, TypeCheckUtilTest.class })
+		EngineXDetailsTest.class, TypeCheckUtilTest.class,
+		SimpleReinstallTest.class })
 public class AllTests {
 
 }

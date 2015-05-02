@@ -741,7 +741,8 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 				"de/schenk/jrtrace/helper/DynamicBinder", bindingMethodName,
 				mt.toMethodDescriptorString());
 
-		visitInvokeDynamicInsn(injectedMethod.getMethodName(),
+		visitInvokeDynamicInsn(String.format("%s%d",
+				injectedMethod.getMethodName(), System.nanoTime()),
 				methodDescriptorType.getDescriptor(), bootstrap, injectedMethod
 						.getClassMetadata().getExternalClassName(),
 				JRTraceHelper.getCurrentClassSetId(),
