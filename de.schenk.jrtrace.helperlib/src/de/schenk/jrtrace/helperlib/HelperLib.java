@@ -7,12 +7,31 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import de.schenk.jrtrace.helper.InstrumentationUtil;
+import de.schenk.jrtrace.helper.NotificationUtil;
 
 public class HelperLib {
 
 	/**
-	 * Utility method to set the value of any object field (especially on
-	 * private ones using reflection)
+	 * This will send a message (consisting of any plain primitive java Object).
+	 * These message will be sent back to the development machine using the id
+	 * {@link de.schenk.jrtrace.helperlib.NotificationConstants#NOTIFY_MESSAGE}.
+	 * 
+	 * <p>
+	 * Clients can register to this message via
+	 * {@link de.schenk.jrtrace.service.IJRTraceVM#addClientListener} .
+	 * 
+	 * </p>
+	 * 
+	 * @param msg
+	 *            any java object that can be serialized and deserialized
+	 */
+	public void sendMessage(Object msg) {
+
+		NotificationUtil.sendMessageNotification(msg);
+	}
+
+	/**
+	 * Utility method to set the value of any object field.
 	 * 
 	 * @param target
 	 *            the target object or target Class<?> (for static method calls)

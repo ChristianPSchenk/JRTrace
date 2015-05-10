@@ -12,12 +12,20 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+
+import javax.management.AttributeChangeNotification;
+import javax.management.Notification;
+import javax.management.NotificationListener;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.schenk.jrtrace.helperlib.NotificationConstants;
 import de.schenk.jrtrace.service.test.utils.JavaUtil;
+import de.schenk.jrtrace.service.test.utils.TestProcessCommunication;
 import de.schenk.jrtrace.service.test.utils.TestProcessInstrumenter;
 
 public class JRTraceConnectToLaunchedAgentTest {
@@ -54,6 +62,12 @@ public class JRTraceConnectToLaunchedAgentTest {
 
 	private void attachToMachineAndInstallTestProcessInstrumenter(
 			IJRTraceVM theMachine) throws IOException, InterruptedException {
+		attachToMachineAndInstallJRTraceClass(theMachine,
+				TestProcessInstrumenter.class);
+	}
+
+	private void attachToMachineAndInstallJRTraceClass(IJRTraceVM theMachine,
+			Class<?> clazz) throws IOException, InterruptedException {
 		boolean result = false;
 		for (int i = 0; i < 10; i++) {
 			result = theMachine.attach();
@@ -64,14 +78,80 @@ public class JRTraceConnectToLaunchedAgentTest {
 		assertTrue(result);
 		assertNotNull(theMachine);
 
-		File theClass = (new JavaUtil())
-				.getFileForClass(TestProcessInstrumenter.class,
-						"de.schenk.jrtrace.service.test");
+		File theClass = (new JavaUtil()).getFileForClass(clazz,
+				"de.schenk.jrtrace.service.test");
 
 		byte[][] classBytes = new byte[1][];
 		classBytes[0] = Files.readAllBytes(Paths.get(theClass.toURI()));
-		theMachine.installEngineXClass(classBytes);
+		assertTrue(theMachine.installEngineXClass(classBytes));
 
+	}
+
+	@Test
+	public void testTwoWayCommunication() throws Exception {
+
+		port = javaUtil.launchJavaProcessWithAgent(null);
+		IJRTraceVM mach = bmController.getMachine(port, null);
+		attachToMachineAndInstallJRTraceClass(mach,
+				TestProcessCommunication.class);
+
+		final CyclicBarrier barrier = new CyclicBarrier(2);
+
+		final String[] receivedData = new String[1];
+		final int[] receivedInt = new int[1];
+
+		NotificationListener streamReceiver = new NotificationListener() {
+
+			@Override
+			public void handleNotification(Notification notification,
+					Object handback) {
+				AttributeChangeNotification anot = (AttributeChangeNotification) notification;
+				Object userData = anot.getOldValue();
+				if (userData instanceof Object[]) {
+					Object[] objarr = (Object[]) userData;
+					receivedData[0] = (String) objarr[0];
+					receivedInt[0] = (int) objarr[1];
+				}
+
+				try {
+					barrier.await();
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				} catch (BrokenBarrierException e) {
+					throw new RuntimeException(e);
+				}
+
+			}
+		};
+		mach.addClientListener(NotificationConstants.NOTIFY_MESSAGE,
+				streamReceiver);
+		if (!mach
+				.runJava(
+						null,
+						"de.schenk.jrtrace.service.test.utils.TestProcessCommunication",
+						"callTrigger", null) /*
+											 * on purpose using null as argument
+											 * here to test that this is
+											 * properly wrapped to a
+											 * Object[]{null}
+											 */) {
+			mach.getLastError().printStackTrace();
+			fail("runjava callTrigger failed");
+		}
+
+		boolean result = mach
+				.runJava(
+						null,
+						"de.schenk.jrtrace.service.test.utils.TestProcessCommunication",
+						"called", "ping", new int[] { 1, 2 });
+		if (!result) {
+			mach.getLastError().printStackTrace();
+			fail("runjava failed");
+		}
+		barrier.await();
+
+		assertEquals("pong", receivedData[0]);
+		assertTrue(mach.detach());
 	}
 
 	@Test

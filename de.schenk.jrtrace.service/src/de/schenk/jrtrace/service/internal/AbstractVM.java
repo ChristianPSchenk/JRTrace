@@ -1,6 +1,8 @@
 package de.schenk.jrtrace.service.internal;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -124,8 +126,16 @@ abstract public class AbstractVM implements IJRTraceVM {
 
 	@Override
 	synchronized public boolean runJava(final String theClassLoader,
-			final String className, final String methodName) {
-		return new SafeVMRunnable() {
+			final String className, final String methodName,
+			final Object... parameters) {
+
+		final Object[] objArray;
+		if (parameters != null) {
+			objArray = parameters;
+		} else {
+			objArray = new Object[] { null };
+		}
+		SafeVMRunnable runnable = new SafeVMRunnable() {
 
 			@Override
 			public void run() {
@@ -138,10 +148,23 @@ abstract public class AbstractVM implements IJRTraceVM {
 					throw new IllegalArgumentException(
 							"methodName has to be provided for runJava");
 
-				mbeanProxy.runJava(useClassloader, className, methodName);
+				try {
+
+					ByteArrayOutputStream theBytes = new ByteArrayOutputStream();
+					ObjectOutputStream os = new ObjectOutputStream(theBytes);
+
+					os.writeObject(objArray);
+
+					mbeanProxy.runJava(useClassloader, className, methodName,
+							theBytes.toByteArray());
+				} catch (IOException e) {
+
+					throw new RuntimeException(e);
+				}
 
 			}
-		}.safeRun();
+		};
+		return runnable.safeRun();
 	}
 
 	@Override

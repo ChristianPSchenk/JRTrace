@@ -355,6 +355,29 @@ getField(Object object,String fieldName);
 <code>object</code>: the object for instance fields</br>
 <code>fieldname</code>: the name of the field to set</br>
 
+<h4>sendMessage</h4>
+
+<i>Note: Only useful when developing applications on top of JRTrace</i>
+<p>
+This method provides a simple communication channel from the traced application back to the development environment. Note that it is only possible
+to send objects that can be serialized/deserialized on both the development and target JVM (which of course includes all basic Java objects.)
+</p> 
+<pre>
+sendMessage(Object o);
+sendMessage("someinfo for the application");
+</pre>
+
+The messages can be received on the development machine by registering to the machine:
+
+<pre>
+IJRTraceVM.addClientListener(NotificationConstants.NOTIFY_MESSAGE,
+				new NotificationListener(){...});
+</pre>
+The listener will receive the messages send by the client. The messages will be notifications of type <code>AttributeChangeNotification</code> and the
+<code>getOldValue()</code> API will contain the message.
+
+To communicate from the developers machine to the JRTrace client, the <code>IJRTraceVM.runJava(...)</code> method can be used.
+ 
 
 
 <h2>Remarks on Techniques and Design</h2>

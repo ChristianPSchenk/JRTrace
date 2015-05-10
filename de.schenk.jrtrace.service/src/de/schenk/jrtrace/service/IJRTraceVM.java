@@ -61,20 +61,40 @@ public interface IJRTraceVM {
 	boolean setSystemProperties(Properties props);
 
 	/**
+	 * Invoke a method on one of the JRTrace classes. The method will be invoked
+	 * asynchronously (a new thread will be started to execute the code) and the
+	 * success only reports, whether it was possible to identify the method and
+	 * start it.
+	 * <p>
+	 * Note: For non-static methods, the invocation occurs on the default object
+	 * instance that was created by JRTrace for injection. However if this class
+	 * isn't injected (a helper class without JRTrace annotations) there is no
+	 * default object. In this case a new instance of the class is created for
+	 * each invocation.
+	 * </p>
 	 * 
 	 * @param theClassLoader
 	 *            if the jrtrace class has classloaderpolicy TARGET: the name of
-	 *            the class to use to obtain the classloader
+	 *            the class to use to obtain the classloader. Else use null.
 	 * @param className
-	 *            the name of the jrtrace class to invoke a static method on
+	 *            the name of the jrtrace class to invoke a method on
 	 * @param methodName
-	 *            the name of the static method to invoke
-	 * @return true on success, use getLastException on false
+	 *            the name of the method to invoke. This method may be static or
+	 *            non-static. For non-static methods the standard JRTrace
+	 *            mechanisms for obtaining a instance are used.
+	 * @param parameters
+	 *            the parameters will be used to invoke the method. Note: all
+	 *            parameters must be serializable and deserializable on the
+	 *            target machine. That basically restricts the allowed
+	 *            parameters to standard java types.
+	 * @return true on success, use getLastException() on false
 	 */
-	boolean runJava(String theClassLoader, String className, String methodName);
+	boolean runJava(String theClassLoader, String className, String methodName,
+			Object... parameters);
 
 	/**
-	 * Install the class or all classes from the jar file (depends on parameter)
+	 * Install the provide JRTrace classes. Uninstalls all previously installed
+	 * classes.
 	 * 
 	 * @param classByteArray
 	 *            an array with the array byte[], one for each JRTrace class to
@@ -87,13 +107,29 @@ public interface IJRTraceVM {
 	 * set the agents log level. Levels defined in JRLog constants.
 	 * 
 	 * @param level
+	 *            see JRLog for levels.
 	 */
 	void setLogLevel(int i);
 
+	/**
+	 * Remove all installed JRTrace classes from the target.
+	 * 
+	 * @return true on success
+	 */
 	boolean clearEngineX();
 
 	boolean attach();
 
+	/**
+	 * Add a listener to receive various types of messages from the machine.
+	 * 
+	 * @param notifyId
+	 *            see {@link de.schenk.jrtrace.helperlib.NotificationConstants}
+	 *            for supported message types. To receive messages sent via
+	 *            HelperLib.sendMessage use
+	 *            {@link de.schenk.jrtrace.helperlib.NotificationConstants.NOTIFY_MESSAGE}
+	 * @param streamReceiver
+	 */
 	void addClientListener(String notifyId, NotificationListener streamReceiver);
 
 	/**

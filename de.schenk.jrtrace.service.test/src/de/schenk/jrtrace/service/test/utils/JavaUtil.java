@@ -95,7 +95,9 @@ public class JavaUtil {
 		commandParameters.add(javaHome + File.separator + "bin"
 				+ File.separator + "java");
 		commandParameters.add(parameters);
-		// commandParameters.add("-XX:+TraceClassLoading");
+		// commandParameters
+		// .add("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=12345");
+
 		commandParameters.add("-cp");
 		commandParameters.add(fullPath);
 		commandParameters.add(TestProcess.class.getName());
@@ -169,8 +171,8 @@ public class JavaUtil {
 	 * @throws URISyntaxException
 	 * @throws IOException
 	 */
-	public String getFilePathFromClassOfTestBundle(Class<?> theclass) throws URISyntaxException,
-			IOException {
+	public String getFilePathFromClassOfTestBundle(Class<?> theclass)
+			throws URISyntaxException, IOException {
 		return getFilepathForClass(theclass, "de.schenk.jrtrace.service.test");
 	}
 

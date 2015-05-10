@@ -1,8 +1,11 @@
 package de.schenk.jrtrace.helperagent.internal;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.lang.instrument.Instrumentation;
 import java.util.jar.JarFile;
 
@@ -79,8 +82,23 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 
 	@Override
 	public void runJava(String referenceClassName, String mainClass,
-			String mainMethod) {
-		new RunJavaCommand().runJava(referenceClassName, mainClass, mainMethod);
+			String mainMethod, byte[] arguments) {
+
+		Object[] o = null;
+		;
+		try {
+			if (arguments != null) {
+				InputStream is = new ByteArrayInputStream(arguments);
+				ObjectInputStream os = new ObjectInputStream(is);
+				o = (Object[]) os.readObject();
+			}
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+
+		new RunJavaCommand().runJava(referenceClassName, mainClass, mainMethod,
+				(Object[]) o);
 
 	}
 

@@ -67,4 +67,13 @@ public class NotificationUtil {
 				NotificationConstants.NOTIFY_ERROR, 0, 0);
 		sendNotification(not);
 	}
+
+	public static void sendMessageNotification(Object msg) {
+		Notification not = new AttributeChangeNotification(
+				NotificationUtil.getJRTraceObjectName(), sequenceNumber++,
+				System.nanoTime(), "msg", "Message",
+				NotificationConstants.NOTIFY_MESSAGE, msg, null);
+		sendNotification(not);
+
+	}
 }

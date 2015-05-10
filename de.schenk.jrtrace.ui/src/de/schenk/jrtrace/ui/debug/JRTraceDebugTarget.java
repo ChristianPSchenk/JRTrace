@@ -23,6 +23,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.ui.markers.JRTraceMarkerManager;
@@ -276,18 +277,21 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 							de.schenk.jrtrace.ui.JRTraceUIActivator.BUNDLE_ID,
 							IStatus.ERROR, "Error during java call.", machine
 									.getLastError());
+					m.add(new Status(IStatus.ERROR,
+							de.schenk.jrtrace.ui.JRTraceUIActivator.BUNDLE_ID,
+							"Exception thrown", machine.getLastError()));
 					if (machine.getLastError() instanceof UndeclaredThrowableException) {
 						UndeclaredThrowableException t = (UndeclaredThrowableException) machine
 								.getLastError();
-						m.add(new Status(IStatus.ERROR,
+						m.add(new Status(
+								IStatus.ERROR,
 								de.schenk.jrtrace.ui.JRTraceUIActivator.BUNDLE_ID,
 								"Undeclared Throwable:", t
 										.getUndeclaredThrowable()));
 
 					}
-					ErrorDialog.openError(
-							Display.getDefault().getActiveShell(),
-							"Execution Problem",
+					Shell shell = Display.getDefault().getShells()[0];
+					ErrorDialog.openError(shell, "Execution Problem",
 							"It was not possible to run the method "
 									+ methodName + " of class " + className
 									+ " on the target.", m);
@@ -305,15 +309,18 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 			@Override
 			public void run() {
-				ErrorDialog.openError(
-						Display.getDefault().getActiveShell(),
-						"Connection Problem",
-						"The connection to the target machine " + pid
-								+ " is broken. Disconnecting from target.",
-						new Status(IStatus.ERROR,
-								de.schenk.jrtrace.ui.JRTraceUIActivator.BUNDLE_ID,
-								"Connection to target lost.", machine
-										.getLastError()));
+				ErrorDialog
+						.openError(
+								Display.getDefault().getActiveShell(),
+								"Connection Problem",
+								"The connection to the target machine "
+										+ pid
+										+ " is broken. Disconnecting from target.",
+								new Status(
+										IStatus.ERROR,
+										de.schenk.jrtrace.ui.JRTraceUIActivator.BUNDLE_ID,
+										"Connection to target lost.", machine
+												.getLastError()));
 
 			}
 
