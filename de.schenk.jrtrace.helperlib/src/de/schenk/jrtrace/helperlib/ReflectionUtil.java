@@ -75,6 +75,11 @@ public class ReflectionUtil {
 			return providedParameterType;
 	}
 
+	public static Object invokeMethod(Class<?> clazz, String methodName,
+			Object... parametersObject) {
+		return invokeMethod(clazz, null, methodName, parametersObject);
+	}
+
 	/**
 	 * reflectively invokes the method on the object and catches all exceptions
 	 * and wraps them in RuntimeExceptions
@@ -89,14 +94,20 @@ public class ReflectionUtil {
 	 */
 	public static Object invokeMethod(Object theObject, String methodName,
 			Object... parametersObject) {
+		return invokeMethod(theObject.getClass(), theObject, methodName,
+				parametersObject);
+	}
+
+	private static Object invokeMethod(Class<?> clazz, Object theObject,
+			String methodName, Object... parametersObject) {
 
 		try {
-			Class<?>[] parameters = new Class<?>[parametersObject.length];
-			for (int i = 0; i < parameters.length; i++) {
-				parameters[i] = parametersObject[i].getClass();
-			}
+			// Class<?>[] parameters = new Class<?>[parametersObject.length];
+			// for (int i = 0; i < parameters.length; i++) {
+			// parameters[i] = parametersObject[i].getClass();
+			// }
 			Collection<Method> methods = ReflectionUtil.findMatchingMethod(
-					methodName, parametersObject, theObject.getClass());
+					methodName, parametersObject, clazz);
 			if (methods.size() != 1) {
 				throw new RuntimeException(
 						String.format(

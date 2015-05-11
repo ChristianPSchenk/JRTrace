@@ -31,12 +31,13 @@ public class HelperLib {
 	}
 
 	/**
-	 * Reflectively invoke a method.
+	 * Reflectively invoke a non-static method on a object
 	 * 
 	 * @param object
+	 *            the object instance on which to invoke the method
 	 * @param methodName
 	 * @param parameters
-	 * @return the value
+	 * @return the return value of the invocation
 	 * @throws a
 	 *             RuntimeException if the method cannot be invoked
 	 */
@@ -44,6 +45,43 @@ public class HelperLib {
 			Object... parameters) throws RuntimeException {
 
 		return ReflectionUtil.invokeMethod(object, methodName, parameters);
+	}
+
+	/**
+	 * Reflectively invoke a static method on a known class
+	 * 
+	 * @param clazz
+	 *            the clazz on which to invoke the method
+	 * @param methodName
+	 * @param parameters
+	 * @return the return value of the invocation
+	 * @throws a
+	 *             RuntimeException if the method cannot be invoked
+	 */
+	public Object invokeMethod(Class<?> clazz, String methodName,
+			Object... parameters) throws RuntimeException {
+
+		return ReflectionUtil.invokeMethod(clazz, methodName, parameters);
+	}
+
+	/**
+	 * Reflectively invoke a static method on a class known only by fully
+	 * qualified name
+	 * 
+	 * @param classname
+	 *            the classname of the class on which the method shall be
+	 *            invoked
+	 * @param methodName
+	 * @param parameters
+	 * @return the return value of the invocation
+	 * @throws a
+	 *             RuntimeException if the method cannot be invoked
+	 */
+	public Object invokeMethod(String classname, String methodName,
+			Object... parameters) throws RuntimeException {
+
+		Class<?> classes = lookupClassByName(classname);
+		return ReflectionUtil.invokeMethod(classes, methodName, parameters);
 	}
 
 	/**
@@ -117,18 +155,24 @@ public class HelperLib {
 	 * */
 	public Object getField(String target, String name) {
 		try {
-			Class<?>[] classes = InstrumentationUtil.getClassesByName(target);
-			if (classes.length != 1) {
-				throw new RuntimeException(
-						String.format("getField: Not exactly one class that matches name "
-								+ target));
-			}
-			Object o = ReflectionUtil.getPrivateField(null, classes[0], name);
+			Class<?> clazz = lookupClassByName(target);
+			Object o = ReflectionUtil.getPrivateField(null, clazz, name);
 			return o;
 		} catch (RuntimeException e) {
 			return e;
 		}
 
+	}
+
+	private Class<?> lookupClassByName(String target) {
+		Class<?>[] classes = InstrumentationUtil.getClassesByName(target);
+		if (classes.length != 1) {
+			throw new RuntimeException(
+					String.format("Not exactly one class that matches name "
+							+ target));
+		}
+		Class<?> clazz = classes[0];
+		return clazz;
 	}
 
 	public String getCallerClassName() {
