@@ -7,8 +7,73 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class ReflectionUtil {
+
+	/**
+	 * This finds all methods on the class that can be invoked with the provided
+	 * list of arguments. Note that this might be ambiguous, if the parameters
+	 * are not specific enough (e.g. null values).
+	 * 
+	 * @param methodNames
+	 *            the method name
+	 * @param arguments
+	 *            the arguments that are supplied
+	 * @param clazz
+	 *            the class which will be searched for the method
+	 * @return a Collection with all the method that match the provided class,
+	 *         name and parameter values
+	 */
+	public static Collection<Method> findMatchingMethod(String methodNames,
+			final Object[] arguments, Class<?> clazz) {
+		Method[] declaredMethods = clazz.getDeclaredMethods();
+		List<Method> method = new ArrayList<Method>();
+		for (Method m : declaredMethods) {
+			if (m.getName().equals(methodNames)) {
+				Class<?>[] parameterTypes = m.getParameterTypes();
+				if (parameterTypes.length == arguments.length) {
+					boolean match = true;
+					for (int i = 0; i < arguments.length; i++) {
+						if (arguments[i] == null)
+							continue;
+
+						Class<?> methodParameterType = parameterTypes[i];
+						Class<?> providedParameterType = arguments[i]
+								.getClass();
+						methodParameterType = convertPrimitivesToWrapperType(methodParameterType);
+
+						if (!methodParameterType
+								.isAssignableFrom(providedParameterType)) {
+
+							match = false;
+							break;
+
+						}
+
+					}
+					if (match) {
+
+						method.add(m);
+
+					}
+				}
+			}
+		}
+		return method;
+
+	}
+
+	private static Class<?> convertPrimitivesToWrapperType(
+			Class<?> providedParameterType) {
+
+		Class<?> mapped = JavaPrimitives.getWrapperType(providedParameterType);
+		if (mapped != null)
+			return mapped;
+		else
+			return providedParameterType;
+	}
 
 	/**
 	 * reflectively invokes the method on the object and catches all exceptions
@@ -30,11 +95,19 @@ public class ReflectionUtil {
 			for (int i = 0; i < parameters.length; i++) {
 				parameters[i] = parametersObject[i].getClass();
 			}
-			Method method = theObject.getClass().getMethod(methodName,
-					parameters);
+			Collection<Method> methods = ReflectionUtil.findMatchingMethod(
+					methodName, parametersObject, theObject.getClass());
+			if (methods.size() != 1) {
+				throw new RuntimeException(
+						String.format(
+								"Didn't find exactly one matching method %s. Found %d matches.",
+								methodName, methods.size()));
+			}
+			Method method = methods.iterator().next();
+			method.setAccessible(true);
 			Object returnValue = method.invoke(theObject, parametersObject);
 			return returnValue;
-		} catch (NoSuchMethodException | SecurityException e) {
+		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);

@@ -31,6 +31,22 @@ public class HelperLib {
 	}
 
 	/**
+	 * Reflectively invoke a method.
+	 * 
+	 * @param object
+	 * @param methodName
+	 * @param parameters
+	 * @return the value
+	 * @throws a
+	 *             RuntimeException if the method cannot be invoked
+	 */
+	public Object invokeMethod(Object object, String methodName,
+			Object... parameters) throws RuntimeException {
+
+		return ReflectionUtil.invokeMethod(object, methodName, parameters);
+	}
+
+	/**
 	 * Utility method to set the value of any object field.
 	 * 
 	 * @param target

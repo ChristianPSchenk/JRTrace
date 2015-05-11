@@ -205,6 +205,18 @@ public class EngineXDetailsTest {
 	}
 
 	@Test
+	public void test40InvokeMethodOfHelperLib() throws Exception {
+
+		Test40 test40 = new Test40();
+
+		String msg = "";
+
+		msg = test40.test40();
+
+		assertEquals("1String", msg);
+	}
+
+	@Test
 	public void test8() throws Exception {
 
 		Test8 test8 = new Test8();

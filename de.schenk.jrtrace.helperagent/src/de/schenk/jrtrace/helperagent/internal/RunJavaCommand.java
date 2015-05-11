@@ -5,9 +5,11 @@ package de.schenk.jrtrace.helperagent.internal;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 
 import de.schenk.jrtrace.helper.InstrumentationUtil;
 import de.schenk.jrtrace.helper.JRTraceHelper;
+import de.schenk.jrtrace.helperlib.ReflectionUtil;
 
 public class RunJavaCommand {
 
@@ -39,13 +41,28 @@ public class RunJavaCommand {
 						"Unable to obtain class %s for execution.", mainClass));
 			}
 
-			Method method = findMatchingMethod(mainMethod, arguments, gclClass);
+			Collection<Method> methods = ReflectionUtil.findMatchingMethod(
+					mainMethod, arguments, gclClass);
 
-			if (method == null) {
-				System.err.println("Method " + mainMethod + " not found.");
-				throw new RuntimeException("Method " + mainMethod
-						+ " not found.");
+			if (methods.size() != 1) {
+				StringBuilder msgb = new StringBuilder();
+				msgb.append(String
+						.format("The method "
+								+ mainMethod
+								+ " and the provided parameters do not match exactly one method from the targetclass:"));
+				if (methods.size() == 0) {
+					msgb.append("In this case no method matched.");
+				} else {
+					for (Method x : methods) {
+						msgb.append("Matching Method:" + x.toGenericString());
+					}
+				}
+
+				String msg = msgb.toString();
+				System.err.println(msg);
+				throw new RuntimeException(msg);
 			}
+			Method method = methods.iterator().next();
 			Object targetObject;
 			if (!Modifier.isStatic(method.getModifiers())) {
 				targetObject = JRTraceHelper.getEngineXObject(mainClass,
@@ -96,54 +113,6 @@ public class RunJavaCommand {
 			throw new RuntimeException(e);
 		}
 
-	}
-
-	/**
-	 * This finds a method on the class that can be invoked with the provided
-	 * list of arguments. Note that this might be ambiguous, if the parameters
-	 * are not specific enough (e.g. null values)
-	 * 
-	 * @param methodNames
-	 *            the method name
-	 * @param arguments
-	 *            the arguments that are supplied
-	 * @param clazz
-	 *            the class which will be searched for the method
-	 * @return the first method that matches name and parameters. Note: the
-	 *         class might have multiple methods that match.
-	 */
-	private Method findMatchingMethod(String methodNames,
-			final Object[] arguments, Class<?> clazz) {
-		Method[] declaredMethods = clazz.getDeclaredMethods();
-		Method method = null;
-		for (Method m : declaredMethods) {
-			if (m.getName().equals(methodNames)) {
-				Class<?>[] parameterTypes = m.getParameterTypes();
-				if (parameterTypes.length == arguments.length) {
-					boolean match = true;
-					for (int i = 0; i < arguments.length; i++) {
-						if (arguments[i] == null)
-							continue;
-
-						Class<?> methodParameterType = parameterTypes[i];
-						Class<?> providedParameterType = arguments[i]
-								.getClass();
-						if (!methodParameterType
-								.isAssignableFrom(providedParameterType)) {
-							match = false;
-							break;
-						}
-
-					}
-					if (match) {
-
-						method = m;
-						break;
-					}
-				}
-			}
-		}
-		return method;
 	}
 
 }
