@@ -39,6 +39,7 @@ public class SimpleReinstallTest {
 	@Test
 	public void testModifiedScriptsAreWorkingProperly() throws Exception {
 
+		machine.clearEngineX();
 		assertEquals(0, new SimpleReinstallClassUnderTest().method());
 
 		byte[][] classBytes = getClassBytesA();
