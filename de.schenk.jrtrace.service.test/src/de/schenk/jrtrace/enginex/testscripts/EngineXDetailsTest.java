@@ -85,7 +85,7 @@ public class EngineXDetailsTest {
 
 		byte[] jarBytes = Files.readAllBytes(Paths.get(theFile.toURI()));
 		byte[][] classBytes = JarByteUtil.convertJarToClassByteArray(jarBytes);
-		machine.installEngineXClass(classBytes);
+		machine.installJRTraceClasses(classBytes);
 
 	}
 

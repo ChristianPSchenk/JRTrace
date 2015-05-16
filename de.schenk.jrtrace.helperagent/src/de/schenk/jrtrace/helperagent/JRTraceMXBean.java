@@ -82,7 +82,7 @@ public interface JRTraceMXBean {
 	 *             on error. Note: error behaviour today is not very
 	 *             well-defined
 	 */
-	public void runJava(String referenceClassName, String theClassName,
+	public void invokeMethodAsync(String referenceClassName, String theClassName,
 			String theMethodName, byte[] serializedParameters);
 
 	/**

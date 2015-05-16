@@ -32,6 +32,8 @@
     <module>../de.schenk.jrtrace.service.enginex.testclasses</module>
     <module>../de.schenk.jrtrace.service.test</module>
     <module>../de.schenk.jrtrace.ui</module>
+    <module>../de.schenk.jrtrace.service.ui</module>
+    <module>../de.schenk.jrtrace.example</module>
     <module>../de.schenk.toolsjar</module>
     <module>../de.schenk.jrtrace.updatesite</module>
   </modules>

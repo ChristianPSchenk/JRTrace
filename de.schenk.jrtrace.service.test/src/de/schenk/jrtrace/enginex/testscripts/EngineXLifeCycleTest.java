@@ -73,7 +73,7 @@ public class EngineXLifeCycleTest {
 		URL url = getFileForClassFromTestClassesBundle("JobInstrument.class");
 		byte[][] classBytes = new byte[1][];
 		classBytes[0] = getBytesFromURL(url);
-		machine.installEngineXClass(classBytes);
+		machine.installJRTraceClasses(classBytes);
 
 		Job c = new Job("test") {
 
@@ -108,7 +108,7 @@ public class EngineXLifeCycleTest {
 				new Path("lib/EngineXTests.jar"), null);
 
 		byte[] jarBytes = getBytesFromURL(fileURL);
-		machine.installEngineXClass(JarByteUtil
+		machine.installJRTraceClasses(JarByteUtil
 				.convertJarToClassByteArray(jarBytes));
 
 		InstrumentedClass2 c = new InstrumentedClass2();
@@ -135,7 +135,7 @@ public class EngineXLifeCycleTest {
 
 		byte[][] classBytes = new byte[1][];
 		classBytes[0] = getBytesFromURL(url);
-		machine.installEngineXClass(classBytes);
+		machine.installJRTraceClasses(classBytes);
 
 		// InstrumentedClass is not loaded yet after installing the enginex
 		// script.
@@ -155,7 +155,7 @@ public class EngineXLifeCycleTest {
 		// InstrumentedClass is already loaded. Will XClass still work?
 		InstrumentedClass c2 = new InstrumentedClass();
 		DoneListener doneListener3 = createDoneListener();
-		machine.installEngineXClass(classBytes);
+		machine.installJRTraceClasses(classBytes);
 
 		c2.doit();
 		assertTrue(c2.getResult());

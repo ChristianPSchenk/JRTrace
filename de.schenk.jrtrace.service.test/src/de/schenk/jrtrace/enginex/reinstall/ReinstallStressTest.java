@@ -54,7 +54,7 @@ public class ReinstallStressTest {
 
 		for (int i = 0; i < 10 * REPEAT; i++) {
 			System.out.println(i);
-			machine.installEngineXClass(classBytes);
+			machine.installJRTraceClasses(classBytes);
 			if (oneWorkerHasStopped(workers)) {
 				System.out.println(String.format(
 						"Worker not running after %d iterations of reinstall",
@@ -113,8 +113,8 @@ public class ReinstallStressTest {
 
 		for (int i = 0; i < 5 * REPEAT; i++) {
 			System.out.println(i);
-			machine.installEngineXClass(classBytesB);
-			machine.installEngineXClass(classBytesA);
+			machine.installJRTraceClasses(classBytesB);
+			machine.installJRTraceClasses(classBytesA);
 			if (oneWorkerHasStopped(workers)) {
 				System.out.println(String.format(
 						"Worker not running after %d iterations of reinstall",
@@ -150,7 +150,7 @@ public class ReinstallStressTest {
 			System.out.println(i);
 
 			machine.clearEngineX();
-			machine.installEngineXClass(classBytes);
+			machine.installJRTraceClasses(classBytes);
 
 			Thread.sleep(1);
 			if (oneWorkerHasStopped(workers)) {

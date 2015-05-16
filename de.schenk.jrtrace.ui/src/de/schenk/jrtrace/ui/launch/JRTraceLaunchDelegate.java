@@ -29,6 +29,7 @@ import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.JRTraceControllerService;
 import de.schenk.jrtrace.service.VMInfo;
+import de.schenk.jrtrace.service.ui.dialogs.PIDSelectionDialog;
 import de.schenk.jrtrace.ui.debug.JRTraceDebugTarget;
 
 public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {

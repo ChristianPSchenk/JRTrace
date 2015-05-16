@@ -83,7 +83,7 @@ public class JRTraceConnectToLaunchedAgentTest {
 
 		byte[][] classBytes = new byte[1][];
 		classBytes[0] = Files.readAllBytes(Paths.get(theClass.toURI()));
-		assertTrue(theMachine.installEngineXClass(classBytes));
+		assertTrue(theMachine.installJRTraceClasses(classBytes));
 
 	}
 
@@ -126,7 +126,7 @@ public class JRTraceConnectToLaunchedAgentTest {
 		mach.addClientListener(NotificationConstants.NOTIFY_MESSAGE,
 				streamReceiver);
 		if (!mach
-				.runJava(
+				.invokeMethodAsync(
 						null,
 						"de.schenk.jrtrace.service.test.utils.TestProcessCommunication",
 						"callTrigger", null) /*
@@ -140,7 +140,7 @@ public class JRTraceConnectToLaunchedAgentTest {
 		}
 
 		boolean result = mach
-				.runJava(
+				.invokeMethodAsync(
 						null,
 						"de.schenk.jrtrace.service.test.utils.TestProcessCommunication",
 						"called", "ping", new int[] { 1, 2 });

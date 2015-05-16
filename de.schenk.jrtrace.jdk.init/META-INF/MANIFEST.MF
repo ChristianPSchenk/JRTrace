@@ -2,11 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JDK Tools.jar Copy Bundle
 Bundle-SymbolicName: de.schenk.jrtrace.jdk.init;singleton:=true
-Bundle-Version: 1.0.5.qualifier
+Bundle-Version: 1.0.6.qualifier
 Bundle-Activator: de.schenk.jrtrace.jdk.init.Activator
 Bundle-Vendor: Christian Schenk
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui
+Require-Bundle: org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: de.schenk.jrtrace.jdk.init

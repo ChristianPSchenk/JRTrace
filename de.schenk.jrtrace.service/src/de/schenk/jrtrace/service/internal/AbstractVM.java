@@ -26,10 +26,27 @@ import javax.management.remote.JMXServiceURL;
 
 import de.schenk.jrtrace.helper.NotificationUtil;
 import de.schenk.jrtrace.helperagent.JRTraceMXBean;
+import de.schenk.jrtrace.helperlib.NotificationConstants;
 import de.schenk.jrtrace.service.ICancelable;
 import de.schenk.jrtrace.service.IJRTraceVM;
+import de.schenk.jrtrace.service.JRTraceMessageListener;
 
 abstract public class AbstractVM implements IJRTraceVM {
+
+	@Override
+	public void addMessageListener(JRTraceMessageListener jrTraceMessageListener) {
+		addClientListener(NotificationConstants.NOTIFY_MESSAGE,
+				new RedirectingNotificationListenr(jrTraceMessageListener));
+
+	}
+
+	@Override
+	public void removeMessageListener(
+			JRTraceMessageListener jrTraceMessageListener) {
+		removeClientListener(NotificationConstants.NOTIFY_MESSAGE,
+				new RedirectingNotificationListenr(jrTraceMessageListener));
+
+	}
 
 	/**
 	 * Helper Type: implement the runnable and call safeRun to properly set the
@@ -125,7 +142,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 	}
 
 	@Override
-	synchronized public boolean runJava(final String theClassLoader,
+	synchronized public boolean invokeMethodAsync(final String theClassLoader,
 			final String className, final String methodName,
 			final Object... parameters) {
 
@@ -155,7 +172,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 
 					os.writeObject(objArray);
 
-					mbeanProxy.runJava(useClassloader, className, methodName,
+					mbeanProxy.invokeMethodAsync(useClassloader, className, methodName,
 							theBytes.toByteArray());
 				} catch (IOException e) {
 
@@ -168,7 +185,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 	}
 
 	@Override
-	synchronized public boolean installEngineXClass(final byte[][] classBytes) {
+	synchronized public boolean installJRTraceClasses(final byte[][] classBytes) {
 
 		return new SafeVMRunnable() {
 

@@ -44,12 +44,12 @@ public class SimpleReinstallTest {
 
 		byte[][] classBytes = getClassBytesA();
 
-		machine.installEngineXClass(classBytes);
+		machine.installJRTraceClasses(classBytes);
 
 		assertEquals(1, new SimpleReinstallClassUnderTest().method());
 
 		byte[][] classBytesB = getClassBytesB();
-		machine.installEngineXClass(classBytesB);
+		machine.installJRTraceClasses(classBytesB);
 
 		assertEquals(2, new SimpleReinstallClassUnderTest().method());
 

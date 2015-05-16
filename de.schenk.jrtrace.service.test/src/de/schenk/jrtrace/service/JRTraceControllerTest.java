@@ -104,7 +104,7 @@ public class JRTraceControllerTest {
 		byte[][] bytes = new byte[1][];
 		bytes[0] = ClassByteUtil.getBytes(TestProcessRegexScript.class);
 
-		mach.installEngineXClass(bytes);
+		mach.installJRTraceClasses(bytes);
 
 		System.out.println("done");
 

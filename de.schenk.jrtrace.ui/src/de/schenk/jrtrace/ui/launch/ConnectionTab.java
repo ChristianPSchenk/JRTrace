@@ -36,8 +36,8 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 import de.schenk.jrtrace.helper.NetworkUtil;
 import de.schenk.jrtrace.jdk.init.Activator;
-import de.schenk.jrtrace.service.JRTraceControllerService;
 import de.schenk.jrtrace.service.JarLocator;
+import de.schenk.jrtrace.service.ui.dialogs.PIDSelectionDialog;
 import de.schenk.jrtrace.ui.JRTraceUIActivator;
 
 public class ConnectionTab extends AbstractLaunchConfigurationTab {
@@ -359,12 +359,11 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 				public void widgetSelected(SelectionEvent e) {
 					PIDSelectionDialog pidDialog = new PIDSelectionDialog(box
 							.getShell(), true);
-					pidDialog.setVMs(JRTraceControllerService.getInstance()
-							.getVMs());
+
 					pidDialog.setFilterText(identifyText.getText());
 					pidDialog.open();
 					if (pidDialog.getReturnCode() == IDialogConstants.OK_ID) {
-						if (pidDialog.useFilterText()) {
+						if (pidDialog.wasFilterTextSelection()) {
 							identifyText.setText(pidDialog.getFilterText());
 							pidText.setText("");
 						} else

@@ -172,7 +172,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
          id="de.schenk.jrtrace.bootstrap.bundle"
          download-size="0"
          install-size="0"
-         version="1.0.3.qualifier"
+         version="1.0.4.qualifier"
          unpack="false"/>
 
    <plugin
@@ -191,7 +191,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
          id="de.schenk.jrtrace.jdk.init"
          download-size="0"
          install-size="0"
-         version="1.0.5.qualifier"
+         version="1.0.6.qualifier"
          unpack="false"/>
 
    <plugin
@@ -219,5 +219,11 @@ THE POSSIBILITY OF SUCH DAMAGE.
          download-size="0"
          install-size="0"
          version="1.8.0.qualifier"/>
+
+   <plugin
+         id="de.schenk.jrtrace.service.ui"
+         download-size="0"
+         install-size="0"
+         version="1.0.0.qualifier"/>
 
 </feature>

@@ -267,7 +267,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 	 */
 	public void runJava(String theClassLoader, final String className,
 			final String methodName) {
-		if (!machine.runJava(theClassLoader, className, methodName)) {
+		if (!machine.invokeMethodAsync(theClassLoader, className, methodName)) {
 
 			Display.getDefault().asyncExec(new Runnable() {
 
@@ -338,7 +338,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 		byte[][] classFileBytes = JarByteUtil
 				.convertJarToClassByteArray(jarFile);
-		if (!machine.installEngineXClass(classFileBytes)) {
+		if (!machine.installJRTraceClasses(classFileBytes)) {
 			disconnectAfterConnectionProblem();
 		}
 

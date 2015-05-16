@@ -12,8 +12,7 @@ Require-Bundle: de.schenk.jrtrace.helperlib,
  org.eclipse.osgi
 Export-Package: de.schenk.jrtrace.service,
  de.schenk.jrtrace.service.internal;x-friends:="de.schenk.jrtrace.service.test"
-Import-Package: com.sun.jdi,
- org.eclipse.core.runtime
+Import-Package: org.eclipse.core.runtime
 Eclipse-BundleShape: dir
 Bundle-Activator: de.schenk.jrtrace.service.bundle.JRTraceServiceActivator
 Bundle-ActivationPolicy: lazy

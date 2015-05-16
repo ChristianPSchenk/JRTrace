@@ -76,4 +76,11 @@ limitations under the License.
          install-size="0"
          version="1.1.4.qualifier"/>
 
+   <plugin
+         id="de.schenk.jrtrace.example"
+         download-size="0"
+         install-size="0"
+         version="1.0.0.qualifier"
+         unpack="false"/>
+
 </feature>

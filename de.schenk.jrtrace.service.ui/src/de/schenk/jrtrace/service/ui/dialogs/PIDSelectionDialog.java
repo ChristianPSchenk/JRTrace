@@ -1,7 +1,7 @@
 /**
  * (c) 2014 by Christian Schenk
  **/
-package de.schenk.jrtrace.ui.launch;
+package de.schenk.jrtrace.service.ui.dialogs;
 
 import java.util.ArrayList;
 
@@ -36,7 +36,14 @@ import de.schenk.jrtrace.service.JRTraceControllerService;
 import de.schenk.jrtrace.service.VMInfo;
 
 /**
- * Selecting the proper process based on the process id.
+ * Convenience dialog to choose the proper target process. Will show a list of
+ * all available process along with the process description. Allows the user to
+ * filter based on the process description using a filter text field.
+ * 
+ * The advantage of attaching to a process using a substring of the process
+ * description is, that it remains stable if the same application is started
+ * multiple times and can be used again to attach to the "same" program.
+ * 
  * 
  * @author Christian P. Schenk
  */
@@ -63,7 +70,8 @@ public class PIDSelectionDialog extends TitleAreaDialog {
 			DialogVMInfo vm = (DialogVMInfo) element;
 			String ft = filterText.getText();
 			if (ft != null && !ft.isEmpty()) {
-				return (vm.getInfo().getName().contains(ft));
+				return (vm.getInfo().getName().toLowerCase().contains(ft
+						.toLowerCase()));
 			} else
 				return true;
 		}
@@ -81,9 +89,16 @@ public class PIDSelectionDialog extends TitleAreaDialog {
 	private boolean attachWorking;
 
 	/**
+	 * 
 	 * @param parentShell
 	 * @param showIdentifyTextButton
-	 *            : if the "Use Filter Text" button should be shown.
+	 *            false: standard: show only one button "Use Process ID" to
+	 *            choose the proper process. true: if the "Use Filter Text"
+	 *            button should be shown in addition to the "Use Process ID"
+	 *            button. If both buttons are shown, the dialog can be closed
+	 *            with "Use Filter Text" once the filter narrows down the choice
+	 *            of matching processes to exactly one process.
+	 * 
 	 */
 	public PIDSelectionDialog(Shell parentShell, boolean showIdentifyTextButton) {
 		super(parentShell);
@@ -159,7 +174,8 @@ public class PIDSelectionDialog extends TitleAreaDialog {
 				cell.setText(content);
 
 				if (!filterText.getText().isEmpty()) {
-					int pos = content.indexOf(filterText.getText());
+					int pos = content.toLowerCase().indexOf(
+							filterText.getText().toLowerCase());
 
 					if (pos != -1) {
 						StyleRange style = new StyleRange(pos, filterText
@@ -299,6 +315,14 @@ public class PIDSelectionDialog extends TitleAreaDialog {
 		return true;
 	}
 
+	@Override
+	public int open() {
+		if (vms == null) {
+			vms = JRTraceControllerService.getInstance().getVMs();
+		}
+		return super.open();
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -408,7 +432,11 @@ public class PIDSelectionDialog extends TitleAreaDialog {
 	}
 
 	/*
-	 * Restrict the selection to those VMs containing the identify text string
+	 * By default this dialog shows all JVMs that it can find on the current
+	 * machine.
+	 * 
+	 * Use this method to show only the passed in list of VMs in the dialog.
+	 * Call this method before open().
 	 */
 	public void setVMs(VMInfo[] vms) {
 		this.vms = vms;
@@ -438,7 +466,12 @@ public class PIDSelectionDialog extends TitleAreaDialog {
 		super.okPressed();
 	}
 
-	public boolean useFilterText() {
+	/**
+	 * 
+	 * @return true, if the user completed the dialog using the
+	 *         "Use Filter Text" button.
+	 */
+	public boolean wasFilterTextSelection() {
 		return useFilterText;
 	}
 
@@ -450,6 +483,10 @@ public class PIDSelectionDialog extends TitleAreaDialog {
 		return pid;
 	}
 
+	/**
+	 * 
+	 * @return the text in the fiter that was used to filter.
+	 */
 	public String getFilterText() {
 		return selectedFilterText;
 	}

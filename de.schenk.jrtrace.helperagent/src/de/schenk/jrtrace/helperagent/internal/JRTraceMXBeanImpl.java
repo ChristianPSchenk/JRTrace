@@ -81,7 +81,7 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 	}
 
 	@Override
-	public void runJava(String referenceClassName, String mainClass,
+	public void invokeMethodAsync(String referenceClassName, String mainClass,
 			String mainMethod, byte[] arguments) {
 
 		Object[] o = null;

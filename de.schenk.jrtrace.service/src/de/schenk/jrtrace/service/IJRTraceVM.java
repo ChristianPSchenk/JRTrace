@@ -89,7 +89,7 @@ public interface IJRTraceVM {
 	 *            parameters to standard java types.
 	 * @return true on success, use getLastException() on false
 	 */
-	boolean runJava(String theClassLoader, String className, String methodName,
+	boolean invokeMethodAsync(String theClassLoader, String className, String methodName,
 			Object... parameters);
 
 	/**
@@ -101,7 +101,7 @@ public interface IJRTraceVM {
 	 *            be installed, e.g. classByteArray[0] -> the bytes of the first
 	 *            class to install
 	 */
-	boolean installEngineXClass(byte[][] classByteArray);
+	boolean installJRTraceClasses(byte[][] classByteArray);
 
 	/**
 	 * set the agents log level. Levels defined in JRLog constants.
@@ -154,5 +154,23 @@ public interface IJRTraceVM {
 	 *         classes.
 	 */
 	String[] getLoadedClasses();
+
+	/**
+	 * 
+	 * Installs a listener to obtain objects send with HelperLib.sendMessage.
+	 * Actually just a convenience method for
+	 * addClientListener(NotificationConstants.MESSAGE,...) that simplifies the
+	 * installation of a listener for MESSAGE messages.
+	 * 
+	 * @param jrTraceMessageListener
+	 */
+	void addMessageListener(JRTraceMessageListener jrTraceMessageListener);
+
+	/**
+	 * Removes the given message listener
+	 * 
+	 * @param jrTraceMessageListener
+	 */
+	void removeMessageListener(JRTraceMessageListener jrTraceMessageListener);
 
 }

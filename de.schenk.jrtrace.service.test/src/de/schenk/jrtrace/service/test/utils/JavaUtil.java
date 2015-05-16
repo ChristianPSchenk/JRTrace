@@ -3,7 +3,6 @@
  **/
 package de.schenk.jrtrace.service.test.utils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -21,6 +20,7 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
 import de.schenk.jrtrace.helper.JRTraceNameUtil;
+import de.schenk.jrtrace.service.ClassUtil;
 import de.schenk.jrtrace.service.JarLocator;
 import de.schenk.jrtrace.service.internal.PortUtil;
 
@@ -267,21 +267,7 @@ public class JavaUtil {
 
 	public byte[] getClassBytes(Class<?> c) throws IOException {
 
-		String className = c.getName();
-		String classAsPath = className.replace('.', '/') + ".class";
-		InputStream stream = c.getClassLoader()
-				.getResourceAsStream(classAsPath);
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		int nRead;
-		byte[] data = new byte[16384];
-
-		while ((nRead = stream.read(data, 0, data.length)) != -1) {
-			bos.write(data, 0, nRead);
-		}
-
-		bos.flush();
-
-		return bos.toByteArray();
+		return ClassUtil.getClassBytes(c);
 	}
 
 	public static int readIntegerFromFile(String absolutePath) throws Exception {
@@ -294,12 +280,8 @@ public class JavaUtil {
 
 		String s = new String(chars, 0, length);
 		int i = Integer.parseInt(s);
+		fr.close();
 		return i;
-	}
-
-	public void waitForProcessExit(int i) {
-		// TODO Auto-generated method stub
-
 	}
 
 }
