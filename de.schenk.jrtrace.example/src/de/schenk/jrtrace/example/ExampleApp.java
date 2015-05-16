@@ -21,9 +21,16 @@ import de.schenk.jrtrace.service.JRTraceControllerService;
 import de.schenk.jrtrace.service.JRTraceMessageListener;
 import de.schenk.jrtrace.service.ui.dialogs.PIDSelectionDialog;
 
+/**
+ * A very simple demonstration that allows to capture a stacktrace from a
+ * running JVM
+ * 
+ * @author Christian Schenk
+ *
+ */
 public class ExampleApp implements IApplication {
 
-	private Text stackDisplay;
+	private Text stackText;
 
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
@@ -39,13 +46,13 @@ public class ExampleApp implements IApplication {
 			}
 		});
 		button.setText("Get a Stacktrace...");
-		stackDisplay = new Text(topLevelShell, SWT.BORDER | SWT.V_SCROLL);
+		stackText = new Text(topLevelShell, SWT.BORDER | SWT.V_SCROLL);
 		GridData gridData = new GridData();
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.grabExcessVerticalSpace = true;
 		gridData.horizontalAlignment = SWT.FILL;
 		gridData.verticalAlignment = SWT.FILL;
-		stackDisplay.setLayoutData(gridData);
+		stackText.setLayoutData(gridData);
 		// getAStackTrace();
 
 		topLevelShell.open();
@@ -56,6 +63,7 @@ public class ExampleApp implements IApplication {
 	}
 
 	private boolean getStacktrace() {
+		/* open a dialog to ask the user for the JVM */
 		String pid = null;
 		PIDSelectionDialog dialog = new PIDSelectionDialog(null, false);
 		int result = dialog.open();
@@ -66,10 +74,12 @@ public class ExampleApp implements IApplication {
 			return false;
 		}
 
+		/* obtain and attach to the machine */
 		final IJRTraceVM jvm = JRTraceControllerService.getInstance()
 				.getMachine(pid, null);
 		jvm.attach();
 
+		/* install the JRTrace class into the target machine */
 		byte[][] allClasses = new byte[1][];
 
 		try {
@@ -79,6 +89,7 @@ public class ExampleApp implements IApplication {
 		}
 		jvm.installJRTraceClasses(allClasses);
 
+		/* install a listener to receive messages from the target */
 		jvm.addMessageListener(new JRTraceMessageListener() {
 
 			@Override
@@ -88,13 +99,18 @@ public class ExampleApp implements IApplication {
 
 					@Override
 					public void run() {
-						stackDisplay.setText(stack);
+						stackText.setText(stack);
+						/* detach from the JVM */
 						jvm.detach();
 					}
 				});
 			}
 		});
 
+		/*
+		 * invoke a method asynchronously. The result will be sent to the
+		 * listener
+		 */
 		jvm.invokeMethodAsync(null, StackTraceUtility.class.getName(),
 				"getStackTrace");
 

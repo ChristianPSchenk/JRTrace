@@ -170,12 +170,11 @@ public class PIDSelectionDialog extends TitleAreaDialog {
 			if (index == 1) {
 				String content = (v.getFirstEntry() ? "" : "   ")
 						+ v.getPartialDescription();
-
+				
 				cell.setText(content);
 
 				if (!filterText.getText().isEmpty()) {
-					int pos = content.toLowerCase().indexOf(
-							filterText.getText().toLowerCase());
+					int pos = content.toLowerCase().indexOf(filterText.getText().toLowerCase());
 
 					if (pos != -1) {
 						StyleRange style = new StyleRange(pos, filterText
