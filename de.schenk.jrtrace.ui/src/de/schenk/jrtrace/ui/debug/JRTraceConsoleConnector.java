@@ -36,7 +36,7 @@ public class JRTraceConsoleConnector {
 
 	public void start(JRTraceDebugTarget jrTraceDebugTarget) {
 		this.machine = jrTraceDebugTarget.getJRTraceMachine();
-		title = machine.getPID();
+		title = machine.getConnectionIdentifier();
 
 		MessageConsole console;
 		try {

@@ -123,7 +123,7 @@ public class JRTraceVMImpl extends AbstractVM {
 	}
 
 	@Override
-	public String getPID() {
+	public String getConnectionIdentifier() {
 		return thePID;
 	}
 

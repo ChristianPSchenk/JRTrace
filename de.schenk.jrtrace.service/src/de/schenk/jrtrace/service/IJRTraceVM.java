@@ -9,10 +9,10 @@ import javax.management.NotificationListener;
 
 /**
  * 
- * Alles to connect to another JVM and uploads the JRTrace Agent.
+ * Allows to connect to another JVM and uploads the JRTrace Agent.
  * 
- * Errorhandling: most methods return true/false for success and provide details
- * via getLastException
+ * Error handling: most methods return true/false for success and provide
+ * details via getLastException() in case of a problem.
  *
  */
 public interface IJRTraceVM {
@@ -36,7 +36,8 @@ public interface IJRTraceVM {
 	boolean attach(ICancelable stopper);
 
 	/**
-	 * installs a new jar file into the target machine
+	 * Makes a given jar file availble on the boot classpath of the target
+	 * machine.
 	 * 
 	 * @param bytes
 	 *            the bytes of the jar file
@@ -45,18 +46,30 @@ public interface IJRTraceVM {
 	public boolean installJar(byte[] bytes);
 
 	/**
-	 * The last exception that occured (e.g. after an unsuccessful, return code
-	 * false call) The exception will not be cleared after a successful call to
+	 * 
+	 * @return the connection identifier of this connection. This may be a
+	 *         process identifer for a local connection but may also be a
+	 *         server:port description for remote connections. This value can be
+	 *         used to identify the connection to the user.
+	 */
+	String getConnectionIdentifier();
+
+	/**
+	 * The last exception that occurred (e.g. after an unsuccessful, return code
+	 * false, call) The exception will not be cleared after a successful call to
 	 * another function.
 	 * 
 	 * @return The last exception after an error.
 	 */
 	Exception getLastError();
 
-	String getPID();
-
-	/*
-	 * set some system properties in the target
+	/**
+	 * 
+	 * Sets java system properties in the target jvm.
+	 * 
+	 * @param props
+	 *            the properties to set
+	 * @return true on success.
 	 */
 	boolean setSystemProperties(Properties props);
 
@@ -89,8 +102,8 @@ public interface IJRTraceVM {
 	 *            parameters to standard java types.
 	 * @return true on success, use getLastException() on false
 	 */
-	boolean invokeMethodAsync(String theClassLoader, String className, String methodName,
-			Object... parameters);
+	boolean invokeMethodAsync(String theClassLoader, String className,
+			String methodName, Object... parameters);
 
 	/**
 	 * Install the provide JRTrace classes. Uninstalls all previously installed
@@ -104,7 +117,7 @@ public interface IJRTraceVM {
 	boolean installJRTraceClasses(byte[][] classByteArray);
 
 	/**
-	 * set the agents log level. Levels defined in JRLog constants.
+	 * Set the agents log level. Levels defined in JRLog constants.
 	 * 
 	 * @param level
 	 *            see JRLog for levels.
@@ -118,6 +131,11 @@ public interface IJRTraceVM {
 	 */
 	boolean clearEngineX();
 
+	/**
+	 * Initialize the connection.
+	 * 
+	 * @return true on success
+	 */
 	boolean attach();
 
 	/**
@@ -135,12 +153,21 @@ public interface IJRTraceVM {
 	/**
 	 * Add a listener that will be informed on connection loss.
 	 * 
-	 * @param r
+	 * @param failRunnable
+	 *            the runnable that will be called on connection loss.
 	 */
-	void addFailListener(Runnable r);
+	void addFailListener(Runnable failRunnable);
 
-	void removeClientListener(String notifyId,
-			NotificationListener errorstreamReceiver);
+	/**
+	 * 
+	 * Remove an existing listener
+	 * 
+	 * @param notifyId
+	 *            the ID on which the listener was listening
+	 * @param listener
+	 *            the listener to remove
+	 */
+	void removeClientListener(String notifyId, NotificationListener listener);
 
 	/**
 	 * sends an abort event to the machine. Any ongoning work will be
@@ -151,7 +178,7 @@ public interface IJRTraceVM {
 	/**
 	 * 
 	 * @return a string array containing the fully qualified names of all
-	 *         classes.
+	 *         classes that have been loaded in the target VM.
 	 */
 	String[] getLoadedClasses();
 
@@ -163,6 +190,7 @@ public interface IJRTraceVM {
 	 * installation of a listener for MESSAGE messages.
 	 * 
 	 * @param jrTraceMessageListener
+	 *            the listener to install
 	 */
 	void addMessageListener(JRTraceMessageListener jrTraceMessageListener);
 
@@ -170,6 +198,7 @@ public interface IJRTraceVM {
 	 * Removes the given message listener
 	 * 
 	 * @param jrTraceMessageListener
+	 *            the listenre to remove
 	 */
 	void removeMessageListener(JRTraceMessageListener jrTraceMessageListener);
 

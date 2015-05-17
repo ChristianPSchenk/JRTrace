@@ -172,8 +172,8 @@ abstract public class AbstractVM implements IJRTraceVM {
 
 					os.writeObject(objArray);
 
-					mbeanProxy.invokeMethodAsync(useClassloader, className, methodName,
-							theBytes.toByteArray());
+					mbeanProxy.invokeMethodAsync(useClassloader, className,
+							methodName, theBytes.toByteArray());
 				} catch (IOException e) {
 
 					throw new RuntimeException(e);

@@ -178,7 +178,7 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 		List<JRTraceDebugTarget> jrtraceTargets = JRTraceLaunchUtils
 				.getJRTraceDebugTargets();
 		for (JRTraceDebugTarget btarget : jrtraceTargets) {
-			if (btarget.getJRTraceMachine().getPID().equals(pid)) {
+			if (btarget.getJRTraceMachine().getConnectionIdentifier().equals(pid)) {
 				final String pidCopy = pid;
 				showProcessAlreadyConnectedDialog(pidCopy);
 				throw new CoreException(Status.CANCEL_STATUS);
