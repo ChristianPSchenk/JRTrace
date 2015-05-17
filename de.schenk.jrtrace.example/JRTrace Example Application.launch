@@ -3,7 +3,7 @@
 <booleanAttribute key="append.args" value="true"/>
 <stringAttribute key="application" value="de.schenk.jrtrace.example.jrtrace_example"/>
 <booleanAttribute key="askclear" value="true"/>
-<booleanAttribute key="automaticAdd" value="true"/>
+<booleanAttribute key="automaticAdd" value="false"/>
 <booleanAttribute key="automaticValidate" value="false"/>
 <stringAttribute key="bootstrap" value=""/>
 <stringAttribute key="checked" value="[NONE]"/>
@@ -12,7 +12,6 @@
 <booleanAttribute key="clearwslog" value="false"/>
 <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/JRTrace Example Application"/>
 <booleanAttribute key="default" value="false"/>
-<stringAttribute key="deselected_workspace_plugins" value="MyTestSampleAction,de.schenk.jrtrace.bootstrap.bundle,de.schenk.jrtrace.help,de.schenk.jrtrace.service.enginex.targets,de.schenk.jrtrace.service.enginex.testclasses,de.schenk.jrtrace.service.test,de.schenk.jrtrace.ui,testjdtactrion,testview"/>
 <booleanAttribute key="includeOptional" value="false"/>
 <stringAttribute key="location" value="${workspace_loc}/../runtime-JRTraceExampleApplication"/>
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
@@ -22,8 +21,8 @@
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dosgi.requiredJavaVersion=1.7 -Xms40m -Xmx512m"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.eclipse.epp.package.rcp.product"/>
-<stringAttribute key="selected_target_plugins" value="javax.xml@default:default,org.eclipse.core.commands@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.core.jobs@default:default,org.eclipse.core.runtime.compatibility.registry@default:false,org.eclipse.core.runtime@default:true,org.eclipse.equinox.app@default:default,org.eclipse.equinox.common@2:true,org.eclipse.equinox.preferences@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.jface@default:default,org.eclipse.osgi.compatibility.state@default:false,org.eclipse.osgi@-1:true,org.eclipse.swt.win32.win32.x86_64@default:false,org.eclipse.swt@default:default"/>
-<stringAttribute key="selected_workspace_plugins" value="de.schenk.jrtrace.example@default:default,de.schenk.jrtrace.helperagent@default:default,de.schenk.jrtrace.helperlib@default:default,de.schenk.jrtrace.jdk.init@default:default,de.schenk.jrtrace.service.ui@default:default,de.schenk.jrtrace.service@default:default,de.schenk.toolsjar@default:default"/>
+<stringAttribute key="selected_target_plugins" value="de.schenk.jrtrace.bootstrap.bundle@default:default,de.schenk.jrtrace.example@default:default,de.schenk.jrtrace.helperagent@default:default,de.schenk.jrtrace.helperlib@default:default,de.schenk.jrtrace.jdk.init@default:default,de.schenk.jrtrace.service.ui@default:default,de.schenk.jrtrace.service@default:default,javax.xml@default:default,org.eclipse.core.commands@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.core.jobs@default:default,org.eclipse.core.runtime.compatibility.registry@default:false,org.eclipse.core.runtime@default:true,org.eclipse.equinox.app@default:default,org.eclipse.equinox.common@2:true,org.eclipse.equinox.preferences@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.jface@default:default,org.eclipse.osgi.compatibility.state@default:false,org.eclipse.osgi@-1:true,org.eclipse.swt.win32.win32.x86_64@default:false,org.eclipse.swt@default:default"/>
+<stringAttribute key="selected_workspace_plugins" value="de.schenk.jrtrace.bootstrap.bundle@default:default,de.schenk.jrtrace.example@default:default,de.schenk.jrtrace.helperagent@default:default,de.schenk.jrtrace.helperlib@default:default,de.schenk.jrtrace.jdk.init@default:default,de.schenk.jrtrace.service.ui@default:default,de.schenk.jrtrace.service@default:default,de.schenk.toolsjar@default:default"/>
 <booleanAttribute key="show_selected_only" value="false"/>
 <stringAttribute key="templateConfig" value="${target_home}\configuration\config.ini"/>
 <booleanAttribute key="tracing" value="false"/>
