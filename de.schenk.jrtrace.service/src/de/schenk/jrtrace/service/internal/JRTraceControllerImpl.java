@@ -72,6 +72,11 @@ public class JRTraceControllerImpl implements JRTraceController {
 		String username;
 		String tmpDir = System.getenv("TMP");
 		String userName = System.getenv("USERNAME");
+		if(tmpDir==null||userName==null) 
+		{
+			// most likely not a windows system, return true.
+			return true;
+		}
 		File hsperfdataFolder = new File(tmpDir + "\\hsperfdata_" + userName);
 		if (hsperfdataFolder.exists()) {
 			File testFile = new File(hsperfdataFolder + "\\"
