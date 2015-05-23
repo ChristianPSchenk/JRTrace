@@ -21,6 +21,7 @@ public class TestProcess {
 		killPort = Integer.parseInt(args[0]);
 
 		new TestProcess().doSomeThing();
+		System.out.println("+TestProcess.main() terminated.");
 
 	}
 

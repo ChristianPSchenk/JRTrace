@@ -3,6 +3,7 @@
  **/
 package de.schenk.jrtrace.helperagent;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -122,26 +123,27 @@ public class JRTraceClassFileTransformer implements ClassFileTransformer {
 
 	private void logTransformedClassBytes(String className, byte[] classBytes,
 			byte[] oldBytes) {
+		String tmpdir="";
 		try {
 			String classId = className;
 			if (className == null) {
 				classId = String.format("null%d", System.currentTimeMillis());
 			}
-			String tmpdir = System.getProperty("java.io.tmpdir");
+			tmpdir = System.getProperty("java.io.tmpdir");
 
 			FileOutputStream fileOutputStream = new FileOutputStream(tmpdir
-					+ "\\" + classId.replace('/', '_') + "before.class");
+					+ File.separator+ classId.replace('/', '_') + "before.class");
 			fileOutputStream.write(oldBytes);
 			fileOutputStream.close();
 			FileOutputStream fileOutputStream2 = new FileOutputStream(tmpdir
-					+ "\\" + classId.replace('/', '_') + "after.class");
+					+ File.separator + classId.replace('/', '_') + "after.class");
 			fileOutputStream2.write(classBytes);
 			fileOutputStream2.close();
 
 			JRLog.debug("Writing bytes before/after transformation of class "
 					+ classId + " to directory " + tmpdir);
 		} catch (IOException e) {
-			JRLog.error("Error when trying to write transformed classbytes.");
+			JRLog.error("Error ("+e.getMessage()+") when trying to write transformed classbytes to  "+tmpdir);
 		}
 	}
 

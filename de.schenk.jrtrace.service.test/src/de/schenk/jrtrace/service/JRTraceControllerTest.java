@@ -149,9 +149,16 @@ public class JRTraceControllerTest {
 			Thread.sleep(500);
 			tries++;
 			if (tries > 20)
+			{
+				System.out.println("List of processes returned by getVMs():");
+				for(VMInfo vm:vms)
+				{
+					System.out.println(vm.getId()+":"+vm.getName());
+				}
 				fail("The java process with name"
 						+ javaUtil.getQualifiedTestClassName()
 						+ " never appeared in the list of VMs");
+			}
 		}
 		return result;
 	}

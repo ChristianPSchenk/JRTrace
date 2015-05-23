@@ -94,7 +94,10 @@ public class JavaUtil {
 		ArrayList<String> commandParameters = new ArrayList<String>();
 		commandParameters.add(javaHome + File.separator + "bin"
 				+ File.separator + "java");
+		if(parameters!=null&&!parameters.isEmpty())
+		{
 		commandParameters.add(parameters);
+		}
 		// commandParameters
 		// .add("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=12345");
 

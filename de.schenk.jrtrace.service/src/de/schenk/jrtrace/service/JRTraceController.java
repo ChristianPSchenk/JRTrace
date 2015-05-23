@@ -11,7 +11,7 @@ public interface JRTraceController {
 	 * folder is not accessible the VirtualMachine list and attach API will not
 	 * work on windows.
 	 * 
-	 * @return true, if the folder doesn't exist but can be created -OR- if the
+	 * @return true, if not Windows -OR- if the folder doesn't exist but can be created -OR- if the
 	 *         folder exists and files can be created inside.
 	 */
 	public boolean hsperfdataAccessible();

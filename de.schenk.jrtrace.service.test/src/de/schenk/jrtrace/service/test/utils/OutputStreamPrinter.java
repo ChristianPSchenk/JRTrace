@@ -31,7 +31,7 @@ public class OutputStreamPrinter extends Thread {
 					System.out.println(new String(buffer2));
 				}
 			} catch (IOException e) {
-				System.err.println(">>  No more data from process");
+				System.err.println(">>  IOException: No more data from process");
 				break;
 			}
 		}

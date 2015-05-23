@@ -9,6 +9,7 @@ public class SimpleReinstallScript {
 
 	@XMethod(names = "method", location = XLocation.EXIT)
 	public int method() {
+		System.out.println("In SimpleReinstallClassUnderTest returning 2");
 		return 2;
 	}
 

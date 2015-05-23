@@ -2,6 +2,7 @@ package de.schenk.jrtrace.enginex.reinstall;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,9 +20,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 
+import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.JRTraceControllerService;
+import de.schenk.jrtrace.service.test.utils.JavaUtil;
 
 /**
  * 
@@ -36,9 +39,14 @@ public class SimpleReinstallTest {
 	protected Throwable exception;
 	protected Object theFamily = new Object();
 
+	/**
+	 * Test that: first clears all JRTrace classes. Installs a firs
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testModifiedScriptsAreWorkingProperly() throws Exception {
-
+		
 		machine.clearEngineX();
 		assertEquals(0, new SimpleReinstallClassUnderTest().method());
 
@@ -49,8 +57,17 @@ public class SimpleReinstallTest {
 		assertEquals(1, new SimpleReinstallClassUnderTest().method());
 
 		byte[][] classBytesB = getClassBytesB();
+		if (classBytesB[0].length == classBytes[0].length) {
+			boolean diff = false;
+			for (int i = 0; i < classBytesB[0].length; i++)
+				if (classBytes[0][i] != classBytesB[0][i]) {
+					diff = true;
+					break;
+				}
+			if (!diff)
+				fail("same classbytes for a and b");
+		}
 		machine.installJRTraceClasses(classBytesB);
-
 		assertEquals(2, new SimpleReinstallClassUnderTest().method());
 
 	}
@@ -79,30 +96,26 @@ public class SimpleReinstallTest {
 
 	}
 
-	private byte[][] getClassBytesB() throws URISyntaxException, IOException {
+	private byte[][] getClassBytesB() throws Exception {
 		Bundle bundle = Platform.getBundle("de.schenk.jrtrace.service.test");
 
 		return getClassBytes(bundle);
 	}
 
-	private byte[][] getClassBytesA() throws URISyntaxException, IOException {
+	private byte[][] getClassBytesA() throws Exception {
 		Bundle bundle = Platform
 				.getBundle("de.schenk.jrtrace.service.enginex.testclasses");
 
 		return getClassBytes(bundle);
 	}
 
-	private byte[][] getClassBytes(Bundle bundle) throws URISyntaxException,
-			IOException {
-		Enumeration<URL> entries = bundle.findEntries("/",
-				"SimpleReinstallScript.class", true);
+	private byte[][] getClassBytes(Bundle bundle) throws Exception {
 
-		URL fileURL = entries.nextElement();
-		File theFile = new File(FileLocator.toFileURL(fileURL).toURI());
+		byte[] classFileBytes = new JavaUtil().getClassBytes(bundle
+				.loadClass(SimpleReinstallScript.class.getName()));
 
-		byte[] jarBytes = Files.readAllBytes(Paths.get(theFile.toURI()));
 		byte[][] classBytes = new byte[1][];
-		classBytes[0] = jarBytes;
+		classBytes[0] = classFileBytes;
 		return classBytes;
 	}
 
