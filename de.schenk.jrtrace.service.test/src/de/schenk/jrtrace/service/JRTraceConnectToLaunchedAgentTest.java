@@ -169,7 +169,7 @@ public class JRTraceConnectToLaunchedAgentTest {
 				break;
 			Thread.sleep(100);
 		}
-		Exception lastException = mach.getLastError();
+		Throwable lastException = mach.getLastError();
 		if (lastException != null)
 			lastException.printStackTrace();
 		assertTrue(result);

@@ -28,10 +28,13 @@ import de.schenk.jrtrace.enginex.testclasses.Script2;
 import de.schenk.jrtrace.enginex.testclasses.Script3;
 import de.schenk.jrtrace.enginex.testclasses.Script4;
 import de.schenk.jrtrace.enginex.testclasses.Script5;
+import de.schenk.jrtrace.enginex.testclasses.Script6;
 import de.schenk.jrtrace.enginex.testclasses.TestClass1;
 import de.schenk.jrtrace.enginex.testclasses.TestClass2;
 import de.schenk.jrtrace.enginex.testclasses.TestClass3;
 import de.schenk.jrtrace.enginex.testclasses.TestClass4;
+import de.schenk.jrtrace.enginex.testclasses.TestClass6;
+import de.schenk.jrtrace.enginex.testclasses.TestClass6b;
 import de.schenk.jrtrace.helper.Injection;
 import de.schenk.jrtrace.helper.Injection.InjectionType;
 import de.schenk.jrtrace.helper.InstantiationPolicy;
@@ -64,6 +67,16 @@ public class EngineXAnnotationReaderTest {
 		assertFalse(metadata.mayMatch(TestClass2.class));
 		assertFalse(metadata.mayMatch(TestClass3.class));
 
+	}
+
+	@Test
+	public void testMayMatchOnArgumentMatch() throws Exception {
+		classBytes = new JavaUtil().getClassBytes(Script6.class);
+		JRTraceAnnotationReader annoReader = new JRTraceAnnotationReader();
+		JRTraceClassMetadata metadata = annoReader
+				.getMetaInformation(classBytes);
+		assertTrue(metadata.mayMatch(TestClass6.class));
+		assertTrue(!metadata.mayMatch(TestClass6b.class));
 	}
 
 	@Test

@@ -90,7 +90,7 @@ public class JRTraceControllerTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void testInstallAScriptWithRegex() throws Exception {
+	public void testInstallAScriptWithRegex() throws Throwable {
 		VMInfo vm = getJavaVMInfo();
 
 		IJRTraceVM mach = bmController.getMachine(vm.getId(), null);
@@ -104,8 +104,11 @@ public class JRTraceControllerTest {
 		byte[][] bytes = new byte[1][];
 		bytes[0] = ClassByteUtil.getBytes(TestProcessRegexScript.class);
 
-		mach.installJRTraceClasses(bytes);
+		boolean result = mach.installJRTraceClasses(bytes);
+		if (!result) {
 
+			throw mach.getLastError();
+		}
 		System.out.println("done");
 
 		assertTrue(mach.detach());

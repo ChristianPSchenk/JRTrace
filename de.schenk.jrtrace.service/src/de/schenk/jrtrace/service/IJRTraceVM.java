@@ -61,7 +61,7 @@ public interface IJRTraceVM {
 	 * 
 	 * @return The last exception after an error.
 	 */
-	Exception getLastError();
+	Throwable getLastError();
 
 	/**
 	 * 

@@ -60,7 +60,8 @@ abstract public class AbstractVM implements IJRTraceVM {
 		final public boolean safeRun() {
 			try {
 				run();
-			} catch (Exception e) {
+			} catch (Throwable e) {
+
 				lastException = e;
 				return false;
 			}
@@ -91,7 +92,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 	/**
 	 * will hold the last exception that occured during calls
 	 */
-	protected Exception lastException;
+	protected Throwable lastException;
 
 	@Override
 	synchronized public void setLogLevel(int i) {
@@ -367,7 +368,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 	}
 
 	@Override
-	public Exception getLastError() {
+	public Throwable getLastError() {
 		return lastException;
 	}
 

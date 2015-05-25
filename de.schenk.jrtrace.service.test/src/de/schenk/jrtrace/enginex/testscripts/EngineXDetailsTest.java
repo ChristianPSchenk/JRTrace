@@ -132,10 +132,31 @@ public class EngineXDetailsTest {
 		/*
 		 * test that argument matching works
 		 */
+
 		Test3 test3 = new Test3();
 		TestCounterClass.counter = 0;
 		test3.test3("hallo");
 		test3.test3(1.0F);
+
+		assertEquals(1, TestCounterClass.counter);
+	}
+
+	/**
+	 * Regression test for the problem, that there mayMatch didn't work for
+	 * Method argument.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void test41MultipleArguments()
+			throws Exception {
+		/*
+		 * test that argument matching works
+		 */
+
+		Test41 test41 = new Test41();
+		TestCounterClass.counter = 0;
+		test41.test41("hallo", new Object());
 
 		assertEquals(1, TestCounterClass.counter);
 	}

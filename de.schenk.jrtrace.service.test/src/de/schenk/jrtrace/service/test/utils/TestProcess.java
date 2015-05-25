@@ -47,7 +47,7 @@ public class TestProcess {
 			System.out.println("+done");
 		} catch (Exception e) {
 			e.printStackTrace();
-
+			throw e;
 		}
 
 	}
