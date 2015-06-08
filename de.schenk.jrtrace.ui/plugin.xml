@@ -103,22 +103,15 @@
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
          <toolbar
                id="de.schenk.jrtrace.ui.toolbar"
                label="JRTrace Toolbar">
-            <visibleWhen>
-               <iterate
-                     ifEmpty="false">
-                  <with
-                        variable="jrtraceSessionActive">
-                     <equals
-                           value="true">
-                     </equals>
-                  </with>
-               </iterate>
-            </visibleWhen>
         
+          <control
+                  class="de.schenk.jrtrace.ui.handler.DummyToolbarControlContribution">
+            </control>
+            
             <command
                   commandId="de.schenk.jrtrace.ui.commands.runjava"
                   icon="icons/run_java_16.gif"
@@ -155,6 +148,7 @@
                   </iterate>
                </visibleWhen>
             </command>
+          
          </toolbar>
       </menuContribution>
       <menuContribution
