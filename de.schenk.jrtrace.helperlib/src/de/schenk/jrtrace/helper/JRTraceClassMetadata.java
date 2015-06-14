@@ -10,6 +10,7 @@ import java.util.Set;
 
 import de.schenk.jrtrace.annotations.XClass;
 import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
+import de.schenk.jrtrace.helperlib.status.InjectStatus;
 import de.schenk.objectweb.asm.Type;
 
 /**
@@ -124,7 +125,8 @@ public class JRTraceClassMetadata {
 	 */
 	public boolean mayMatch(Class<?> theclass) {
 
-		Class<?> targetclass = theclass;
+		if (isExcludedClassName(theclass.getName()))
+			return false;
 
 		boolean classMatch = false;
 		if (!getDerived()) {
@@ -133,7 +135,7 @@ public class JRTraceClassMetadata {
 			classMatch = mayMatchClassHierarchy(theclass);
 		}
 
-		return classMatch && mayMatchMethods(targetclass);
+		return classMatch && mayMatchMethods(theclass);
 
 	}
 
@@ -145,15 +147,28 @@ public class JRTraceClassMetadata {
 	 *            the class of the superclass
 	 * @param interfaces
 	 *            the classes of the directly implemented interfaces
-	 * @return
+	 * @param classInjectStatus
+	 *            if not null, describes the result.
+	 * @return false, if this JRTrace class will not inject into the class. If
+	 *         false, the classInjectStatus will contain a description about why
+	 *         this failed.
 	 */
 	public boolean mayMatchClassHierarchy(String className,
-			Class<?> superclass, Class<?>[] interfaces) {
+			Class<?> superclass, Class<?>[] interfaces,
+			InjectStatus classInjectStatus) {
+
+		if (isExcludedClassName(className))
+			return false;
+
+		boolean classMatch = mayMatchClassName(className);
+
 		if (!getDerived()) {
-			return mayMatchClassName(className);
+
+			return classMatch;
 		}
-		boolean result = mayMatchClassName(className)
-				|| mayMatchClassHierarchy(superclass);
+
+		boolean hierarchyMatch = mayMatchClassHierarchy(superclass);
+		boolean result = classMatch || hierarchyMatch;
 		if (result)
 			return true;
 		for (Class<?> iface : interfaces) {
@@ -204,12 +219,11 @@ public class JRTraceClassMetadata {
 	 */
 	private boolean mayMatchClass(Class<?> theclass) {
 		String classname = theclass.getName();
-		if (isExcludedClassName(classname))
-			return false;
+
 		return mayMatchClassName(classname);
 	}
 
-	public boolean mayMatchClassName(String classname) {
+	private boolean mayMatchClassName(String classname) {
 		if (classname == null)
 			return false;
 
@@ -354,6 +368,15 @@ public class JRTraceClassMetadata {
 	public void setInstantiationPolicy(InstantiationPolicy method) {
 		instantiationPolicy = InstantiationPolicy.METHOD;
 
+	}
+
+	/**
+	 * 
+	 *
+	 */
+	public boolean mayMatchClassHierarchy(String cname, Class<?> superClass,
+			Class<?>[] interfaces) {
+		return mayMatchClassHierarchy(cname, superClass, interfaces, null);
 	}
 
 }

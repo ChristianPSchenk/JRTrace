@@ -14,6 +14,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import de.schenk.jrtrace.helperlib.JRLog;
+import de.schenk.jrtrace.helperlib.status.InjectStatus;
+import de.schenk.objectweb.asm.addons.ClassByteUtil;
 
 public class JRTraceHelper {
 
@@ -397,6 +399,46 @@ public class JRTraceHelper {
 		synchronized (lock) {
 			return currentCacheId;
 		}
+	}
+
+	public static InjectStatus analyzeInjectionStatus(String className,
+			String methodDescriptor) {
+		Collection<JRTraceClassMetadata> classes = classStore
+				.getAllForId(getCurrentClassSetId());
+		InjectStatus status = new InjectStatus(InjectStatus.JRTRACE_SESSION);
+		if (classes.size() == 0) {
+			status.setInjected(InjectStatus.STATE_DOESNT_INJECT);
+			status.setMessage(InjectStatus.MSG_NO_JRTRACE_CLASSES);
+			return status;
+		}
+		Instrumentation instr = InstrumentationUtil.getInstrumentation();
+		Class<?>[] loadedClasses = instr.getAllLoadedClasses();
+		HashSet<Class<?>> testClasses = new HashSet<Class<?>>();
+		for (Class<?> clazz : loadedClasses) {
+			if (className.equals(clazz.getName())) {
+				testClasses.add(clazz);
+			}
+		}
+		if (testClasses.size() == 0) {
+			status.setInjected(InjectStatus.STATE_DOESNT_INJECT);
+			status.setMessage(InjectStatus.MSG_CLASS_NOT_LOADED);
+			return status;
+		}
+
+		int sumStatus = InjectStatus.STATE_CANT_CHECK;
+		for (Class<?> testClass : testClasses) {
+			InjectStatus childStatus = new InjectStatus(
+					InjectStatus.JRTRACE_CLASS);
+			status.addChildStatus(childStatus);
+
+			JRTraceOneClassTransformer transformer = new JRTraceOneClassTransformer(
+					testClass.getClassLoader(), testClass.getName(), testClass,
+					ClassByteUtil.getBytes(testClass));
+			transformer.setStatus(childStatus);
+			byte[] result = transformer.doTransform();
+
+		}
+		return status;
 	}
 
 }
