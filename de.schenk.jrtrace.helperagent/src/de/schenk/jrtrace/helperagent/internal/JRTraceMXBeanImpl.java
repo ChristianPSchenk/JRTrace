@@ -1,11 +1,8 @@
 package de.schenk.jrtrace.helperagent.internal;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.lang.instrument.Instrumentation;
 import java.util.jar.JarFile;
 
@@ -18,6 +15,8 @@ import de.schenk.jrtrace.helper.JRTraceHelper;
 import de.schenk.jrtrace.helperagent.AgentMain;
 import de.schenk.jrtrace.helperagent.JRTraceMXBean;
 import de.schenk.jrtrace.helperlib.JRLog;
+import de.schenk.jrtrace.helperlib.SerializationUtil;
+import de.schenk.jrtrace.helperlib.status.InjectStatus;
 
 public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 		JRTraceMXBean, INotificationSender {
@@ -84,21 +83,10 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 	public void invokeMethodAsync(String referenceClassName, String mainClass,
 			String mainMethod, byte[] arguments) {
 
-		Object[] o = null;
-		;
-		try {
-			if (arguments != null) {
-				InputStream is = new ByteArrayInputStream(arguments);
-				ObjectInputStream os = new ObjectInputStream(is);
-				o = (Object[]) os.readObject();
-			}
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
+		Object x = SerializationUtil.deserialize(arguments);
 
 		new RunJavaCommand().runJava(referenceClassName, mainClass, mainMethod,
-				(Object[]) o);
+				(Object[]) x);
 
 	}
 
@@ -135,5 +123,14 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 			loadedClassesNames[i] = loadedClasses[i].getName();
 		}
 		return loadedClassesNames;
+	}
+
+	@Override
+	public byte[] analyzeInjectionStatus(String className,
+			String methodDescriptor) {
+
+		InjectStatus status = JRTraceHelper.analyzeInjectionStatus(className,
+				methodDescriptor);
+		return SerializationUtil.serialize(status);
 	}
 }

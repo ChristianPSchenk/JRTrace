@@ -82,8 +82,9 @@ public interface JRTraceMXBean {
 	 *             on error. Note: error behaviour today is not very
 	 *             well-defined
 	 */
-	public void invokeMethodAsync(String referenceClassName, String theClassName,
-			String theMethodName, byte[] serializedParameters);
+	public void invokeMethodAsync(String referenceClassName,
+			String theClassName, String theMethodName,
+			byte[] serializedParameters);
 
 	/**
 	 * set the agents log level. Levels defined in JRLog constants.
@@ -109,5 +110,21 @@ public interface JRTraceMXBean {
 	 *         loaded.
 	 */
 	public String[] getLoadedClasses();
+
+	/**
+	 * Analyzes whether the specified method in the specified class is
+	 * instrumented via JRTrace in the current session.
+	 * 
+	 * <p>
+	 * The returned InjectStatus contains the details about why JRTrace classes
+	 * and methods do not match.
+	 * </p>
+	 * 
+	 * @param className
+	 * @param methodDescriptor
+	 * @return a byte array that is the serialization of an InjectStatus.
+	 */
+	public byte[] analyzeInjectionStatus(String className,
+			String methodDescriptor);
 
 }

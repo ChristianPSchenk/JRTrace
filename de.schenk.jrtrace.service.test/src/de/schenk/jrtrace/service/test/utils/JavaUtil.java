@@ -94,9 +94,8 @@ public class JavaUtil {
 		ArrayList<String> commandParameters = new ArrayList<String>();
 		commandParameters.add(javaHome + File.separator + "bin"
 				+ File.separator + "java");
-		if(parameters!=null&&!parameters.isEmpty())
-		{
-		commandParameters.add(parameters);
+		if (parameters != null && !parameters.isEmpty()) {
+			commandParameters.add(parameters);
 		}
 		// commandParameters
 		// .add("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=12345");
@@ -198,6 +197,10 @@ public class JavaUtil {
 
 	public File getFileForClass(Class<?> theclass, String bundleid) {
 		String classname = theclass.getSimpleName();
+		return getFileForClass(classname, bundleid);
+	}
+
+	public File getFileForClass(String classname, String bundleid) {
 
 		Bundle bundle = Platform.getBundle(bundleid);
 		Enumeration<URL> urls = bundle.findEntries("/", classname + ".class",

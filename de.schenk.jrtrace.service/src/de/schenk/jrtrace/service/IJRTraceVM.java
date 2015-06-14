@@ -7,6 +7,8 @@ import java.util.Properties;
 
 import javax.management.NotificationListener;
 
+import de.schenk.jrtrace.helperlib.status.InjectStatus;
+
 /**
  * 
  * Allows to connect to another JVM and uploads the JRTrace Agent.
@@ -201,5 +203,23 @@ public interface IJRTraceVM {
 	 *            the listenre to remove
 	 */
 	void removeMessageListener(JRTraceMessageListener jrTraceMessageListener);
+
+	/**
+	 * Performs a detailed analysis on the target machine to check if the
+	 * currently installed JRTrace classes inject any code in the designated
+	 * method.
+	 * <p>
+	 * 
+	 * </p>
+	 * 
+	 * @param className
+	 *            the fully qualified classname of the target class
+	 * @param genericMethodDescriptor
+	 *            the method to analyze (format as returned by
+	 *            java.lang.Method.toGenericString() )
+	 * @return
+	 */
+	InjectStatus analyzeInjectionStatus(String className,
+			String genericMethodDescriptor);
 
 }

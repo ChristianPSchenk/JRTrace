@@ -1,8 +1,6 @@
 package de.schenk.jrtrace.service.internal;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -27,6 +25,8 @@ import javax.management.remote.JMXServiceURL;
 import de.schenk.jrtrace.helper.NotificationUtil;
 import de.schenk.jrtrace.helperagent.JRTraceMXBean;
 import de.schenk.jrtrace.helperlib.NotificationConstants;
+import de.schenk.jrtrace.helperlib.SerializationUtil;
+import de.schenk.jrtrace.helperlib.status.InjectStatus;
 import de.schenk.jrtrace.service.ICancelable;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceMessageListener;
@@ -165,20 +165,9 @@ abstract public class AbstractVM implements IJRTraceVM {
 				if (methodName == null)
 					throw new IllegalArgumentException(
 							"methodName has to be provided for runJava");
-
-				try {
-
-					ByteArrayOutputStream theBytes = new ByteArrayOutputStream();
-					ObjectOutputStream os = new ObjectOutputStream(theBytes);
-
-					os.writeObject(objArray);
-
-					mbeanProxy.invokeMethodAsync(useClassloader, className,
-							methodName, theBytes.toByteArray());
-				} catch (IOException e) {
-
-					throw new RuntimeException(e);
-				}
+				byte[] bytes = SerializationUtil.serialize(objArray);
+				mbeanProxy.invokeMethodAsync(useClassloader, className,
+						methodName, bytes);
 
 			}
 		};
@@ -259,7 +248,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 			targetmachine = "localhost";
 		}
 		final JMXServiceURL url;
-		Exception e = null;
+
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		try {
 
@@ -377,6 +366,21 @@ abstract public class AbstractVM implements IJRTraceVM {
 			NotificationListener streamReceiver) {
 
 		mxbeanListener.addClientListener(notifyId, streamReceiver);
+
+	}
+
+	@Override
+	public InjectStatus analyzeInjectionStatus(String className,
+			String methodDescriptor) {
+		if (mbeanProxy == null) {
+			InjectStatus status = new InjectStatus(InjectStatus.JRTRACE_SESSION);
+			status.setMessage(InjectStatus.MSG_NOT_CONNECTED);
+			status.setInjected(InjectStatus.STATE_DOESNT_INJECT);
+			return status;
+		}
+		byte[] statusBytes = mbeanProxy.analyzeInjectionStatus(className,
+				methodDescriptor);
+		return (InjectStatus) SerializationUtil.deserialize(statusBytes);
 
 	}
 
