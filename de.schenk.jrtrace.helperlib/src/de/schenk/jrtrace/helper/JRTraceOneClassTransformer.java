@@ -9,6 +9,8 @@ import java.util.Collection;
 
 import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.status.InjectStatus;
+import de.schenk.jrtrace.helperlib.status.StatusEntityType;
+import de.schenk.jrtrace.helperlib.status.StatusState;
 import de.schenk.objectweb.asm.ClassReader;
 import de.schenk.objectweb.asm.ClassVisitor;
 import de.schenk.objectweb.asm.ClassWriter;
@@ -38,7 +40,7 @@ public class JRTraceOneClassTransformer {
 	}
 
 	private byte[] applyEngineXMethods(JRTraceClassMetadata metadata,
-			byte[] classBytes) {
+			byte[] classBytes, InjectStatus classInjectStatus) {
 		ClassReader classReader = new ClassReader(classBytes);
 
 		Type[] theInterfaceTypes = new Type[interfaces.length];
@@ -53,8 +55,9 @@ public class JRTraceOneClassTransformer {
 
 		ClassVisitor visitor = classWriter;
 
-		ClassVisitor classVisitor = new JRTraceClassVisitor(superClassUtil,
-				visitor, Opcodes.ASM5, metadata);
+		JRTraceClassVisitor classVisitor = new JRTraceClassVisitor(
+				superClassUtil, visitor, Opcodes.ASM5, metadata);
+		classVisitor.setStatus(classInjectStatus);
 		classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES);
 
 		/**
@@ -102,7 +105,9 @@ public class JRTraceOneClassTransformer {
 
 				if (status != null) {
 					classInjectStatus = new InjectStatus(
-							InjectStatus.JRTRACE_CLASS);
+							StatusEntityType.JRTRACE_CLASS);
+					classInjectStatus.setEntityName(entry
+							.getExternalClassName());
 					status.addChildStatus(classInjectStatus);
 				}
 
@@ -112,7 +117,7 @@ public class JRTraceOneClassTransformer {
 					JRLog.verbose("Applying rules to class:" + className);
 
 					byte[] returnBytes = applyEngineXMethods(entry,
-							transformedBytes);
+							transformedBytes, classInjectStatus);
 					if (returnBytes != null) {
 						transformed = true;
 						transformedBytes = returnBytes;
@@ -131,7 +136,13 @@ public class JRTraceOneClassTransformer {
 		}
 
 		if (transformed) {
+
 			JRTraceHelper.setTransformed(className, classLoader);
+		} else {
+			if (status != null) {
+				status.setInjected(StatusState.DOESNT_INJECT);
+
+			}
 		}
 
 		if (JRLog.getLogLevel() == JRLog.DEBUG && transformed) {

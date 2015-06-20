@@ -214,12 +214,8 @@ public interface IJRTraceVM {
 	 * 
 	 * @param className
 	 *            the fully qualified classname of the target class
-	 * @param genericMethodDescriptor
-	 *            the method to analyze (format as returned by
-	 *            java.lang.Method.toGenericString() )
 	 * @return
 	 */
-	InjectStatus analyzeInjectionStatus(String className,
-			String genericMethodDescriptor);
+	InjectStatus analyzeInjectionStatus(String className);
 
 }

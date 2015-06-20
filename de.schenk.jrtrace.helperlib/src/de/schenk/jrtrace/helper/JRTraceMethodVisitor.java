@@ -15,6 +15,9 @@ import de.schenk.jrtrace.helper.FieldList.FieldEntry;
 import de.schenk.jrtrace.helper.Injection.InjectionType;
 import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.ReflectionUtil;
+import de.schenk.jrtrace.helperlib.status.InjectStatus;
+import de.schenk.jrtrace.helperlib.status.StatusEntityType;
+import de.schenk.jrtrace.helperlib.status.StatusState;
 import de.schenk.objectweb.asm.Handle;
 import de.schenk.objectweb.asm.MethodVisitor;
 import de.schenk.objectweb.asm.Opcodes;
@@ -44,6 +47,7 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 	 * variable is available.
 	 */
 	private int localJRTraceInstancePos = -1;
+	private InjectStatus status;
 
 	/**
    */
@@ -707,6 +711,15 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 				+ injectedMethod.getClassMetadata().getExternalClassName()
 				+ " method: " + injectedMethod.getMethodName());
 
+		if (status != null) {
+			// InjectStatus m = new InjectStatus(InjectStatus.JRTRACE_METHOD);
+			InjectStatus m = status.getChildByEntityName(injectedMethod
+					.getMethodName());
+			m.setEntityName(injectedMethod.getMethodName());
+			m.setInjected(StatusState.INJECTS);
+			status.addChildStatus(m);
+		}
+
 		String bindingMethodName = "bindEngineXMethods";
 
 		Type methodDescriptorType = Type.getMethodType(injectedMethod
@@ -822,6 +835,17 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 		}
 		throw new RuntimeException("Unkown argument type..."
 				+ arguments.toString());
+	}
+
+	public void setStatus(InjectStatus status) {
+
+		if (status != null
+				&& status.getEntityType() != StatusEntityType.JRTRACE_CHECKED_METHOD) {
+			throw new RuntimeException(
+					"status on jrtracemethodvisitor must be of entity type JRTRACE_CHECKED_METHOD");
+		}
+		this.status = status;
+
 	}
 
 }

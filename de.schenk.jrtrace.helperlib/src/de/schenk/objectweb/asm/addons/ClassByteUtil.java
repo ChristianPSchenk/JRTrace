@@ -21,17 +21,17 @@ public class ClassByteUtil {
 		InputStream stream;
 		if (classLoader != null) {
 			stream = classLoader
-					.getResourceAsStream(convertInteralNameToResourceName(theClassName));
+					.getResourceAsStream(convertInternalNameToResourceName(theClassName));
 		} else {
 			stream = ClassLoader
-					.getSystemResourceAsStream(convertInteralNameToResourceName(theClassName));
+					.getSystemResourceAsStream(convertInternalNameToResourceName(theClassName));
 
 		}
 
 		return stream;
 	}
 
-	static private String convertInteralNameToResourceName(String type1) {
+	static private String convertInternalNameToResourceName(String type1) {
 		String result = type1;
 
 		return result + ".class";
@@ -47,6 +47,8 @@ public class ClassByteUtil {
 		InputStream stream = getClassBytesStream(
 				Type.getInternalName(theClass), theClass.getClassLoader());
 
+		if (stream == null)
+			return null;
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
 		try {

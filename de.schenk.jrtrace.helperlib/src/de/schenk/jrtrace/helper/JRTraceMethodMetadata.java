@@ -17,6 +17,8 @@ import java.util.Set;
 import de.schenk.jrtrace.annotations.XLocation;
 import de.schenk.jrtrace.annotations.XModifier;
 import de.schenk.jrtrace.helperlib.JRLog;
+import de.schenk.jrtrace.helperlib.status.InjectStatus;
+import de.schenk.jrtrace.helperlib.status.StatusState;
 
 public class JRTraceMethodMetadata {
 
@@ -101,21 +103,47 @@ public class JRTraceMethodMetadata {
 				.unmodifiableList(argumentList);
 	}
 
+	public boolean mayMatch(String methodName, String desc, int access) {
+		return mayMatch(methodName, desc, access, null);
+	}
+
 	/**
 	 * 
 	 * @param methodName
 	 * @param desc
 	 * @param access
+	 * @param status
+	 *            .
 	 * @return true, if the methodName and Descriptor passed in is matched by
 	 *         this metadata.
 	 */
-	public boolean mayMatch(String methodName, String desc, int access) {
+	public boolean mayMatch(String methodName, String desc, int access,
+			InjectStatus status) {
 		if (mayMatchMethodName(methodName)) {
 			String[] ps = MethodUtil.getParametersAsString(desc);
 			if (mayMatchParameters(ps)) {
 
-				return mayMatchModifier(access);
+				if (mayMatchModifier(access)) {
+					return true;
+				} else {
+					if (status != null) {
+						status.setMessage(InjectStatus.MSG_METHOD_MODIFIERS_DONT_MATCH);
+						status.setInjected(StatusState.DOESNT_INJECT);
+					}
+					return false;
+				}
+			} else {
+				if (status != null) {
+					status.setMessage(InjectStatus.MSG_PARAMETERS_DONT_MATCH);
+					status.setInjected(StatusState.DOESNT_INJECT);
+				}
+				return false;
 			}
+
+		}
+		if (status != null) {
+			status.setMessage(InjectStatus.MSG_METHODNAME_DOESNT_MATCH);
+			status.setInjected(StatusState.DOESNT_INJECT);
 		}
 		return false;
 	}

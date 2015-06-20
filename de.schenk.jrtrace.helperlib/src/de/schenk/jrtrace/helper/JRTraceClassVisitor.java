@@ -10,6 +10,9 @@ import java.util.Map;
 
 import de.schenk.jrtrace.annotations.XLocation;
 import de.schenk.jrtrace.helper.FieldList.FieldEntry;
+import de.schenk.jrtrace.helperlib.status.InjectStatus;
+import de.schenk.jrtrace.helperlib.status.StatusEntityType;
+import de.schenk.jrtrace.helperlib.status.StatusState;
 import de.schenk.objectweb.asm.ClassVisitor;
 import de.schenk.objectweb.asm.FieldVisitor;
 import de.schenk.objectweb.asm.MethodVisitor;
@@ -24,6 +27,11 @@ public class JRTraceClassVisitor extends ClassVisitor {
 	private String className;
 
 	private CommonSuperClassUtil superClassUtil;
+	/**
+	 * If not null, the results of the instrumentation process are docummented
+	 * on the status
+	 */
+	private InjectStatus status;
 
 	public JRTraceClassVisitor(CommonSuperClassUtil superClassUtil,
 			ClassVisitor classWriter, int api, JRTraceClassMetadata metadata) {
@@ -66,10 +74,26 @@ public class JRTraceClassVisitor extends ClassVisitor {
 		for (XLocation l : XLocation.values()) {
 			matchingMethods.put(l, new ArrayList<JRTraceMethodMetadata>());
 		}
+		InjectStatus checkedMethodStatus = null;
+		if (status != null) {
+			checkedMethodStatus = new InjectStatus(
+					StatusEntityType.JRTRACE_CHECKED_METHOD);
+			checkedMethodStatus.setInjected(StatusState.DOESNT_INJECT);
+			checkedMethodStatus.setEntityName(name);
+			status.addChildStatus(checkedMethodStatus);
+		}
 		boolean hasMatchingMethod = false;
+		InjectStatus childStatus = null;
 		for (JRTraceMethodMetadata method : metadata.getMethods()) {
-			if (method.mayMatch(name, desc, access)) {
+			if (checkedMethodStatus != null) {
+				childStatus = new InjectStatus(StatusEntityType.JRTRACE_METHOD);
+				childStatus.setEntityName(method.getMethodName());
+				checkedMethodStatus.addChildStatus(childStatus);
+			}
+			if (method.mayMatch(name, desc, access, childStatus)) {
 
+				if (status != null)
+					childStatus.setInjected(StatusState.DOESNT_INJECT);
 				List<JRTraceMethodMetadata> list = matchingMethods.get(method
 						.getInjectLocation());
 				list.add(method);
@@ -83,7 +107,7 @@ public class JRTraceClassVisitor extends ClassVisitor {
 			MethodVisitor oldVisitor = currentVisitor;
 			JRTraceMethodVisitor newMethodVisitor = new JRTraceMethodVisitor(
 					this, access, name, desc, oldVisitor, matchingMethods);
-
+			newMethodVisitor.setStatus(checkedMethodStatus);
 			currentVisitor = newMethodVisitor;
 		}
 
@@ -111,6 +135,16 @@ public class JRTraceClassVisitor extends ClassVisitor {
 
 	public JRTraceClassMetadata getClassMetadata() {
 		return metadata;
+	}
+
+	public void setStatus(InjectStatus classInjectStatus) {
+		if (classInjectStatus != null)
+			if (classInjectStatus.getEntityType() != StatusEntityType.JRTRACE_CLASS) {
+				throw new RuntimeException(
+						"classInjectStatus must have entity type JRTRACE_CLASS");
+			}
+		status = classInjectStatus;
+
 	}
 
 }

@@ -27,6 +27,8 @@ import de.schenk.jrtrace.helperagent.JRTraceMXBean;
 import de.schenk.jrtrace.helperlib.NotificationConstants;
 import de.schenk.jrtrace.helperlib.SerializationUtil;
 import de.schenk.jrtrace.helperlib.status.InjectStatus;
+import de.schenk.jrtrace.helperlib.status.StatusEntityType;
+import de.schenk.jrtrace.helperlib.status.StatusState;
 import de.schenk.jrtrace.service.ICancelable;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceMessageListener;
@@ -370,17 +372,21 @@ abstract public class AbstractVM implements IJRTraceVM {
 	}
 
 	@Override
-	public InjectStatus analyzeInjectionStatus(String className,
-			String methodDescriptor) {
+	public InjectStatus analyzeInjectionStatus(String className) {
+		InjectStatus status = null;
 		if (mbeanProxy == null) {
-			InjectStatus status = new InjectStatus(InjectStatus.JRTRACE_SESSION);
+			status = new InjectStatus(StatusEntityType.JRTRACE_SESSION);
+
 			status.setMessage(InjectStatus.MSG_NOT_CONNECTED);
-			status.setInjected(InjectStatus.STATE_DOESNT_INJECT);
+			status.setInjected(StatusState.DOESNT_INJECT);
 			return status;
+		} else {
+			byte[] statusBytes = mbeanProxy.analyzeInjectionStatus(className);
+			status = (InjectStatus) SerializationUtil.deserialize(statusBytes);
+			status.updateStatusFromChildren();
 		}
-		byte[] statusBytes = mbeanProxy.analyzeInjectionStatus(className,
-				methodDescriptor);
-		return (InjectStatus) SerializationUtil.deserialize(statusBytes);
+		status.setEntityName(getConnectionIdentifier());
+		return status;
 
 	}
 

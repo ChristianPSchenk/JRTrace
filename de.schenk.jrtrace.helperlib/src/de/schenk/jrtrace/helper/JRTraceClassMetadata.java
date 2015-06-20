@@ -11,6 +11,7 @@ import java.util.Set;
 import de.schenk.jrtrace.annotations.XClass;
 import de.schenk.jrtrace.annotations.XClassLoaderPolicy;
 import de.schenk.jrtrace.helperlib.status.InjectStatus;
+import de.schenk.jrtrace.helperlib.status.StatusState;
 import de.schenk.objectweb.asm.Type;
 
 /**
@@ -157,12 +158,17 @@ public class JRTraceClassMetadata {
 			Class<?> superclass, Class<?>[] interfaces,
 			InjectStatus classInjectStatus) {
 
-		if (isExcludedClassName(className))
+		if (isExcludedClassName(className, classInjectStatus))
 			return false;
 
 		boolean classMatch = mayMatchClassName(className);
 
 		if (!getDerived()) {
+			if (classInjectStatus != null) {
+				classInjectStatus.setInjected(StatusState.DOESNT_INJECT);
+				classInjectStatus
+						.setMessage(InjectStatus.MSG_CLASS_NAME_DOESNT_MATCH);
+			}
 
 			return classMatch;
 		}
@@ -176,7 +182,16 @@ public class JRTraceClassMetadata {
 				return true;
 			}
 		}
+		if (classInjectStatus != null) {
+			classInjectStatus.setInjected(StatusState.DOESNT_INJECT);
+			classInjectStatus
+					.setMessage(InjectStatus.MSG_CLASS_NAME_DOESNT_MATCH);
+		}
 		return false;
+	}
+
+	private boolean isExcludedClassName(String className) {
+		return isExcludedClassName(className, null);
 	}
 
 	private boolean mayMatchClassHierarchy(Class<?> theclass) {
@@ -332,14 +347,30 @@ public class JRTraceClassMetadata {
 	 * JRTrace classes itself.
 	 * 
 	 * @param classname
-	 * @return true, if this class is excludes.
+	 * @param classInjectStatus
+	 *            status to be filled with the description if excluded
+	 * @return true, if this class is excludes. If true, will fill a
+	 *         "doesn't inject message" into the status
 	 */
-	public boolean isExcludedClassName(String classname) {
+	public boolean isExcludedClassName(String classname,
+			InjectStatus classInjectStatus) {
 		if (classname == null)
-			return false;
-		if (builtInExcludes.isBuiltInExclude(classname))
 			return true;
+		if (builtInExcludes.isBuiltInExclude(classname)) {
+			if (classInjectStatus != null) {
+				classInjectStatus.setInjected(StatusState.DOESNT_INJECT);
+				classInjectStatus.setMessage(InjectStatus.MSG_SYSTEM_EXCLUDE);
+
+			}
+			return true;
+		}
 		if (JRTraceHelper.isJRTraceClass(classname)) {
+			if (classInjectStatus != null) {
+				classInjectStatus.setInjected(StatusState.DOESNT_INJECT);
+				classInjectStatus
+						.setMessage(InjectStatus.MSG_JRTRACE_CLASS_CANNOT_BE_INSTRUMENTED);
+
+			}
 			return true;
 		}
 

@@ -126,11 +126,9 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 	}
 
 	@Override
-	public byte[] analyzeInjectionStatus(String className,
-			String methodDescriptor) {
+	public byte[] analyzeInjectionStatus(String className) {
 
-		InjectStatus status = JRTraceHelper.analyzeInjectionStatus(className,
-				methodDescriptor);
+		InjectStatus status = JRTraceHelper.analyzeInjectionStatus(className);
 		return SerializationUtil.serialize(status);
 	}
 }

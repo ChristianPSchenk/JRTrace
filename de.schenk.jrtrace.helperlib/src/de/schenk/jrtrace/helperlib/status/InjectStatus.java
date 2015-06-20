@@ -19,47 +19,38 @@ public class InjectStatus implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 6454290809499559369L;
-	/** entity types */
-	public static final int JRTRACE_SESSION = 1;
-	public static final int JRTRACE_CLASS = 2;
-	public static final int JRTRACE_METHOD = 3;
 
 	/* Messages */
+	public static final String MSG_NO_JRTRACE_SESSION = "There is no active JRTrace session.";
+	public static final String MSG_METHOD_MODIFIERS_DONT_MATCH = "The modifiers of the method were not matched.";
+	public static final String MSG_PARAMETERS_DONT_MATCH = "The parameters of the method were not matched.";
+	public static final String MSG_METHODNAME_DOESNT_MATCH = "The name of the method is not matched.";
 	public static final String MSG_NOT_CONNECTED = "Not Connected";
 	public static final String MSG_NO_JRTRACE_CLASSES = "No JRTrace classes are currently installed.";
 	public static final String MSG_CLASS_NOT_LOADED = "The class is not loaded yet by the Target JVM. ";
-	/**
-	 * This status indicates that the entity injects code into the analyzed
-	 * method
-	 */
-	public static final int STATE_INJECTS = 1;
-	/**
-	 * The status code indicates that the entity represented by this status
-	 * object won't inject any code in the analyzed methods
-	 */
-	public static final int STATE_DOESNT_INJECT = 2;
-	/**
-	 * The status code indicates that it cannot be answered if the entity
-	 * represented by this status object injects any code into the analyzed
-	 * method
-	 */
-	public static final int STATE_CANT_CHECK = 3;
-	public static final Object MSG_SYSTEM_EXCLUDE = "The class is a JRTrace build in exclude and cannot be instrumented.";
+	public static final String MSG_SYSTEM_EXCLUDE = "The class is a JRTrace built-in excluded class and cannot be instrumented with JRTrace";
+	public static final String MSG_JRTRACE_CLASS_CANNOT_BE_INSTRUMENTED = "The class is one of the classes that have been installed with JRTrace and cannot be instrumented with JRTrace.";
+	public static final String MSG_CLASS_NAME_DOESNT_MATCH = "The name of the class wasn't matched.";
 
-	private String msg;
-	private int injectionState = STATE_INJECTS;
-	private int entityType;
+	private String msg = "";
+	private StatusState injectionState = StatusState.INJECTS;
+	private StatusEntityType entityType;
 	private Set<InjectStatus> children = new HashSet<InjectStatus>();
+	private String entityName = "";
 
-	public InjectStatus(int entityType) {
+	public InjectStatus(StatusEntityType entityType) {
 		this.entityType = entityType;
+	}
+
+	public void setEntityName(String name) {
+		entityName = name;
 	}
 
 	/**
 	 * 
-	 * @return true, if this entity injects code
+	 * @return the injection state of this entity
 	 */
-	public int getInjectionState() {
+	public StatusState getInjectionState() {
 		return injectionState;
 	}
 
@@ -67,7 +58,7 @@ public class InjectStatus implements Serializable {
 	 * 
 	 * @return the type of JRTrace entity that this status represents
 	 */
-	public int getEntityType() {
+	public StatusEntityType getEntityType() {
 		return entityType;
 	}
 
@@ -75,7 +66,7 @@ public class InjectStatus implements Serializable {
 		return msg;
 	}
 
-	public void setInjected(int b) {
+	public void setInjected(StatusState b) {
 
 		injectionState = b;
 
@@ -95,4 +86,66 @@ public class InjectStatus implements Serializable {
 		return Collections.unmodifiableSet(children);
 	}
 
+	public String getEntityName() {
+		return entityName;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder b = new StringBuilder();
+
+		b.append(entityType.toString() + ":");
+
+		b.append(injectionState.toString() + " ");
+		b.append(" " + entityName);
+		b.append(":" + this.msg);
+		/*
+		 * if (children.size() > 0) { b.append("\nChildren:\n"); for
+		 * (InjectStatus s : children) { b.append(s.toString() + "\n"); }
+		 * b.append("End of Children\n"); }
+		 */
+		return b.toString();
+	}
+
+	/**
+	 * recursively traverses all the children and sets the cumulative status: -
+	 * if at least one child injects, the overall status is inject - if at least
+	 * one child says: don't know, the overall status is don't know - if all
+	 * children say: don't inject: the overall status is don't inject.
+	 */
+	public void updateStatusFromChildren() {
+		if (children.size() == 0)
+			return;
+		for (InjectStatus s : children) {
+			s.updateStatusFromChildren();
+		}
+		boolean cantCheck = false;
+		boolean canInject = false;
+
+		for (InjectStatus s : children) {
+
+			if (s.getInjectionState() == StatusState.CANT_CHECK)
+				cantCheck = true;
+			if (s.getInjectionState() == StatusState.INJECTS)
+				canInject = true;
+		}
+
+		if (canInject)
+			injectionState = StatusState.INJECTS;
+		else {
+			if (cantCheck)
+				injectionState = StatusState.CANT_CHECK;
+			else
+				injectionState = StatusState.DOESNT_INJECT;
+		}
+	}
+
+	public InjectStatus getChildByEntityName(String methodName) {
+		for (InjectStatus s : children) {
+			String entityName = s.getEntityName();
+			if (entityName.contains(methodName))
+				return s;
+		}
+		return null;
+	}
 }

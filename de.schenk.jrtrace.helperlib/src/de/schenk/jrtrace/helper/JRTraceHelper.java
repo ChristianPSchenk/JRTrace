@@ -15,6 +15,8 @@ import java.util.Set;
 
 import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.status.InjectStatus;
+import de.schenk.jrtrace.helperlib.status.StatusEntityType;
+import de.schenk.jrtrace.helperlib.status.StatusState;
 import de.schenk.objectweb.asm.addons.ClassByteUtil;
 
 public class JRTraceHelper {
@@ -401,13 +403,12 @@ public class JRTraceHelper {
 		}
 	}
 
-	public static InjectStatus analyzeInjectionStatus(String className,
-			String methodDescriptor) {
+	public static InjectStatus analyzeInjectionStatus(String className) {
 		Collection<JRTraceClassMetadata> classes = classStore
 				.getAllForId(getCurrentClassSetId());
-		InjectStatus status = new InjectStatus(InjectStatus.JRTRACE_SESSION);
+		InjectStatus status = new InjectStatus(StatusEntityType.JRTRACE_SESSION);
 		if (classes.size() == 0) {
-			status.setInjected(InjectStatus.STATE_DOESNT_INJECT);
+			status.setInjected(StatusState.DOESNT_INJECT);
 			status.setMessage(InjectStatus.MSG_NO_JRTRACE_CLASSES);
 			return status;
 		}
@@ -420,24 +421,32 @@ public class JRTraceHelper {
 			}
 		}
 		if (testClasses.size() == 0) {
-			status.setInjected(InjectStatus.STATE_DOESNT_INJECT);
+			status.setInjected(StatusState.DOESNT_INJECT);
 			status.setMessage(InjectStatus.MSG_CLASS_NOT_LOADED);
 			return status;
 		}
 
-		int sumStatus = InjectStatus.STATE_CANT_CHECK;
+		StatusState sumStatus = StatusState.DOESNT_INJECT;
 		for (Class<?> testClass : testClasses) {
 			InjectStatus childStatus = new InjectStatus(
-					InjectStatus.JRTRACE_CLASS);
+					StatusEntityType.JRTRACE_CHECKED_CLASS);
+			childStatus.setEntityName(testClass.getName()
+					+ " ["
+					+ (testClass.getClassLoader() == null ? "BootclassLoader"
+							: testClass.getClassLoader().toString() + "]"));
 			status.addChildStatus(childStatus);
 
 			JRTraceOneClassTransformer transformer = new JRTraceOneClassTransformer(
 					testClass.getClassLoader(), testClass.getName(), testClass,
 					ClassByteUtil.getBytes(testClass));
 			transformer.setStatus(childStatus);
-			byte[] result = transformer.doTransform();
+			transformer.doTransform();
+			if (childStatus.getInjectionState() == StatusState.INJECTS) {
+				sumStatus = StatusState.INJECTS;
+			}
 
 		}
+		status.setInjected(sumStatus);
 		return status;
 	}
 

@@ -19,12 +19,23 @@ public class JRTraceUIActivator extends AbstractUIPlugin {
 	public static final String JRTRACE_16PX_GIF = "jrtrace.16px";
 	public static final String JRTRACE_256PX_GIF = "jrtrace.256px";
 	public static final String NATURE_ID = "de.schenk.jrtrace.nature.id";
+	public static final String JRTRACE_CLASS_16PX = "jrtrace_class.16px";
+	public static final String JRTRACE_METHOD_16PX = "jrtrace_method.16px";
 	static private JRTraceUIActivator activator;
 
-	public ImageDescriptor getDescriptor(String name) {
+	/**
+	 * 
+	 * Get the ImageDescriptor for one of the icons.
+	 * 
+	 * @param relPath
+	 *            the relative path to the icon starting from the icons/
+	 *            directory
+	 * @return the image descriptor
+	 */
+	public ImageDescriptor getDescriptor(String relPath) {
 		URL url = null;
 
-		url = FileLocator.find(this.getBundle(), new Path("icons/" + name),
+		url = FileLocator.find(this.getBundle(), new Path("icons/" + relPath),
 				null);
 
 		ImageDescriptor image;
@@ -51,6 +62,12 @@ public class JRTraceUIActivator extends AbstractUIPlugin {
 				JRTraceUIActivator.this.getImageRegistry().put(
 						JRTRACE_256PX_GIF,
 						getDescriptor("jrtrace_icon_256px.gif"));
+				JRTraceUIActivator.this.getImageRegistry().put(
+						JRTRACE_CLASS_16PX,
+						getDescriptor("jrtrace_class_16px.png"));
+				JRTraceUIActivator.this.getImageRegistry().put(
+						JRTRACE_METHOD_16PX,
+						getDescriptor("jrtrace_method_16px.png"));
 			}
 		});
 

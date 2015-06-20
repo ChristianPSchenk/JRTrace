@@ -200,6 +200,17 @@ public class JavaUtil {
 		return getFileForClass(classname, bundleid);
 	}
 
+	/**
+	 * Searches for the class file of a class in a given bundle and returns a
+	 * File for it.
+	 * 
+	 * @param classname
+	 *            simple name of a class, e.g. String or Processor$1 (not the
+	 *            fully qualified name.
+	 * @param bundleid
+	 *            the bundle id of the bundle to search for this class.
+	 * @return a File that contains the class.
+	 */
 	public File getFileForClass(String classname, String bundleid) {
 
 		Bundle bundle = Platform.getBundle(bundleid);

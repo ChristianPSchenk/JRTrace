@@ -112,19 +112,21 @@ public interface JRTraceMXBean {
 	public String[] getLoadedClasses();
 
 	/**
-	 * Analyzes whether the specified method in the specified class is
-	 * instrumented via JRTrace in the current session.
+	 * Analyzes whether the specified class is instrumented via JRTrace in the
+	 * current session.
 	 * 
+	 * <p>
+	 * The analysis is only possible on already loaded classes.
+	 * </p>
 	 * <p>
 	 * The returned InjectStatus contains the details about why JRTrace classes
 	 * and methods do not match.
 	 * </p>
 	 * 
 	 * @param className
-	 * @param methodDescriptor
+	 *            fully qualified class name
 	 * @return a byte array that is the serialization of an InjectStatus.
 	 */
-	public byte[] analyzeInjectionStatus(String className,
-			String methodDescriptor);
+	public byte[] analyzeInjectionStatus(String className);
 
 }

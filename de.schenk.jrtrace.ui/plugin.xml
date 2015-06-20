@@ -218,6 +218,13 @@
             id="de.schenk.jrtrace.ui"
             name="JRTrace">
       </category>
+      <view
+            category="de.schenk.jrtrace.ui"
+            class="de.schenk.jrtrace.ui.views.JRTraceDiagnosticsView"
+            icon="icons/jrtrace_icon_16px.gif"
+            id="de.schenk.jrtrace.ui.views.JRTraceDiagnostics"
+            name="JRTrace Diagnostics">
+      </view>
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
