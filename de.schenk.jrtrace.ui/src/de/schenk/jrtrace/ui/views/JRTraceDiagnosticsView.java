@@ -13,7 +13,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
@@ -24,6 +23,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -37,7 +37,6 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchImages;
-import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -61,8 +60,8 @@ public class JRTraceDiagnosticsView extends ViewPart implements
 	public static final String ID = "de.schenk.jrtrace.ui.views.JRTraceDiagnosticsView";
 
 	private TreeViewer viewer;
-	private DrillDownAdapter drillDownAdapter;
-	private Action action1;
+
+	private Action syncWithSelectionAction;
 
 	@Override
 	public void dispose() {
@@ -244,10 +243,11 @@ public class JRTraceDiagnosticsView extends ViewPart implements
 				.getDecoratorManager().getLabelDecorator();
 
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		drillDownAdapter = new DrillDownAdapter(viewer);
+
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());
+
 		viewer.setInput(null);
 
 		makeActions();
@@ -279,40 +279,34 @@ public class JRTraceDiagnosticsView extends ViewPart implements
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(action1);
+		manager.add(syncWithSelectionAction);
 
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
-		manager.add(action1);
-
-		drillDownAdapter.addNavigationActions(manager);
+		manager.add(syncWithSelectionAction);
 
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
 	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(action1);
+		manager.add(syncWithSelectionAction);
 
-		drillDownAdapter.addNavigationActions(manager);
 	}
 
 	private void makeActions() {
-		action1 = new Action() {
-			public void run() {
-				showMessage("Action 1 executed");
-			}
+
+		syncWithSelectionAction = new Action() {
 		};
-		action1.setText("Action 1");
-		action1.setToolTipText("Action 1 tooltip");
-		action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
-				.getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+		syncWithSelectionAction.setChecked(true);
 
-	}
+		syncWithSelectionAction.setText("Update from Selection");
+		syncWithSelectionAction
+				.setToolTipText("When enabled, selecting a Java method will update this view automatically.");
+		syncWithSelectionAction.setImageDescriptor(PlatformUI.getWorkbench()
+				.getSharedImages()
+				.getImageDescriptor(ISharedImages.IMG_OPEN_MARKER));
 
-	private void showMessage(String message) {
-		MessageDialog.openInformation(viewer.getControl().getShell(),
-				"JRTrace Diagnostics", message);
 	}
 
 	/**
@@ -325,6 +319,12 @@ public class JRTraceDiagnosticsView extends ViewPart implements
 	class DiagnosticJobCompletedListener implements
 			IDiagnosticJobCompletedListener {
 
+		private String methodName;
+
+		public DiagnosticJobCompletedListener(String methodName) {
+			this.methodName = methodName;
+		}
+
 		@Override
 		public void completed(final InjectStatus result) {
 			Display.getDefault().asyncExec(new Runnable() {
@@ -332,8 +332,13 @@ public class JRTraceDiagnosticsView extends ViewPart implements
 				@Override
 				public void run() {
 					if (!viewer.getTree().isDisposed()) {
-						viewer.setInput(result);
-						viewer.refresh();
+						if (syncWithSelectionAction.isChecked()) {
+							viewer.setInput(result);
+							MethodFilter filter = new MethodFilter(methodName);
+							viewer.setFilters(new ViewerFilter[] { filter });
+							viewer.refresh();
+							viewer.expandAll();
+						}
 					}
 				}
 
@@ -355,7 +360,7 @@ public class JRTraceDiagnosticsView extends ViewPart implements
 
 			JRTraceDiagnosticsJob job = new JRTraceDiagnosticsJob(member
 					.getDeclaringType().getFullyQualifiedName(),
-					new DiagnosticJobCompletedListener());
+					new DiagnosticJobCompletedListener(member.getElementName()));
 
 			job.schedule();
 			System.out.println(member.getElementName());

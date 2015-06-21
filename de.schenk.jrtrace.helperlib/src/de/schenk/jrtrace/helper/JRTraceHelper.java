@@ -422,7 +422,8 @@ public class JRTraceHelper {
 		}
 		if (testClasses.size() == 0) {
 			status.setInjected(StatusState.DOESNT_INJECT);
-			status.setMessage(InjectStatus.MSG_CLASS_NOT_LOADED);
+			status.setMessage(className + " : "
+					+ InjectStatus.MSG_CLASS_NOT_LOADED);
 			return status;
 		}
 

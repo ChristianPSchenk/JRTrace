@@ -31,6 +31,7 @@ public class InjectStatus implements Serializable {
 	public static final String MSG_SYSTEM_EXCLUDE = "The class is a JRTrace built-in excluded class and cannot be instrumented with JRTrace";
 	public static final String MSG_JRTRACE_CLASS_CANNOT_BE_INSTRUMENTED = "The class is one of the classes that have been installed with JRTrace and cannot be instrumented with JRTrace.";
 	public static final String MSG_CLASS_NAME_DOESNT_MATCH = "The name of the class wasn't matched.";
+	public static final String MSG_METHOD_IS_ABSTRACT = "An interface or abstract method cannot be instrumented.";
 
 	private String msg = "";
 	private StatusState injectionState = StatusState.INJECTS;

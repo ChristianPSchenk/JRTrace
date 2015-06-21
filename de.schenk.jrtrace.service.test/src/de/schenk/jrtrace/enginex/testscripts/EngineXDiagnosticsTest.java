@@ -91,7 +91,8 @@ public class EngineXDiagnosticsTest implements testNotConnectedStatus {
 
 		assertEquals(StatusEntityType.JRTRACE_SESSION, status.getEntityType());
 		assertEquals(StatusState.DOESNT_INJECT, status.getInjectionState());
-		assertEquals(InjectStatus.MSG_CLASS_NOT_LOADED, status.getMessage());
+		assertTrue(status.getMessage().contains(
+				InjectStatus.MSG_CLASS_NOT_LOADED));
 	}
 
 	private static void connectedButNoClassesTest() {

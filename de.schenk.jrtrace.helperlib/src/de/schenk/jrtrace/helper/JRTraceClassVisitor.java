@@ -17,6 +17,7 @@ import de.schenk.objectweb.asm.ClassVisitor;
 import de.schenk.objectweb.asm.FieldVisitor;
 import de.schenk.objectweb.asm.MethodVisitor;
 import de.schenk.objectweb.asm.Opcodes;
+import de.schenk.objectweb.asm.Type;
 import de.schenk.objectweb.asm.addons.CommonSuperClassUtil;
 import de.schenk.objectweb.asm.commons.JSRInlinerAdapter;
 
@@ -70,35 +71,53 @@ public class JRTraceClassVisitor extends ClassVisitor {
 		MethodVisitor currentVisitor = super.visitMethod(access, name, desc,
 				signature, exceptions);
 
-		Map<XLocation, List<JRTraceMethodMetadata>> matchingMethods = new HashMap<XLocation, List<JRTraceMethodMetadata>>();
-		for (XLocation l : XLocation.values()) {
-			matchingMethods.put(l, new ArrayList<JRTraceMethodMetadata>());
-		}
 		InjectStatus checkedMethodStatus = null;
 		if (status != null) {
 			checkedMethodStatus = new InjectStatus(
 					StatusEntityType.JRTRACE_CHECKED_METHOD);
 			checkedMethodStatus.setInjected(StatusState.DOESNT_INJECT);
-			checkedMethodStatus.setEntityName(name);
+			checkedMethodStatus.setEntityName(MethodUtil.getHumanReadableName(
+					name, desc));
+			Type.getReturnType(desc).getClassName();
 			status.addChildStatus(checkedMethodStatus);
 		}
+
+		Map<XLocation, List<JRTraceMethodMetadata>> matchingMethods = new HashMap<XLocation, List<JRTraceMethodMetadata>>();
+		for (XLocation l : XLocation.values()) {
+			matchingMethods.put(l, new ArrayList<JRTraceMethodMetadata>());
+		}
+
 		boolean hasMatchingMethod = false;
-		InjectStatus childStatus = null;
-		for (JRTraceMethodMetadata method : metadata.getMethods()) {
-			if (checkedMethodStatus != null) {
-				childStatus = new InjectStatus(StatusEntityType.JRTRACE_METHOD);
-				childStatus.setEntityName(method.getMethodName());
-				checkedMethodStatus.addChildStatus(childStatus);
+
+		/** ACC_ABSTRACT -> ignore */
+		if ((access & Opcodes.ACC_ABSTRACT) == 0) {
+
+			InjectStatus childStatus = null;
+			for (JRTraceMethodMetadata method : metadata.getMethods()) {
+				if (checkedMethodStatus != null) {
+					childStatus = new InjectStatus(
+							StatusEntityType.JRTRACE_METHOD);
+					childStatus.setEntityName(method.getMethodName());
+					checkedMethodStatus.addChildStatus(childStatus);
+				}
+
+				if (method.mayMatch(name, desc, access, childStatus)) {
+
+					if (status != null)
+						childStatus.setInjected(StatusState.DOESNT_INJECT);
+					List<JRTraceMethodMetadata> list = matchingMethods
+							.get(method.getInjectLocation());
+					list.add(method);
+					hasMatchingMethod = true;
+
+				}
+
 			}
-			if (method.mayMatch(name, desc, access, childStatus)) {
-
-				if (status != null)
-					childStatus.setInjected(StatusState.DOESNT_INJECT);
-				List<JRTraceMethodMetadata> list = matchingMethods.get(method
-						.getInjectLocation());
-				list.add(method);
-				hasMatchingMethod = true;
-
+		} else {
+			if (status != null) {
+				checkedMethodStatus.setInjected(StatusState.DOESNT_INJECT);
+				checkedMethodStatus
+						.setMessage(InjectStatus.MSG_METHOD_IS_ABSTRACT);
 			}
 		}
 
