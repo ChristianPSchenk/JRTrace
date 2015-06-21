@@ -131,8 +131,8 @@ public class InjectStatus implements Serializable {
 		for (InjectStatus s : children) {
 
 			if (s.entityType != StatusEntityType.JRTRACE_CHECKED_METHOD
-					|| (methodName != null && s.getEntityName().contains(
-							methodName))) {
+					|| (methodName == null || (s.entityType == StatusEntityType.JRTRACE_CHECKED_METHOD && s
+							.getEntityName().contains(methodName)))) {
 				count++;
 
 				s.updateStatusFromChildren(methodName);
