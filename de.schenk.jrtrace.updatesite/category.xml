@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/de.schenk.jrtrace.feature_0.9.2.qualifier.jar" id="de.schenk.jrtrace.feature" version="0.9.2.qualifier" ws="win32">
+   <feature url="features/de.schenk.jrtrace.feature_0.9.3.qualifier.jar" id="de.schenk.jrtrace.feature" version="0.9.3.qualifier" ws="win32">
       <category name="JRTrace"/>
    </feature>
-      <feature url="features/de.schenk.jrtrace.feature_0.9.2.qualifier-sources-feature.jar" id="de.schenk.jrtrace.feature.source" version="0.9.2.qualifier" ws="win32">
+      <feature url="features/de.schenk.jrtrace.feature_0.9.3.qualifier-sources-feature.jar" id="de.schenk.jrtrace.feature.source" version="0.9.3.qualifier" ws="win32">
       <category name="JRTrace"/>
    </feature>
-   <feature url="features/de.schenk.jrtrace.feature.sdk_0.9.2.qualifier.jar" id="de.schenk.jrtrace.feature.sdk" version="0.9.2.qualifier">
+   <feature url="features/de.schenk.jrtrace.feature.sdk_0.9.3.qualifier.jar" id="de.schenk.jrtrace.feature.sdk" version="0.9.3.qualifier">
       <category name="JRTrace"/>
    </feature>
-   <feature url="features/de.schenk.jrtrace.feature.sdk_0.9.2.qualifier-sources-feature.jar" id="de.schenk.jrtrace.feature.sdk.source" version="0.9.2.qualifier" ws="win32">
+   <feature url="features/de.schenk.jrtrace.feature.sdk_0.9.3.qualifier-sources-feature.jar" id="de.schenk.jrtrace.feature.sdk.source" version="0.9.3.qualifier" ws="win32">
       <category name="JRTrace"/>
    </feature>
    <category-def name="JRTrace" label="JRTrace">
