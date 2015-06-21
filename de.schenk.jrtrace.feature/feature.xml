@@ -2,7 +2,7 @@
 <feature
       id="de.schenk.jrtrace.feature"
       label="JRTrace Eclipse Plugins"
-      version="0.9.2.qualifier"
+      version="0.9.3.qualifier"
       provider-name="Christian Schenk"
       plugin="de.schenk.jrtrace.ui">
 
@@ -131,13 +131,13 @@ THE POSSIBILITY OF SUCH DAMAGE.
          id="de.schenk.jrtrace.helperagent"
          download-size="0"
          install-size="0"
-         version="1.1.10.qualifier"/>
+         version="1.1.11.qualifier"/>
 
    <plugin
          id="de.schenk.jrtrace.helperlib"
          download-size="0"
          install-size="0"
-         version="1.2.1.qualifier"/>
+         version="1.2.2.qualifier"/>
 
    <plugin
          id="de.schenk.jrtrace.jdk.init"
@@ -150,20 +150,20 @@ THE POSSIBILITY OF SUCH DAMAGE.
          id="de.schenk.jrtrace.service"
          download-size="0"
          install-size="0"
-         version="1.2.1.qualifier"/>
+         version="1.2.2.qualifier"/>
 
    <plugin
          id="de.schenk.jrtrace.ui"
          download-size="0"
          install-size="0"
-         version="1.1.10.qualifier"
+         version="1.1.11.qualifier"
          unpack="false"/>
 
    <plugin
          id="de.schenk.jrtrace.help"
          download-size="0"
          install-size="0"
-         version="1.1.4.qualifier"
+         version="1.1.5.qualifier"
          unpack="false"/>
 
    <plugin
@@ -176,6 +176,6 @@ THE POSSIBILITY OF SUCH DAMAGE.
          id="de.schenk.jrtrace.service.ui"
          download-size="0"
          install-size="0"
-         version="1.0.0.qualifier"/>
+         version="1.0.1.qualifier"/>
 
 </feature>
