@@ -6,11 +6,11 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import de.schenk.jrtrace.helperlib.status.InjectStatus;
 import de.schenk.jrtrace.helperlib.status.StatusEntityType;
 
-public class MethodFilter extends ViewerFilter {
+public class JRTraceMethodFilter extends ViewerFilter {
 
 	private String methodName;
 
-	public MethodFilter(String methodName) {
+	public JRTraceMethodFilter(String methodName) {
 		this.methodName = methodName;
 	}
 

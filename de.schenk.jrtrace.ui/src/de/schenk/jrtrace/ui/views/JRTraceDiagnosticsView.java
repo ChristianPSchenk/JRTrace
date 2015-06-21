@@ -333,8 +333,10 @@ public class JRTraceDiagnosticsView extends ViewPart implements
 				public void run() {
 					if (!viewer.getTree().isDisposed()) {
 						if (syncWithSelectionAction.isChecked()) {
+							result.updateStatusFromChildren(methodName);
 							viewer.setInput(result);
-							MethodFilter filter = new MethodFilter(methodName);
+							JRTraceMethodFilter filter = new JRTraceMethodFilter(
+									methodName);
 							viewer.setFilters(new ViewerFilter[] { filter });
 							viewer.refresh();
 							viewer.expandAll();

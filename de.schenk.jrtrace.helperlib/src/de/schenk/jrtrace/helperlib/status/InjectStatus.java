@@ -115,22 +115,36 @@ public class InjectStatus implements Serializable {
 	 * children say: don't inject: the overall status is don't inject.
 	 */
 	public void updateStatusFromChildren() {
-		if (children.size() == 0)
-			return;
-		for (InjectStatus s : children) {
-			s.updateStatusFromChildren();
-		}
+		updateStatusFromChildren(null);
+	}
+
+	/*
+	 * Same as updateStatusFromChildren, but will exclude all methods with name
+	 * methodName from the hierarchy when calculating the status. This is
+	 * actually more a view code and doesn't really belong here.
+	 */
+	public void updateStatusFromChildren(String methodName) {
+
 		boolean cantCheck = false;
 		boolean canInject = false;
-
+		int count = 0;
 		for (InjectStatus s : children) {
 
-			if (s.getInjectionState() == StatusState.CANT_CHECK)
-				cantCheck = true;
-			if (s.getInjectionState() == StatusState.INJECTS)
-				canInject = true;
-		}
+			if (s.entityType != StatusEntityType.JRTRACE_CHECKED_METHOD
+					|| (methodName != null && s.getEntityName().contains(
+							methodName))) {
+				count++;
 
+				s.updateStatusFromChildren(methodName);
+				System.out.println(s);
+				if (s.getInjectionState() == StatusState.CANT_CHECK)
+					cantCheck = true;
+				if (s.getInjectionState() == StatusState.INJECTS)
+					canInject = true;
+			}
+		}
+		if (count == 0)
+			return;
 		if (canInject)
 			injectionState = StatusState.INJECTS;
 		else {

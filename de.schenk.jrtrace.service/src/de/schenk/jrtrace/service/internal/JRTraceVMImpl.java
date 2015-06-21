@@ -130,7 +130,7 @@ public class JRTraceVMImpl extends AbstractVM {
 	@Override
 	public String toString() {
 		return String
-				.format("Agent installed into process:%s  (JRTrace Server on port: %d)",
+				.format("Agent installed into process: %s  (JRTrace Server on port: %d)",
 						thePID, port);
 	}
 

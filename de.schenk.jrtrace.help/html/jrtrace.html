@@ -14,7 +14,33 @@ JTrace (Java Runtime Trace) is a set of Eclipse Plugins for your Development Env
 <b>Careful: JRTrace is invasive: it instruments the code and it is easy to inject wrong code that spoils application logic!</b>
 </p>
 
+<h2>Table of Content</h2>
+<ul>
+<li>
+<a href="#prerequisites">Prerequisites</a>
+</li>
+<li>
+<a href="#introduction">Introduction</a>
+</li>
+<li>
+<a href="#tutorial">Tutorial</a>
+</li>
+<li>
+<a href="#technicaldetails">Technical Details</a>
+</li>
+<li>
+<a href="#usersguide">User Guide</a>
+</li>
+<li>
+<a href="#faq">FAQ</a>
+</li>
+
+</ul>
+
+<a name="prerequisites">
 <h2>Prerequisites</h2>
+</a>
+ 
 The features of this plugin set will work properly only if the following requirements are fulfilled:
 
 <ul>
@@ -25,8 +51,9 @@ The features of this plugin set will work properly only if the following require
 
 
 </ul>
-
+<a name="introduction">
 <h2>Introduction</h2>
+</a>
 
 <p>
 The Use Case: You have a huge java application that is running already and you just
@@ -50,7 +77,9 @@ features are pretty easy to use, but the tool allows for nearly everything...
 
 </p>
 
+<a name="tutorial">
 <h2>Getting Started: a Simple Tutorial...</h2>
+ </a>
  
  <h3>Installation</h3>
  
@@ -181,8 +210,10 @@ testproject.Main.main(Main.java:7)
  thus terminate the target process</p>
  
  
- 
+<a name="usersguide"> 
 <h2>Users Guide</h2>
+</a>
+
 
 
 
@@ -339,6 +370,21 @@ setField(target,fieldname, value);
 <code>fieldname</code>: the name of the field to set</br>
 <code>value</code>: the new value</br>
 
+<h4>invokeMethod</h4>
+
+
+Sometimes it is useful to call private methods. This can of course be achieved using reflection. However the <code>HelperLib</code> class
+contains a convenient method <code>invokeMethod</code> to perform this task.
+<pre>
+Object invokeMethod(Class<?> clazz, String methodName,Object... parameters)
+Object invokeMethod(Object object, String methodName,Object... parameters)
+Object invokeMethod(String classname, String methodName,Object... parameters)
+</pre>
+Check the javadoc for details. The last variant of invokeMethod doesn't even require the <code>Class<?></code> object and looks up  
+the class to invoke a method on from the JVM based on the fully qualified name.
+
+
+
 <h4>getField</h4>
 
 
@@ -352,9 +398,6 @@ getField(Object object,String fieldName);
 
 
 <code>className, clazz</code>: the name of the class / class to access static fields</br>
-<code>object</code>: the object for instance fields</br>
-<code>fieldname</code>: the name of the field to set</br>
-
 <h4>sendMessage</h4>
 
 <i>Note: Only useful when developing applications on top of JRTrace</i>
@@ -379,8 +422,9 @@ The listener will receive the messages send by the client. The messages will be 
 To communicate from the developers machine to the JRTrace client, the <code>IJRTraceVM.runJava(...)</code> method can be used.
  
 
-
+<a name="technicaldetails">
 <h2>Remarks on Techniques and Design</h2>
+</a>
 
 <h3>How to obtain the JDK tools.jar</h3>
 
@@ -408,7 +452,28 @@ Note that it is also possible to specify <code>XClassLoaderPolicy.TARGET</code>.
 into which it gets injected. Note that in this particular case, the same class might be injected into code that with different classloaders. In this case, several instances of the
 corresponding injected JRTrace class might be available in the JVM. Be careful in such cases: static fields will only be valid in the scope of a classloader.
 
+<a name="faq">
 <h2>FAQ / Known Issues</h2>
+</a>
+<a name="diagnosis">
+<h3>I did everything right, but the the injected code doesn't work. What can I do?</h3>
+</a>
+<p>
+JRTrace provides the "JRTrace Diagnostics View". Just open it with Window->Show View->JRTrace. Now select
+a Java method e.g. from the JDT Outline View of a class or directly within the Java Editor or Class File Viewer.
+The Diagnostics View will show something like the below outline:
+
+</p>
+<p>
+ <img src="pics/diagnosticview.png">Diagnostics View</img>
+ </p>
+
+It shows the hierarchy that is involved in injecting the code into the target method and lists the reason why
+no injection is performed at a certain level. In the above screenshot the view reveals that the code of the JRTrace method
+<code>showHelp</code> is injected into the <code>AliasManager</code> <code>resourceChanged</code> method but that the method
+<code>someMethod</code> is not injected because the modifiers were not matched, most likely because the JRTrace method
+specified that it can only inject into public methods and the method was private or something similar.
+
 
 <h3>Internal Error (jvmtiRedefineClasses.cpp:489), pid=####, tid=####
 #  Error: ShouldNotReachHere()</h3>
