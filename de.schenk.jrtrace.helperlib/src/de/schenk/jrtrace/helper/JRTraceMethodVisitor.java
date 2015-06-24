@@ -717,6 +717,7 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 					.getMethodName());
 			m.setEntityName(injectedMethod.getMethodName());
 			m.setInjected(StatusState.INJECTS);
+			m.setMessage("");
 			status.addChildStatus(m);
 		}
 

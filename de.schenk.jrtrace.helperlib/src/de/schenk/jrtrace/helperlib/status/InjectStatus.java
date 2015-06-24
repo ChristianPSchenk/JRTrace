@@ -33,6 +33,11 @@ public class InjectStatus implements Serializable {
 	public static final String MSG_CLASS_NAME_DOESNT_MATCH = "The name of the class wasn't matched.";
 	public static final String MSG_METHOD_IS_ABSTRACT = "An interface or abstract method cannot be instrumented.";
 
+	public static final String MSG_METHOD_DOESNT_INVOKE_SPECIFIED_METHOD = "The method doesn't invoke a method that matches the attributes 'invokedname' and/or 'invokedclass'";
+	public static final String MSG_METHOD_DOESNT_ACCESS_SPECIFIED_FIELD = "The method doesn't access a field with the specified name 'fieldname' and/or of the specified class  'fieldclass'";
+	public static final String MSG_METHOD_DOESNT_THROW_SPECIFIED_EXCEPTION = "The method doesn't throw any exception. ";
+
+	public static final String MSG_THATS_ODD = "That's odd: every method should be entered or exited. Something is not right with JRTrace here...";
 	private String msg = "";
 	private StatusState injectionState = StatusState.INJECTS;
 	private StatusEntityType entityType;

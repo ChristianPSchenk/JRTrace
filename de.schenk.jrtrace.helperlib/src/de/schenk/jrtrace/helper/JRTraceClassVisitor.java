@@ -103,8 +103,33 @@ public class JRTraceClassVisitor extends ClassVisitor {
 
 				if (method.mayMatch(name, desc, access, childStatus)) {
 
-					if (status != null)
+					if (status != null) {
+						// put the message in before the fact. If
+						// instrumentation happens, the message is cleared again
+						// when setting the status to inject.
 						childStatus.setInjected(StatusState.DOESNT_INJECT);
+						switch (method.getInjectLocation()) {
+						case AFTER_INVOCATION:
+						case BEFORE_INVOCATION:
+						case REPLACE_INVOCATION:
+							childStatus
+									.setMessage(InjectStatus.MSG_METHOD_DOESNT_INVOKE_SPECIFIED_METHOD);
+							break;
+						case EXCEPTION:
+							childStatus
+									.setMessage(InjectStatus.MSG_METHOD_DOESNT_THROW_SPECIFIED_EXCEPTION);
+							break;
+						case GETFIELD:
+						case PUTFIELD:
+							childStatus
+									.setMessage(InjectStatus.MSG_METHOD_DOESNT_ACCESS_SPECIFIED_FIELD);
+							break;
+
+						default:
+							childStatus.setMessage(InjectStatus.MSG_THATS_ODD);
+
+						}
+					}
 					List<JRTraceMethodMetadata> list = matchingMethods
 							.get(method.getInjectLocation());
 					list.add(method);
