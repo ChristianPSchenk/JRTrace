@@ -136,7 +136,7 @@ public class InjectStatus implements Serializable {
 				count++;
 
 				s.updateStatusFromChildren(methodName);
-				System.out.println(s);
+
 				if (s.getInjectionState() == StatusState.CANT_CHECK)
 					cantCheck = true;
 				if (s.getInjectionState() == StatusState.INJECTS)
