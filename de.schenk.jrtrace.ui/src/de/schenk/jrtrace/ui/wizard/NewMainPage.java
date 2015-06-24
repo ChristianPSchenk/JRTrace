@@ -13,6 +13,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import de.schenk.jrtrace.ui.JRTraceUIActivator;
+
 public class NewMainPage extends WizardPage {
 
 	private Text projectName;
@@ -21,6 +23,8 @@ public class NewMainPage extends WizardPage {
 
 	protected NewMainPage(String pageName) {
 		super(pageName);
+		setImageDescriptor(JRTraceUIActivator.getInstance().getDescriptor(
+				"jrtrace_icon_48px.png"));
 
 	}
 

@@ -58,10 +58,10 @@ public class JRTraceUIActivator extends AbstractUIPlugin {
 			public void run() {
 				JRTraceUIActivator.this.getImageRegistry().put(
 						JRTRACE_16PX_GIF,
-						getDescriptor("jrtrace_icon_16px.gif"));
+						getDescriptor("jrtrace_icon_16px.png"));
 				JRTraceUIActivator.this.getImageRegistry().put(
 						JRTRACE_256PX_GIF,
-						getDescriptor("jrtrace_icon_256px.gif"));
+						getDescriptor("jrtrace_icon_256px.png"));
 				JRTraceUIActivator.this.getImageRegistry().put(
 						JRTRACE_CLASS_16PX,
 						getDescriptor("jrtrace_class_16px.png"));

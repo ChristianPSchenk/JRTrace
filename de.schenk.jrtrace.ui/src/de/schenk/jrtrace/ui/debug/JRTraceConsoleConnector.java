@@ -45,7 +45,7 @@ public class JRTraceConsoleConnector {
 					jrTraceDebugTarget,
 					ImageDescriptor
 							.createFromURL(new URL(
-									"platform:/plugin/de.schenk.jrtrace.ui/icons/jrtrace_icon_16px.gif")));
+									"platform:/plugin/de.schenk.jrtrace.ui/icons/jrtrace_icon_16px.png")));
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}

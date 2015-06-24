@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Set;
 
 import org.eclipse.jdt.core.IMember;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -354,27 +352,13 @@ public class JRTraceDiagnosticsView extends ViewPart implements
 		IMember member = getMember(part, selection);
 		if (member != null) {
 
-			System.out.println("....");
-			System.out.println(member);
+			if (member.getDeclaringType() != null) {
+				JRTraceDiagnosticsJob job = new JRTraceDiagnosticsJob(member
+						.getDeclaringType().getFullyQualifiedName(),
+						new DiagnosticJobCompletedListener(member
+								.getElementName()));
 
-			System.out.println(member.getDeclaringType()
-					.getFullyQualifiedName());
-
-			JRTraceDiagnosticsJob job = new JRTraceDiagnosticsJob(member
-					.getDeclaringType().getFullyQualifiedName(),
-					new DiagnosticJobCompletedListener(member.getElementName()));
-
-			job.schedule();
-			System.out.println(member.getElementName());
-			System.out.println(member.getElementType());
-			if (member instanceof IMethod) {
-				IMethod method = (IMethod) member;
-				try {
-					System.out.println(method.getSignature());
-				} catch (JavaModelException e) {
-
-					e.printStackTrace();
-				}
+				job.schedule();
 			}
 		}
 

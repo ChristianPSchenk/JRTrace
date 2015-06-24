@@ -7,7 +7,7 @@
             category="de.schenk.jrtrace.ui.category"
             class="de.schenk.jrtrace.ui.wizard.NewProjectWizard"
             hasPages="true"
-            icon="icons/jrtrace_icon_16px.gif"
+            icon="icons/jrtrace_icon_16px.png"
             id="de.schenk.jrtrace.ui.wizard.project.new"
             name="New JRTrace Project"
             project="true">
@@ -40,7 +40,7 @@
         id="de.schenk.jrtrace.launchshortcut"
         class="de.schenk.jrtrace.ui.launch.JRTraceLaunchShortcut"
         label="JRTrace Session"
-        icon="icons/jrtrace_icon_16px.gif"
+        icon="icons/jrtrace_icon_16px.png"
         modes="run, debug">
            
             <contextualLaunch>
@@ -73,7 +73,7 @@
             locationURI="popup:org.eclipse.ui.projectConfigure">
          <command
                commandId="de.schenk.jrtrace.ui.commands.convert2jrtrace"
-               icon="icons/jrtrace_icon_16px.gif"
+               icon="icons/jrtrace_icon_16px.png"
                id="de.schenk.jrtrace.ui.menu.convert2jrtrace"
                label="Convert to JRTrace Project"
                style="push">
@@ -221,7 +221,7 @@
       <view
             category="de.schenk.jrtrace.ui"
             class="de.schenk.jrtrace.ui.views.JRTraceDiagnosticsView"
-            icon="icons/jrtrace_icon_16px.gif"
+            icon="icons/jrtrace_icon_16px.png"
             id="de.schenk.jrtrace.ui.views.JRTraceDiagnostics"
             name="JRTrace Diagnostics">
       </view>
@@ -230,7 +230,7 @@
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
             configTypeID="de.schenk.jrtrace.ui.launch"
-            icon="icons/jrtrace_icon_16px.gif"
+            icon="icons/jrtrace_icon_16px.png"
             id="de.schenk.jrtrace.ui.jrtraceLaunchImage">
       </launchConfigurationTypeImage>
    </extension>

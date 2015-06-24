@@ -226,7 +226,7 @@ public class RunJavaPage extends WizardPage {
 		setTitle("Run Java");
 		setDescription("Select the java project and the class loader to use for it.");
 		setImageDescriptor(JRTraceUIActivator.getInstance().getDescriptor(
-				"jrtrace_icon_48px.gif"));
+				"jrtrace_icon_48px.png"));
 
 	}
 
@@ -428,7 +428,8 @@ public class RunJavaPage extends WizardPage {
 		getRunJavaWizard().setTheClassLoader(clc.getText());
 		getRunJavaWizard().setMainClass(mainclass.getText());
 		getRunJavaWizard().setRunMethod(runMethod.getText());
-		IDialogSettings settings = JRTraceUIActivator.getInstance().getDialogSettings();
+		IDialogSettings settings = JRTraceUIActivator.getInstance()
+				.getDialogSettings();
 		String storedLaunchName = settings.get("runjava.targetmachine");
 		if (storedLaunchName != null) {
 			List<JRTraceDebugTarget> targets = getJRTraceTargets();
@@ -449,7 +450,8 @@ public class RunJavaPage extends WizardPage {
 	 */
 	public void storeSettings() {
 
-		IDialogSettings settings = JRTraceUIActivator.getInstance().getDialogSettings();
+		IDialogSettings settings = JRTraceUIActivator.getInstance()
+				.getDialogSettings();
 		settings.put("runjava.targetmachine", targetMachine.getCombo()
 				.getText());
 		clc.storeSettings();
