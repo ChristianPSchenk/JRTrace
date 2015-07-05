@@ -47,8 +47,8 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 			}
 			vm = launchPID(launch, monitor);
 			if (vm == null) {
-				monitor.setCanceled(true);
-				return;
+				throw new CoreException(Status.OK_STATUS);
+
 			}
 
 		} else {
