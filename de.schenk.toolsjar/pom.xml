@@ -6,10 +6,10 @@
     <groupId>de.schenk</groupId>
     <artifactId>JRTrace</artifactId>
     <relativePath>../JRTrace/pom.xml</relativePath>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>0.9.4-SNAPSHOT</version>
   </parent>
   <artifactId>de.schenk.toolsjar</artifactId>
-  <version>1.8.0.qualifier</version>
+  <version>1.8.1.qualifier</version>
   <packaging>eclipse-plugin</packaging>
   <build>
   <plugins>
