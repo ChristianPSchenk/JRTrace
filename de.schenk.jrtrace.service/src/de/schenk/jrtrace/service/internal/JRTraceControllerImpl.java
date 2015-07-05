@@ -11,6 +11,7 @@ import java.util.List;
 import com.sun.tools.attach.VirtualMachine;
 import com.sun.tools.attach.VirtualMachineDescriptor;
 
+import de.schenk.jrtrace.jdk.init.Activator;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.VMInfo;
@@ -51,14 +52,18 @@ public class JRTraceControllerImpl implements JRTraceController {
 	 * @param serveraddress
 	 *            the network address on which the RMI server expects requests.
 	 *            Important if the computer has more than one network address
-	 * @return the IVirtualMachine or null in case of any error.
+	 * @return the IVirtualMachine
+	 * @throws a
+	 *             RuntimeException if no JDK is available.
 	 */
 	@Override
 	public IJRTraceVM getMachine(String pid, String serveraddress) {
 
-		IJRTraceVM theMachine = new JRTraceVMImpl(pid, serveraddress);
-
-		return theMachine;
+		if (Activator.hasJDK())
+			return new JRTraceVMImpl(pid, serveraddress);
+		else
+			throw new RuntimeException(
+					"Missing JDK, tools.jar or attach.dll. To attach to a process by PID the tool needs to be run on a JDK or the tools.jar and attach.dll must be included into the distribution into the toolsar bundle");
 
 	}
 
@@ -72,8 +77,7 @@ public class JRTraceControllerImpl implements JRTraceController {
 		String username;
 		String tmpDir = System.getenv("TMP");
 		String userName = System.getenv("USERNAME");
-		if(tmpDir==null||userName==null) 
-		{
+		if (tmpDir == null || userName == null) {
 			// most likely not a windows system, return true.
 			return true;
 		}

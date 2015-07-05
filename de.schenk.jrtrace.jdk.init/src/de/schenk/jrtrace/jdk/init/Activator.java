@@ -45,10 +45,14 @@ public class Activator extends Plugin {
 		Activator.context = bundleContext;
 		String target = getFolderOfToolsjarBundle("lib");
 		File toolsjar = getJDKToolsJar();
+
 		File attachdll = null;
 		if (toolsjar == null) {
 			toolsjar = findIncludedJavaSpecificFiles("tools.jar");
 			attachdll = findIncludedJavaSpecificFiles("attach.dll");
+			if (attachdll == null) {
+				toolsjar = null;
+			}
 		}
 
 		if (toolsjar == null) {
@@ -145,6 +149,11 @@ public class Activator extends Plugin {
 
 	}
 
+	/**
+	 * 
+	 * @return true, if connecting via the attach API (using the PID) is
+	 *         possible.
+	 */
 	public static boolean hasJDK() {
 		return hasJDK;
 	}
