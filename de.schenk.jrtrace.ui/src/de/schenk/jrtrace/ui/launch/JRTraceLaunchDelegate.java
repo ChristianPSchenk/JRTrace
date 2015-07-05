@@ -46,6 +46,10 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 				throw new CoreException(Status.CANCEL_STATUS);
 			}
 			vm = launchPID(launch, monitor);
+			if (vm == null) {
+				monitor.setCanceled(true);
+				return;
+			}
 
 		} else {
 			vm = launchPort(launch, monitor);
@@ -154,6 +158,15 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 		return false;
 	}
 
+	/**
+	 * 
+	 * @param launch
+	 * @param monitor
+	 * @return null, if the user chooses to cancel the PID selection, the
+	 *         machine else
+	 * @throws CoreException
+	 *             on problems
+	 */
 	public IJRTraceVM launchPID(ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
 
@@ -173,12 +186,16 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 		}
 		if ((pid == null || pid.isEmpty())) {
 			pid = chooseProperProcess(identifyText);
+			if (pid == null || pid.isEmpty()) {
+				return null;
+			}
 		}
 
 		List<JRTraceDebugTarget> jrtraceTargets = JRTraceLaunchUtils
 				.getJRTraceDebugTargets();
 		for (JRTraceDebugTarget btarget : jrtraceTargets) {
-			if (btarget.getJRTraceMachine().getConnectionIdentifier().equals(pid)) {
+			if (btarget.getJRTraceMachine().getConnectionIdentifier()
+					.equals(pid)) {
 				final String pidCopy = pid;
 				showProcessAlreadyConnectedDialog(pidCopy);
 				throw new CoreException(Status.CANCEL_STATUS);

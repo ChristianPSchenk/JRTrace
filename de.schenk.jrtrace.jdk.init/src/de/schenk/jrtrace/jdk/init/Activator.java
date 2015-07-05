@@ -43,14 +43,18 @@ public class Activator extends Plugin {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
+		String target = getFolderOfToolsjarBundle("lib");
+		File toolsjar = getJDKToolsJar();
+		File attachdll = null;
+		if (toolsjar == null) {
+			toolsjar = findIncludedJavaSpecificFiles("tools.jar");
+			attachdll = findIncludedJavaSpecificFiles("attach.dll");
+		}
 
-		final String javahome = System.getProperty("java.home");
-		File toolsjar = new File(javahome, "../lib/tools.jar");
-		if (!toolsjar.exists()) {
+		if (toolsjar == null) {
 
 			hasJDK = false;
 		} else {
-			String target = getJar("de.schenk.toolsjar", "lib");
 
 			java.nio.file.Path source = java.nio.file.Paths.get(toolsjar
 					.getAbsolutePath());
@@ -60,8 +64,84 @@ public class Activator extends Plugin {
 					|| Files.size(source) != Files.size(targetPath))
 				Files.copy(source, targetPath,
 						StandardCopyOption.REPLACE_EXISTING);
+
+			if (attachdll != null) {
+				java.nio.file.Path dllsource = java.nio.file.Paths
+						.get(attachdll.getAbsolutePath());
+				java.nio.file.Path dlltarget = java.nio.file.Paths
+						.get(getFolderOfToolsjarBundle("dll") + "/attach.dll");
+				if ((!Files.exists(dlltarget))
+						|| Files.size(dllsource) != Files.size(dlltarget))
+					Files.copy(dllsource, dlltarget,
+							StandardCopyOption.REPLACE_EXISTING);
+
+			}
+
 			hasJDK = true;
 		}
+
+	}
+
+	public String getFolderOfToolsjarBundle(String libfolder) {
+		try {
+			String target = getJar("de.schenk.toolsjar", libfolder);
+			return target;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Try to locate a file in the version specific folder of the toolsjar
+	 * bundle and return it if successful
+	 * 
+	 * @param alternateToolsJarSources
+	 *            a directory that may contains subdirectories for the various
+	 *            java versions
+	 * @param filename
+	 *            the name of the file to retrieve.
+	 * @return null, if file couldn't be found, the File is it exists
+	 */
+	public File findIncludedJavaSpecificFiles(String filename) {
+		String alternateToolsJarSources = getFolderOfToolsjarBundle("lib");
+		final String javaversion = System.getProperty("java.version");
+
+		File toolsjar = new File(alternateToolsJarSources + "/" + javaversion
+				+ "/" + filename);
+
+		if (toolsjar.exists())
+			return toolsjar;
+		return null;
+
+	}
+
+	/**
+	 * 
+	 * @return a file representing the tools.jar jar from the currently executed
+	 *         JDK, null if not run on a JDK.
+	 */
+	public File getJDKToolsJar() {
+		final String javahome = System.getProperty("java.home");
+		File toolsjar = new File(javahome, "../lib/tools.jar");
+		if (toolsjar.exists())
+			return toolsjar;
+		else
+			return null;
+
+	}
+
+	public File getAttachDll(String alternateToolsJarSource) {
+		final String javaversion = System.getProperty("java.version");
+		File attachdll = new File(alternateToolsJarSource + "/" + javaversion
+				+ "/attach.dll");
+		if (!attachdll.exists()) {
+			throw new RuntimeException("Expecting the attach.dll in "
+					+ attachdll.toString()
+					+ " when starting JRTrace on a non-JDK JRE");
+		}
+		return attachdll;
 
 	}
 
