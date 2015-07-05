@@ -7,12 +7,21 @@ public interface JRTraceController {
 
 	/**
 	 * 
+	 * @return false, if the tool wasn't started using a JDK or the proper
+	 *         tools.jar/attach.dll. In this case getVMs() and
+	 *         getMAchine(pid,...) will not work.
+	 */
+	public boolean supportsAttachToPID();
+
+	/**
+	 * 
 	 * Checks accessibility of the folder: %tmp%/hsperfdata_%username%. If this
 	 * folder is not accessible the VirtualMachine list and attach API will not
 	 * work on windows.
 	 * 
-	 * @return true, if not Windows -OR- if the folder doesn't exist but can be created -OR- if the
-	 *         folder exists and files can be created inside.
+	 * @return true, if not Windows -OR- if the folder doesn't exist but can be
+	 *         created -OR- if the folder exists and files can be created
+	 *         inside.
 	 */
 	public boolean hsperfdataAccessible();
 

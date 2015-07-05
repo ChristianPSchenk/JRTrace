@@ -102,4 +102,10 @@ public class JRTraceControllerImpl implements JRTraceController {
 		}
 		return true;
 	}
+
+	@Override
+	public boolean supportsAttachToPID() {
+		return Activator.hasJDK();
+	}
+
 }
