@@ -105,11 +105,7 @@ public class InjectStatus implements Serializable {
 		b.append(injectionState.toString() + " ");
 		b.append(" " + entityName);
 		b.append(":" + this.msg);
-		/*
-		 * if (children.size() > 0) { b.append("\nChildren:\n"); for
-		 * (InjectStatus s : children) { b.append(s.toString() + "\n"); }
-		 * b.append("End of Children\n"); }
-		 */
+
 		return b.toString();
 	}
 

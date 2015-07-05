@@ -1,1 +1,11 @@
-The tools.jar from the JDK that runs JRTrace will be copied into this directory during JRTrace startup and will be used.
+The tools.jar from the JDK that runs JRTrace will be copied into this directory during JRTrace startup and will be used by JRTrace.
+The standard source for this jar is the lib directory of the JDK the tool runs on.
+
+If the tool shall run on a JRE, to files need to be included:
+tools.jar
+attach.dll
+[In what situations this is legally permissible should be checked before distributing the tool to anyone.]
+
+To include thosee, create a sub-folder named with the name of the Java version e.g. 1.8.0_31 and drop the two files inside. 
+If the tool is not executed on a JDK, it will try to find these directories and use the copies provided here. Thus one copy can be provided
+for each JRE version around within your organisation/scope.
