@@ -1,0 +1,1 @@
+Remains empty during deployment. Will take the attach.dll if started from a JRE. See /lib readme for more info.
