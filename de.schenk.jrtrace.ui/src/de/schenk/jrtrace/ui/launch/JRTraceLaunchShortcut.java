@@ -2,13 +2,16 @@ package de.schenk.jrtrace.ui.launch;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.ILaunchShortcut;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -17,7 +20,7 @@ import org.eclipse.ui.IEditorPart;
 public class JRTraceLaunchShortcut implements ILaunchShortcut {
 
 	@Override
-	public void launch(ISelection selection, String mode) {
+	public void launch(ISelection selection, final String mode) {
 
 		Object element = null;
 		if (selection instanceof IStructuredSelection) {
@@ -59,15 +62,40 @@ public class JRTraceLaunchShortcut implements ILaunchShortcut {
 			} catch (CoreException e) {
 				throw new RuntimeException(e);
 			}
+			try {
+				final ILaunchConfiguration config = savedConfig;
+				Job launchIt = new Job("Launch") {
 
-			DebugUITools.launch(savedConfig, mode);
+					@Override
+					protected IStatus run(IProgressMonitor monitor) {
+						try {
+							config.launch(mode, monitor);
+						} catch (CoreException e) {
+							return e.getStatus();
+						}
+						return Status.OK_STATUS;
+					}
+
+				};
+
+				launchIt.schedule();
+
+			} catch (Throwable e) {
+				try {
+					configuration.delete();
+				} catch (CoreException e1) {
+					throw new RuntimeException(
+							"Problem removing the launch configuration after launch failed",
+							e1);
+				}
+				throw e;
+			}
 		}
 
 	}
 
 	@Override
 	public void launch(IEditorPart editor, String mode) {
-		// TODO Auto-generated method stub
 
 	}
 
