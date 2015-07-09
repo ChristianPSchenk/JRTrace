@@ -36,7 +36,7 @@ public interface JRTraceController {
 	 * @param containing
 	 *            a string that needs to be contained in the description
 	 * @return a list of all JVMs running on this system that contain the
-	 *         parameter in the description
+	 *         parameter in the description, empty list if no match.
 	 */
 	public VMInfo[] getVMs(String containing);
 

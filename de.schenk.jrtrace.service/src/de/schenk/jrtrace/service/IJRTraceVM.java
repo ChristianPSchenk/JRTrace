@@ -20,6 +20,13 @@ import de.schenk.jrtrace.helperlib.status.InjectStatus;
 public interface IJRTraceVM {
 
 	/**
+	 * 
+	 * @return the port on which the JMX Server in the target machine was
+	 *         started and is listening.
+	 */
+	int getPort();
+
+	/**
 	 * detaches from the virtual machine.
 	 * 
 	 * @return true if detach was successful. False if error.

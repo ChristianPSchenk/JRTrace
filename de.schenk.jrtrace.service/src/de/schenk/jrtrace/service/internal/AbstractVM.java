@@ -91,6 +91,15 @@ abstract public class AbstractVM implements IJRTraceVM {
 
 	}
 
+	/* the MX Bean registry port on which the agent is listening */
+	protected int port;
+
+	//
+
+	public int getPort() {
+		return port;
+	}
+
 	/**
 	 * will hold the last exception that occured during calls
 	 */
@@ -382,7 +391,8 @@ abstract public class AbstractVM implements IJRTraceVM {
 			return status;
 		} else {
 			byte[] statusBytes = mbeanProxy.analyzeInjectionStatus(className);
-			status = (InjectStatus) SerializationUtil.deserialize(statusBytes);
+			status = (InjectStatus) SerializationUtil.deserialize(statusBytes,
+					null);
 			status.updateStatusFromChildren();
 		}
 		status.setEntityName(getConnectionIdentifier());

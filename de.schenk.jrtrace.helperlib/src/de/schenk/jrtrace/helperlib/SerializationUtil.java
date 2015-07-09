@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 
 public class SerializationUtil {
 	/**
@@ -17,13 +18,32 @@ public class SerializationUtil {
 	 * @throws RuntimeException
 	 *             if there is any problem during deserialization
 	 */
-	static public Object deserialize(byte[] arguments) {
+	static public Object deserialize(byte[] arguments,
+			final ClassLoader classLoader) {
 		Object x = null;
 		;
 		try {
 			if (arguments != null) {
 				InputStream is = new ByteArrayInputStream(arguments);
-				ObjectInputStream os = new ObjectInputStream(is);
+				ObjectInputStream os = new ObjectInputStream(is) {
+					protected Class<?> resolveClass(ObjectStreamClass desc)
+							throws IOException, ClassNotFoundException {
+						try {
+							return super.resolveClass(desc);
+						} catch (ClassNotFoundException e) {
+							if (classLoader != null)
+
+							{
+								String className = desc.getName();
+								return classLoader.loadClass(className);
+							} else
+								throw e;
+
+						}
+
+					}
+				};
+
 				x = (Object) os.readObject();
 			}
 		} catch (IOException | ClassNotFoundException e) {

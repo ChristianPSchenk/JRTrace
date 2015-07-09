@@ -18,14 +18,6 @@ public class JRTraceVMImpl extends AbstractVM {
 	VirtualMachine vm;
 	private String thePID;
 	private String servernetworkaddress;
-	/* the MX Bean registry port on which the agent is listening */
-	private int port;
-
-	//
-
-	public int getPort() {
-		return port;
-	}
 
 	/**
 	 * 

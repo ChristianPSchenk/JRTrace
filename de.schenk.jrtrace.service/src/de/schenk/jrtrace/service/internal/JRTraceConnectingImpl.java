@@ -4,7 +4,6 @@ import de.schenk.jrtrace.service.ICancelable;
 
 public class JRTraceConnectingImpl extends AbstractVM {
 
-	private int port;
 	private String targetmachine;
 
 	public JRTraceConnectingImpl(int port, String targetmachine) {

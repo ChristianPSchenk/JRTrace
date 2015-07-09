@@ -26,6 +26,11 @@ public class ClassUtil {
 		String classAsPath = className.replace('.', '/') + ".class";
 		InputStream stream = clazz.getClassLoader().getResourceAsStream(
 				classAsPath);
+		return getStreamAsBytes(stream);
+	}
+
+	public static byte[] getStreamAsBytes(InputStream stream)
+			throws IOException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		int nRead;
 		byte[] data = new byte[16384];

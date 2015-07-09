@@ -83,7 +83,7 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 	public void invokeMethodAsync(String referenceClassName, String mainClass,
 			String mainMethod, byte[] arguments) {
 
-		Object x = SerializationUtil.deserialize(arguments);
+		Object x = SerializationUtil.deserialize(arguments, null);
 
 		new RunJavaCommand().runJava(referenceClassName, mainClass, mainMethod,
 				(Object[]) x);
