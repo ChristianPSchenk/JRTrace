@@ -6,7 +6,7 @@
     <groupId>de.schenk</groupId>
     <artifactId>JRTrace</artifactId>
      <relativePath>../JRTrace/pom.xml</relativePath>
-     <version>0.9.4-SNAPSHOT</version>
+     <version>0.9.5-SNAPSHOT</version>
   </parent>
  
   <artifactId>de.schenk.jrtrace.feature.sdk</artifactId>
