@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -370,6 +372,20 @@ public class PIDSelectionDialog extends TitleAreaDialog {
 			public void selectionChanged(SelectionChangedEvent event) {
 				refreshEnablement();
 
+			}
+		});
+		viewer.addDoubleClickListener(new IDoubleClickListener() {
+
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				refreshEnablement();
+
+				StructuredSelection strucSel = (StructuredSelection) viewer
+						.getSelection();
+
+				if (strucSel.size() == 1) {
+					okPressed();
+				}
 			}
 		});
 

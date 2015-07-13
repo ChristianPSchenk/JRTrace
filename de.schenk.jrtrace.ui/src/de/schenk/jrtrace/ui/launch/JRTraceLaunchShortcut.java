@@ -34,34 +34,53 @@ public class JRTraceLaunchShortcut implements ILaunchShortcut {
 
 			ILaunchManager launchManager = DebugPlugin.getDefault()
 					.getLaunchManager();
-			ILaunchConfigurationType configtype = launchManager
+			ILaunchConfigurationType jrtraceLaunchType = launchManager
 					.getLaunchConfigurationType("de.schenk.jrtrace.ui.launch");
-			ILaunchConfigurationWorkingCopy configuration;
-			ILaunchConfiguration savedConfig = null;
-			try {
-				String name = pr.getName() + "_Launch";
-				String uniqueName = launchManager
-						.generateLaunchConfigurationName(name);
 
-				configuration = configtype.newInstance(null, uniqueName);
-				configuration.setAttribute(ConnectionTab.BM_AUTOUPLOAD, true);
-				configuration.setAttribute(ConnectionTab.BM_PROJECT_IDENT,
-						pr.getName());
-				configuration.setAttribute(ConnectionTab.BM_PID, "");
-				configuration.setAttribute(ConnectionTab.BM_TEXT_IDENT, "");
-				configuration.setAttribute(ConnectionTab.BM_DEBUG, false);
-				configuration.setAttribute(ConnectionTab.BM_AUTOCONNECT, false);
-				configuration.setAttribute(ConnectionTab.BM_VERBOSE, false);
-				configuration.setAttribute(ConnectionTab.BM_UPLOADAGENT, true);
-				configuration
-						.setAttribute(ConnectionTab.BM_UPLOADAGENT_PORT, 0);
-				configuration.setAttribute(ConnectionTab.BM_SERVER_MACHINE, "");
-				configuration.setAttribute(
-						ConnectionTab.BM_MY_NETWORK_INTERFACE, "");
-				savedConfig = configuration.doSave();
+			ILaunchConfiguration savedConfig = null;
+			ILaunchConfigurationWorkingCopy configuration = null;
+			try {
+				String name = pr.getName() + " JRTrace Launch";
+
+				ILaunchConfiguration[] existingLaunchConfigs = launchManager
+						.getLaunchConfigurations(jrtraceLaunchType);
+				for (ILaunchConfiguration l : existingLaunchConfigs) {
+					if (name.equals(l.getName())) {
+						savedConfig = l;
+						break;
+					}
+				}
+				if (savedConfig == null) {
+
+					String uniqueName = launchManager
+							.generateLaunchConfigurationName(name);
+
+					configuration = jrtraceLaunchType.newInstance(null,
+							uniqueName);
+					configuration.setAttribute(ConnectionTab.BM_AUTOUPLOAD,
+							true);
+					configuration.setAttribute(ConnectionTab.BM_PROJECT_IDENT,
+							pr.getName());
+					configuration.setAttribute(ConnectionTab.BM_PID, "");
+					configuration.setAttribute(ConnectionTab.BM_TEXT_IDENT, "");
+					configuration.setAttribute(ConnectionTab.BM_DEBUG, false);
+					configuration.setAttribute(ConnectionTab.BM_AUTOCONNECT,
+							false);
+					configuration.setAttribute(ConnectionTab.BM_VERBOSE, false);
+					configuration.setAttribute(ConnectionTab.BM_UPLOADAGENT,
+							true);
+					configuration.setAttribute(
+							ConnectionTab.BM_UPLOADAGENT_PORT, 0);
+					configuration.setAttribute(ConnectionTab.BM_SERVER_MACHINE,
+							"");
+					configuration.setAttribute(
+							ConnectionTab.BM_MY_NETWORK_INTERFACE, "");
+					savedConfig = configuration.doSave();
+				}
 			} catch (CoreException e) {
 				throw new RuntimeException(e);
 			}
+
 			try {
 				final ILaunchConfiguration config = savedConfig;
 				Job launchIt = new Job("Launch") {
@@ -82,7 +101,8 @@ public class JRTraceLaunchShortcut implements ILaunchShortcut {
 
 			} catch (Throwable e) {
 				try {
-					configuration.delete();
+					if (configuration != null)
+						configuration.delete();
 				} catch (CoreException e1) {
 					throw new RuntimeException(
 							"Problem removing the launch configuration after launch failed",
