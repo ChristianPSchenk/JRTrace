@@ -20,12 +20,16 @@ public class JRTraceJavaSearch {
 	SearchEngine engine = new SearchEngine();
 
 	/**
-	 * Searches for the declaration of the specified class
+	 * Searches for the declaration of the specified class.
+	 *
 	 * 
 	 * @param className
 	 *            the fully qualified classname
 	 * @param monitor
 	 *            the progress monitor
+	 * 
+	 * @return a SearchMatch with the location or null if the class wasn't
+	 *         found.
 	 */
 	public SearchMatch searchClass(String className, IProgressMonitor monitor) {
 

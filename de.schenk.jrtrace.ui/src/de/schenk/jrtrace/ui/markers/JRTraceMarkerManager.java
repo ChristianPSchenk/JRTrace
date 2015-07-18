@@ -87,14 +87,29 @@ public class JRTraceMarkerManager implements NotificationListener {
 		private IMarker createMarkerForLocation(IProgressMonitor monitor,
 				MarkerCreateInfo f) {
 			IMarker marker = null;
+			IType theClass = null;
+			System.out.println("i");
 			try {
-
-				SearchMatch result = searcher.searchClass(f.getClassName(),
-						monitor);
-
-				IType theClass = (IType) result.getElement();
+				String searchName = f.getClassName();
+				if (searchName != null && searchName.contains("$")) {
+					searchName = searchName.replace('$', '.');
+				}
+				SearchMatch result = searcher.searchClass(searchName, monitor);
+				if (result != null) {
+					marker = result.getResource().createMarker(JRTRACEPROBLEM);
+					theClass = (IType) result.getElement();
+				} else {
+					if (target.getProject() != null) {
+						marker = target.getProject().createMarker(
+								JRTRACEPROBLEM);
+					} else {
+						ResourcesPlugin.getWorkspace().getRoot()
+								.createMarker(JRTRACEPROBLEM);
+					}
+				}
 				IMethod method = null;
-				if (f.getMethod() != null && !f.getMethod().isEmpty()) {
+				if (theClass != null && f.getMethod() != null
+						&& !f.getMethod().isEmpty()) {
 					method = searcher.searchMethod(theClass, f.getMethod(),
 							f.getMethodDescriptor());
 				}
@@ -103,12 +118,14 @@ public class JRTraceMarkerManager implements NotificationListener {
 				if (method != null) {
 					theElement = method;
 				}
-				ISourceRange sourceRange = theElement.getSourceRange();
-				marker = result.getResource().createMarker(JRTRACEPROBLEM);
+				if (theElement != null) {
+					ISourceRange sourceRange = theElement.getSourceRange();
 
-				marker.setAttribute(IMarker.CHAR_START, sourceRange.getOffset());
-				marker.setAttribute(IMarker.CHAR_END, sourceRange.getOffset()
-						+ sourceRange.getLength());
+					marker.setAttribute(IMarker.CHAR_START,
+							sourceRange.getOffset());
+					marker.setAttribute(IMarker.CHAR_END,
+							sourceRange.getOffset() + sourceRange.getLength());
+				}
 				marker.setAttribute(IMarker.LOCATION, "JRTrace Problem");
 				marker.setAttribute(IMarker.MESSAGE,
 						f.getMessage().replaceAll("\n", " "));
@@ -137,8 +154,11 @@ public class JRTraceMarkerManager implements NotificationListener {
 	}
 
 	private void logError(String msg, Exception e) {
-		JRTraceUIActivator.getInstance().getLog()
-				.log(new Status(IStatus.ERROR, JRTraceUIActivator.BUNDLE_ID, msg, e));
+		JRTraceUIActivator
+				.getInstance()
+				.getLog()
+				.log(new Status(IStatus.ERROR, JRTraceUIActivator.BUNDLE_ID,
+						msg, e));
 	}
 
 	private void updateMarkers() {
