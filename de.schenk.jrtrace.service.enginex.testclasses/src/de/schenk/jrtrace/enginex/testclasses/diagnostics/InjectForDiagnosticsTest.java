@@ -1,3 +1,6 @@
+/**
+ * (c) 2014/2015 by Christian Schenk
+**/
 package de.schenk.jrtrace.enginex.testclasses.diagnostics;
 
 import de.schenk.jrtrace.annotations.XClass;

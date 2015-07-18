@@ -1,3 +1,6 @@
+/**
+ * (c) 2014/2015 by Christian Schenk
+**/
 package de.schenk.jrtrace.service.test.utils;
 
 import de.schenk.jrtrace.helperlib.HelperLib;

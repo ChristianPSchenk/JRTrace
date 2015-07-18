@@ -1,3 +1,6 @@
+/**
+ * (c) 2014/2015 by Christian Schenk
+**/
 package de.schenk.jrtrace.helperagent;
 
 import javax.management.openmbean.CompositeData;
