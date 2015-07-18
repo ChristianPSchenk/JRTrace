@@ -76,7 +76,8 @@ public class RunJavaCommand {
 						String msg = "No JRTrace Object could be created to executed the method "
 								+ method.getName()
 								+ " on the JRTrace class "
-								+ mainClass;
+								+ mainClass
+								+ ". Note that JRTrace objects on which a method needs to be excecuted require a public no-argument constructor. Note that non-static inner classes don't have a no-argument constructor.";
 						System.err.println(msg);
 
 						throw new RuntimeException(msg, e);
