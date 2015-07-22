@@ -120,17 +120,8 @@ public class EngineXDiagnosticsTest implements testNotConnectedStatus {
 		assertEquals(StatusEntityType.JRTRACE_CHECKED_CLASS,
 				classStatus.getEntityType());
 		assertEquals(StatusState.DOESNT_INJECT, classStatus.getInjectionState());
-		InjectStatus jrtraceClassStatus = getChildFromSubString(classStatus,
-				"InjectForDiagnosticsTest");
-		assertEquals(StatusEntityType.JRTRACE_CLASS,
-				jrtraceClassStatus.getEntityType());
-		assertEquals(StatusState.DOESNT_INJECT,
-				jrtraceClassStatus.getInjectionState());
-		assertEquals(
-				"de.schenk.jrtrace.enginex.testclasses.diagnostics.InjectForDiagnosticsTest",
-				jrtraceClassStatus.getEntityName());
-		assertEquals(InjectStatus.MSG_SYSTEM_EXCLUDE,
-				jrtraceClassStatus.getMessage());
+		assertEquals(InjectStatus.MSG_SYSTEM_EXCLUDE, classStatus.getMessage());
+		assertEquals(0, classStatus.getChildStatus().size());
 	}
 
 	private InjectStatus getChildFromSubString(InjectStatus status,
@@ -162,8 +153,8 @@ public class EngineXDiagnosticsTest implements testNotConnectedStatus {
 
 		assertEquals(StatusEntityType.JRTRACE_SESSION, status.getEntityType());
 		assertEquals(StatusState.DOESNT_INJECT, status.getInjectionState());
-		InjectStatus checkedClass = getFirstChildStatus(status);
-		InjectStatus jrtraceclass = getChildFromSubString(checkedClass,
+
+		InjectStatus jrtraceclass = getChildFromSubString(status,
 				"InjectForDiagnosticsTest");
 		assertTrue(jrtraceclass.getMessage().contains(
 				InjectStatus.MSG_JRTRACE_CLASS_CANNOT_BE_INSTRUMENTED));

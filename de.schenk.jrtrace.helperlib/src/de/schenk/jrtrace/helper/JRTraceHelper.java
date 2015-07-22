@@ -200,7 +200,8 @@ public class JRTraceHelper {
 				continue;
 			if (c.isSynthetic())
 				continue;
-
+			if (BuiltInExcludes.isExcludedClassName(c.getName(), null))
+				continue;
 			if (potentialEngineXCandidate(c, currentenginex))
 				modifiableClasses.add(c);
 
@@ -433,8 +434,8 @@ public class JRTraceHelper {
 					StatusEntityType.JRTRACE_CHECKED_CLASS);
 			childStatus.setEntityName(testClass.getName()
 					+ " ["
-					+ (testClass.getClassLoader() == null ? "BootclassLoader"
-							: testClass.getClassLoader().toString() + "]"));
+					+ ((testClass.getClassLoader() == null ? "BootclassLoader"
+							: testClass.getClassLoader().toString()) + "]"));
 			status.addChildStatus(childStatus);
 
 			JRTraceOneClassTransformer transformer = new JRTraceOneClassTransformer(

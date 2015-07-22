@@ -1,6 +1,6 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.helperlib.status;
 
 import java.io.Serializable;
@@ -41,6 +41,8 @@ public class InjectStatus implements Serializable {
 	public static final String MSG_METHOD_DOESNT_THROW_SPECIFIED_EXCEPTION = "The method doesn't throw any exception. ";
 
 	public static final String MSG_THATS_ODD = "That's odd: every method should be entered or exited. Something is not right with JRTrace here...";
+
+	public static final String MSG_CLASSES_ATTRIBUTE_NOT_SET = "The class doesn't specify a 'classes' attribute and therefore will never match any class for injection.";
 	private String msg = "";
 	private StatusState injectionState = StatusState.INJECTS;
 	private StatusEntityType entityType;
