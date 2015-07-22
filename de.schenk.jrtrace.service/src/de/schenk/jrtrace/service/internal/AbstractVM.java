@@ -1,6 +1,6 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.service.internal;
 
 import java.io.IOException;
@@ -316,7 +316,14 @@ abstract public class AbstractVM implements IJRTraceVM {
 
 	}
 
-	private boolean stopMXBeanClientConnection(boolean disconnectOnly) {
+	/**
+	 * Stop the communication with the client and disconnect
+	 * 
+	 * @param disconnectOnly
+	 *            if false, the agent will shut down the listener
+	 * @return true if successful
+	 */
+	protected boolean stopConnection(boolean disconnectOnly) {
 
 		boolean result = true;
 		try {
@@ -343,20 +350,6 @@ abstract public class AbstractVM implements IJRTraceVM {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Stop the communication with the client and disconnect
-	 * 
-	 * @param disconnectOnly
-	 *            if false, the agent will shut down the listener
-	 * @return true if successful
-	 */
-	protected boolean stopConnection(boolean disconnectOnly) {
-
-		boolean result2 = stopMXBeanClientConnection(disconnectOnly);
-
-		return result2;
 	}
 
 	@Override
@@ -386,21 +379,38 @@ abstract public class AbstractVM implements IJRTraceVM {
 	@Override
 	public InjectStatus analyzeInjectionStatus(String className) {
 		InjectStatus status = null;
-		if (mbeanProxy == null) {
+		if (isDisconnected()) {
 			status = new InjectStatus(StatusEntityType.JRTRACE_SESSION);
 
 			status.setMessage(InjectStatus.MSG_NOT_CONNECTED);
 			status.setInjected(StatusState.DOESNT_INJECT);
 			return status;
 		} else {
-			byte[] statusBytes = mbeanProxy.analyzeInjectionStatus(className);
-			status = (InjectStatus) SerializationUtil.deserialize(statusBytes,
-					null);
-			status.updateStatusFromChildren();
+			try {
+				byte[] statusBytes = mbeanProxy
+						.analyzeInjectionStatus(className);
+				status = (InjectStatus) SerializationUtil.deserialize(
+						statusBytes, null);
+				status.updateStatusFromChildren();
+			} catch (RuntimeException e) {
+				status = new InjectStatus(StatusEntityType.JRTRACE_SESSION);
+				status.setMessage(InjectStatus.MSG_NOT_CONNECTED);
+				status.setInjected(StatusState.DOESNT_INJECT);
+			}
+
 		}
 		status.setEntityName(getConnectionIdentifier());
 		return status;
 
+	}
+
+	/**
+	 * 
+	 * @return true, if the connection with the target is disconnected.
+	 */
+	@Override
+	public boolean isDisconnected() {
+		return mbeanProxy == null;
 	}
 
 	@Override

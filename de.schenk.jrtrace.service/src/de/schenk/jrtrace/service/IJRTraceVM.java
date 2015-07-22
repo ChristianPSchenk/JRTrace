@@ -64,6 +64,12 @@ public interface IJRTraceVM {
 	String getConnectionIdentifier();
 
 	/**
+	 * 
+	 * @return true, if the connection with the target is disconnected.
+	 */
+	public boolean isDisconnected();
+
+	/**
 	 * The last exception that occurred (e.g. after an unsuccessful, return code
 	 * false, call) The exception will not be cleared after a successful call to
 	 * another function.
