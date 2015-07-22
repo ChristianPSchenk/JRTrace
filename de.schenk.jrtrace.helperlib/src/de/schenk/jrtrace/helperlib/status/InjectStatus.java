@@ -1,6 +1,6 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.helperlib.status;
 
 import java.io.Serializable;
@@ -25,22 +25,26 @@ public class InjectStatus implements Serializable {
 
 	/* Messages */
 	public static final String MSG_NO_JRTRACE_SESSION = "There is no active JRTrace session.";
-	public static final String MSG_METHOD_MODIFIERS_DONT_MATCH = "The modifiers of the method were not matched.";
-	public static final String MSG_PARAMETERS_DONT_MATCH = "The parameters of the method were not matched.";
-	public static final String MSG_METHODNAME_DOESNT_MATCH = "The name of the method is not matched.";
+	public static final String MSG_METHOD_MODIFIERS_DONT_MATCH = "The modifiers of the method don't match the 'modifiers' specification of the @XMethod.";
+	public static final String MSG_PARAMETERS_DONT_MATCH = "The parameters of the method don't match the 'parameters' specification of the @XMethod.";
+	public static final String MSG_METHODNAME_DOESNT_MATCH = "The name of the method doesn't match the 'names' specification of the @XMethod.";
 	public static final String MSG_NOT_CONNECTED = "Not Connected";
 	public static final String MSG_NO_JRTRACE_CLASSES = "No JRTrace classes are currently installed.";
 	public static final String MSG_CLASS_NOT_LOADED = "The class is not loaded yet by the Target JVM. ";
-	public static final String MSG_SYSTEM_EXCLUDE = "The class is a JRTrace built-in excluded class and cannot be instrumented with JRTrace";
-	public static final String MSG_JRTRACE_CLASS_CANNOT_BE_INSTRUMENTED = "The class is one of the classes that have been installed with JRTrace and cannot be instrumented with JRTrace.";
-	public static final String MSG_CLASS_NAME_DOESNT_MATCH = "The name of the class wasn't matched.";
+	public static final String MSG_SYSTEM_EXCLUDE = "The class is one of the JRTrace built-in excluded class and therefore cannot be instrumented with JRTrace";
+	public static final String MSG_JRTRACE_CLASS_CANNOT_BE_INSTRUMENTED = "The class is one of the classes that have been installed with JRTrace and therefore cannot be instrumented with JRTrace.";
+	public static final String MSG_CLASS_NAME_DOESNT_MATCH = "The name of the class doesn't match any of the classes specified in 'classes' of the @XClass.";
 	public static final String MSG_METHOD_IS_ABSTRACT = "An interface or abstract method cannot be instrumented.";
 
-	public static final String MSG_METHOD_DOESNT_INVOKE_SPECIFIED_METHOD = "The method doesn't invoke a method that matches the attributes 'invokedname' and/or 'invokedclass'";
-	public static final String MSG_METHOD_DOESNT_ACCESS_SPECIFIED_FIELD = "The method doesn't access a field with the specified name 'fieldname' and/or of the specified class  'fieldclass'";
+	public static final String MSG_METHOD_DOESNT_INVOKE_SPECIFIED_METHOD = "The method doesn't invoke a method that matches the attributes 'invokedname' and/or 'invokedclass' specified in the @XMethod.";
+	public static final String MSG_METHOD_DOESNT_ACCESS_SPECIFIED_FIELD = "The method doesn't access a field with the specified name 'fieldname' and/or of the specified class  'fieldclass' specified in the @XMethod.";
 	public static final String MSG_METHOD_DOESNT_THROW_SPECIFIED_EXCEPTION = "The method doesn't throw any exception. ";
 
 	public static final String MSG_THATS_ODD = "That's odd: every method should be entered or exited. Something is not right with JRTrace here...";
+
+	public static final String MSG_CLASSES_ATTRIBUTE_NOT_SET = "The class doesn't specify a 'classes' attribute in the @XClass and therefore will never match any class for injection.";
+
+	public static final String MSG_CLASS_IS_EXCLUDED = "This JRTrace class specifies an 'exclude' list of the @XClass that matches the class to be instrumented. Therefore the class will not be instrumented.";
 	private String msg = "";
 	private StatusState injectionState = StatusState.INJECTS;
 	private StatusEntityType entityType;
@@ -160,11 +164,23 @@ public class InjectStatus implements Serializable {
 	}
 
 	public InjectStatus getChildByEntityName(String methodName) {
+		if (!methodName.startsWith(".*"))
+			methodName = ".*" + methodName;
+		if (!methodName.endsWith(".*"))
+			methodName = methodName + ".*";
+		InjectStatus result = null;
 		for (InjectStatus s : children) {
 			String entityName = s.getEntityName();
-			if (entityName.contains(methodName))
-				return s;
+
+			if (entityName.matches(methodName)) {
+				if (result != null)
+					throw new IllegalArgumentException(String.format(
+							"More than one child matched by %s in %s",
+							methodName, children));
+				result = s;
+
+			}
 		}
-		return null;
+		return result;
 	}
 }

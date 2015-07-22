@@ -182,7 +182,9 @@ will be injected into the running application.
     <td></td> 
     <td><code>names</code></td>
     
-    <td>One or more method names can be specified using this attribute. The method <code>tracingCode</code> will be injected into all methods
+    <td><p>One or more method names can be specified using this attribute. If the attribute is not set, all method names will match.
+    </p>
+    <p> In the below example the method <code>tracingCode</code> will be injected into all methods
     with name <code>setVisible</code> or <code>isVisible</code>.
     <pre>
     @XMethod(names={"setVisible","isVisible"})

@@ -158,13 +158,19 @@ public class JRTraceClassMetadata {
 			Class<?> superclass, Class<?>[] interfaces,
 			InjectStatus classInjectStatus) {
 
-		if (isExcludedClassName(className, classInjectStatus))
+		if (isExcludedClassName(className, classInjectStatus)) {
+			if (classInjectStatus != null) {
+				classInjectStatus.setInjected(StatusState.DOESNT_INJECT);
+				classInjectStatus
+						.setMessage(InjectStatus.MSG_CLASS_IS_EXCLUDED);
+			}
 			return false;
+		}
 
 		boolean classMatch = mayMatchClassName(className);
 
 		if (!getDerived()) {
-			if (classInjectStatus != null) {
+			if (!classMatch && classInjectStatus != null) {
 				classInjectStatus.setInjected(StatusState.DOESNT_INJECT);
 				classInjectStatus
 						.setMessage(InjectStatus.MSG_CLASS_NAME_DOESNT_MATCH);
@@ -184,8 +190,14 @@ public class JRTraceClassMetadata {
 		}
 		if (classInjectStatus != null) {
 			classInjectStatus.setInjected(StatusState.DOESNT_INJECT);
-			classInjectStatus
-					.setMessage(InjectStatus.MSG_CLASS_NAME_DOESNT_MATCH);
+			if (classes.isEmpty()) {
+
+				classInjectStatus
+						.setMessage(InjectStatus.MSG_CLASSES_ATTRIBUTE_NOT_SET);
+			} else {
+				classInjectStatus
+						.setMessage(InjectStatus.MSG_CLASS_NAME_DOESNT_MATCH);
+			}
 		}
 		return false;
 	}
@@ -273,7 +285,6 @@ public class JRTraceClassMetadata {
 	private boolean useRegex;
 	private HashSet<String> excludedClasses = new HashSet<String>();
 	private int classVersion;
-	private BuiltInExcludes builtInExcludes = new BuiltInExcludes();
 
 	public XClassLoaderPolicy getClassLoaderPolicy() {
 		return classLoaderPolicy;
@@ -354,25 +365,9 @@ public class JRTraceClassMetadata {
 	 */
 	public boolean isExcludedClassName(String classname,
 			InjectStatus classInjectStatus) {
+
 		if (classname == null)
 			return true;
-		if (builtInExcludes.isBuiltInExclude(classname)) {
-			if (classInjectStatus != null) {
-				classInjectStatus.setInjected(StatusState.DOESNT_INJECT);
-				classInjectStatus.setMessage(InjectStatus.MSG_SYSTEM_EXCLUDE);
-
-			}
-			return true;
-		}
-		if (JRTraceHelper.isJRTraceClass(classname)) {
-			if (classInjectStatus != null) {
-				classInjectStatus.setInjected(StatusState.DOESNT_INJECT);
-				classInjectStatus
-						.setMessage(InjectStatus.MSG_JRTRACE_CLASS_CANNOT_BE_INSTRUMENTED);
-
-			}
-			return true;
-		}
 
 		for (String excludePattern : getExcludedClasses()) {
 			if (classname.matches(excludePattern))
@@ -399,15 +394,6 @@ public class JRTraceClassMetadata {
 	public void setInstantiationPolicy(InstantiationPolicy method) {
 		instantiationPolicy = InstantiationPolicy.METHOD;
 
-	}
-
-	/**
-	 * 
-	 *
-	 */
-	public boolean mayMatchClassHierarchy(String cname, Class<?> superClass,
-			Class<?>[] interfaces) {
-		return mayMatchClassHierarchy(cname, superClass, interfaces, null);
 	}
 
 }

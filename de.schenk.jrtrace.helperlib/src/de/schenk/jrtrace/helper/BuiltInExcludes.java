@@ -1,7 +1,11 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.helper;
+
+import de.schenk.jrtrace.annotations.XClass;
+import de.schenk.jrtrace.helperlib.status.InjectStatus;
+import de.schenk.jrtrace.helperlib.status.StatusState;
 
 public class BuiltInExcludes {
 
@@ -27,7 +31,7 @@ public class BuiltInExcludes {
 	 * @return true, if the class cannot be converted by JRTrace due to system
 	 *         restrictions.
 	 */
-	public boolean isBuiltInExclude(String classname) {
+	static private boolean isBuiltInExclude(String classname) {
 		for (String prefix : excludedPrefixes) {
 			if (classname.startsWith(prefix))
 				return true;
@@ -35,4 +39,44 @@ public class BuiltInExcludes {
 		return false;
 	}
 
+	/**
+	 * Checks whether a class of name classname is excluded from
+	 * instrumentation.
+	 * 
+	 * This can be because (a) it is excluded via the {@link XClass#exclude}
+	 * attribute or (b) because it is a "built-in" exclude that cannot be
+	 * instrumented (like the jrtrace code itself.
+	 * 
+	 *
+	 * @param classname
+	 *            the class name to check
+	 * @param classInjectStatus
+	 *            if not null, reports the result on this status if the class is
+	 *            indeed excluded.
+	 * @return true, if the class is an excluded class.
+	 */
+	static public boolean isExcludedClassName(String classname,
+			InjectStatus classInjectStatus) {
+
+		if (classname == null)
+			return true;
+		if (isBuiltInExclude(classname)) {
+			if (classInjectStatus != null) {
+				classInjectStatus.setInjected(StatusState.DOESNT_INJECT);
+				classInjectStatus.setMessage(InjectStatus.MSG_SYSTEM_EXCLUDE);
+
+			}
+			return true;
+		}
+		if (JRTraceHelper.isJRTraceClass(classname)) {
+			if (classInjectStatus != null) {
+				classInjectStatus.setInjected(StatusState.DOESNT_INJECT);
+				classInjectStatus
+						.setMessage(InjectStatus.MSG_JRTRACE_CLASS_CANNOT_BE_INSTRUMENTED);
+
+			}
+			return true;
+		}
+		return false;
+	}
 }

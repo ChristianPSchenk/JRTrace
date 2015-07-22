@@ -1,6 +1,6 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.helper;
 
 import java.io.File;
@@ -100,43 +100,46 @@ public class JRTraceOneClassTransformer {
 			allEngineXClasses = JRTraceHelper.getEngineXClasses();
 
 		}
+		String cname = className == null ? null : Type.getType(
+				"L" + className + ";").getClassName();
+
 		InjectStatus classInjectStatus = null;
-		for (JRTraceClassMetadata entry : allEngineXClasses) {
-			try {
-				String cname = className == null ? null : Type.getType(
-						"L" + className + ";").getClassName();
+		if (!BuiltInExcludes.isExcludedClassName(cname, status))
 
-				if (status != null) {
-					classInjectStatus = new InjectStatus(
-							StatusEntityType.JRTRACE_CLASS);
-					classInjectStatus.setEntityName(entry
-							.getExternalClassName());
-					status.addChildStatus(classInjectStatus);
-				}
+			for (JRTraceClassMetadata entry : allEngineXClasses) {
+				try {
 
-				lazyInitSuperClassAndInterfaces();
-				if (entry.mayMatchClassHierarchy(cname, superClass, interfaces,
-						classInjectStatus)) {
-					JRLog.verbose("Applying rules to class:" + className);
-
-					byte[] returnBytes = applyEngineXMethods(entry,
-							transformedBytes, classInjectStatus);
-					if (returnBytes != null) {
-						transformed = true;
-						transformedBytes = returnBytes;
-
+					if (status != null) {
+						classInjectStatus = new InjectStatus(
+								StatusEntityType.JRTRACE_CLASS);
+						classInjectStatus.setEntityName(entry
+								.getExternalClassName());
+						status.addChildStatus(classInjectStatus);
 					}
+
+					lazyInitSuperClassAndInterfaces();
+					if (entry.mayMatchClassHierarchy(cname, superClass,
+							interfaces, classInjectStatus)) {
+						JRLog.verbose("Applying rules to class:" + className);
+
+						byte[] returnBytes = applyEngineXMethods(entry,
+								transformedBytes, classInjectStatus);
+						if (returnBytes != null) {
+							transformed = true;
+							transformedBytes = returnBytes;
+
+						}
+					}
+
+				} catch (Throwable e) {
+					JRLog.error("Skipped applying jrtrace class "
+							+ entry.getClassName() + " to class " + className
+							+ " due to runtime exception");
+					e.printStackTrace();
+					return null;
 				}
 
-			} catch (Throwable e) {
-				JRLog.error("Skipped applying jrtrace class "
-						+ entry.getClassName() + " to class " + className
-						+ " due to runtime exception");
-				e.printStackTrace();
-				return null;
 			}
-
-		}
 
 		if (transformed) {
 
