@@ -45,6 +45,7 @@ public class InjectStatus implements Serializable {
 	public static final String MSG_CLASSES_ATTRIBUTE_NOT_SET = "The class doesn't specify a 'classes' attribute in the @XClass and therefore will never match any class for injection.";
 
 	public static final String MSG_CLASS_IS_EXCLUDED = "This JRTrace class specifies an 'exclude' list of the @XClass that matches the class to be instrumented. Therefore the class will not be instrumented.";
+
 	private String msg = "";
 	private StatusState injectionState = StatusState.INJECTS;
 	private StatusEntityType entityType;
