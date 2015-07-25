@@ -167,6 +167,16 @@ public class JRTraceClassMetadata {
 			return false;
 		}
 
+		if (classes == null || classes.isEmpty()) {
+			if (classInjectStatus != null) {
+				classInjectStatus.setInjected(StatusState.DOESNT_INJECT);
+
+				classInjectStatus
+						.setMessage(InjectStatus.MSG_CLASSES_ATTRIBUTE_NOT_SET);
+			}
+			return false;
+		}
+
 		boolean classMatch = mayMatchClassName(className);
 
 		if (!getDerived()) {
@@ -190,14 +200,10 @@ public class JRTraceClassMetadata {
 		}
 		if (classInjectStatus != null) {
 			classInjectStatus.setInjected(StatusState.DOESNT_INJECT);
-			if (classes.isEmpty()) {
 
-				classInjectStatus
-						.setMessage(InjectStatus.MSG_CLASSES_ATTRIBUTE_NOT_SET);
-			} else {
-				classInjectStatus
-						.setMessage(InjectStatus.MSG_CLASS_NAME_DOESNT_MATCH);
-			}
+			classInjectStatus
+					.setMessage(InjectStatus.MSG_CLASS_NAME_DOESNT_MATCH);
+
 		}
 		return false;
 	}
