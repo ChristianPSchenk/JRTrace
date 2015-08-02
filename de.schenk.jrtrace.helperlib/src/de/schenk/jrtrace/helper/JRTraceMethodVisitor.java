@@ -746,7 +746,7 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 				MethodHandles.Lookup.class, String.class, MethodType.class,
 				String.class, int.class, String.class, String.class);
 		Handle bootstrap = new Handle(Opcodes.H_INVOKESTATIC,
-				"de/schenk/jrtrace/helper/DynamicBinder", bindingMethodName,
+				"sun/invoke/DynamicBinder", bindingMethodName,
 				mt.toMethodDescriptorString());
 
 		visitInvokeDynamicInsn(String.format("%s%d",
