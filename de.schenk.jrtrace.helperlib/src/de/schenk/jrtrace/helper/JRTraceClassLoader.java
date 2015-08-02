@@ -37,6 +37,9 @@ public class JRTraceClassLoader extends ClassLoader {
 			return defineClass(entry.getExternalClassName(),
 					entry.getClassBytes(), 0, entry.getClassBytes().length);
 		}
+		if (className.startsWith("de.schenk.jrtrace.helperlib")) {
+			return ClassLoader.getSystemClassLoader().loadClass(className);
+		}
 		Class<?> c = JRTraceHelper.getEngineXClass(className, classSetId,
 				getParent());
 		if (c != null)
