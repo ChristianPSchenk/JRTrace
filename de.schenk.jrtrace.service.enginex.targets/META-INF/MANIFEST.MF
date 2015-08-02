@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Targets
 Bundle-SymbolicName: de.schenk.jrtrace.service.enginex.targets
-Bundle-Version: 2.0.1.qualifier
+Bundle-Version: 2.0.2.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: de.schenk.jrtrace.commonsuper.test,
  de.schenk.jrtrace.enginex.testscripts

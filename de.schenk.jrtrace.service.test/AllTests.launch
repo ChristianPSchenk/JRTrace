@@ -1,34 +1,873 @@
-!SESSION 2015-07-25 11:45:40.924 -----------------------------------------------
+!SESSION 2015-08-02 13:08:54.265 -----------------------------------------------
 eclipse.buildId=4.4.2.M20150204-1700
 java.version=1.8.0_31
 java.vendor=Oracle Corporation
 BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=de_DE
-Framework arguments:  -version 3 -port 58836 -testLoaderClass org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader -loaderpluginname org.eclipse.jdt.junit4.runtime -test de.schenk.jrtrace.enginex.testscripts.EngineXDiagnosticsTest:testCorrectMessageForExcludedClass -application org.eclipse.pde.junit.runtime.uitestapplication -product org.eclipse.platform.ide -testpluginname de.schenk.jrtrace.service.test
-Command-line arguments:  -os win32 -ws win32 -arch x86_64 -consoleLog -version 3 -port 58836 -testLoaderClass org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader -loaderpluginname org.eclipse.jdt.junit4.runtime -test de.schenk.jrtrace.enginex.testscripts.EngineXDiagnosticsTest:testCorrectMessageForExcludedClass -application org.eclipse.pde.junit.runtime.uitestapplication -product org.eclipse.platform.ide -data C:\Users\CDLK\workspaces\luna/../junit-workspace -dev file:C:/Users/CDLK/workspaces/luna/.metadata/.plugins/org.eclipse.pde.core/Rerun de.schenk.jrtrace.enginex.testscripts.EngineXDiagnosticsTest.testCorrectMessageForExcludedClass/dev.properties -os win32 -ws win32 -arch x86_64 -consoleLog -testpluginname de.schenk.jrtrace.service.test
+Framework arguments:  -version 3 -port 55378 -testLoaderClass org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader -loaderpluginname org.eclipse.jdt.junit4.runtime -classNames de.schenk.jrtrace.service.test.AllTests -application org.eclipse.pde.junit.runtime.uitestapplication -product org.eclipse.platform.ide -testpluginname de.schenk.jrtrace.service.test
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -consoleLog -version 3 -port 55378 -testLoaderClass org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader -loaderpluginname org.eclipse.jdt.junit4.runtime -classNames de.schenk.jrtrace.service.test.AllTests -application org.eclipse.pde.junit.runtime.uitestapplication -product org.eclipse.platform.ide -data C:\Users\CDLK\workspaces\luna/../junit-workspace -dev file:C:/Users/CDLK/workspaces/luna/.metadata/.plugins/org.eclipse.pde.core/AllTests/dev.properties -os win32 -ws win32 -arch x86_64 -consoleLog -testpluginname de.schenk.jrtrace.service.test
 
-!ENTRY org.eclipse.jface 2 0 2015-07-25 11:45:45.712
+!ENTRY org.eclipse.jface 2 0 2015-08-02 13:09:01.123
 !MESSAGE Keybinding conflicts occurred.  They may interfere with normal accelerator operation.
-!SUBENTRY 1 org.eclipse.jface 2 0 2015-07-25 11:45:45.712
+!SUBENTRY 1 org.eclipse.jface 2 0 2015-08-02 13:09:01.125
 !MESSAGE A conflict occurred for CTRL+6:
-Binding(CTRL+6,
-	ParameterizedCommand(Command(MyTestSampleAction.commands.sampleCommand,Sample Command,
-		,
-		Category(MyTestSampleAction.commands.category,Sample Category,null,true),
-		org.eclipse.ui.internal.WorkbenchHandlerServiceHandler@76cdafa3,
-		,,true),null),
-	org.eclipse.ui.defaultAcceleratorConfiguration,
-	org.eclipse.ui.contexts.window,,,system)
 Binding(CTRL+6,
 	ParameterizedCommand(Command(testjdtactrion.commands.sampleCommand,Sample Command,
 		,
 		Category(testjdtactrion.commands.category,Sample Category,null,true),
-		org.eclipse.ui.internal.WorkbenchHandlerServiceHandler@6b27b2d0,
+		org.eclipse.ui.internal.WorkbenchHandlerServiceHandler@435e416c,
 		,,true),null),
 	org.eclipse.ui.defaultAcceleratorConfiguration,
 	org.eclipse.ui.contexts.window,,,system)
-11:46:00.184 Applying rules to class:de/schenk/jrtrace/service/JRTraceMessageListener
-11:46:00.194 Writing bytes before/after transformation of class de/schenk/jrtrace/service/JRTraceMessageListener to directory C:\Users\CDLK\AppData\Local\Temp\
-11:46:00.194 Applying rules to class:de/schenk/jrtrace/service/VMInfo
-11:46:00.210 Writing bytes before/after transformation of class de/schenk/jrtrace/service/VMInfo to directory C:\Users\CDLK\AppData\Local\Temp\
-11:46:00.288 JRTraceHelper.addEngineXClass() took 10087 ms.
-11:46:04.086 AgentMain.stop(disconnect:false)
+Binding(CTRL+6,
+	ParameterizedCommand(Command(MyTestSampleAction.commands.sampleCommand,Sample Command,
+		,
+		Category(MyTestSampleAction.commands.category,Sample Category,null,true),
+		org.eclipse.ui.internal.WorkbenchHandlerServiceHandler@6af310c7,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+>> No more data
++starting main in TestProcess, kill expected on 55384
++doSomeThing()
+Calltrigger called
+TestProccessCommunication.called(Object o)
+Testprocess successfully killed
++interrupted
++done
+>> No more data
++starting main in TestProcess, kill expected on 55396
+TestProcess.main(): Writing int to file
++doSomeThing()
+java.lang.RuntimeException: Connect failed. 
+	at de.schenk.jrtrace.service.internal.AbstractVM.createMXBeanClientConnection(AbstractVM.java:311)
+	at de.schenk.jrtrace.service.internal.AbstractVM.connectToAgent(AbstractVM.java:230)
+	at de.schenk.jrtrace.service.internal.JRTraceConnectingImpl.attach(JRTraceConnectingImpl.java:27)
+	at de.schenk.jrtrace.service.internal.AbstractVM.attach(AbstractVM.java:357)
+	at de.schenk.jrtrace.service.JRTraceConnectToLaunchedAgentTest.testConnectTwiceInARow(JRTraceConnectToLaunchedAgentTest.java:167)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at org.junit.runners.Suite.runChild(Suite.java:127)
+	at org.junit.runners.Suite.runChild(Suite.java:26)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:675)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.pde.internal.junit.runtime.RemotePluginTestRunner.main(RemotePluginTestRunner.java:62)
+	at org.eclipse.pde.internal.junit.runtime.PlatformUITestHarness$1.run(PlatformUITestHarness.java:47)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:136)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4147)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3764)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$9.run(PartRenderingEngine.java:1151)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1032)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:148)
+	at org.eclipse.ui.internal.Workbench$5.run(Workbench.java:636)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:579)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:150)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:135)
+	at org.eclipse.pde.internal.junit.runtime.NonUIThreadTestApplication.runApp(NonUIThreadTestApplication.java:54)
+	at org.eclipse.pde.internal.junit.runtime.UITestApplication.runApp(UITestApplication.java:47)
+	at org.eclipse.pde.internal.junit.runtime.NonUIThreadTestApplication.start(NonUIThreadTestApplication.java:48)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:196)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:134)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:104)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:380)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:235)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:648)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:603)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1465)
+	at org.eclipse.equinox.launcher.Main.main(Main.java:1438)
+Caused by: java.util.concurrent.ExecutionException: java.io.IOException: Failed to retrieve RMIServer stub: javax.naming.NameNotFoundException: jmxrmi
+	at java.util.concurrent.FutureTask.report(FutureTask.java:122)
+	at java.util.concurrent.FutureTask.get(FutureTask.java:192)
+	at de.schenk.jrtrace.service.internal.AbstractVM.createMXBeanClientConnection(AbstractVM.java:295)
+	... 67 more
+Caused by: java.io.IOException: Failed to retrieve RMIServer stub: javax.naming.NameNotFoundException: jmxrmi
+	at javax.management.remote.rmi.RMIConnector.connect(RMIConnector.java:369)
+	at javax.management.remote.JMXConnectorFactory.connect(JMXConnectorFactory.java:270)
+	at de.schenk.jrtrace.service.internal.AbstractVM$5.call(AbstractVM.java:278)
+	at de.schenk.jrtrace.service.internal.AbstractVM$5.call(AbstractVM.java:1)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: javax.naming.NameNotFoundException: jmxrmi
+	at com.sun.jndi.rmi.registry.RegistryContext.lookup(RegistryContext.java:120)
+	at com.sun.jndi.toolkit.url.GenericURLContext.lookup(GenericURLContext.java:205)
+	at javax.naming.InitialContext.lookup(InitialContext.java:417)
+	at javax.management.remote.rmi.RMIConnector.findRMIServerJNDI(RMIConnector.java:1929)
+	at javax.management.remote.rmi.RMIConnector.findRMIServer(RMIConnector.java:1896)
+	at javax.management.remote.rmi.RMIConnector.connect(RMIConnector.java:287)
+	... 7 more
+Writing file!Testprocess successfully killed
++interrupted
++done
+>> No more data
++starting main in TestProcess, kill expected on 55412
+TestProcess.main(): Writing int to file
++doSomeThing()
+Writing file!Testprocess successfully killed
++interrupted
++done
+doit
+doit of InstrumentedClass / class loaded with: org.eclipse.osgi.internal.loader.EquinoxClassLoader@3f40568e[de.schenk.jrtrace.service.enginex.targets:2.0.1.qualifier(id=142)]
+doit of InstrumentedClass / class loaded with: org.eclipse.osgi.internal.loader.EquinoxClassLoader@3f40568e[de.schenk.jrtrace.service.enginex.targets:2.0.1.qualifier(id=142)]
+doit of InstrumentedClass / class loaded with: org.eclipse.osgi.internal.loader.EquinoxClassLoader@3f40568e[de.schenk.jrtrace.service.enginex.targets:2.0.1.qualifier(id=142)]
+Aug 02, 2015 1:09:20 PM ClientCommunicatorAdmin restart
+WARNUNG: Failed to restart: java.io.IOException: Failed to get a RMI stub: javax.naming.CommunicationException [Root exception is java.rmi.NoSuchObjectException: no such object in table]
+Aug 02, 2015 1:09:22 PM ClientCommunicatorAdmin restart
+WARNUNG: Failed to restart: java.rmi.NoSuchObjectException: no such object in table
+>> No more data
++starting main in TestProcess, kill expected on 55452
++doSomeThing()
+Testprocess successfully killed
++interrupted
++done
+>> No more data
++starting main in TestProcess, kill expected on 55453
++doSomeThing()
+0
+1
+Testprocess successfully killed
++interrupted
++done
+>> No more data
++starting main in TestProcess, kill expected on 55469
++doSomeThing()
+Testprocess successfully killed
++interrupted
++done
+>> No more data
++starting main in TestProcess, kill expected on 55479
++doSomeThing()
+Testprocess successfully killed
+Aug 02, 2015 1:09:38 PM ClientCommunicatorAdmin restart
+WARNUNG: Failed to restart: java.io.IOException: Failed to get a RMI stub: javax.naming.CommunicationException [Root exception is java.rmi.NoSuchObjectException: no such object in table]
++interrupted
++done
+>> No more data
++starting main in TestProcess, kill expected on 55493
++doSomeThing()
+13:09:42.294 Retransforming 1 classes.
+13:09:42.306 Applying rules to class:de/schenk/jrtrace/service/test/utils/TestProcess2
+13:09:42.313 Instrumentations is including call to class: de.schenk.jrtrace.service.test.utils.TestProcessRegexScript method: method
+13:09:42.318 Writing bytes before/after transformation of class de/schenk/jrtrace/service/test/utils/TestProcess2 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:42.324 JRTraceHelper.addEngineXClass() took 70 ms.
+done
+13:09:42.332 AgentMain.stop(disconnect:false)
+Testprocess successfully killed
+13:09:42.380 JRTrace class loaded: de.schenk.jrtrace.service.test.utils.TestProcessRegexScript with classloader sun.misc.Launcher$AppClassLoader@73d16e93
++interrupted
++done
++starting main in TestProcess, kill expected on 55504
++doSomeThing()
+Testprocess successfully killed
++interrupted
++done
++TestProcess.main() terminated.
+Array ['a', 'b']
+
+Map [ ["a">5],  ["b">7]]
+
+Array ["array", "b", null, "c"]
+
+InspectUtilTest$Recurse [recurse=InspectUtilTest$Recurse [recurse=InspectUtilTest$Recurse [recurse=(depth reached)]]]
+
+InspectUtilTest$Recurse [
+recurse=InspectUtilTest$Recurse [recurse=InspectUtilTest$Recurse [recurse=InspectUtilTest$Recurse [text="du!"]]]]
+
+miniclass.toString()
+
+InspectUtilTest$MainClass [sub=InspectUtilTest$SubClass [main=<parent>]]
+
+miniclass.toString()
+
+InspectUtilTest$SampleClass [fstring="string", fbyte=5, fdouble=2,000000, fchar='a', ffloat=3,000000, flong=4
+, fbool=true, farray=Array ["array", "b", null, "c"], fenum=Value1]
+
+InspectUtilTest$MiniClass [fint=5, fsub="sub"]
+
+InspectUtilTest$MiniClass [fint=5, fsub="sub"]
+
+InspectUtilTest$SampleClass [fstring="string", fint=1, fbyte=5, fdouble=2,000000, fchar='a', ffloat=3,000000, flong=4
+, fbool=true, farray=Array ["array", "b", null, "c"], fenum=Value1]
+
+InspectUtilTest$SampleClass [fstring="string", fint=1, fbyte=5, fdouble=2,000000, fchar='a', ffloat=3,000000, flong=4
+, fbool=true, farray=Array ["array", "b", null, "c"], STATICSTRING="staticstring", fenum=Value1]
+
+miniclass.toString()
+
+Collection [5]
+
+Map []
+
+Array [
+ InspectUtilTest$MiniClass [fint=5, fsub="sub"]
+ InspectUtilTest$SampleClass [
+ fstring="kjdhfaksjhfskjfhsakjfhsakfhskdfhskfhskdfhskjfhskfhsdkjfhsdkjfhhskjfhskfhslkfhsddkjfhskjfhskjlf", fint=1
+ , fbyte=5, fdouble=2,000000, fchar='a', ffloat=3,000000, flong=4, fbool=true, farray=Array ["array", "b", null, "c"]
+ , fenum=Value1]
+]
+
+InspectUtilTest$SampleClass [fstring="string", fint=1, fbyte=5, fdouble=2,000000, fchar='a', ffloat=3,000000, flong=4
+, fbool=true, farray=Array ["array", "b", null, "c"], fenum=Value1]
+
+13:09:44.618 Retransforming 6 classes.
+13:09:44.618 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test1
+13:09:44.621 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test1
+13:09:44.624 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test1 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:44.657 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+13:09:44.661 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2
+13:09:44.664 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass2 method: dosomething
+13:09:44.670 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass2 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:44.702 Applying rules to class:org/eclipse/swt/graphics/Cursor
+13:09:44.706 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseSWTCursor method: doit
+13:09:44.710 Writing bytes before/after transformation of class org/eclipse/swt/graphics/Cursor to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:44.743 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+13:09:44.750 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1
+13:09:44.752 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test2Script method: test1
+13:09:44.757 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$1 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:44.789 Applying rules to class:org/eclipse/core/runtime/jobs/Job
+13:09:44.792 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+13:09:44.793 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.JobInstrument method: test
+13:09:44.796 Writing bytes before/after transformation of class org/eclipse/core/runtime/jobs/Job to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:44.830 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+13:09:44.834 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/InstrumentedClass
+13:09:44.835 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.EngineXTestClass method: dosomething
+13:09:44.839 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/InstrumentedClass to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:44.873 JRTraceHelper.addEngineXClass() took 435 ms.
+13:09:44.877 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test27
+13:09:44.880 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test27
+13:09:44.886 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test27Script method: instrument
+13:09:44.889 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test27 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:44.890 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test27Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@4a49919c
+13:09:44.893 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test37
+13:09:44.894 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test37
+13:09:44.895 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test37Script method: putfield
+13:09:44.897 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test37 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:44.900 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test37Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:44.906 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+13:09:44.906 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test21
+13:09:44.907 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test21Script method: testinstrumentation
+13:09:44.909 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test21 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:44.911 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test21Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:44.913 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test22
+13:09:44.917 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test22 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:44.920 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test41
+13:09:44.922 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test41
+13:09:44.924 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test41Script method: testinstrumentation
+13:09:44.928 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test41 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:44.931 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/TestCounterClass
+13:09:44.935 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/TestCounterClass to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:44.940 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test41Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:44.944 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test30
+13:09:44.946 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test30
+13:09:44.946 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test30Script method: instr
+13:09:44.950 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test30 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:44.953 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test30Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:44.956 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test30Boot with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@4a49919c
+13:09:44.960 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+13:09:44.964 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test23
+13:09:44.967 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation
+13:09:44.968 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test23Script method: testinstrumentation3
+13:09:44.972 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test23 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:44.975 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test23Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:44.984 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+13:09:44.988 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test10
+13:09:44.991 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test10Script method: testinstrumentation
+13:09:44.997 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test10 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.000 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test10Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@4a49919c
+13:09:45.002 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+13:09:45.005 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test11
+13:09:45.008 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation
+13:09:45.010 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test11Script method: testinstrumentation2
+13:09:45.017 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test11 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.019 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test11Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.024 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+13:09:45.025 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test12
+13:09:45.026 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test12Script method: testinstrumentation
+13:09:45.030 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test12 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.033 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test12Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@4a49919c
+13:09:45.039 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test13
+13:09:45.041 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test13
+13:09:45.043 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test13Script method: testinstrumentation
+13:09:45.046 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test13Script method: testinstrumentation2
+13:09:45.052 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test13 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.055 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test13Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.062 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+13:09:45.066 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test16
+13:09:45.070 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test16Script method: doit
+13:09:45.074 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test16 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.080 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test16Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.084 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test26
+13:09:45.088 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test26
+13:09:45.090 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test26Script method: instr
+13:09:45.096 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test26 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.105 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test26Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@4a49919c
+13:09:45.110 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test26ScriptRunnable with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@4a49919c
+13:09:45.117 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+13:09:45.123 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test20
+13:09:45.127 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test20Script method: testinstrumentation
+13:09:45.135 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test20 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.138 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test20Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.143 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test34
+13:09:45.145 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test34
+13:09:45.147 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test34Script method: instr
+13:09:45.155 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test34 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.159 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test34Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.161 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test25
+13:09:45.163 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test25
+13:09:45.167 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test25Script method: instr
+13:09:45.174 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test25 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.185 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test25Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@4a49919c
+13:09:45.193 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test2Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@21d15932
+13:09:45.197 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2
+13:09:45.217 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2
+13:09:45.219 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test1Script method: test1
+13:09:45.228 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDetailsTest$2 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.232 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test1Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@21d15932
+13:09:45.236 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test3
+13:09:45.238 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test3
+13:09:45.241 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test3Script method: testinstrumentation
+13:09:45.245 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test3 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.250 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test3Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.254 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test4
+13:09:45.260 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test4
+13:09:45.261 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test4Script method: testinstrumentation
+13:09:45.266 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test4 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.269 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test4Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.279 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test5
+13:09:45.281 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test5
+13:09:45.284 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test5Script method: testinstrumentation
+13:09:45.287 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test5 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.289 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test5Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@4a49919c
+13:09:45.292 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test6
+13:09:45.293 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test6
+13:09:45.293 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test6Script method: testinstrumentation
+13:09:45.297 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test6 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.308 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test6Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@7ae6927
+13:09:45.313 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test7
+13:09:45.317 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test7
+13:09:45.318 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test7Script method: testinstrumentation
+13:09:45.323 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test7 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.325 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test7Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.328 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test7ScriptBoot with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@4a49919c
+13:09:45.330 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test8
+13:09:45.333 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test8
+13:09:45.335 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test8Script method: testinstrumentation
+13:09:45.338 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test8 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.340 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test8Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.346 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test9
+13:09:45.352 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test9
+13:09:45.354 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test9Script method: testinstrumentation
+13:09:45.358 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test9 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.361 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test9Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.368 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test24
+13:09:45.370 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test24
+13:09:45.372 Skipped applying jrtrace class de/schenk/jrtrace/enginex/testclasses/Test24Script to class de/schenk/jrtrace/enginex/testscripts/Test24 due to runtime exception
+java.lang.RuntimeException: Cannot use @XThis or @XParam(n=0) on static method test24 in class de.schenk.jrtrace.enginex.testscripts.Test24.
+	at de.schenk.jrtrace.helper.JRTraceMethodVisitor.fatal(JRTraceMethodVisitor.java:808)
+	at de.schenk.jrtrace.helper.JRTraceMethodVisitor.getLocalVariablePosition(JRTraceMethodVisitor.java:778)
+	at de.schenk.jrtrace.helper.JRTraceMethodVisitor.prepareCallArgument(JRTraceMethodVisitor.java:445)
+	at de.schenk.jrtrace.helper.JRTraceMethodVisitor.injectEngineXCall(JRTraceMethodVisitor.java:387)
+	at de.schenk.jrtrace.helper.JRTraceMethodVisitor.injectEngineXCall(JRTraceMethodVisitor.java:356)
+	at de.schenk.jrtrace.helper.JRTraceMethodVisitor.onMethodEnter(JRTraceMethodVisitor.java:126)
+	at de.schenk.objectweb.asm.commons.AdviceAdapter.visitCode(AdviceAdapter.java:112)
+	at de.schenk.objectweb.asm.tree.MethodNode.accept(MethodNode.java:808)
+	at de.schenk.objectweb.asm.commons.JSRInlinerAdapter.visitEnd(JSRInlinerAdapter.java:187)
+	at de.schenk.objectweb.asm.ClassReader.readMethod(ClassReader.java:1021)
+	at de.schenk.objectweb.asm.ClassReader.accept(ClassReader.java:693)
+	at de.schenk.objectweb.asm.ClassReader.accept(ClassReader.java:506)
+	at de.schenk.jrtrace.helper.JRTraceOneClassTransformer.applyEngineXMethods(JRTraceOneClassTransformer.java:64)
+	at de.schenk.jrtrace.helper.JRTraceOneClassTransformer.doTransform(JRTraceOneClassTransformer.java:125)
+	at de.schenk.jrtrace.helperagent.JRTraceClassFileTransformer.transform(JRTraceClassFileTransformer.java:22)
+	at sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:428)
+	at java.lang.ClassLoader.defineClass1(Native Method)
+	at java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+	at org.eclipse.osgi.internal.loader.ModuleClassLoader.defineClass(ModuleClassLoader.java:272)
+	at org.eclipse.osgi.internal.loader.classpath.ClasspathManager.defineClass(ClasspathManager.java:632)
+	at org.eclipse.osgi.internal.loader.classpath.ClasspathManager.findClassImpl(ClasspathManager.java:588)
+	at org.eclipse.osgi.internal.loader.classpath.ClasspathManager.findLocalClassImpl(ClasspathManager.java:540)
+	at org.eclipse.osgi.internal.loader.classpath.ClasspathManager.findLocalClass(ClasspathManager.java:527)
+	at org.eclipse.osgi.internal.loader.ModuleClassLoader.findLocalClass(ModuleClassLoader.java:324)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findLocalClass(BundleLoader.java:320)
+	at org.eclipse.osgi.internal.loader.sources.SingleSourcePackage.loadClass(SingleSourcePackage.java:36)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClassInternal(BundleLoader.java:391)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:345)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:337)
+	at org.eclipse.osgi.internal.loader.ModuleClassLoader.loadClass(ModuleClassLoader.java:160)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+	at de.schenk.jrtrace.enginex.testscripts.EngineXDetailsTest.test24ErrorMessageForXThisOnStaticMethod(EngineXDetailsTest.java:563)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at org.junit.runners.Suite.runChild(Suite.java:127)
+	at org.junit.runners.Suite.runChild(Suite.java:26)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:675)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.pde.internal.junit.runtime.RemotePluginTestRunner.main(RemotePluginTestRunner.java:62)
+	at org.eclipse.pde.internal.junit.runtime.PlatformUITestHarness$1.run(PlatformUITestHarness.java:47)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:136)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4147)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3764)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$9.run(PartRenderingEngine.java:1151)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1032)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:148)
+	at org.eclipse.ui.internal.Workbench$5.run(Workbench.java:636)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:579)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:150)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:135)
+	at org.eclipse.pde.internal.junit.runtime.NonUIThreadTestApplication.runApp(NonUIThreadTestApplication.java:54)
+	at org.eclipse.pde.internal.junit.runtime.UITestApplication.runApp(UITestApplication.java:47)
+	at org.eclipse.pde.internal.junit.runtime.NonUIThreadTestApplication.start(NonUIThreadTestApplication.java:48)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:196)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:134)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:104)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:380)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:235)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:648)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:603)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1465)
+	at org.eclipse.equinox.launcher.Main.main(Main.java:1438)
+13:09:45.397 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test14
+13:09:45.401 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test14
+13:09:45.420 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test14Script method: testinstrumentation
+13:09:45.425 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test14Script method: testinstrumentation
+13:09:45.554 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test14 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.567 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test14Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.578 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test36
+13:09:45.580 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test36
+13:09:45.588 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test36Script method: fkt36b
+13:09:45.591 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test36Script method: fkt36a_in
+13:09:45.593 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test36Script method: fkt36a
+13:09:45.598 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test36 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.604 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test36Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.611 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test33
+13:09:45.613 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test33
+13:09:45.615 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test33Script method: instr
+13:09:45.619 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test33 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.622 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test33Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.625 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test19
+13:09:45.629 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test19
+13:09:45.631 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test19Script method: testinstrumentation
+13:09:45.646 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test19 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.650 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test19Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.655 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test18
+13:09:45.657 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test18
+13:09:45.659 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test18Script method: testinstrumentation
+13:09:45.668 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test18 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.673 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test18Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.676 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test38
+13:09:45.677 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test38
+13:09:45.680 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test38Script method: onStaticMethodInvoke
+13:09:45.685 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test38 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.687 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test38Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.692 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test35
+13:09:45.694 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test35
+13:09:45.697 Skipped applying jrtrace class de/schenk/jrtrace/enginex/testclasses/Test35Script to class de/schenk/jrtrace/enginex/testscripts/Test35 due to runtime exception
+java.lang.RuntimeException: The type returned/thrown by the method test35 is java.lang.Throwable and cannot be assigned to the first argument of the method instr which is java.lang.Runnable.
+	at de.schenk.jrtrace.helper.JRTraceMethodVisitor.fatal(JRTraceMethodVisitor.java:808)
+	at de.schenk.jrtrace.helper.JRTraceMethodVisitor.injectReturnOrThrowsInParameter(JRTraceMethodVisitor.java:559)
+	at de.schenk.jrtrace.helper.JRTraceMethodVisitor.prepareArgumentAndReturnInjection(JRTraceMethodVisitor.java:514)
+	at de.schenk.jrtrace.helper.JRTraceMethodVisitor.prepareCallArgument(JRTraceMethodVisitor.java:455)
+	at de.schenk.jrtrace.helper.JRTraceMethodVisitor.injectEngineXCall(JRTraceMethodVisitor.java:387)
+	at de.schenk.jrtrace.helper.JRTraceMethodVisitor.injectEngineXCall(JRTraceMethodVisitor.java:356)
+	at de.schenk.jrtrace.helper.JRTraceMethodVisitor.onMethodExit(JRTraceMethodVisitor.java:348)
+	at de.schenk.objectweb.asm.commons.AdviceAdapter.visitInsn(AdviceAdapter.java:303)
+	at de.schenk.objectweb.asm.tree.InsnNode.accept(InsnNode.java:80)
+	at de.schenk.objectweb.asm.tree.InsnList.accept(InsnList.java:162)
+	at de.schenk.objectweb.asm.tree.MethodNode.accept(MethodNode.java:816)
+	at de.schenk.objectweb.asm.commons.JSRInlinerAdapter.visitEnd(JSRInlinerAdapter.java:187)
+	at de.schenk.objectweb.asm.ClassReader.readMethod(ClassReader.java:1021)
+	at de.schenk.objectweb.asm.ClassReader.accept(ClassReader.java:693)
+	at de.schenk.objectweb.asm.ClassReader.accept(ClassReader.java:506)
+	at de.schenk.jrtrace.helper.JRTraceOneClassTransformer.applyEngineXMethods(JRTraceOneClassTransformer.java:64)
+	at de.schenk.jrtrace.helper.JRTraceOneClassTransformer.doTransform(JRTraceOneClassTransformer.java:125)
+	at de.schenk.jrtrace.helperagent.JRTraceClassFileTransformer.transform(JRTraceClassFileTransformer.java:22)
+	at sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:428)
+	at java.lang.ClassLoader.defineClass1(Native Method)
+	at java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+	at org.eclipse.osgi.internal.loader.ModuleClassLoader.defineClass(ModuleClassLoader.java:272)
+	at org.eclipse.osgi.internal.loader.classpath.ClasspathManager.defineClass(ClasspathManager.java:632)
+	at org.eclipse.osgi.internal.loader.classpath.ClasspathManager.findClassImpl(ClasspathManager.java:588)
+	at org.eclipse.osgi.internal.loader.classpath.ClasspathManager.findLocalClassImpl(ClasspathManager.java:540)
+	at org.eclipse.osgi.internal.loader.classpath.ClasspathManager.findLocalClass(ClasspathManager.java:527)
+	at org.eclipse.osgi.internal.loader.ModuleClassLoader.findLocalClass(ModuleClassLoader.java:324)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findLocalClass(BundleLoader.java:320)
+	at org.eclipse.osgi.internal.loader.sources.SingleSourcePackage.loadClass(SingleSourcePackage.java:36)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClassInternal(BundleLoader.java:391)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:345)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:337)
+	at org.eclipse.osgi.internal.loader.ModuleClassLoader.loadClass(ModuleClassLoader.java:160)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+	at de.schenk.jrtrace.enginex.testscripts.EngineXDetailsTest.test35EnsureTypeOfXExceptionIsChecked(EngineXDetailsTest.java:545)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at org.junit.runners.Suite.runChild(Suite.java:127)
+	at org.junit.runners.Suite.runChild(Suite.java:26)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:675)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.pde.internal.junit.runtime.RemotePluginTestRunner.main(RemotePluginTestRunner.java:62)
+	at org.eclipse.pde.internal.junit.runtime.PlatformUITestHarness$1.run(PlatformUITestHarness.java:47)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:136)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4147)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3764)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$9.run(PartRenderingEngine.java:1151)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1032)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:148)
+	at org.eclipse.ui.internal.Workbench$5.run(Workbench.java:636)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:579)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:150)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:135)
+	at org.eclipse.pde.internal.junit.runtime.NonUIThreadTestApplication.runApp(NonUIThreadTestApplication.java:54)
+	at org.eclipse.pde.internal.junit.runtime.UITestApplication.runApp(UITestApplication.java:47)
+	at org.eclipse.pde.internal.junit.runtime.NonUIThreadTestApplication.start(NonUIThreadTestApplication.java:48)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:196)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:134)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:104)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:380)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:235)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:648)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:603)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1465)
+	at org.eclipse.equinox.launcher.Main.main(Main.java:1438)
+13:09:45.732 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test17
+13:09:45.736 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test17
+13:09:45.739 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test17Script method: doit
+13:09:45.745 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test17 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.748 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test17Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.764 Applying rules to class:org/eclipse/jdt/ui/text/JavaSourceViewerConfiguration
+13:09:45.769 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.772 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.775 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.787 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.791 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.797 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.801 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.803 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.804 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.806 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.807 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.809 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.810 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.812 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.814 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.818 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.821 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.825 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.826 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.828 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.833 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.836 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.838 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.840 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.844 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.847 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.850 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.854 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.857 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.868 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.870 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.871 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.873 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.875 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.877 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.879 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.881 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.882 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.884 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.886 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.888 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.889 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.891 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.893 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.895 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.897 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.ProblemCaseJavaSourceViewerconfiguration method: doit
+13:09:45.902 Writing bytes before/after transformation of class org/eclipse/jdt/ui/text/JavaSourceViewerConfiguration to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.905 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test29
+13:09:45.907 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test29
+13:09:45.911 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test29Script method: instr
+13:09:45.915 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test29 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.918 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test29Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.922 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test29Script$1 with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:45.926 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test39
+13:09:45.928 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test39
+13:09:45.930 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test39Script method: onStaticMethodInvoke
+13:09:45.932 Skipped applying jrtrace class de/schenk/jrtrace/enginex/testclasses/Test39Script to class de/schenk/jrtrace/enginex/testscripts/Test39 due to runtime exception
+java.lang.RuntimeException: Type mismatch: @XLocation.REPLACE_INVOCATION requires that the return type java.lang.String of the injected method onStaticMethodInvoke is assignable to the return type long of the replaced method invocation to method currentTimeMillis.
+	at de.schenk.jrtrace.helper.JRTraceMethodVisitor.fatal(JRTraceMethodVisitor.java:808)
+	at de.schenk.jrtrace.helper.JRTraceMethodVisitor.visitMethodInsn(JRTraceMethodVisitor.java:219)
+	at de.schenk.objectweb.asm.tree.MethodInsnNode.accept(MethodInsnNode.java:133)
+	at de.schenk.objectweb.asm.tree.InsnList.accept(InsnList.java:162)
+	at de.schenk.objectweb.asm.tree.MethodNode.accept(MethodNode.java:816)
+	at de.schenk.objectweb.asm.commons.JSRInlinerAdapter.visitEnd(JSRInlinerAdapter.java:187)
+	at de.schenk.objectweb.asm.ClassReader.readMethod(ClassReader.java:1021)
+	at de.schenk.objectweb.asm.ClassReader.accept(ClassReader.java:693)
+	at de.schenk.objectweb.asm.ClassReader.accept(ClassReader.java:506)
+	at de.schenk.jrtrace.helper.JRTraceOneClassTransformer.applyEngineXMethods(JRTraceOneClassTransformer.java:64)
+	at de.schenk.jrtrace.helper.JRTraceOneClassTransformer.doTransform(JRTraceOneClassTransformer.java:125)
+	at de.schenk.jrtrace.helperagent.JRTraceClassFileTransformer.transform(JRTraceClassFileTransformer.java:22)
+	at sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:428)
+	at java.lang.ClassLoader.defineClass1(Native Method)
+	at java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+	at org.eclipse.osgi.internal.loader.ModuleClassLoader.defineClass(ModuleClassLoader.java:272)
+	at org.eclipse.osgi.internal.loader.classpath.ClasspathManager.defineClass(ClasspathManager.java:632)
+	at org.eclipse.osgi.internal.loader.classpath.ClasspathManager.findClassImpl(ClasspathManager.java:588)
+	at org.eclipse.osgi.internal.loader.classpath.ClasspathManager.findLocalClassImpl(ClasspathManager.java:540)
+	at org.eclipse.osgi.internal.loader.classpath.ClasspathManager.findLocalClass(ClasspathManager.java:527)
+	at org.eclipse.osgi.internal.loader.ModuleClassLoader.findLocalClass(ModuleClassLoader.java:324)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findLocalClass(BundleLoader.java:320)
+	at org.eclipse.osgi.internal.loader.sources.SingleSourcePackage.loadClass(SingleSourcePackage.java:36)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClassInternal(BundleLoader.java:391)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:345)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:337)
+	at org.eclipse.osgi.internal.loader.ModuleClassLoader.loadClass(ModuleClassLoader.java:160)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+	at de.schenk.jrtrace.enginex.testscripts.EngineXDetailsTest.test39ErrorMessageForInvalidReturnTypeOnReplaceInvoke(EngineXDetailsTest.java:617)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at org.junit.runners.Suite.runChild(Suite.java:127)
+	at org.junit.runners.Suite.runChild(Suite.java:26)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:675)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.pde.internal.junit.runtime.RemotePluginTestRunner.main(RemotePluginTestRunner.java:62)
+	at org.eclipse.pde.internal.junit.runtime.PlatformUITestHarness$1.run(PlatformUITestHarness.java:47)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:136)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:4147)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3764)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine$9.run(PartRenderingEngine.java:1151)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+	at org.eclipse.e4.ui.internal.workbench.swt.PartRenderingEngine.run(PartRenderingEngine.java:1032)
+	at org.eclipse.e4.ui.internal.workbench.E4Workbench.createAndRunUI(E4Workbench.java:148)
+	at org.eclipse.ui.internal.Workbench$5.run(Workbench.java:636)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:579)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:150)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:135)
+	at org.eclipse.pde.internal.junit.runtime.NonUIThreadTestApplication.runApp(NonUIThreadTestApplication.java:54)
+	at org.eclipse.pde.internal.junit.runtime.UITestApplication.runApp(UITestApplication.java:47)
+	at org.eclipse.pde.internal.junit.runtime.NonUIThreadTestApplication.start(NonUIThreadTestApplication.java:48)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:196)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:134)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:104)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:380)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:235)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:648)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:603)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1465)
+	at org.eclipse.equinox.launcher.Main.main(Main.java:1438)
+13:09:45.951 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test40
+13:09:45.954 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test40
+13:09:45.956 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test40Script method: onexit
+13:09:45.961 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test40 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.964 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test40$Test40Inner
+13:09:45.968 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test40$Test40Inner to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:45.970 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test40Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@4a49919c
+13:09:45.974 Applying rules to class:de/schenk/jrtrace/commonsuper/test/CSCore
+13:09:46.008 Applying rules to class:de/schenk/jrtrace/commonsuper/test/CSCore
+13:09:46.009 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.CSCoreScript method: testinstrumentation
+13:09:46.040 Writing bytes before/after transformation of class de/schenk/jrtrace/commonsuper/test/CSCore to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:46.041 Applying rules to class:de/schenk/jrtrace/commonsuper/test/CSCore2
+13:09:46.044 Writing bytes before/after transformation of class de/schenk/jrtrace/commonsuper/test/CSCore2 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:46.047 Applying rules to class:de/schenk/jrtrace/commonsuper/test/CSCore4
+13:09:46.052 Writing bytes before/after transformation of class de/schenk/jrtrace/commonsuper/test/CSCore4 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:46.058 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.CSCoreScript with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+cscore4 method
+de.schenk.jrtrace.commonsuper.test.CSCore@5516ee5
+13:09:46.067 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test31
+13:09:46.070 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test31
+13:09:46.072 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test31Script method: instr2
+13:09:46.073 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test31Script method: instr
+13:09:46.077 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test31 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:46.081 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test31Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@4a49919c
+13:09:46.083 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test15
+13:09:46.085 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test15
+13:09:46.086 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test15Script method: doit
+13:09:46.089 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test15 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:46.091 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test15Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:46.096 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test15UnannotatedClass with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:46.102 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test32
+13:09:46.104 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test32
+13:09:46.106 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test32Script method: beforeInstr
+13:09:46.107 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test32Script method: afterInstr
+13:09:46.110 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test32 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:46.113 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test32Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@14624acc
+13:09:46.116 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test28
+13:09:46.118 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/Test28
+13:09:46.119 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.Test28Script method: instr
+13:09:46.122 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/Test28 to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:46.123 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test28Script with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@4a49919c
+13:09:46.125 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.Test28Script$1 with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@4a49919c
+13:09:46.128 AgentMain.stop(disconnect:false)
+13:09:46.158 JRTrace Agent launched port:55512 on network interface: <auto>
+13:09:47.704 AgentMain.connect() now connected
+13:09:47.708 Clearing JRTrace classes
+13:09:47.737 Retransforming 49 classes.
+13:09:49.626 JRTraceHelper.addEngineXClass() took 1916 ms.
+13:09:49.681 Retransforming 1 classes.
+13:09:49.681 Applying rules to class:de/schenk/jrtrace/enginex/reinstall/SimpleReinstallClassUnderTest
+13:09:49.684 Instrumentations is including call to class: de.schenk.jrtrace.enginex.reinstall.SimpleReinstallScript method: method
+13:09:49.688 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/reinstall/SimpleReinstallClassUnderTest to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:49.740 JRTraceHelper.addEngineXClass() took 95 ms.
+13:09:49.747 JRTrace class loaded: de.schenk.jrtrace.enginex.reinstall.SimpleReinstallScript with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@497fd334
+13:09:49.766 Retransforming 1 classes.
+13:09:49.766 Applying rules to class:de/schenk/jrtrace/enginex/reinstall/SimpleReinstallClassUnderTest
+13:09:49.768 Instrumentations is including call to class: de.schenk.jrtrace.enginex.reinstall.SimpleReinstallScript method: method
+13:09:49.779 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/reinstall/SimpleReinstallClassUnderTest to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:49.823 JRTraceHelper.addEngineXClass() took 69 ms.
+13:09:49.833 JRTrace class loaded: de.schenk.jrtrace.enginex.reinstall.SimpleReinstallScript with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@50f13494
+In SimpleReinstallClassUnderTest returning 2
+13:09:49.838 AgentMain.stop(disconnect:false)
+Aug 02, 2015 1:09:49 PM ClientCommunicatorAdmin restart
+WARNUNG: Failed to restart: java.rmi.NoSuchObjectException: no such object in table
+13:09:49.877 JRTrace Agent launched port:55519 on network interface: <auto>
+13:09:51.453 AgentMain.connect() now connected
+13:09:51.455 Clearing JRTrace classes
+13:09:51.484 Retransforming 1 classes.
+13:09:51.553 JRTraceHelper.addEngineXClass() took 95 ms.
+13:09:51.608 JRTraceHelper.addEngineXClass() took 19 ms.
+13:09:51.622 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDiagnosticsTest$ExistingClass
+13:09:51.628 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDiagnosticsTest$ExistingClass to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:51.636 Applying rules to class:de.schenk.jrtrace.enginex.testscripts.EngineXDiagnosticsTest$ExistingClass
+13:09:51.639 Writing bytes before/after transformation of class de.schenk.jrtrace.enginex.testscripts.EngineXDiagnosticsTest$ExistingClass to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:51.643 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDiagnosticsTarget
+13:09:51.644 Applying rules to class:de/schenk/jrtrace/enginex/testscripts/EngineXDiagnosticsTarget
+13:09:51.644 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.diagnostics.InjectForDiagnosticsTest method: injector1
+13:09:51.649 Writing bytes before/after transformation of class de/schenk/jrtrace/enginex/testscripts/EngineXDiagnosticsTarget to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:51.655 Applying rules to class:de.schenk.jrtrace.enginex.testscripts.EngineXDiagnosticsTarget
+13:09:51.656 Applying rules to class:de.schenk.jrtrace.enginex.testscripts.EngineXDiagnosticsTarget
+13:09:51.656 Instrumentations is including call to class: de.schenk.jrtrace.enginex.testclasses.diagnostics.InjectForDiagnosticsTest method: injector1
+13:09:51.661 Writing bytes before/after transformation of class de.schenk.jrtrace.enginex.testscripts.EngineXDiagnosticsTarget to directory C:\Users\CDLK\AppData\Local\Temp\
+13:09:51.670 JRTrace class loaded: de.schenk.jrtrace.enginex.testclasses.diagnostics.InjectForDiagnosticsTest with classloader de.schenk.jrtrace.helper.JRTraceClassLoader@4745bcc6
+13:09:51.684 AgentMain.stop(disconnect:false)
+Aug 02, 2015 1:09:51 PM ClientCommunicatorAdmin restart
+WARNUNG: Failed to restart: java.rmi.NoSuchObjectException: no such object in table
