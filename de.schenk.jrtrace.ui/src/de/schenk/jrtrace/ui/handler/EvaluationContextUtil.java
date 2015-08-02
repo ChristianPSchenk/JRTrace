@@ -4,8 +4,11 @@
 package de.schenk.jrtrace.ui.handler;
 
 import org.eclipse.core.expressions.IEvaluationContext;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.part.WorkbenchPart;
@@ -40,7 +43,15 @@ public class EvaluationContextUtil {
 		if (obj == null) {
 			return false;
 		}
-
+		if (obj instanceof IProject) {
+			IProject prj = (IProject) obj;
+			try {
+				if (prj.getNature(JavaCore.NATURE_ID) != null)
+					return true;
+			} catch (CoreException e1) {
+				throw new RuntimeException(e1);
+			}
+		}
 		IJavaProject project = (IJavaProject) Platform.getAdapterManager()
 				.getAdapter(obj, IJavaProject.class);
 		if (project == null) {
