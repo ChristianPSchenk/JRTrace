@@ -1,6 +1,6 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.ui.views;
 
 import java.util.HashMap;
@@ -356,10 +356,14 @@ public class JRTraceDiagnosticsView extends ViewPart implements
 		if (member != null) {
 
 			if (member.getDeclaringType() != null) {
+				String methodName = member.getElementName();
+				if (member.getDeclaringType().getElementName()
+						.equals(methodName)) {
+					methodName = "<init>";
+				}
 				JRTraceDiagnosticsJob job = new JRTraceDiagnosticsJob(member
 						.getDeclaringType().getFullyQualifiedName(),
-						new DiagnosticJobCompletedListener(member
-								.getElementName()));
+						new DiagnosticJobCompletedListener(methodName));
 
 				job.schedule();
 			}
