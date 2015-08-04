@@ -56,10 +56,11 @@ public class AgentMain {
 	 * @param args
 	 * @param inst
 	 */
-	public static void launch(int port, String server, Instrumentation inst) {
+	public static void launch(AgentArgs args, Instrumentation inst) {
 		JRLog.debug(String.format(
 				"JRTrace Agent launched port:%d on network interface: %s",
-				port, server == null ? "<auto>" : server));
+				args.getPort(),
+				args.getServer() == null ? "<auto>" : args.getServer()));
 
 		if (theAgent != null) {
 			theAgent.stop(false);
@@ -69,7 +70,7 @@ public class AgentMain {
 		InstrumentationUtil.setInstrumentation(inst);
 
 		theAgent = new AgentMain();
-		theAgent.start(port, server);
+		theAgent.start(args);
 
 	}
 
@@ -116,7 +117,7 @@ public class AgentMain {
 
 	}
 
-	private void startMXBeanServer(int port, String server) {
+	private void startMXBeanServer(int port, String server, int buffersize) {
 
 		synchronized (AgentMain.class) {
 
@@ -127,6 +128,9 @@ public class AgentMain {
 			environment.put("com.sun.management.jmxremote.authenticate",
 					"false");
 			environment.put("com.sun.management.jmxremote.ssl", "false");
+
+			environment.put("jmx.remote.x.notification.buffer.size",
+					String.format("%s", buffersize));
 			if (server != null) {
 				System.setProperty("java.rmi.server.hostname", server);
 			}
@@ -163,6 +167,7 @@ public class AgentMain {
 				if (!mbs.isRegistered(mxbeanName)) {
 					mbs.registerMBean(jrtraceBean, mxbeanName);
 				}
+
 			} catch (InstanceAlreadyExistsException
 					| MBeanRegistrationException | NotCompliantMBeanException e) {
 				throw new RuntimeException(e);
@@ -180,13 +185,14 @@ public class AgentMain {
 
 	private boolean stdout_isredirected = false;
 
-	private void start(int port, String server) {
+	private void start(AgentArgs args) {
 
 		loadClass("sun.invoke.util.ValueConversions");
 		loadClass("java.lang.invoke.LambdaForm");
 		loadClass("java.lang.ref.ReferenceQueue");
 
-		startMXBeanServer(port, server);
+		startMXBeanServer(args.getPort(), args.getServer(),
+				args.getNotificationBufferSize());
 
 	}
 

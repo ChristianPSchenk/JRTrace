@@ -1,13 +1,13 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.service.internal;
 
 import javax.management.AttributeChangeNotification;
 import javax.management.Notification;
-import javax.management.NotificationListener;
 
 import de.schenk.jrtrace.service.JRTraceMessageListener;
+import de.schenk.jrtrace.service.NotificationAndErrorListener;
 
 /**
  * 
@@ -16,7 +16,8 @@ import de.schenk.jrtrace.service.JRTraceMessageListener;
  * @author Christian Schenk
  *
  */
-public class RedirectingNotificationListenr implements NotificationListener {
+public class RedirectingNotificationListenr extends
+		NotificationAndErrorListener {
 
 	private JRTraceMessageListener redirect;
 

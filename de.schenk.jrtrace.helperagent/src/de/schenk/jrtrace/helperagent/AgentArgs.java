@@ -1,8 +1,7 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.helperagent;
-
 
 public class AgentArgs {
 
@@ -14,6 +13,14 @@ public class AgentArgs {
 	 * if the computer has multiple network interfaces.
 	 */
 	private String server;
+	/**
+	 * Mainly for testing purposes: set the size of the buffer for outgoing
+	 * notifications/messages to a predefined value. By default the buffer size
+	 * is quite large (100000) but clients should always expect to loose
+	 * notifications and implement handleError() on the
+	 * NotificationAndErrorListener class.
+	 */
+	private int notificationBufferSize = 100000;
 
 	public AgentArgs(String args) {
 		String[] entries = args.split(",");
@@ -30,6 +37,10 @@ public class AgentArgs {
 				break;
 			case "server":
 				this.server = keyvalue[1];
+				break;
+			case "notificationBufferSize":
+				this.notificationBufferSize = Integer.parseInt(keyvalue[1]);
+				break;
 			}
 
 		}
@@ -48,4 +59,7 @@ public class AgentArgs {
 		return server;
 	}
 
+	public int getNotificationBufferSize() {
+		return notificationBufferSize;
+	}
 }

@@ -1,6 +1,6 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.helperagent;
 
 import java.io.IOException;
@@ -38,7 +38,7 @@ public class AgentStarter {
 					+ agentArgs.getBootJar());
 		}
 
-		AgentMain.launch(agentArgs.getPort(), agentArgs.getServer(), inst);
+		AgentMain.launch(agentArgs, inst);
 
 	}
 

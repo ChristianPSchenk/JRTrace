@@ -35,6 +35,7 @@ import de.schenk.jrtrace.helperlib.status.StatusState;
 import de.schenk.jrtrace.service.ICancelable;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceMessageListener;
+import de.schenk.jrtrace.service.NotificationAndErrorListener;
 
 abstract public class AbstractVM implements IJRTraceVM {
 
@@ -370,7 +371,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 
 	@Override
 	public void addClientListener(String notifyId,
-			NotificationListener streamReceiver) {
+			NotificationAndErrorListener streamReceiver) {
 
 		mxbeanListener.addClientListener(notifyId, streamReceiver);
 
@@ -415,7 +416,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 
 	@Override
 	public void removeClientListener(String notifyId,
-			NotificationListener listener) {
+			NotificationAndErrorListener listener) {
 		mxbeanListener.removeClientListener(notifyId, listener);
 
 	}

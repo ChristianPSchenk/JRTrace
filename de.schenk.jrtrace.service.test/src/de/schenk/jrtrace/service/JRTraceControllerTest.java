@@ -9,7 +9,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import javax.management.Notification;
-import javax.management.NotificationListener;
 
 import org.junit.After;
 import org.junit.Before;
@@ -24,7 +23,7 @@ import de.schenk.objectweb.asm.addons.ClassByteUtil;
 
 public class JRTraceControllerTest {
 
-	public class ErrorReceiver implements NotificationListener {
+	public class ErrorReceiver extends NotificationAndErrorListener {
 
 		boolean error = false;
 
@@ -151,12 +150,10 @@ public class JRTraceControllerTest {
 			}
 			Thread.sleep(500);
 			tries++;
-			if (tries > 20)
-			{
+			if (tries > 20) {
 				System.out.println("List of processes returned by getVMs():");
-				for(VMInfo vm:vms)
-				{
-					System.out.println(vm.getId()+":"+vm.getName());
+				for (VMInfo vm : vms) {
+					System.out.println(vm.getId() + ":" + vm.getName());
 				}
 				fail("The java process with name"
 						+ javaUtil.getQualifiedTestClassName()

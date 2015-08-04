@@ -1,11 +1,10 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.ui.debug;
 
 import javax.management.AttributeChangeNotification;
 import javax.management.Notification;
-import javax.management.NotificationListener;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -13,9 +12,38 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import de.schenk.jrtrace.helperlib.NotificationConstants;
 import de.schenk.jrtrace.service.IJRTraceVM;
+import de.schenk.jrtrace.service.NotificationAndErrorListener;
 
-abstract public class ProgressReportingJob extends Job implements
-		NotificationListener {
+abstract public class ProgressReportingJob extends Job {
+
+	class ProgressNotificationListener extends NotificationAndErrorListener {
+		@Override
+		public void handleNotification(Notification notification,
+				Object handback) {
+
+			AttributeChangeNotification a = (AttributeChangeNotification) notification;
+			Integer current = (Integer) a.getOldValue();
+			Integer total = (Integer) a.getNewValue();
+
+			if (monitor.isCanceled()) {
+				getMachine().abort();
+			}
+			if (current == 0) {
+				monitor.beginTask(a.getMessage(), total);
+				work = 0;
+			}
+			if (total == current) {
+				monitor.done();
+			} else {
+				monitor.worked(current - work);
+				work = current;
+			}
+
+		}
+
+	}
+
+	private ProgressNotificationListener theProgressListener = new ProgressNotificationListener();
 
 	private IProgressMonitor monitor;
 
@@ -39,12 +67,12 @@ abstract public class ProgressReportingJob extends Job implements
 		this.monitor = monitor;
 		IStatus result = null;
 		getMachine().addClientListener(NotificationConstants.NOTIFY_PROGRESS,
-				this);
+				theProgressListener);
 		try {
 			result = run();
 		} finally {
 			getMachine().removeClientListener(
-					NotificationConstants.NOTIFY_PROGRESS, this);
+					NotificationConstants.NOTIFY_PROGRESS, theProgressListener);
 		}
 		return result;
 
@@ -53,28 +81,5 @@ abstract public class ProgressReportingJob extends Job implements
 	abstract protected IStatus run();
 
 	int work;
-
-	@Override
-	public void handleNotification(Notification notification, Object handback) {
-
-		AttributeChangeNotification a = (AttributeChangeNotification) notification;
-		Integer current = (Integer) a.getOldValue();
-		Integer total = (Integer) a.getNewValue();
-
-		if (monitor.isCanceled()) {
-			getMachine().abort();
-		}
-		if (current == 0) {
-			monitor.beginTask(a.getMessage(), total);
-			work = 0;
-		}
-		if (total == current) {
-			monitor.done();
-		} else {
-			monitor.worked(current - work);
-			work = current;
-		}
-
-	}
 
 }

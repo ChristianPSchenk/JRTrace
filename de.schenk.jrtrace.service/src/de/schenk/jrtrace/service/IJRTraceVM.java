@@ -5,8 +5,6 @@ package de.schenk.jrtrace.service;
 
 import java.util.Properties;
 
-import javax.management.NotificationListener;
-
 import de.schenk.jrtrace.helperlib.status.InjectStatus;
 
 /**
@@ -163,7 +161,8 @@ public interface IJRTraceVM {
 	 *            {@link de.schenk.jrtrace.helperlib.NotificationConstants.NOTIFY_MESSAGE}
 	 * @param streamReceiver
 	 */
-	void addClientListener(String notifyId, NotificationListener streamReceiver);
+	void addClientListener(String notifyId,
+			NotificationAndErrorListener streamReceiver);
 
 	/**
 	 * Add a listener that will be informed on connection loss.
@@ -182,7 +181,8 @@ public interface IJRTraceVM {
 	 * @param listener
 	 *            the listener to remove
 	 */
-	void removeClientListener(String notifyId, NotificationListener listener);
+	void removeClientListener(String notifyId,
+			NotificationAndErrorListener listener);
 
 	/**
 	 * sends an abort event to the machine. Any ongoning work will be

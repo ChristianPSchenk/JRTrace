@@ -13,11 +13,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.management.AttributeChangeNotification;
 import javax.management.Notification;
-import javax.management.NotificationListener;
 
 import org.junit.After;
 import org.junit.Before;
@@ -26,6 +28,7 @@ import org.junit.Test;
 import de.schenk.jrtrace.helperlib.NotificationConstants;
 import de.schenk.jrtrace.service.test.utils.JavaUtil;
 import de.schenk.jrtrace.service.test.utils.TestProcessCommunication;
+import de.schenk.jrtrace.service.test.utils.TestProcessHeavyLoadCommunication;
 import de.schenk.jrtrace.service.test.utils.TestProcessInstrumenter;
 
 public class JRTraceConnectToLaunchedAgentTest {
@@ -100,7 +103,7 @@ public class JRTraceConnectToLaunchedAgentTest {
 		final String[] receivedData = new String[1];
 		final int[] receivedInt = new int[1];
 
-		NotificationListener streamReceiver = new NotificationListener() {
+		NotificationAndErrorListener streamReceiver = new NotificationAndErrorListener() {
 
 			@Override
 			public void handleNotification(Notification notification,
@@ -151,6 +154,148 @@ public class JRTraceConnectToLaunchedAgentTest {
 		barrier.await();
 
 		assertEquals("pong", receivedData[0]);
+		assertTrue(mach.detach());
+	}
+
+	@Test
+	public void testHeavyTransferTargetToDeveloper() throws Exception {
+
+		port = javaUtil.launchJavaProcessWithAgent(null);
+		IJRTraceVM mach = bmController.getMachine(port, null);
+		attachToMachineAndInstallJRTraceClass(mach,
+				TestProcessHeavyLoadCommunication.class);
+
+		final CyclicBarrier barrier = new CyclicBarrier(2);
+
+		final int[] lastint = new int[1];
+		final int[] counter = new int[1];
+
+		NotificationAndErrorListener streamReceiver = new NotificationAndErrorListener() {
+
+			@Override
+			public void handleNotification(Notification notification,
+					Object handback) {
+				try {
+					AttributeChangeNotification anot = (AttributeChangeNotification) notification;
+					Object userData = anot.getOldValue();
+					if (userData instanceof Integer) {
+						Integer data = (Integer) userData;
+						if (data - 1 != lastint[0])
+							System.out.println("order violation");
+						// fail(String
+						// .format("order violation, received %d, last was %d",
+						// data, lastint[0]));
+						lastint[0] = data;
+						if (lastint[0] == 9999)
+							barrier.await();
+
+					} else {
+						counter[0]++;
+
+					}
+
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				} catch (BrokenBarrierException e) {
+					throw new RuntimeException(e);
+				}
+
+			}
+		};
+		mach.addClientListener(NotificationConstants.NOTIFY_MESSAGE,
+				streamReceiver);
+		if (!mach
+				.invokeMethodAsync(
+						null,
+						"de.schenk.jrtrace.service.test.utils.TestProcessHeavyLoadCommunication",
+						"callTrigger") /*
+										 * on purpose using null as argument
+										 * here to test that this is properly
+										 * wrapped to a Object[]{null}
+										 */) {
+			mach.getLastError().printStackTrace();
+			fail("runjava callTrigger failed");
+		}
+
+		try {
+
+			barrier.await(100, TimeUnit.SECONDS);
+		} catch (TimeoutException t) {
+			fail("Timed out waiting for all messages to come");
+		}
+
+		assertTrue(mach.detach());
+	}
+
+	@Test
+	public void testMessageLossReported() throws Exception {
+
+		port = javaUtil.launchJavaProcessWithAgent(null, 5);
+		IJRTraceVM mach = bmController.getMachine(port, null);
+		attachToMachineAndInstallJRTraceClass(mach,
+				TestProcessHeavyLoadCommunication.class);
+
+		final CountDownLatch barrier = new CountDownLatch(1);
+
+		final boolean[] messageLost = new boolean[1];
+		messageLost[0] = false;
+		final int[] lastint = new int[1];
+		final int[] counter = new int[1];
+
+		NotificationAndErrorListener streamReceiver = new NotificationAndErrorListener() {
+
+			@Override
+			public void handleError() {
+				messageLost[0] = true;
+				try {
+					barrier.countDown();
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+
+			@Override
+			public void handleNotification(Notification notification,
+					Object handback) {
+				try {
+					AttributeChangeNotification anot = (AttributeChangeNotification) notification;
+					Object userData = anot.getOldValue();
+					if (userData instanceof Integer) {
+						Integer data = (Integer) userData;
+						if (data - 1 != lastint[0]) {
+							System.out.println("The expected order violation");
+
+						}
+
+					} else {
+						counter[0]++;
+
+					}
+
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+
+			}
+		};
+		mach.addClientListener(NotificationConstants.NOTIFY_MESSAGE,
+				streamReceiver);
+		if (!mach
+				.invokeMethodAsync(
+						null,
+						"de.schenk.jrtrace.service.test.utils.TestProcessHeavyLoadCommunication",
+						"callTrigger") /*
+										 * on purpose using null as argument
+										 * here to test that this is properly
+										 * wrapped to a Object[]{null}
+										 */) {
+			mach.getLastError().printStackTrace();
+			fail("runjava callTrigger failed");
+		}
+
+		barrier.await(100, TimeUnit.SECONDS);
+
+		assertTrue(messageLost[0]);
 		assertTrue(mach.detach());
 	}
 

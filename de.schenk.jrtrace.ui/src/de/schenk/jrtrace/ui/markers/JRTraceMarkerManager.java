@@ -1,6 +1,6 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.ui.markers;
 
 import java.util.HashSet;
@@ -8,7 +8,6 @@ import java.util.Set;
 
 import javax.management.AttributeChangeNotification;
 import javax.management.Notification;
-import javax.management.NotificationListener;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -25,6 +24,7 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.search.SearchMatch;
 
 import de.schenk.jrtrace.helperlib.NotificationConstants;
+import de.schenk.jrtrace.service.NotificationAndErrorListener;
 import de.schenk.jrtrace.ui.JRTraceUIActivator;
 import de.schenk.jrtrace.ui.debug.JRTraceDebugTarget;
 import de.schenk.jrtrace.ui.debug.MarkerCreateInfo;
@@ -33,7 +33,7 @@ import de.schenk.jrtrace.ui.debug.MarkerCreateInfo;
  * responsible for keeping the rules in the specified projects in sync with the
  * target
  */
-public class JRTraceMarkerManager implements NotificationListener {
+public class JRTraceMarkerManager extends NotificationAndErrorListener {
 	private JRTraceJavaSearch searcher;
 
 	private final class JRTraceMarkerCreateJob extends Job {

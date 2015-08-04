@@ -1,6 +1,6 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.example;
 
 import java.io.IOException;
@@ -107,6 +107,12 @@ public class ExampleApp implements IApplication {
 						jvm.detach();
 					}
 				});
+			}
+
+			@Override
+			public void handleError() {
+				// do nothing
+
 			}
 		});
 

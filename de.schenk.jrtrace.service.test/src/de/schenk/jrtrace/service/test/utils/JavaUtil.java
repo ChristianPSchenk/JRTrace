@@ -52,27 +52,45 @@ public class JavaUtil {
 	}
 
 	/**
+	 * convenience to call launchJavaProcessWithAgent(outputFileName,0)
+	 * 
+	 * @param outputFileName
+	 * @return
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 * @throws InterruptedException
+	 */
+	public int launchJavaProcessWithAgent(String outputFileName)
+			throws IOException, URISyntaxException, InterruptedException {
+		return launchJavaProcessWithAgent(outputFileName, 0);
+	}
+
+	/**
 	 * launches the java test process with an agent listening on a free port
 	 * 
 	 * @param outputFileName
 	 *            : if, set the testprocess will write an outputfile to this
 	 *            location containing the value int
 	 * 
-	 * 
+	 * @param buffersize
+	 *            to set a non-default notification buffer size for JMX
+	 *            messages, 0 for default.
 	 * @return
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 * @throws InterruptedException
 	 * @returns the port with which the agent was started.
 	 */
-	public int launchJavaProcessWithAgent(String outputFileName)
+	public int launchJavaProcessWithAgent(String outputFileName, int buffersize)
 			throws IOException, URISyntaxException, InterruptedException {
 		int freePort = PortUtil.getFreePort();
 		String agentPath = JarLocator.getJRTraceHelperAgent();
 		String bootjarPath = JarLocator.getHelperLibJar();
 		String prop = String.format("-javaagent:%s=port=%d,bootjar=%s",
 				agentPath, freePort, bootjarPath);
-
+		if (buffersize != 0)
+			prop = String.format("%s,notificationBufferSize=%d", prop,
+					buffersize);
 		launchJavaProcess(prop, outputFileName);
 		return freePort;
 	}

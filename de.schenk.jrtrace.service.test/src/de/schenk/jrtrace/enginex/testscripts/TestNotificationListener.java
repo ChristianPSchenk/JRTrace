@@ -1,6 +1,6 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.enginex.testscripts;
 
 import java.util.concurrent.BrokenBarrierException;
@@ -9,9 +9,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import javax.management.Notification;
-import javax.management.NotificationListener;
 
-public class TestNotificationListener implements NotificationListener {
+import de.schenk.jrtrace.service.NotificationAndErrorListener;
+
+public class TestNotificationListener extends NotificationAndErrorListener {
 
 	@Override
 	public void handleNotification(Notification notification, Object handback) {

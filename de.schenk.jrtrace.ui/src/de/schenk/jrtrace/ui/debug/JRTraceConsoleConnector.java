@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.management.Notification;
-import javax.management.NotificationListener;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -20,6 +19,7 @@ import org.eclipse.ui.console.MessageConsoleStream;
 
 import de.schenk.jrtrace.helperlib.NotificationConstants;
 import de.schenk.jrtrace.service.IJRTraceVM;
+import de.schenk.jrtrace.service.NotificationAndErrorListener;
 
 public class JRTraceConsoleConnector {
 	String title = "";
@@ -76,7 +76,7 @@ public class JRTraceConsoleConnector {
 
 	}
 
-	class StreamReceiver implements NotificationListener {
+	class StreamReceiver extends NotificationAndErrorListener {
 		private MessageConsoleStream stream;
 
 		public StreamReceiver(MessageConsoleStream theStream) {
