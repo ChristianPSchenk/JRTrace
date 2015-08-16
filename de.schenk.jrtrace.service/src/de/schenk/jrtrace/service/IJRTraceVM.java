@@ -231,4 +231,21 @@ public interface IJRTraceVM {
 	 */
 	InjectStatus analyzeInjectionStatus(String className);
 
+	/**
+	 * By default, message are sent from the target to the development machine
+	 * without any validation. Since messages are sent using JMX messages, some
+	 * messages might be dropped under high load.
+	 * 
+	 * This can be avoided by requesting blocking communication: the target will
+	 * request an acknowledgement from the development machine and further send
+	 * requests will block the target machine until the acknowledgement arrives.
+	 * 
+	 * This is potentially dangerous for the target JVM, because the thread that
+	 * sends the message will be blocked and not execute further.
+	 * 
+	 * @param n
+	 *            0: non-blocking communication, n>5: blocking communication.
+	 */
+	void setAcknowledgementMode(int n);
+
 }

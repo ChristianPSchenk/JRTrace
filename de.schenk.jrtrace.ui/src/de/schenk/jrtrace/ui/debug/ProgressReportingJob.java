@@ -18,8 +18,7 @@ abstract public class ProgressReportingJob extends Job {
 
 	class ProgressNotificationListener extends NotificationAndErrorListener {
 		@Override
-		public void handleNotification(Notification notification,
-				Object handback) {
+		public void sendMessage(Notification notification) {
 
 			AttributeChangeNotification a = (AttributeChangeNotification) notification;
 			Integer current = (Integer) a.getOldValue();

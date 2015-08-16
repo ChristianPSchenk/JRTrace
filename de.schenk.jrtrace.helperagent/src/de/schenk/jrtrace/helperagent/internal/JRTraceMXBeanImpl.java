@@ -1,6 +1,6 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.helperagent.internal;
 
 import java.io.File;
@@ -25,8 +25,19 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 		JRTraceMXBean, INotificationSender {
 
 	private AgentMain agent;
+	private ICommunicationController communicationController;
 
 	public JRTraceMXBeanImpl(AgentMain agent) {
+		this.communicationController = new CommunicationController(
+				new INotificationSender() {
+
+					@Override
+					public void sendMessage(Notification notification) {
+						JRTraceMXBeanImpl.super.sendNotification(notification);
+
+					}
+				});
+		// communicationController.setAcknowledgementMode(10);
 		this.agent = agent;
 	}
 
@@ -95,7 +106,7 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 
 	@Override
 	public void sendMessage(Notification notification) {
-		this.sendNotification(notification);
+		communicationController.sendMessage(notification);
 
 	}
 
@@ -133,5 +144,17 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 
 		InjectStatus status = JRTraceHelper.analyzeInjectionStatus(className);
 		return SerializationUtil.serialize(status);
+	}
+
+	@Override
+	public void setAcknowledgementMode(int n) {
+		communicationController.setAcknowledgementMode(n);
+
+	}
+
+	@Override
+	public void acknowledge(long id) {
+		communicationController.acknowledge(id);
+
 	}
 }

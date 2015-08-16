@@ -8,4 +8,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Eclipse-BundleShape: dir
 Require-Bundle: de.schenk.jrtrace.helperlib,
  org.eclipse.osgi
-Export-Package: de.schenk.jrtrace.helperagent
+Export-Package: de.schenk.jrtrace.helperagent,
+ de.schenk.jrtrace.helperagent.internal;x-friends:=de.schenk.jrtrace.service.test

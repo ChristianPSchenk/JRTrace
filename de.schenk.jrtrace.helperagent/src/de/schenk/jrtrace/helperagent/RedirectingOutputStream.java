@@ -64,8 +64,8 @@ public class RedirectingOutputStream extends OutputStream {
 			try {
 				inSend = true;
 
-				bean.sendMessage(new Notification(comId, NotificationUtil
-						.getJRTraceObjectName(), sequence++, msg));
+				NotificationUtil.sendNotification(new Notification(comId,
+						NotificationUtil.getJRTraceObjectName(), 0, msg));
 
 			} finally {
 				inSend = false;

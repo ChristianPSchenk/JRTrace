@@ -1,6 +1,6 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.ui.launch;
 
 import org.eclipse.core.resources.IProject;
@@ -70,6 +70,7 @@ public class JRTraceLaunchShortcut implements ILaunchShortcut {
 					configuration.setAttribute(ConnectionTab.BM_AUTOCONNECT,
 							false);
 					configuration.setAttribute(ConnectionTab.BM_VERBOSE, false);
+					configuration.setAttribute(ConnectionTab.BM_COM_MODE, 0);
 					configuration.setAttribute(ConnectionTab.BM_UPLOADAGENT,
 							true);
 					configuration.setAttribute(

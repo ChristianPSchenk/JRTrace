@@ -91,7 +91,7 @@ public class JRTraceMarkerManager extends NotificationAndErrorListener {
 				MarkerCreateInfo f) {
 			IMarker marker = null;
 			IType theClass = null;
-			System.out.println("i");
+
 			try {
 				String searchName = f.getClassName();
 				if (searchName != null && searchName.contains("$")) {
@@ -190,7 +190,7 @@ public class JRTraceMarkerManager extends NotificationAndErrorListener {
 	}
 
 	@Override
-	public void handleNotification(Notification notification, Object handback) {
+	public void sendMessage(Notification notification) {
 		AttributeChangeNotification not = (AttributeChangeNotification) notification;
 
 		String classname = (String) not.getOldValue();

@@ -1,9 +1,9 @@
 package de.schenk.jrtrace.service;
 
-import javax.management.NotificationListener;
+import de.schenk.jrtrace.helper.INotificationSender;
 
 public abstract class NotificationAndErrorListener implements
-		NotificationListener {
+		INotificationSender {
 
 	/**
 	 * Invoked, when a message loss is detected. Clients that rely on all

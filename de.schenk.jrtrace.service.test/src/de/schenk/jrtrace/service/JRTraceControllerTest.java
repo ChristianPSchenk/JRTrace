@@ -28,8 +28,7 @@ public class JRTraceControllerTest {
 		boolean error = false;
 
 		@Override
-		public void handleNotification(Notification notification,
-				Object handback) {
+		public void sendMessage(Notification notification) {
 			error = true;
 
 		}

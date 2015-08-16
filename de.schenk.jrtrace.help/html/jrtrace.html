@@ -292,6 +292,18 @@ Note: as of today, only the classes from the bin folder will be deployed into th
 since they will not be injected.
 </p>
 
+<p>
+<h4>Communication Mode</h4>
+The target will redirect the standard output and error to the development machine. Also other messages might be sent: infos on progress,
+error information to be shown in the IDE.
+<ul>
+<li> By default the non-blocking communication may drop messages silently. This is due to the desing consideration in JMX, that
+a client shouldn't be stopped in its execution because it cannot transmit messages fast enough. Therefore in non-blocking mode, it might happen, that some system output is not redirected but dropped.
+</li><li>
+To avoid dropping messages, the blocking mode can be enabled. This will ensure that no messages are dropped, but may block the target machine until the messages are transmitted. Depending on the target application that might
+be a problem or not. </li>
+</ul>
+</p>
 
 
 

@@ -106,8 +106,7 @@ public class JRTraceConnectToLaunchedAgentTest {
 		NotificationAndErrorListener streamReceiver = new NotificationAndErrorListener() {
 
 			@Override
-			public void handleNotification(Notification notification,
-					Object handback) {
+			public void sendMessage(Notification notification) {
 				AttributeChangeNotification anot = (AttributeChangeNotification) notification;
 				Object userData = anot.getOldValue();
 				if (userData instanceof Object[]) {
@@ -173,8 +172,7 @@ public class JRTraceConnectToLaunchedAgentTest {
 		NotificationAndErrorListener streamReceiver = new NotificationAndErrorListener() {
 
 			@Override
-			public void handleNotification(Notification notification,
-					Object handback) {
+			public void sendMessage(Notification notification) {
 				try {
 					AttributeChangeNotification anot = (AttributeChangeNotification) notification;
 					Object userData = anot.getOldValue();
@@ -255,8 +253,7 @@ public class JRTraceConnectToLaunchedAgentTest {
 			}
 
 			@Override
-			public void handleNotification(Notification notification,
-					Object handback) {
+			public void sendMessage(Notification notification) {
 				try {
 					AttributeChangeNotification anot = (AttributeChangeNotification) notification;
 					Object userData = anot.getOldValue();

@@ -16,18 +16,18 @@ import de.schenk.jrtrace.service.NotificationAndErrorListener;
  * @author Christian Schenk
  *
  */
-public class RedirectingNotificationListenr extends
+public class RedirectingNotificationListener extends
 		NotificationAndErrorListener {
 
 	private JRTraceMessageListener redirect;
 
-	public RedirectingNotificationListenr(
+	public RedirectingNotificationListener(
 			JRTraceMessageListener jrTraceMessageListener) {
 		this.redirect = jrTraceMessageListener;
 	}
 
 	@Override
-	public void handleNotification(Notification notification, Object handback) {
+	public void sendMessage(Notification notification) {
 		AttributeChangeNotification attr = (AttributeChangeNotification) notification;
 		redirect.handleMessageReceived(attr.getOldValue());
 	}
@@ -39,9 +39,9 @@ public class RedirectingNotificationListenr extends
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof RedirectingNotificationListenr))
+		if (!(obj instanceof RedirectingNotificationListener))
 			return false;
-		RedirectingNotificationListenr objred = (RedirectingNotificationListenr) obj;
+		RedirectingNotificationListener objred = (RedirectingNotificationListener) obj;
 		return this.redirect.equals(objred);
 	}
 

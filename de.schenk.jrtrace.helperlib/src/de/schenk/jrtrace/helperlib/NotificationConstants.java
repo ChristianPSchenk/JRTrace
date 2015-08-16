@@ -1,6 +1,6 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.helperlib;
 
 public interface NotificationConstants {
@@ -30,4 +30,10 @@ public interface NotificationConstants {
 	 * constant
 	 */
 	public static final String NOTIFY_MESSAGE = "message";
+	/**
+	 * Send by the server to the client to request an acknowledgement for this
+	 * message. The server will block if the acknowledgement request is not
+	 * acknowledged after the defined number of messages.
+	 */
+	public static final String NOTIFY_ACKNOWLEDGEREQUEST = "ackn_req";
 }

@@ -84,8 +84,7 @@ public class JRTraceConsoleConnector {
 		}
 
 		@Override
-		public void handleNotification(Notification notification,
-				Object handback) {
+		public void sendMessage(Notification notification) {
 			String clientSentence = notification.getMessage();
 			if (clientSentence != null) {
 				if (stream != null && !stream.isClosed()) {

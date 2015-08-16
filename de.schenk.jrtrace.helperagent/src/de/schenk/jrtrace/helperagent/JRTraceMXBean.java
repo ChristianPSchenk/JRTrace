@@ -1,9 +1,9 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.helperagent;
 
-public interface JRTraceMXBean {
+public interface JRTraceMXBean extends ICommunicationControl {
 
 	/**
 	 * Establish the connection

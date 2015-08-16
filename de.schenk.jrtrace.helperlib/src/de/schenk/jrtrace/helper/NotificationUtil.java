@@ -16,8 +16,6 @@ public class NotificationUtil {
 
 	private static INotificationSender notificationSender;
 
-	private static int sequenceNumber = 0;
-
 	public static void setNotificationSender(INotificationSender jrtraceBean) {
 		notificationSender = jrtraceBean;
 
@@ -25,15 +23,16 @@ public class NotificationUtil {
 
 	static public void sendNotification(Notification notification) {
 		if (notificationSender != null) {
+
 			notificationSender.sendMessage(notification);
 		}
 	}
 
 	static public void sendProgressNotification(String txt, int done, int total) {
 		Notification not = new AttributeChangeNotification(
-				NotificationUtil.getJRTraceObjectName(), sequenceNumber++,
-				System.nanoTime(), txt, "Progress",
-				NotificationConstants.NOTIFY_PROGRESS, done, total);
+				NotificationUtil.getJRTraceObjectName(), 0, System.nanoTime(),
+				txt, "Progress", NotificationConstants.NOTIFY_PROGRESS, done,
+				total);
 		sendNotification(not);
 	}
 
@@ -49,9 +48,9 @@ public class NotificationUtil {
 	public static void sendProblemNotification(String msg, String className,
 			String methodName, String methodSignature) {
 		Notification not = new AttributeChangeNotification(
-				NotificationUtil.getJRTraceObjectName(), sequenceNumber++,
-				System.nanoTime(), msg, methodSignature,
-				NotificationConstants.NOTIFY_PROBLEM, className, methodName);
+				NotificationUtil.getJRTraceObjectName(), 0, System.nanoTime(),
+				msg, methodSignature, NotificationConstants.NOTIFY_PROBLEM,
+				className, methodName);
 		sendNotification(not);
 	}
 
@@ -62,17 +61,16 @@ public class NotificationUtil {
 	 */
 	public static void sendErrorNotification(String errormessage) {
 		Notification not = new AttributeChangeNotification(
-				NotificationUtil.getJRTraceObjectName(), sequenceNumber++,
-				System.nanoTime(), errormessage, "Error",
-				NotificationConstants.NOTIFY_ERROR, 0, 0);
+				NotificationUtil.getJRTraceObjectName(), 0, System.nanoTime(),
+				errormessage, "Error", NotificationConstants.NOTIFY_ERROR, 0, 0);
 		sendNotification(not);
 	}
 
 	public static void sendMessageNotification(Object msg) {
 		Notification not = new AttributeChangeNotification(
-				NotificationUtil.getJRTraceObjectName(), sequenceNumber++,
-				System.nanoTime(), "msg", "Message",
-				NotificationConstants.NOTIFY_MESSAGE, msg, null);
+				NotificationUtil.getJRTraceObjectName(), 0, System.nanoTime(),
+				"msg", "Message", NotificationConstants.NOTIFY_MESSAGE, msg,
+				null);
 		sendNotification(not);
 
 	}

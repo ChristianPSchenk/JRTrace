@@ -42,6 +42,8 @@ import de.schenk.jrtrace.ui.JRTraceUIActivator;
 
 public class ConnectionTab extends AbstractLaunchConfigurationTab {
 
+	private static final String COM_BLOCKING = "Blocking";
+	private static final String COM_NON_BLOCKING = "Non-Blocking";
 	public static final String BM_PID = "pid";
 	public static final String BM_VERBOSE = "verbose";
 	public static final String BM_DEBUG = "debug";
@@ -53,6 +55,7 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 	public static final String BM_UPLOADAGENT_PORT = "uploadagentport";
 	public static final String BM_SERVER_MACHINE = "targetservermachine";
 	public static final String BM_MY_NETWORK_INTERFACE = "mynetwork";
+	public static final String BM_COM_MODE = "com_mode";
 	private Text pidText;
 	private Text identifyText;
 	private Text rulesProjectName;
@@ -69,6 +72,7 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 	private Button copyJavaParameterButton;
 	private Text serverText;
 	private Combo networkCombo;
+	private Combo comCombo;
 
 	@Override
 	public void createControl(final Composite parent) {
@@ -99,6 +103,8 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 
 		createVerboseCheckbox(box);
 		createDebugCheckbox(box);
+
+		createCommunicationModeCombo(box);
 		setControl(box);
 
 		connectAgent.setSelection(!uploadAgent.getSelection());
@@ -156,6 +162,21 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 					setDirty();
 				}
 			});
+
+		}
+	}
+
+	private void createCommunicationModeCombo(final Composite box) {
+		{
+			Label l = new Label(box, SWT.NONE);
+			l.setText("Communication:");
+			comCombo = new Combo(box, SWT.READ_ONLY);
+			GridData gd2 = new GridData();
+			gd2.horizontalSpan = 2;
+			comCombo.setLayoutData(gd2);
+			comCombo.setItems(new String[] { COM_NON_BLOCKING, COM_BLOCKING });
+			comCombo.select(0);
+			comCombo.setToolTipText("Blocking: System.out and other messages will block the target if they cannot be transmitted fast enough. Non-Blocking: messages might be dropped");
 
 		}
 	}
@@ -529,6 +550,7 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 		configuration.setAttribute(BM_PROJECT_IDENT, "");
 		configuration.setAttribute(BM_DEBUG, false);
 		configuration.setAttribute(BM_AUTOUPLOAD, false);
+		configuration.setAttribute(BM_COM_MODE, 0);
 		configuration.setAttribute(BM_AUTOCONNECT, false);
 		configuration.setAttribute(BM_VERBOSE, false);
 		configuration.setAttribute(BM_UPLOADAGENT, true);
@@ -561,6 +583,8 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 					BM_AUTOUPLOAD, false));
 			verboseButton.setSelection(configuration.getAttribute(BM_VERBOSE,
 					false));
+			int comMode = configuration.getAttribute(BM_COM_MODE, 0);
+			comCombo.select(comMode);
 			uploadAgent.setSelection(configuration.getAttribute(BM_UPLOADAGENT,
 					true));
 			connectAgent.setSelection(!configuration.getAttribute(
@@ -589,7 +613,8 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
 		configuration.setAttribute(BM_TEXT_IDENT, identifyText.getText());
 		configuration.setAttribute(BM_PID, pidText.getText());
-
+		configuration.setAttribute(BM_COM_MODE,
+				(comCombo.getText().equals(COM_NON_BLOCKING) ? 0 : 1));
 		configuration
 				.setAttribute(BM_PROJECT_IDENT, rulesProjectName.getText());
 		configuration.setAttribute(BM_VERBOSE, verboseButton.getSelection());

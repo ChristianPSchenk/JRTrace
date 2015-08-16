@@ -7,6 +7,6 @@ import javax.management.Notification;
 
 public interface INotificationSender {
 
-	void sendMessage(Notification notification);
+	public void sendMessage(Notification notification);
 
 }

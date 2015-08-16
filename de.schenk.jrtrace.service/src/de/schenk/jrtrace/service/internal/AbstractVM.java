@@ -42,7 +42,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 	@Override
 	public void addMessageListener(JRTraceMessageListener jrTraceMessageListener) {
 		addClientListener(NotificationConstants.NOTIFY_MESSAGE,
-				new RedirectingNotificationListenr(jrTraceMessageListener));
+				new RedirectingNotificationListener(jrTraceMessageListener));
 
 	}
 
@@ -50,7 +50,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 	public void removeMessageListener(
 			JRTraceMessageListener jrTraceMessageListener) {
 		removeClientListener(NotificationConstants.NOTIFY_MESSAGE,
-				new RedirectingNotificationListenr(jrTraceMessageListener));
+				new RedirectingNotificationListener(jrTraceMessageListener));
 
 	}
 
@@ -302,7 +302,7 @@ abstract public class AbstractVM implements IJRTraceVM {
 			mbeanProxy = (JRTraceMXBean) JMX.newMBeanProxy(mxbeanConnection,
 					mbeanName, JRTraceMXBean.class, true);
 
-			mxbeanListener = new JRTraceBeanNotificationListener(this);
+			mxbeanListener = new JRTraceBeanNotificationListener(mbeanProxy);
 			mxbeanConnection.addNotificationListener(mbeanName, mxbeanListener,
 					null, null);
 
@@ -421,4 +421,8 @@ abstract public class AbstractVM implements IJRTraceVM {
 
 	}
 
+	@Override
+	public void setAcknowledgementMode(int n) {
+		mbeanProxy.setAcknowledgementMode(n);
+	}
 }

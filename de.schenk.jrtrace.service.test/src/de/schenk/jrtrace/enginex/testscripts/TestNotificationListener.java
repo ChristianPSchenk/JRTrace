@@ -15,7 +15,7 @@ import de.schenk.jrtrace.service.NotificationAndErrorListener;
 public class TestNotificationListener extends NotificationAndErrorListener {
 
 	@Override
-	public void handleNotification(Notification notification, Object handback) {
+	public void sendMessage(Notification notification) {
 		if (notificationBarrier == null)
 			return;
 		lastNotification = notification;

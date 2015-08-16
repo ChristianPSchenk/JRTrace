@@ -61,6 +61,9 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 		if (configuration.getAttribute(ConnectionTab.BM_DEBUG, false))
 			level = JRLog.DEBUG;
 		vm.setLogLevel(level);
+		if (configuration.getAttribute(ConnectionTab.BM_COM_MODE, 0) == 1) {
+			vm.setAcknowledgementMode(100);
+		}
 	}
 
 	private void showNoJDKError() {

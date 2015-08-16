@@ -15,6 +15,7 @@ import de.schenk.jrtrace.enginex.testscripts.EngineXLifeCycleTest;
 import de.schenk.jrtrace.helperagent.TypeCheckUtilTest;
 import de.schenk.jrtrace.helperlib.tests.InspectUtilTest;
 import de.schenk.jrtrace.helperlib.tests.ReflectionUtilTest;
+import de.schenk.jrtrace.service.CommunicationLayerTest;
 import de.schenk.jrtrace.service.JRTraceConnectToLaunchedAgentTest;
 import de.schenk.jrtrace.service.JRTraceControllerTest;
 import de.schenk.jrtrace.service.test.utils.JavaUtilTest;
@@ -25,7 +26,7 @@ import de.schenk.jrtrace.service.test.utils.JavaUtilTest;
 		JRTraceControllerTest.class, JavaUtilTest.class, InspectUtilTest.class,
 		EngineXDetailsTest.class, TypeCheckUtilTest.class,
 		SimpleReinstallTest.class, ReflectionUtilTest.class,
-		EngineXDiagnosticsTest.class })
+		EngineXDiagnosticsTest.class, CommunicationLayerTest.class })
 public class AllTests {
 
 }
