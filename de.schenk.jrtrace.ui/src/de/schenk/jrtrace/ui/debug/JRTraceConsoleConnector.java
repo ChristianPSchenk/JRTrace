@@ -87,15 +87,24 @@ public class JRTraceConsoleConnector {
 		public void sendMessage(Notification notification) {
 			String clientSentence = notification.getMessage();
 			if (clientSentence != null) {
-				if (stream != null && !stream.isClosed()) {
-					try {
-						stream.write(clientSentence.getBytes());
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+				writeToErrorStream(clientSentence);
 			}
 
+		}
+
+		public void writeToErrorStream(String clientSentence) {
+			if (stream != null && !stream.isClosed()) {
+				try {
+					stream.write(clientSentence.getBytes());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		@Override
+		public void handleError() {
+			writeToErrorStream("[JRTRACE TRANSMISSION PROBLEM: MESSAGE LOST. CONSIDER USING THE BLOCKING MODE]\n");
 		}
 
 	}

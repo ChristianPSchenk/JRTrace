@@ -16,11 +16,11 @@ public class AgentArgs {
 	/**
 	 * Mainly for testing purposes: set the size of the buffer for outgoing
 	 * notifications/messages to a predefined value. By default the buffer size
-	 * is quite large (100000) but clients should always expect to loose
+	 * is quite large (10000) but clients should always expect to loose
 	 * notifications and implement handleError() on the
 	 * NotificationAndErrorListener class.
 	 */
-	private int notificationBufferSize = 100000;
+	private int notificationBufferSize = 10000;
 
 	public AgentArgs(String args) {
 		String[] entries = args.split(",");
