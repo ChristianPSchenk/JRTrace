@@ -177,7 +177,15 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 			comCombo.setItems(new String[] { COM_NON_BLOCKING, COM_BLOCKING });
 			comCombo.select(0);
 			comCombo.setToolTipText("Blocking: System.out and other messages will block the target if they cannot be transmitted fast enough. Non-Blocking: messages might be dropped");
+			comCombo.addSelectionListener(new SelectionAdapter() {
 
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					setDirty();
+
+				}
+
+			});
 		}
 	}
 

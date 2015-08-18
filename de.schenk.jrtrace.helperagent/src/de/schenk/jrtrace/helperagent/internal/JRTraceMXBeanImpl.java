@@ -50,6 +50,7 @@ public class JRTraceMXBeanImpl extends NotificationBroadcasterSupport implements
 
 	@Override
 	public boolean stop(boolean disconnectOnly) {
+		setAcknowledgementMode(0);
 		agent.stop(disconnectOnly);
 		return true;
 	}

@@ -1,6 +1,6 @@
 /**
  * (c) 2014/2015 by Christian Schenk
-**/
+ **/
 package de.schenk.jrtrace.ui.debug;
 
 import org.eclipse.core.runtime.IStatus;
@@ -15,6 +15,7 @@ public class DetachJRTraceJob extends ProgressReportingJob {
 
 	@Override
 	protected IStatus run() {
+		getMachine().setAcknowledgementMode(0);
 		getMachine().clearEngineX();
 		getMachine().detach();
 		return Status.OK_STATUS;
