@@ -379,28 +379,36 @@ abstract public class AbstractVM implements IJRTraceVM {
 
 	@Override
 	public InjectStatus analyzeInjectionStatus(String className) {
-		InjectStatus status = null;
-		if (isDisconnected()) {
-			status = new InjectStatus(StatusEntityType.JRTRACE_SESSION);
 
-			status.setMessage(InjectStatus.MSG_NOT_CONNECTED);
-			status.setInjected(StatusState.DOESNT_INJECT);
-			return status;
-		} else {
-			try {
-				byte[] statusBytes = mbeanProxy
-						.analyzeInjectionStatus(className);
-				status = (InjectStatus) SerializationUtil.deserialize(
-						statusBytes, null);
-				status.updateStatusFromChildren();
-			} catch (RuntimeException e) {
+		InjectStatus status = null;
+		try {
+			if (isDisconnected()) {
 				status = new InjectStatus(StatusEntityType.JRTRACE_SESSION);
+
 				status.setMessage(InjectStatus.MSG_NOT_CONNECTED);
 				status.setInjected(StatusState.DOESNT_INJECT);
-			}
+				return status;
+			} else {
+				try {
+					byte[] statusBytes = mbeanProxy
+							.analyzeInjectionStatus(className);
+					status = (InjectStatus) SerializationUtil.deserialize(
+							statusBytes, null);
+					status.updateStatusFromChildren();
+				} catch (RuntimeException e) {
+					status = new InjectStatus(StatusEntityType.JRTRACE_SESSION);
+					status.setMessage(InjectStatus.MSG_NOT_CONNECTED);
+					status.setInjected(StatusState.DOESNT_INJECT);
+				}
 
+			}
+			status.setEntityName(getConnectionIdentifier());
+		} catch (UndeclaredThrowableException e) {
+			lastException = e;
+			status = new InjectStatus(StatusEntityType.JRTRACE_SESSION);
+			status.setMessage(InjectStatus.MSG_COMMUNICATION_PROBLEM);
+			status.setInjected(StatusState.DOESNT_INJECT);
 		}
-		status.setEntityName(getConnectionIdentifier());
 		return status;
 
 	}

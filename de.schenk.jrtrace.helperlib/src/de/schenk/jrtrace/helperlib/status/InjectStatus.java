@@ -46,6 +46,8 @@ public class InjectStatus implements Serializable {
 
 	public static final String MSG_CLASS_IS_EXCLUDED = "This JRTrace class specifies an 'exclude' list of the @XClass that matches the class to be instrumented. Therefore the class will not be instrumented.";
 
+	public static final String MSG_COMMUNICATION_PROBLEM = "An exception occured while trying to get the injection status.";
+
 	private String msg = "";
 	private StatusState injectionState = StatusState.INJECTS;
 	private StatusEntityType entityType;
