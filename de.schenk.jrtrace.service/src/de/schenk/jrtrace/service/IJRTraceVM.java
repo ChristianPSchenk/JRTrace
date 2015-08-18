@@ -134,8 +134,10 @@ public interface IJRTraceVM {
 	 * 
 	 * @param level
 	 *            see JRLog for levels.
+	 * @return true on success, false on error. Error can be obtained using
+	 *         getLastError()
 	 */
-	void setLogLevel(int i);
+	boolean setLogLevel(int i);
 
 	/**
 	 * Remove all installed JRTrace classes from the target.
@@ -193,7 +195,11 @@ public interface IJRTraceVM {
 	/**
 	 * 
 	 * @return a string array containing the fully qualified names of all
-	 *         classes that have been loaded in the target VM.
+	 *         classes that have been loaded in the target VM. May return null
+	 *         if a communication error occurred. In this case getLastError()
+	 *         will return the error.
+	 * 
+	 * 
 	 */
 	String[] getLoadedClasses();
 
@@ -246,6 +252,6 @@ public interface IJRTraceVM {
 	 * @param n
 	 *            0: non-blocking communication, n>5: blocking communication.
 	 */
-	void setAcknowledgementMode(int n);
+	boolean setAcknowledgementMode(int n);
 
 }

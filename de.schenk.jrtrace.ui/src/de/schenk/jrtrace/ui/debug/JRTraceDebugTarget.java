@@ -118,10 +118,13 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 	@Override
 	public void terminate() throws DebugException {
-		disconnect();
-		JRTraceConsole.close();
-		isTerminated = true;
-		fireEvent(new DebugEvent(this, DebugEvent.TERMINATE));
+		try {
+			disconnect();
+		} finally {
+			JRTraceConsole.close();
+			isTerminated = true;
+			fireEvent(new DebugEvent(this, DebugEvent.TERMINATE));
+		}
 
 	}
 

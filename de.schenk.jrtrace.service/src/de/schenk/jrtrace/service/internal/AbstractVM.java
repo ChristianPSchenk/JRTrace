@@ -110,14 +110,35 @@ abstract public class AbstractVM implements IJRTraceVM {
 	protected Throwable lastException;
 
 	@Override
-	synchronized public void setLogLevel(int i) {
+	synchronized public boolean setLogLevel(final int i) {
 
-		mbeanProxy.setLogLevel(i);
+		return new SafeVMRunnable() {
+
+			@Override
+			public void run() {
+				mbeanProxy.setLogLevel(i);
+
+			}
+		}.safeRun();
+
 	}
 
 	@Override
 	public String[] getLoadedClasses() {
-		return mbeanProxy.getLoadedClasses();
+		final String[][] o = new String[1][];
+		boolean result = new SafeVMRunnable() {
+
+			@Override
+			public void run() {
+				o[0] = mbeanProxy.getLoadedClasses();
+
+			}
+		}.safeRun();
+
+		if (result)
+			return o[0];
+		return null;
+
 	}
 
 	@Override
@@ -430,7 +451,14 @@ abstract public class AbstractVM implements IJRTraceVM {
 	}
 
 	@Override
-	public void setAcknowledgementMode(int n) {
-		mbeanProxy.setAcknowledgementMode(n);
+	public boolean setAcknowledgementMode(final int n) {
+		return new SafeVMRunnable() {
+
+			@Override
+			public void run() {
+				mbeanProxy.setAcknowledgementMode(n);
+
+			}
+		}.safeRun();
 	}
 }
