@@ -132,6 +132,10 @@ public class JRTraceOneClassTransformer {
 					}
 
 				} catch (Throwable e) {
+					if (classInjectStatus != null) {
+						classInjectStatus
+								.setMessage(InjectStatus.MSG_EXCEPTION);
+					}
 					JRLog.error("Skipped applying jrtrace class "
 							+ entry.getClassName() + " to class " + className
 							+ " due to runtime exception");

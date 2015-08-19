@@ -76,13 +76,18 @@ public class EngineXDiagnosticsTest implements testNotConnectedStatus {
 				"InjectForDiagnosticsTestWithExclude",
 				"de.schenk.jrtrace.service.enginex.testclasses");
 
+		File classFile3 = javautil.getFileForClass(
+				"InjectForDiagnosticsTestCausingException",
+				"de.schenk.jrtrace.service.enginex.testclasses");
+
 		theNotificationListener = new TestNotificationListener();
 		machine.addClientListener(NotificationConstants.NOTIFY_PROBLEM,
 				theNotificationListener);
 
-		byte[][] classBytes = new byte[2][];
+		byte[][] classBytes = new byte[3][];
 		classBytes[0] = Files.readAllBytes(Paths.get(classFile.toURI()));
 		classBytes[1] = Files.readAllBytes(Paths.get(classFile2.toURI()));
+		classBytes[2] = Files.readAllBytes(Paths.get(classFile3.toURI()));
 		machine.installJRTraceClasses(classBytes);
 
 	}
@@ -186,6 +191,34 @@ public class EngineXDiagnosticsTest implements testNotConnectedStatus {
 		assertEquals(StatusState.DOESNT_INJECT, b.getInjectionState());
 		assertTrue(b.getMessage().contains(
 				InjectStatus.MSG_CLASS_NAME_DOESNT_MATCH));
+	}
+
+	public class CandidateForFaultyInjection {
+		public int method(int i) {
+			return i * i;
+		}
+	}
+
+	@Test
+	public void testClassInstrumentationThrowsException() {
+		CandidateForFaultyInjection e = new CandidateForFaultyInjection();
+
+		InjectStatus status = machine
+				.analyzeInjectionStatus("de.schenk.jrtrace.enginex.testscripts.EngineXDiagnosticsTest$CandidateForFaultyInjection");
+
+		assertEquals(StatusEntityType.JRTRACE_SESSION, status.getEntityType());
+		assertEquals(StatusState.DOESNT_INJECT, status.getInjectionState());
+		InjectStatus a = status
+				.getChildByEntityName("EngineXDiagnosticsTest\\$CandidateForFaultyInjection");
+		assertEquals(StatusEntityType.JRTRACE_CHECKED_CLASS, a.getEntityType());
+		assertEquals(StatusState.DOESNT_INJECT, a.getInjectionState());
+
+		InjectStatus b = a
+				.getChildByEntityName("InjectForDiagnosticsTestCausingException");
+		assertEquals(StatusState.DOESNT_INJECT, b.getInjectionState());
+
+		assertEquals(InjectStatus.MSG_EXCEPTION, b.getMessage());
+
 	}
 
 	@Test

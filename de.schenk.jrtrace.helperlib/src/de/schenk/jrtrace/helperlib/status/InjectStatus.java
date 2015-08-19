@@ -48,6 +48,8 @@ public class InjectStatus implements Serializable {
 
 	public static final String MSG_COMMUNICATION_PROBLEM = "An exception occured while trying to get the injection status.";
 
+	public static final String MSG_EXCEPTION = "An error was detected while injecting code from this JRTrace class into the target. Check the JRTrace problem markers for more details.";
+
 	private String msg = "";
 	private StatusState injectionState = StatusState.INJECTS;
 	private StatusEntityType entityType;
