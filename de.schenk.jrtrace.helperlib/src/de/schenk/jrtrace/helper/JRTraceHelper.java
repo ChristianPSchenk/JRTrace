@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.status.InjectStatus;
@@ -167,6 +169,8 @@ public class JRTraceHelper {
 	}
 
 	public static void addEngineXClass(List<JRTraceClassMetadata> metadatalist) {
+		if (!validateClasses(metadatalist))
+			return;
 		clearAbortFlag();
 		Set<Class<?>> modifiableClasses = null;
 		long start = System.nanoTime();
@@ -214,6 +218,66 @@ public class JRTraceHelper {
 				"JRTraceHelper.addEngineXClass() took %d ms.",
 				(ende - start) / 1000 / 1000));
 
+	}
+
+	/**
+	 * Perform some pre validations to avoid errors later on.
+	 * 
+	 * @param metadatalist
+	 * @return false if an error was encountered in the jrtrace class metadata
+	 */
+	private static boolean validateClasses(
+
+	List<JRTraceClassMetadata> metadatalist) {
+		boolean result = true;
+		for (JRTraceClassMetadata cmd : metadatalist) {
+			if (cmd.getUseRegEx()) {
+				List<String> patterns = cmd.getClasses();
+				for (String pattern : patterns) {
+					if (!isPatternValid(cmd, null, pattern))
+						result = false;
+				}
+				List<JRTraceMethodMetadata> methods = cmd.getMethods();
+				for (JRTraceMethodMetadata method : methods) {
+					for (String tmn : method.getTargetMethodNames())
+						if (!isPatternValid(cmd, method, tmn))
+							result = false;
+					if (!isPatternValid(cmd, method,
+							method.getInvokedMethodClass()))
+						result = false;
+					if (!isPatternValid(cmd, method,
+							method.getInvokedMethodName()))
+						result = false;
+					if (!isPatternValid(cmd, method,
+							method.getFieldAccessClass()))
+						result = false;
+					if (!isPatternValid(cmd, method,
+							method.getFieldAccessName()))
+						result = false;
+
+				}
+			}
+		}
+		return result;
+	}
+
+	public static boolean isPatternValid(
+
+	JRTraceClassMetadata cmd, JRTraceMethodMetadata method, String pattern) {
+		try {
+			Pattern p = Pattern.compile(pattern);
+		} catch (PatternSyntaxException e) {
+
+			String msg = String.format(
+					"Syntaxerror in regular expression %s: %s", pattern,
+					e.getMessage());
+			NotificationUtil.sendProblemNotification(msg,
+					JRTraceNameUtil.getExternalName(cmd.getClassName()),
+					method == null ? null : method.getMethodName(),
+					method == null ? null : method.getDescriptor());
+			return false;
+		}
+		return true;
 	}
 
 	private static void clearAbortFlag() {
