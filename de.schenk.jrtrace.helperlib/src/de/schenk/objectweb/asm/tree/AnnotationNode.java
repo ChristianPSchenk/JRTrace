@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -218,11 +218,13 @@ public class AnnotationNode extends AnnotationVisitor {
                 an.accept(av.visitAnnotation(name, an.desc));
             } else if (value instanceof List) {
                 AnnotationVisitor v = av.visitArray(name);
-                List<?> array = (List<?>) value;
-                for (int j = 0; j < array.size(); ++j) {
-                    accept(v, null, array.get(j));
+                if (v != null) {
+                    List<?> array = (List<?>) value;
+                    for (int j = 0; j < array.size(); ++j) {
+                        accept(v, null, array.get(j));
+                    }
+                    v.visitEnd();
                 }
-                v.visitEnd();
             } else {
                 av.visit(name, value);
             }

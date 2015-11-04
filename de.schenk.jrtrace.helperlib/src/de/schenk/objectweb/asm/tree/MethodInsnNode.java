@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -131,6 +131,7 @@ public class MethodInsnNode extends AbstractInsnNode {
     @Override
     public void accept(final MethodVisitor mv) {
         mv.visitMethodInsn(opcode, owner, name, desc, itf);
+        acceptAnnotations(mv);
     }
 
     @Override

@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -33,15 +33,16 @@ package de.schenk.objectweb.asm;
  * A visitor to visit a Java method. The methods of this class must be called in
  * the following order: ( <tt>visitParameter</tt> )* [
  * <tt>visitAnnotationDefault</tt> ] ( <tt>visitAnnotation</tt> |
- * <tt>visitTypeAnnotation</tt> | <tt>visitAttribute</tt> )* [
- * <tt>visitCode</tt> ( <tt>visitFrame</tt> | <tt>visit<i>X</i>Insn</tt> |
- * <tt>visitLabel</tt> | <tt>visitInsnAnnotation</tt> |
- * <tt>visitTryCatchBlock</tt> | <tt>visitTryCatchBlockAnnotation</tt> |
- * <tt>visitLocalVariable</tt> | <tt>visitLocalVariableAnnotation</tt> |
- * <tt>visitLineNumber</tt> )* <tt>visitMaxs</tt> ] <tt>visitEnd</tt>. In
- * addition, the <tt>visit<i>X</i>Insn</tt> and <tt>visitLabel</tt> methods must
- * be called in the sequential order of the bytecode instructions of the visited
- * code, <tt>visitInsnAnnotation</tt> must be called <i>after</i> the annotated
+ * <tt>visitParameterAnnotation</tt> <tt>visitTypeAnnotation</tt> |
+ * <tt>visitAttribute</tt> )* [ <tt>visitCode</tt> ( <tt>visitFrame</tt> |
+ * <tt>visit<i>X</i>Insn</tt> | <tt>visitLabel</tt> |
+ * <tt>visitInsnAnnotation</tt> | <tt>visitTryCatchBlock</tt> |
+ * <tt>visitTryCatchAnnotation</tt> | <tt>visitLocalVariable</tt> |
+ * <tt>visitLocalVariableAnnotation</tt> | <tt>visitLineNumber</tt> )*
+ * <tt>visitMaxs</tt> ] <tt>visitEnd</tt>. In addition, the
+ * <tt>visit<i>X</i>Insn</tt> and <tt>visitLabel</tt> methods must be called in
+ * the sequential order of the bytecode instructions of the visited code,
+ * <tt>visitInsnAnnotation</tt> must be called <i>after</i> the annotated
  * instruction, <tt>visitTryCatchBlock</tt> must be called <i>before</i> the
  * labels passed as arguments have been visited,
  * <tt>visitTryCatchBlockAnnotation</tt> must be called <i>after</i> the
@@ -289,7 +290,7 @@ public abstract class MethodVisitor {
      *            {@link Opcodes#DOUBLE},{@link Opcodes#NULL} or
      *            {@link Opcodes#UNINITIALIZED_THIS} (long and double are
      *            represented by a single element). Reference types are
-     *            represented by String objects (representing internal usedForNames),
+     *            represented by String objects (representing internal names),
      *            and uninitialized types by Label objects (this label
      *            designates the NEW instruction that created this uninitialized
      *            value).

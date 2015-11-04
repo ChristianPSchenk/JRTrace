@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -29,12 +29,11 @@
  */
 package de.schenk.objectweb.asm.xml;
 
-import org.xml.sax.helpers.AttributesImpl;
-
 import de.schenk.objectweb.asm.AnnotationVisitor;
 import de.schenk.objectweb.asm.Opcodes;
 import de.schenk.objectweb.asm.Type;
 import de.schenk.objectweb.asm.TypePath;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * SAXAnnotationAdapter
@@ -147,19 +146,19 @@ public final class SAXAnnotationAdapter extends AnnotationVisitor {
             if (value instanceof byte[]) {
                 byte[] b = (byte[]) value;
                 for (int i = 0; i < b.length; i++) {
-                    av.visit(null, new Byte(b[i]));
+                    av.visit(null, b[i]);
                 }
 
             } else if (value instanceof char[]) {
                 char[] b = (char[]) value;
                 for (int i = 0; i < b.length; i++) {
-                    av.visit(null, new Character(b[i]));
+                    av.visit(null, b[i]);
                 }
 
             } else if (value instanceof short[]) {
                 short[] b = (short[]) value;
                 for (int i = 0; i < b.length; i++) {
-                    av.visit(null, new Short(b[i]));
+                    av.visit(null, b[i]);
                 }
 
             } else if (value instanceof boolean[]) {
@@ -171,25 +170,25 @@ public final class SAXAnnotationAdapter extends AnnotationVisitor {
             } else if (value instanceof int[]) {
                 int[] b = (int[]) value;
                 for (int i = 0; i < b.length; i++) {
-                    av.visit(null, new Integer(b[i]));
+                    av.visit(null, b[i]);
                 }
 
             } else if (value instanceof long[]) {
                 long[] b = (long[]) value;
                 for (int i = 0; i < b.length; i++) {
-                    av.visit(null, new Long(b[i]));
+                    av.visit(null, b[i]);
                 }
 
             } else if (value instanceof float[]) {
                 float[] b = (float[]) value;
                 for (int i = 0; i < b.length; i++) {
-                    av.visit(null, new Float(b[i]));
+                    av.visit(null, b[i]);
                 }
 
             } else if (value instanceof double[]) {
                 double[] b = (double[]) value;
                 for (int i = 0; i < b.length; i++) {
-                    av.visit(null, new Double(b[i]));
+                    av.visit(null, b[i]);
                 }
 
             }

@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -54,7 +54,7 @@ public class Method {
     private final String desc;
 
     /**
-     * Maps primitive Java type usedForNames to their descriptors.
+     * Maps primitive Java type names to their descriptors.
      */
     private static final Map<String, String> DESCRIPTORS;
 
@@ -128,12 +128,12 @@ public class Method {
      * declaration.
      * 
      * @param method
-     *            a Java method declaration, without argument usedForNames, of the form
+     *            a Java method declaration, without argument names, of the form
      *            "returnType name (argumentType1, ... argumentTypeN)", where
      *            the types are in plain Java (e.g. "int", "float",
      *            "java.util.List", ...). Classes of the java.lang package can
      *            be specified by their unqualified name; all other classes
-     *            usedForNames must be fully qualified.
+     *            names must be fully qualified.
      * @return a {@link Method} corresponding to the given Java method
      *         declaration.
      * @throws IllegalArgumentException
@@ -149,15 +149,15 @@ public class Method {
      * declaration.
      * 
      * @param method
-     *            a Java method declaration, without argument usedForNames, of the form
+     *            a Java method declaration, without argument names, of the form
      *            "returnType name (argumentType1, ... argumentTypeN)", where
      *            the types are in plain Java (e.g. "int", "float",
      *            "java.util.List", ...). Classes of the java.lang package may
      *            be specified by their unqualified name, depending on the
-     *            defaultPackage argument; all other classes usedForNames must be fully
+     *            defaultPackage argument; all other classes names must be fully
      *            qualified.
      * @param defaultPackage
-     *            true if unqualified class usedForNames belong to the default package,
+     *            true if unqualified class names belong to the default package,
      *            or false if they correspond to java.lang classes. For instance
      *            "Object" means "Object" if this option is true, or
      *            "java.lang.Object" otherwise.

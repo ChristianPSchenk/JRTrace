@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -35,7 +35,7 @@ import java.util.Map;
 
 /**
  * A {@link Remapper} using a {@link Map} to define its mapping.
- * 
+ *
  * @author Eugene Kuleshov
  */
 public class SimpleRemapper extends Remapper {
@@ -53,6 +53,12 @@ public class SimpleRemapper extends Remapper {
     @Override
     public String mapMethodName(String owner, String name, String desc) {
         String s = map(owner + '.' + name + desc);
+        return s == null ? name : s;
+    }
+
+    @Override
+    public String mapInvokeDynamicMethodName(String name, String desc) {
+        String s = map('.' + name + desc);
         return s == null ? name : s;
     }
 

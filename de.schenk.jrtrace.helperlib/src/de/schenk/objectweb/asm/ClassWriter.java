@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -328,7 +328,7 @@ public class ClassWriter extends ClassVisitor {
     final Item key4;
 
     /**
-     * A type table used to temporarily store internal usedForNames that will not
+     * A type table used to temporarily store internal names that will not
      * necessarily be stored in the constant pool. This type table is used by
      * the control flow and data flow analysis algorithm used to compute stack
      * map frames from scratch. This array associates to each index <tt>i</tt>
@@ -379,7 +379,7 @@ public class ClassWriter extends ClassVisitor {
     /**
      * The interfaces implemented or extended by this class or interface. More
      * precisely, this array contains the indexes of the constant pool items
-     * that contain the internal usedForNames of these interfaces.
+     * that contain the internal names of these interfaces.
      */
     private int[] interfaces;
 

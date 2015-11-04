@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -81,7 +81,7 @@ public class LookupSwitchInsnNode extends AbstractInsnNode {
                 : labels.length);
         if (keys != null) {
             for (int i = 0; i < keys.length; ++i) {
-                this.keys.add(new Integer(keys[i]));
+                this.keys.add(keys[i]);
             }
         }
         if (labels != null) {

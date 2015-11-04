@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -68,7 +68,7 @@ public class AnalyzerAdapter extends MethodVisitor {
      * {@link Opcodes#DOUBLE},{@link Opcodes#NULL} or
      * {@link Opcodes#UNINITIALIZED_THIS} (long and double are represented by
      * two elements, the second one being TOP). Reference types are represented
-     * by String objects (representing internal usedForNames), and uninitialized types
+     * by String objects (representing internal names), and uninitialized types
      * by Label objects (this label designates the NEW instruction that created
      * this uninitialized value). This field is <tt>null</tt> for unreachable
      * instructions.
@@ -82,7 +82,7 @@ public class AnalyzerAdapter extends MethodVisitor {
      * {@link Opcodes#DOUBLE},{@link Opcodes#NULL} or
      * {@link Opcodes#UNINITIALIZED_THIS} (long and double are represented by
      * two elements, the second one being TOP). Reference types are represented
-     * by String objects (representing internal usedForNames), and uninitialized types
+     * by String objects (representing internal names), and uninitialized types
      * by Label objects (this label designates the NEW instruction that created
      * this uninitialized value). This field is <tt>null</tt> for unreachable
      * instructions.
@@ -97,7 +97,7 @@ public class AnalyzerAdapter extends MethodVisitor {
 
     /**
      * Information about uninitialized types in the current execution frame.
-     * This map associates internal usedForNames to Label objects. Each label
+     * This map associates internal names to Label objects. Each label
      * designates a NEW instruction that created the currently uninitialized
      * types, and the associated internal name represents the NEW operand, i.e.
      * the final, initialized type value.

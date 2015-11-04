@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -102,6 +102,7 @@ public class Analyzer<V extends Value> implements Opcodes {
      * @throws AnalyzerException
      *             if a problem occurs during the analysis.
      */
+    @SuppressWarnings("unchecked")
     public Frame<V>[] analyze(final String owner, final MethodNode m)
             throws AnalyzerException {
         if ((m.access & (ACC_ABSTRACT | ACC_NATIVE)) != 0) {

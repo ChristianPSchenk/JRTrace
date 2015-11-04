@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -77,7 +77,7 @@ final class Frame {
      * negative dimension (and even unassigned types, represented by 0 - which
      * does not correspond to any valid type value). Input frames can only
      * contain BASE types of positive or null dimension. In all cases the type
-     * table contains only internal type usedForNames (array type descriptors are
+     * table contains only internal type names (array type descriptors are
      * forbidden - dimensions must be represented through the DIM field).
      * 
      * The LONG and DOUBLE types are always represented by using two slots (LONG

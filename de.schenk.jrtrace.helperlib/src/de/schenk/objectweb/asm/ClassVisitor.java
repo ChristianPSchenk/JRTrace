@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -103,7 +103,7 @@ public abstract class ClassVisitor {
      *            interfaces, the super class is {@link Object}. May be
      *            <tt>null</tt>, but only for the {@link Object} class.
      * @param interfaces
-     *            the internal usedForNames of the class's interfaces (see
+     *            the internal names of the class's interfaces (see
      *            {@link Type#getInternalName() getInternalName}). May be
      *            <tt>null</tt>.
      */
@@ -292,7 +292,7 @@ public abstract class ClassVisitor {
      *            parameters, return type and exceptions do not use generic
      *            types.
      * @param exceptions
-     *            the internal usedForNames of the method's exception classes (see
+     *            the internal names of the method's exception classes (see
      *            {@link Type#getInternalName() getInternalName}). May be
      *            <tt>null</tt>.
      * @return an object to visit the byte code of the method, or <tt>null</tt>

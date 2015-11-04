@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -47,19 +47,19 @@ import de.schenk.objectweb.asm.TypePath;
 public abstract class Printer {
 
     /**
-     * The usedForNames of the Java Virtual Machine opcodes.
+     * The names of the Java Virtual Machine opcodes.
      */
     public static final String[] OPCODES;
 
     /**
-     * The usedForNames of the for <code>operand</code> parameter values of the
+     * The names of the for <code>operand</code> parameter values of the
      * {@link de.schenk.objectweb.asm.MethodVisitor#visitIntInsn} method when
      * <code>opcode</code> is <code>NEWARRAY</code>.
      */
     public static final String[] TYPES;
 
     /**
-     * The usedForNames of the <code>tag</code> field values for
+     * The names of the <code>tag</code> field values for
      * {@link de.schenk.objectweb.asm.Handle}.
      */
     public static final String[] HANDLE_TAG;

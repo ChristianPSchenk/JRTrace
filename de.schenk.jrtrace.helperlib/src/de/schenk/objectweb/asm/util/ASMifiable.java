@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -50,7 +50,7 @@ public interface ASMifiable {
      *            name of the variable in a printed code used to store attribute
      *            instance.
      * @param labelNames
-     *            map of label instances to their usedForNames.
+     *            map of label instances to their names.
      */
     void asmify(StringBuffer buf, String varName, Map<Label, String> labelNames);
 }

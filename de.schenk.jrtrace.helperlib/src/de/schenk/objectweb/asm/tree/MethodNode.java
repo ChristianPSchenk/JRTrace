@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -72,7 +72,7 @@ public class MethodNode extends MethodVisitor {
     public String signature;
 
     /**
-     * The internal usedForNames of the method's exception classes (see
+     * The internal names of the method's exception classes (see
      * {@link Type#getInternalName() getInternalName}). This list is a list of
      * {@link String} objects.
      */
@@ -254,7 +254,7 @@ public class MethodNode extends MethodVisitor {
      * @param signature
      *            the method's signature. May be <tt>null</tt>.
      * @param exceptions
-     *            the internal usedForNames of the method's exception classes (see
+     *            the internal names of the method's exception classes (see
      *            {@link Type#getInternalName() getInternalName}). May be
      *            <tt>null</tt>.
      * @throws IllegalStateException
@@ -285,7 +285,7 @@ public class MethodNode extends MethodVisitor {
      * @param signature
      *            the method's signature. May be <tt>null</tt>.
      * @param exceptions
-     *            the internal usedForNames of the method's exception classes (see
+     *            the internal names of the method's exception classes (see
      *            {@link Type#getInternalName() getInternalName}). May be
      *            <tt>null</tt>.
      */
@@ -370,6 +370,7 @@ public class MethodNode extends MethodVisitor {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public AnnotationVisitor visitParameterAnnotation(final int parameter,
             final String desc, final boolean visible) {
         AnnotationNode an = new AnnotationNode(desc);

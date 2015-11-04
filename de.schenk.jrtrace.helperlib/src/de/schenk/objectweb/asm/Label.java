@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -131,7 +131,11 @@ public class Label {
     int status;
 
     /**
-     * The line number corresponding to this label, if known.
+     * The line number corresponding to this label, if known. If there are
+     * several lines, each line is stored in a separate label, all linked via
+     * their next field (these links are created in ClassReader and removed just
+     * before visitLabel is called, so that this does not impact the rest of the
+     * code).
      */
     int line;
 
@@ -239,7 +243,8 @@ public class Label {
      * The next basic block in the basic block stack. This stack is used in the
      * main loop of the fix point algorithm used in the second step of the
      * control flow analysis algorithms. It is also used in
-     * {@link #visitSubroutine} to avoid using a recursive method.
+     * {@link #visitSubroutine} to avoid using a recursive method, and in 
+     * ClassReader to temporarily store multiple source lines for a label. 
      * 
      * @see MethodWriter#visitMaxs
      */

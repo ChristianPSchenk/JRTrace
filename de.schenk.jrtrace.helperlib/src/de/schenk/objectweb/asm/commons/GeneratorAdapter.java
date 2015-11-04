@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -334,11 +334,11 @@ public class GeneratorAdapter extends LocalVariablesSorter {
     }
 
     /**
-     * Returns the internal usedForNames of the given types.
+     * Returns the internal names of the given types.
      * 
      * @param types
      *            a set of types.
-     * @return the internal usedForNames of the given types.
+     * @return the internal names of the given types.
      */
     private static String[] getInternalNames(final Type[] types) {
         if (types == null) {
@@ -379,7 +379,7 @@ public class GeneratorAdapter extends LocalVariablesSorter {
         } else if (value >= Short.MIN_VALUE && value <= Short.MAX_VALUE) {
             mv.visitIntInsn(Opcodes.SIPUSH, value);
         } else {
-            mv.visitLdcInsn(new Integer(value));
+            mv.visitLdcInsn(value);
         }
     }
 
@@ -393,7 +393,7 @@ public class GeneratorAdapter extends LocalVariablesSorter {
         if (value == 0L || value == 1L) {
             mv.visitInsn(Opcodes.LCONST_0 + (int) value);
         } else {
-            mv.visitLdcInsn(new Long(value));
+            mv.visitLdcInsn(value);
         }
     }
 
@@ -408,7 +408,7 @@ public class GeneratorAdapter extends LocalVariablesSorter {
         if (bits == 0L || bits == 0x3f800000 || bits == 0x40000000) { // 0..2
             mv.visitInsn(Opcodes.FCONST_0 + (int) value);
         } else {
-            mv.visitLdcInsn(new Float(value));
+            mv.visitLdcInsn(value);
         }
     }
 
@@ -423,7 +423,7 @@ public class GeneratorAdapter extends LocalVariablesSorter {
         if (bits == 0L || bits == 0x3ff0000000000000L) { // +0.0d and 1.0d
             mv.visitInsn(Opcodes.DCONST_0 + (int) value);
         } else {
-            mv.visitLdcInsn(new Double(value));
+            mv.visitLdcInsn(value);
         }
     }
 
@@ -1618,11 +1618,13 @@ public class GeneratorAdapter extends LocalVariablesSorter {
      */
     public void catchException(final Label start, final Label end,
             final Type exception) {
+        Label doCatch = new Label();
         if (exception == null) {
-            mv.visitTryCatchBlock(start, end, mark(), null);
+            mv.visitTryCatchBlock(start, end, doCatch, null);
         } else {
-            mv.visitTryCatchBlock(start, end, mark(),
+            mv.visitTryCatchBlock(start, end, doCatch,
                     exception.getInternalName());
         }
+        mark(doCatch);
     }
 }

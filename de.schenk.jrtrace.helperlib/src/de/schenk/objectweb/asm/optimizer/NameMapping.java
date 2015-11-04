@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -40,7 +40,7 @@ import java.util.Set;
 import de.schenk.objectweb.asm.Type;
 
 /**
- * A MAPPING from usedForNames to usedForNames, used to rename classes, fields and methods.
+ * A MAPPING from names to names, used to rename classes, fields and methods.
  * 
  * @author Eric Bruneton
  */

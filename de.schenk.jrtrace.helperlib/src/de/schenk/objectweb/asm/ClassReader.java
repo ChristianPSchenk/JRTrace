@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -256,10 +256,10 @@ public class ClassReader {
     }
 
     /**
-     * Returns the internal usedForNames of the class's interfaces (see
+     * Returns the internal names of the class's interfaces (see
      * {@link Type#getInternalName() getInternalName}).
      * 
-     * @return the array of internal usedForNames for all implemented interfaces or
+     * @return the array of internal names for all implemented interfaces or
      *         <tt>null</tt>.
      * 
      * @see ClassVisitor#visit(int, int, String, String, String, String[])
@@ -1170,7 +1170,14 @@ public class ClassReader {
                         if (labels[label] == null) {
                             readLabel(label, labels).status |= Label.DEBUG;
                         }
-                        labels[label].line = readUnsignedShort(v + 12);
+                        Label l = labels[label];
+                        while (l.line > 0) {
+                            if (l.next == null) {
+                                l.next = new Label();
+                            }
+                            l = l.next;
+                        }
+                        l.line = readUnsignedShort(v + 12);
                         v += 4;
                     }
                 }
@@ -1285,9 +1292,15 @@ public class ClassReader {
             // visits the label and line number for this offset, if any
             Label l = labels[offset];
             if (l != null) {
+                Label next = l.next;
+                l.next = null;
                 mv.visitLabel(l);
                 if ((context.flags & SKIP_DEBUG) == 0 && l.line > 0) {
                     mv.visitLineNumber(l.line, l);
+                    while (next != null) {
+                        mv.visitLineNumber(next.line, l);
+                        next = next.next;
+                    }
                 }
             }
 
@@ -1828,8 +1841,7 @@ public class ClassReader {
             v += 2;
             break;
         case 'B': // pointer to CONSTANT_Byte
-            av.visit(name,
-                    new Byte((byte) readInt(items[readUnsignedShort(v)])));
+            av.visit(name, (byte) readInt(items[readUnsignedShort(v)]));
             v += 2;
             break;
         case 'Z': // pointer to CONSTANT_Boolean
@@ -1839,13 +1851,11 @@ public class ClassReader {
             v += 2;
             break;
         case 'S': // pointer to CONSTANT_Short
-            av.visit(name, new Short(
-                    (short) readInt(items[readUnsignedShort(v)])));
+            av.visit(name, (short) readInt(items[readUnsignedShort(v)]));
             v += 2;
             break;
         case 'C': // pointer to CONSTANT_Char
-            av.visit(name, new Character(
-                    (char) readInt(items[readUnsignedShort(v)])));
+            av.visit(name, (char) readInt(items[readUnsignedShort(v)]));
             v += 2;
             break;
         case 's': // pointer to CONSTANT_Utf8
@@ -2469,13 +2479,13 @@ public class ClassReader {
         int index = items[item];
         switch (b[index - 1]) {
         case ClassWriter.INT:
-            return new Integer(readInt(index));
+            return readInt(index);
         case ClassWriter.FLOAT:
-            return new Float(Float.intBitsToFloat(readInt(index)));
+            return Float.intBitsToFloat(readInt(index));
         case ClassWriter.LONG:
-            return new Long(readLong(index));
+            return readLong(index);
         case ClassWriter.DOUBLE:
-            return new Double(Double.longBitsToDouble(readLong(index)));
+            return Double.longBitsToDouble(readLong(index));
         case ClassWriter.CLASS:
             return Type.getObjectType(readUTF8(index, buf));
         case ClassWriter.STR:

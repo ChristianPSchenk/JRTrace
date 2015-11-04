@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -152,6 +152,9 @@ public class TypePath {
                     typeArg = typeArg * 10 + c - '0';
                     i += 1;
                 }
+                if (i < n && typePath.charAt(i) == ';') {
+                    i += 1;
+                }
                 out.put11(TYPE_ARGUMENT, typeArg);
             }
         }
@@ -164,7 +167,7 @@ public class TypePath {
      * ARRAY_ELEMENT} steps are represented with '[', {@link #INNER_TYPE
      * INNER_TYPE} steps with '.', {@link #WILDCARD_BOUND WILDCARD_BOUND} steps
      * with '*' and {@link #TYPE_ARGUMENT TYPE_ARGUMENT} steps with their type
-     * argument index in decimal form.
+     * argument index in decimal form followed by ';'.
      */
     @Override
     public String toString() {
@@ -182,7 +185,7 @@ public class TypePath {
                 result.append('*');
                 break;
             case TYPE_ARGUMENT:
-                result.append(getStepArgument(i));
+                result.append(getStepArgument(i)).append(';');
                 break;
             default:
                 result.append('_');

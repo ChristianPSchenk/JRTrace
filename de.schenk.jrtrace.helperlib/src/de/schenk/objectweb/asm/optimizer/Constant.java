@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -234,16 +234,16 @@ class Constant {
     void write(final ClassWriter cw) {
         switch (type) {
         case 'I':
-            cw.newConst(new Integer(intVal));
+            cw.newConst(intVal);
             break;
         case 'J':
-            cw.newConst(new Long(longVal));
+            cw.newConst(longVal);
             break;
         case 'F':
-            cw.newConst(new Float(floatVal));
+            cw.newConst(floatVal);
             break;
         case 'D':
-            cw.newConst(new Double(doubleVal));
+            cw.newConst(doubleVal);
             break;
         case 'S':
             cw.newConst(strVal1);

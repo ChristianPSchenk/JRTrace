@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -53,7 +53,7 @@ public class Textifier extends Printer {
 
     /**
      * Constant used in {@link #appendDescriptor appendDescriptor} for internal
-     * type usedForNames in bytecode notation.
+     * type names in bytecode notation.
      */
     public static final int INTERNAL_NAME = 0;
 
@@ -133,7 +133,7 @@ public class Textifier extends Printer {
     protected String ltab = "   ";
 
     /**
-     * The label usedForNames. This map associate String values to Label keys.
+     * The label names. This map associate String values to Label keys.
      */
     protected Map<Label, String> labelNames;
 
@@ -703,7 +703,7 @@ public class Textifier extends Printer {
         Textifier t = createTextifier();
         text.add(t.getText());
         text.add(visible ? ") // parameter " : ") // invisible, parameter ");
-        text.add(new Integer(parameter));
+        text.add(parameter);
         text.add("\n");
         return t;
     }

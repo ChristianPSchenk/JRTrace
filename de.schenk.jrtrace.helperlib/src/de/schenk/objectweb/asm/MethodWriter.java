@@ -11,7 +11,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the copyright holders nor the usedForNames of its
+ * 3. Neither the name of the copyright holders nor the names of its
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -172,7 +172,7 @@ class MethodWriter extends MethodVisitor {
     /**
      * The exceptions that can be thrown by this method. More precisely, this
      * array contains the indexes of the constant pool items that contain the
-     * internal usedForNames of these exception classes.
+     * internal names of these exception classes.
      */
     int[] exceptions;
 
@@ -440,7 +440,7 @@ class MethodWriter extends MethodVisitor {
      * @param signature
      *            the method's signature. May be <tt>null</tt>.
      * @param exceptions
-     *            the internal usedForNames of the method's exceptions. May be
+     *            the internal names of the method's exceptions. May be
      *            <tt>null</tt>.
      * @param computeMaxs
      *            <tt>true</tt> if the maximum stack size and number of local
@@ -2706,11 +2706,13 @@ class MethodWriter extends MethodVisitor {
                 l = l.successor;
             }
             // Update the offsets in the uninitialized types
-            for (i = 0; i < cw.typeTable.length; ++i) {
-                Item item = cw.typeTable[i];
-                if (item != null && item.type == ClassWriter.TYPE_UNINIT) {
-                    item.intVal = getNewOffset(allIndexes, allSizes, 0,
-                            item.intVal);
+            if (cw.typeTable != null) {
+                for (i = 0; i < cw.typeTable.length; ++i) {
+                    Item item = cw.typeTable[i];
+                    if (item != null && item.type == ClassWriter.TYPE_UNINIT) {
+                        item.intVal = getNewOffset(allIndexes, allSizes, 0,
+                                item.intVal);
+                    }
                 }
             }
             // The stack map frames are not serialized yet, so we don't need
