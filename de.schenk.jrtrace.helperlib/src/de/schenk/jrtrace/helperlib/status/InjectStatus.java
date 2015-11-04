@@ -100,6 +100,10 @@ public class InjectStatus implements Serializable {
 
 	}
 
+	public void removeChildStatus() {
+		children.clear();
+	}
+
 	public Set<InjectStatus> getChildStatus() {
 		return Collections.unmodifiableSet(children);
 	}

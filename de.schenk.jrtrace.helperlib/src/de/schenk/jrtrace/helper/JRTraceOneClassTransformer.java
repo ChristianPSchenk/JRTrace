@@ -135,6 +135,9 @@ public class JRTraceOneClassTransformer {
 					if (classInjectStatus != null) {
 						classInjectStatus
 								.setMessage(InjectStatus.MSG_EXCEPTION);
+						classInjectStatus.removeChildStatus();
+						classInjectStatus
+								.setInjected(StatusState.DOESNT_INJECT);
 					}
 					JRLog.error("Skipped applying jrtrace class "
 							+ entry.getClassName() + " to class " + className
