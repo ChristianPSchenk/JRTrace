@@ -54,6 +54,7 @@ public class EngineXDetailsTest {
 	private static String pid;
 	private static IJRTraceVM machine;
 	private static TestNotificationListener theNotificationListener;
+	private static InstallErrorListener errorsDuringInstallErrors;
 
 	@AfterClass
 	static public void after() throws Exception {
@@ -79,13 +80,18 @@ public class EngineXDetailsTest {
 		URL fileURL = FileLocator.find(bundle,
 				new Path("lib/EngineXTests.jar"), null);
 		File theFile = new File(FileLocator.toFileURL(fileURL).toURI());
-		theNotificationListener = new TestNotificationListener();
+
+		errorsDuringInstallErrors = new InstallErrorListener();
 		machine.addClientListener(NotificationConstants.NOTIFY_PROBLEM,
-				theNotificationListener);
+				errorsDuringInstallErrors);
 
 		byte[] jarBytes = Files.readAllBytes(Paths.get(theFile.toURI()));
 		byte[][] classBytes = JarByteUtil.convertJarToClassByteArray(jarBytes);
 		machine.installJRTraceClasses(classBytes);
+
+		theNotificationListener = new TestNotificationListener();
+		machine.addClientListener(NotificationConstants.NOTIFY_PROBLEM,
+				theNotificationListener);
 
 	}
 
@@ -148,8 +154,7 @@ public class EngineXDetailsTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void test41MultipleArguments()
-			throws Exception {
+	public void test41MultipleArguments() throws Exception {
 		/*
 		 * test that argument matching works
 		 */
@@ -625,6 +630,29 @@ public class EngineXDetailsTest {
 		assertNotNull(lastNotification);
 		assertTrue(lastNotification.getMessage().contains(
 				"REPLACE_INVOCATION requires that the return type"));
+
+	}
+
+	@Test
+	public void test42ErrorMessageForXInvokeReturnOnExit() throws Exception {
+
+		assertTrue(errorsDuringInstallErrors
+				.messageContains(
+						"Test42",
+						"test42",
+						"The method specifies @XInvokeReturn. This is only allowed for location AFTER_INVOCATION and REPLACE_INVOCATION"));
+
+	}
+
+	@Test
+	public void test43ErrorMessageForXReturnOnAfterInvocation()
+			throws Exception {
+
+		assertTrue(errorsDuringInstallErrors
+				.messageContains(
+						"Test43",
+						"test43",
+						"The method specifies @XReturn. This is only allowed for the location EXIT. This annotation will be ignored."));
 
 	}
 

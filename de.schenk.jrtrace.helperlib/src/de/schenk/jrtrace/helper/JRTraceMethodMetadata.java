@@ -479,4 +479,9 @@ public class JRTraceMethodMetadata {
 
 	}
 
+	public void removeInjection(int i) {
+
+		injection.remove(i);
+	}
+
 }

@@ -10,8 +10,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.schenk.jrtrace.helper.JRTraceHelper;
+import de.schenk.jrtrace.annotations.XLocation;
+import de.schenk.jrtrace.helper.Injection;
+import de.schenk.jrtrace.helper.Injection.InjectionType;
 import de.schenk.jrtrace.helper.JRTraceClassMetadata;
+import de.schenk.jrtrace.helper.JRTraceHelper;
+import de.schenk.jrtrace.helper.JRTraceMethodMetadata;
 import de.schenk.jrtrace.helper.NotificationUtil;
 import de.schenk.jrtrace.helperagent.JRTraceAnnotationReader;
 
@@ -66,6 +70,41 @@ public class InstallEngineXCommand {
 									maxClassFileVersion), metadata
 									.getExternalClassName(), null, null);
 			return null;
+		}
+
+		for (JRTraceMethodMetadata methodmetadata : metadata.getMethods()) {
+			Injection returnParam = methodmetadata.getInjection(0);
+			if (returnParam != null
+					&& InjectionType.INVOKE_PARAMETER.equals(returnParam
+							.getType()) && returnParam.getN() == -1) {
+				if (methodmetadata.getInjectLocation() != XLocation.AFTER_INVOCATION
+						&& methodmetadata.getInjectLocation() != XLocation.REPLACE_INVOCATION) {
+					methodmetadata.removeInjection(0);
+					NotificationUtil
+							.sendProblemNotification(
+									String.format(
+											"The method specifies @XInvokeReturn. This is only allowed for location AFTER_INVOCATION and REPLACE_INVOCATION. This annotation will be ignored.",
+											methodmetadata.getMethodName()),
+									metadata.getExternalClassName(),
+									methodmetadata.getMethodName(),
+									methodmetadata.getDescriptor());
+				}
+			}
+			if (returnParam != null
+					&& InjectionType.PARAMETER.equals(returnParam.getType())
+					&& returnParam.getN() == -1) {
+				if (methodmetadata.getInjectLocation() != XLocation.EXIT) {
+					methodmetadata.removeInjection(0);
+					NotificationUtil
+							.sendProblemNotification(
+									String.format(
+											"The method specifies @XReturn. This is only allowed for the location EXIT. This annotation will be ignored.",
+											methodmetadata.getMethodName()),
+									metadata.getExternalClassName(),
+									methodmetadata.getMethodName(),
+									methodmetadata.getDescriptor());
+				}
+			}
 		}
 
 		return metadata;
