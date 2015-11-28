@@ -6,10 +6,10 @@
     <groupId>de.schenk</groupId>
     <artifactId>JRTrace</artifactId>
      <relativePath>../JRTrace/pom.xml</relativePath>
-     <version>0.9.7-SNAPSHOT</version>
+     <version>0.9.8-SNAPSHOT</version>
   </parent>
   <artifactId>de.schenk.jrtrace.helperlib</artifactId>
-  <version>2.0.2-SNAPSHOT</version>
+  <version>2.0.3-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
     <build><plugins>
     <plugin>
