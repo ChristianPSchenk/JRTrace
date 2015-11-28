@@ -180,7 +180,7 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 				ConnectionTab.BM_TEXT_IDENT, "");
 
 		if (launchconfig.getAttribute(ConnectionTab.BM_AUTOCONNECT, false)) {
-			String startedProcess = waitForStartedProcess(monitor);
+			String startedProcess = waitForStartedProcess(identifyText, monitor);
 			if (monitor.isCanceled())
 				throw new CoreException(Status.CANCEL_STATUS);
 			if (startedProcess != null) {
@@ -349,14 +349,20 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 	/**
 	 * wait for a new jvm to start and return its pid.
 	 * 
+	 * @param identifyText
+	 * 
 	 * @param monitor
 	 *            wait cancels if the monitor is canceled
 	 * @return null if canceled or error, pid of the newly started process
 	 *         otherwise
 	 */
-	private String waitForStartedProcess(IProgressMonitor monitor) {
+	private String waitForStartedProcess(String identifyText,
+			IProgressMonitor monitor) {
+
+		monitor.setTaskName("Auto-Connect: Waiting for external java process to start that matches the filter pattern ('"
+				+ identifyText + "').");
 		JRTraceController controller = JRTraceControllerService.getInstance();
-		VMInfo[] vms = controller.getVMs();
+		VMInfo[] vms = controller.getVMs(identifyText);
 		HashSet<String> initialPIDs = new HashSet<String>();
 		for (VMInfo vm : vms) {
 			initialPIDs.add(vm.getId());
@@ -365,7 +371,7 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 		while (true) {
 			if (monitor.isCanceled())
 				return null;
-			VMInfo[] new_vms = controller.getVMs();
+			VMInfo[] new_vms = controller.getVMs(identifyText);
 			for (VMInfo vm : new_vms) {
 				if (!initialPIDs.contains(vm.getId())) {
 					return vm.getId();
