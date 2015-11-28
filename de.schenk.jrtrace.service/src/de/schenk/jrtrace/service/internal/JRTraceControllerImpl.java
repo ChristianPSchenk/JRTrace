@@ -40,7 +40,7 @@ public class JRTraceControllerImpl implements JRTraceController {
 		}
 		// after matching identify text, no process remain:
 		if (list.size() == 0)
-			return vms;
+			return new VMInfo[0];
 		return list.toArray(new VMInfo[0]);
 	}
 
