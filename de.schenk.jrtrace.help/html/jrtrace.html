@@ -502,6 +502,24 @@ more recent java version.
 In some cases (fortunately happened only in heavy load test cases for me until now) the JVM might crash with the above error. This is unfortunately not fixed until 1.8.0_31. The bug was already
 reported to Oracle as <a href="https://bugs.openjdk.java.net/browse/JDK-8023901">JDK-8023901</a> but closed as "Cannot Reproduce". I have filed another request.
  
+<h3>Target Process Blocked</h3>
+
+Some core java classes cannot be instrumented with JRTrace due to the fact that they are required to perform the lookup of the injected code when the instrumented class is executed.
+In this case the java process will enter an endless recursion, stop reacting and blow up the memory. In this state the only way to connect to the virtual machine is using
+<pre>
+jstack -F <pid> > %temp%>stacktrace.txt
+</pre>
+/A normal jstack (without -F) or other tools like JVisualVM, JMC or the debugger won't react any more. All known classes that may cause this situation are part of the
+built-in excludes. 
+</br>
+The culprit can be identified from the stacktrace: the call that initiate the <code>linkCallSite</code> is the trigger of the recursion.
+To resolve the problem, exclude this class explicitly via the <code>exclude</code> attribute of the <code>@JRTrace</code> annotation.
+<pre>
+...
+java.lang.invoke.MethodHandleNatives.linkCallSite(java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object[]) @bci=45, line=297 (Compiled frame)
+java.lang.ThreadLocal$ThreadLocalMap$Entry.<init>(java.lang.ThreadLocal, java.lang.Object) @bci=24, line=313 (Compiled frame)
+...
+</pre>
 
 
 <h3>Unsupported Class Version</h3>

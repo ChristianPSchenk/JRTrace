@@ -12,17 +12,29 @@ public class BuiltInExcludes {
 	/**
 	 * All classes that start with the following strings are to be excluded
 	 * because they can never be instrumented.
+	 * 
+	 * Example:
+	 * 
+	 * - Assume java.lang.String is instrumented. - After byte code generation,
+	 * the first time the method is used, the dynamic invoke statement has to be
+	 * resolved - Resolving that involves invoking e.g. the DynamicBinder (and a
+	 * lot of java-lambda related code) which again requires java.lang.String ->
+	 * At that point the instrumentation will start to recurse.
 	 */
 	private static final String[] excludedPrefixes = { "java.lang.Byte",
 			"java.lang.Class", "java.lang.ClassLoader", "java.lang.Integer",
 			"java.lang.Math", "java.lang.Object", "java.lang.String",
-			"java.lang.System", "java.lang.ref.Reference",
+			"java.lang.System", "java.lang.ref",
 			"java.lang.ref.ReferenceQueue", "java.util.Arrays",
-			"java.util.HashMap", "java.util.Objects", "de.schenk.jrtrace.help",
-			"de.schenk.objectweb", "java.lang.invoke",
-			"java.util.concurrent.ConcurrentHashMap", "java.lang.reflect",
-			"java.util.ArrayList", "jdk.internal", "sun.invoke", "sun.reflect",
-			"java.util.regex.Pattern" };
+			"java.util.HashMap", "java.util.Objects", "java.util.Collections",
+			"de.schenk.jrtrace.help", "de.schenk.objectweb",
+			"java.lang.invoke", "java.util.concurrent.ConcurrentHashMap",
+			"java.lang.reflect", "java.util.ArrayList", "jdk.internal",
+			"sun.invoke", "sun.reflect", "java.util.regex.Pattern",
+			"java.lang.Enum", "java.lang.ThreadLocal",
+			"java.util.AbstractList", "sun.misc.VM", "java.lang.Character",
+			"java.lang.BootstrapMethodError", "java.lang.EnumMap",
+			"java.util.HashSet", "java.util.AbstractCollection" };
 
 	/**
 	 * 
