@@ -201,7 +201,7 @@ public class HelperLib {
 	public void traceStack(int depth) {
 		StackTraceElement[] trace = Thread.currentThread().getStackTrace();
 
-		for (int i = 3; i < trace.length && i < depth + 3; i++) {
+		for (int i = 3; i < trace.length && i - 3 < depth; i++) {
 			System.out.println(trace[i].toString());
 		}
 	}
