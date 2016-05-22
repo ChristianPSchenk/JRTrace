@@ -11,6 +11,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashSet;
 
 import de.schenk.jrtrace.helper.NotificationUtil;
 
@@ -38,8 +39,14 @@ import de.schenk.jrtrace.helper.NotificationUtil;
  */
 public class DynamicBinder {
 
+	private static final BootstrapMethodError bootsTrapException = new BootstrapMethodError();
 	private static Method getEngineXObjectMethod;
 	private static Method getEngineXClassMethod;
+	private static ThreadLocal<HashSet<String>> currentlyProcessed = new ThreadLocal<HashSet<String>>() {
+		protected java.util.HashSet<String> initialValue() {
+			return new HashSet<String>();
+		};
+	};
 
 	static void initHelper() {
 		if (getEngineXObjectMethod != null)
@@ -81,6 +88,17 @@ public class DynamicBinder {
 			String enginexmethodname, String enginexmethoddescriptor) {
 
 		initHelper();
+		final String callerclassname = caller.toString();
+		if (currentlyProcessed.get().contains(callerclassname)) {
+			danger(callerclassname);
+			/*
+			 * new BootstrapMethodError( "Fatal: Recursive bind for class " +
+			 * caller.getClass().toString() +
+			 * ". This class cannot be instrumented with JRTrace. Add it to the exclude list of the JRTrace class."
+			 * );
+			 */
+		}
+		currentlyProcessed.get().add(callerclassname);
 		MethodHandles.Lookup lookup = MethodHandles.lookup();
 
 		Class<?> enginexclass;
@@ -118,6 +136,7 @@ public class DynamicBinder {
 			e.printStackTrace();
 		}
 
+		currentlyProcessed.get().remove(callerclassname);
 		return new ConstantCallSite(enginexMethod.asType(type));
 
 	}
@@ -140,6 +159,12 @@ public class DynamicBinder {
 			String enginexmethoddescriptor) {
 
 		initHelper();
+		final String callerclassname = caller.toString();
+		if (currentlyProcessed.get().contains(callerclassname)) {
+
+			danger(callerclassname);
+		}
+
 		MethodHandles.Lookup lookup = MethodHandles.lookup();
 
 		Object object;
@@ -175,7 +200,15 @@ public class DynamicBinder {
 			e.printStackTrace();
 		}
 
-		return new ConstantCallSite(enginexMethod.asType(type));
+		ConstantCallSite callsite = new ConstantCallSite(
+				enginexMethod.asType(type));
+		currentlyProcessed.get().remove(callerclassname);
+		return callsite;
+
+	}
+
+	private static void danger(String classname) {
+		System.out.println(classname);
 
 	}
 }

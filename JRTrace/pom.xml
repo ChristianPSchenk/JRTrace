@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.schenk</groupId>
   <artifactId>JRTrace</artifactId>
-  <version>0.9.8-SNAPSHOT</version>
+  <version>0.9.9-SNAPSHOT</version>
   <packaging>pom</packaging>
   
   <properties>
@@ -13,9 +13,9 @@
 	</properties>
 	<repositories>
 		<repository>
-			<id>kepler</id>
+			<id>mars</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/kepler</url>
+			<url>http://download.eclipse.org/releases/mars</url>
 		</repository>
 	</repositories>
   
