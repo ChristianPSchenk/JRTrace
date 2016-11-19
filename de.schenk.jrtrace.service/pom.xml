@@ -14,7 +14,7 @@
   <build><plugins><plugin>
  <groupId>org.eclipse.tycho</groupId>
  <artifactId>tycho-compiler-plugin</artifactId>
- <version>0.22.0</version>
+ <version>0.25.0</version>
  <configuration>
   <extraClasspathElements>
    <extraClasspathElement>

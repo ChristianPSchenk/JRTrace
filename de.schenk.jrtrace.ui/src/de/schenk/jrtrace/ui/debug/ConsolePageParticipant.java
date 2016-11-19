@@ -3,6 +3,10 @@
  **/
 package de.schenk.jrtrace.ui.debug;
 
+
+
+import java.io.IOException;
+
 import javax.management.Notification;
 
 import org.eclipse.core.resources.IProject;
@@ -17,13 +21,16 @@ import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.console.IConsolePageParticipant;
+import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.part.IPageBookViewPage;
 
 import de.schenk.jrtrace.helperlib.NotificationConstants;
@@ -39,6 +46,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 	private Action errorAction;
 	private JRTraceConsole myConsole;
 	private Action reinstallAction;
+	private Action closeConsoleAction;
 
 	@Override
 	public Object getAdapter(Class adapter) {
@@ -55,8 +63,10 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 
 		createErrorIndicatorAction(bar);
 		createStopAction(bar);
+		
 
 		addReinstallAction(bar);
+		addCloseConsoleAction(bar);
 
 		DebugPlugin.getDefault().addDebugEventListener(this);
 
@@ -196,6 +206,31 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 				reinstallAction);
 	}
 
+	public void addCloseConsoleAction(IActionBars bar) {
+		closeConsoleAction = new Action() {
+			public void run() {
+
+				
+				ConsolePlugin.getDefault().getConsoleManager()
+				.removeConsoles(new IConsole[]{myConsole});
+			};
+
+			@Override
+			public ImageDescriptor getImageDescriptor() {
+				return JRTraceUIActivator.imageDescriptorFromPlugin("org.eclipse.ui", "icons/full/elcl16/progress_rem.png");
+			}
+
+			
+		};
+		closeConsoleAction
+				.setToolTipText("Close this Console.");
+		closeConsoleAction.setEnabled(false);
+		bar.getToolBarManager().appendToGroup(IConsoleConstants.LAUNCH_GROUP,
+				closeConsoleAction);
+	}
+
+	
+	
 	@Override
 	public void dispose() {
 
@@ -219,6 +254,32 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 
 					reinstallAction.setEnabled(false);
 					stopAction.setEnabled(false);
+					closeConsoleAction.setEnabled(true);
+
+					
+					Display.getDefault().asyncExec(new Runnable() {
+
+						@Override
+						public void run() {
+							MessageConsoleStream stream = myConsole.newMessageStream();
+							try {
+							
+							stream.setColor(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+							stream.print("The connection to the JRTrace debug taget was lost.\n");
+							stream.flush();
+							stream.close();
+						} catch (IOException e1) {
+							JRTraceUIActivator.getInstance().getLog().log(new Status(IStatus.ERROR,JRTraceUIActivator.BUNDLE_ID,"Exception while closing the stream to the console.",e1));
+						}
+						
+						}
+		
+						
+					});
+
+					
+								
+					
 				}
 			}
 		}

@@ -4,7 +4,11 @@
 package de.schenk.jrtrace.ui.debug;
 
 import java.io.File;
+import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
@@ -26,6 +30,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import de.schenk.jrtrace.service.IJRTraceVM;
+import de.schenk.jrtrace.ui.JRTraceUIActivator;
 import de.schenk.jrtrace.ui.markers.JRTraceMarkerManager;
 import de.schenk.jrtrace.ui.util.JarByteUtil;
 import de.schenk.jrtrace.ui.util.JarUtil;
@@ -276,23 +281,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 				@Override
 				public void run() {
-					MultiStatus m = new MultiStatus(
-							de.schenk.jrtrace.ui.JRTraceUIActivator.BUNDLE_ID,
-							IStatus.ERROR, "Error during java call.", machine
-									.getLastError());
-					m.add(new Status(IStatus.ERROR,
-							de.schenk.jrtrace.ui.JRTraceUIActivator.BUNDLE_ID,
-							"Exception thrown", machine.getLastError()));
-					if (machine.getLastError() instanceof UndeclaredThrowableException) {
-						UndeclaredThrowableException t = (UndeclaredThrowableException) machine
-								.getLastError();
-						m.add(new Status(
-								IStatus.ERROR,
-								de.schenk.jrtrace.ui.JRTraceUIActivator.BUNDLE_ID,
-								"Undeclared Throwable:", t
-										.getUndeclaredThrowable()));
-
-					}
+					MultiStatus m = createStatusFromThrowableForDialog("Error during java call.");
 					Shell shell = Display.getDefault().getShells()[0];
 					ErrorDialog.openError(shell, "Execution Problem",
 							"It was not possible to run the method "
@@ -312,6 +301,8 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 
 			@Override
 			public void run() {
+				
+				MultiStatus m = createStatusFromThrowableForDialog("Connection to target lost.");
 				ErrorDialog
 						.openError(
 								Display.getDefault().getActiveShell(),
@@ -319,11 +310,7 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 								"The connection to the target machine "
 										+ pid
 										+ " is broken. Disconnecting from target.",
-								new Status(
-										IStatus.ERROR,
-										de.schenk.jrtrace.ui.JRTraceUIActivator.BUNDLE_ID,
-										"Connection to target lost.", machine
-												.getLastError()));
+								m);
 
 			}
 
@@ -351,5 +338,55 @@ public class JRTraceDebugTarget extends DebugElement implements IDebugTarget {
 		return theProject;
 
 	}
+
+	/**
+	 * create a multistatus taking into accound that some exceptions have additional stacktraces 
+	 * in other places. (UndeclaredThrowableException).
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	private MultiStatus createStatusFromThrowableForDialog(String msg) {
+		MultiStatus m;
+		m=new MultiStatus(
+				de.schenk.jrtrace.ui.JRTraceUIActivator.BUNDLE_ID,
+				IStatus.ERROR, msg, machine
+						.getLastError());
+		Throwable t= machine.getLastError();
+		if(t!=null) m.add(createMultiStatus("Last Exception Thrown:",t));
+		
+		if (machine.getLastError() instanceof UndeclaredThrowableException) {
+			
+			Throwable ex = ((UndeclaredThrowableException)t).getUndeclaredThrowable();
+			if(ex!=null)
+			m.add(createMultiStatus("Undeclared Throwable:", ex));
+
+		} 
+		return m;
+	}
+	
+	/**
+	 * Create a multistatus with the specified message and the substatus such that they show the throwable stacktrace
+	 * suitable for showing in an ErrorDialog
+	 * @param msg
+	 * @param t
+	 * @return
+	 */
+	private static MultiStatus createMultiStatus(String msg, Throwable t) {
+
+		List<Status> childStatuses = new ArrayList<>();
+        
+
+        for (StackTraceElement tr: t.getStackTrace()) {
+               Status status = new Status(IStatus.ERROR,
+                               JRTraceUIActivator.BUNDLE_ID, tr.toString());
+               childStatuses.add(status);
+       }
+
+        MultiStatus ms = new MultiStatus(JRTraceUIActivator.BUNDLE_ID,
+                        IStatus.ERROR, childStatuses.toArray(new Status[0]),
+                        msg, t);
+        return ms;
+}
 
 }

@@ -8,7 +8,7 @@
   <packaging>pom</packaging>
   
   <properties>
-		<tycho-version>0.22.0</tycho-version>
+		<tycho-version>0.25.0</tycho-version>
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<repositories>
@@ -48,7 +48,7 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
-        <version>0.22.0</version>
+        <version>${tycho-version}</version>
         <extensions>true</extensions>
       </plugin>
 	   <plugin>
@@ -78,7 +78,8 @@
         </execution>
       </executions>
     </plugin>
-    <plugin>
+    
+     <plugin>
       <groupId>org.eclipse.tycho</groupId>
       <artifactId>tycho-p2-plugin</artifactId>
       <version>${tycho-version}</version>
@@ -93,15 +94,38 @@
       </executions>
     </plugin>
      <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-toolchains-plugin</artifactId>
+    <version>1.1</version>
+  
+    <configuration>
+      <toolchains>
+        <jdk>
+          <version>1.9</version>
+          <vendor>oracle</vendor>
+        </jdk>
+      </toolchains>
+    </configuration>
+     <executions>
+          <execution>
+           <phase>validate</phase>
+            <goals>
+              <goal>toolchain</goal>
+            </goals>
+          </execution>
+        </executions>
+  </plugin>
+    
+    <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
         <version>${tycho-version}</version>
         <configuration>
          <target>
                 <artifact>
-                  <groupId>${project.groupId}</groupId>
+                  <groupId>de.schenk</groupId>
                   <artifactId>JRTrace</artifactId>
-                 
+                 <version>0.9.9-SNAPSHOT</version>
                   <classifier>jrtrace</classifier>
                 </artifact>
               </target>
@@ -134,6 +158,13 @@
         <artifactId>maven-surefire-report-plugin</artifactId>
         <version>2.18.1</version>
       </plugin>
+      <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>3.1</version>
+  </plugin>
+ 
+      
     </plugins>
   </reporting>
 </project>

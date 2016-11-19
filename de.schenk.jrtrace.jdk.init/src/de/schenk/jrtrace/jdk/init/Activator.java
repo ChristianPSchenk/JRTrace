@@ -43,6 +43,7 @@ public class Activator extends Plugin {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
+		
 		String target = getFolderOfToolsjarBundle("lib");
 		File toolsjar = getJDKToolsJar();
 
@@ -59,7 +60,7 @@ public class Activator extends Plugin {
 
 			hasJDK = false;
 		} else {
-
+		
 			java.nio.file.Path source = java.nio.file.Paths.get(toolsjar
 					.getAbsolutePath());
 			java.nio.file.Path targetPath = java.nio.file.Paths.get(target
