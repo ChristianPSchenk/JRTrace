@@ -5,17 +5,16 @@ package de.schenk.jrtrace.service.internal;
 
 import java.io.IOException;
 
-import com.sun.tools.attach.AgentInitializationException;
-import com.sun.tools.attach.AgentLoadException;
-import com.sun.tools.attach.AttachNotSupportedException;
-import com.sun.tools.attach.VirtualMachine;
 
+
+import de.schenk.jrtrace.jdk.init.machine.VirtualMachineException;
+import de.schenk.jrtrace.jdk.init.machine.VirtualMachineWrapper;
 import de.schenk.jrtrace.service.ICancelable;
 import de.schenk.jrtrace.service.JarLocator;
 
 public class JRTraceVMImpl extends AbstractVM {
 
-	VirtualMachine vm;
+	VirtualMachineWrapper vm;
 	private String thePID;
 	private String servernetworkaddress;
 
@@ -50,17 +49,14 @@ public class JRTraceVMImpl extends AbstractVM {
 	}
 
 	private boolean attachVM() {
-		VirtualMachine theVM = null;
+		VirtualMachineWrapper theVM = null;
 		try {
-			theVM = VirtualMachine.attach(thePID);
-		} catch (AttachNotSupportedException e) {
+			theVM = VirtualMachineWrapper.attach(thePID);
+		} catch (VirtualMachineException e) {
 			lastException = e;
 			return false;
 
-		} catch (IOException e) {
-			lastException = e;
-			return false;
-		}
+		} 
 
 		vm = theVM;
 		return true;
@@ -77,13 +73,7 @@ public class JRTraceVMImpl extends AbstractVM {
 			vm.loadAgent(agent, String.format("port=%d,bootjar=%s%s", port,
 					helperPath, mynetwork));
 
-		} catch (AgentInitializationException e) {
-			lastException = e;
-			return -1;
-		} catch (AgentLoadException e) {
-			lastException = e;
-			return -1;
-		} catch (IOException e) {
+		} catch (VirtualMachineException e) {
 			lastException = e;
 			return -1;
 		}
@@ -107,7 +97,7 @@ public class JRTraceVMImpl extends AbstractVM {
 			if (vm != null) {
 				vm.detach();
 			}
-		} catch (IOException e) {
+		} catch (VirtualMachineException e) {
 			lastException = e;
 			return false;
 		}

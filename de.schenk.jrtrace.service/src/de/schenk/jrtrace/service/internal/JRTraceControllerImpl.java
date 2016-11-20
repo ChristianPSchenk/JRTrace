@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 
-import com.sun.tools.attach.VirtualMachine;
-import com.sun.tools.attach.VirtualMachineDescriptor;
 
 import de.schenk.jrtrace.jdk.init.Activator;
+import de.schenk.jrtrace.jdk.init.machine.VMDescriptor;
+import de.schenk.jrtrace.jdk.init.machine.VirtualMachineWrapper;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.VMInfo;
@@ -19,10 +19,10 @@ import de.schenk.jrtrace.service.VMInfo;
 public class JRTraceControllerImpl implements JRTraceController {
 	@Override
 	public VMInfo[] getVMs() {
-		List<VirtualMachineDescriptor> vmds = VirtualMachine.list();
+		List<VMDescriptor> vmds = VirtualMachineWrapper.list();
 		VMInfo[] vmInfo = new VMInfo[vmds.size()];
 		int i = 0;
-		for (VirtualMachineDescriptor vmd : vmds) {
+		for (VMDescriptor vmd : vmds) {
 			vmInfo[i++] = new VMInfo(vmd.id(), vmd.displayName());
 		}
 
