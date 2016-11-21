@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.ide,
  org.eclipse.jdt.ui,
- de.schenk.jrtrace.jdk.init
+ de.schenk.jrtrace.jdk.init,
+ de.schenk.toolsjar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Eclipse-BundleShape: dir

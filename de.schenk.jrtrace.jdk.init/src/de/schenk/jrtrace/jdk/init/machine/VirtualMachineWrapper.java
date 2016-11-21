@@ -34,7 +34,9 @@ public class VirtualMachineWrapper {
 		for(String line:lines)
 		{
 			String[] elements=line.split(JDKAttachApplication.DATASEPARATOR);
-			result.add(new VMDescriptor(elements[1],elements[0]));
+			VMDescriptor desc = new VMDescriptor(elements[1],elements[0]);
+			if(!desc.getDisplayName().contains(JDKAttachApplication.class.getName()+" list")) result.add(desc);
+			
 		}
 		return result;
 	}

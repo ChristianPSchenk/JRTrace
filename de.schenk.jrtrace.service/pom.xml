@@ -11,21 +11,6 @@
   <artifactId>de.schenk.jrtrace.service</artifactId>
   <version>2.0.4-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
-  <build><plugins><plugin>
- <groupId>org.eclipse.tycho</groupId>
- <artifactId>tycho-compiler-plugin</artifactId>
- <version>0.25.0</version>
- <configuration>
-  <extraClasspathElements>
-   <extraClasspathElement>
-    <groupId>jdk</groupId>
-    <artifactId>tools.jar</artifactId>
-    <version>${java.version}</version>
-    <scope>system</scope>
-    <systemPath>${java.home}/../lib/tools.jar</systemPath>
-   </extraClasspathElement>
-  </extraClasspathElements>
- </configuration>
-</plugin></plugins></build>
+ 
   
 </project>

@@ -13,6 +13,7 @@ import de.schenk.jrtrace.jdk.init.machine.VirtualMachineWrapper;
 import de.schenk.jrtrace.jdk.init.machine.jvm.JDKVMController;
 import de.schenk.jrtrace.jdk.init.machine.jvm.JavaCallResult;
 import de.schenk.jrtrace.service.JarLocator;
+import de.schenk.toolsjar.attach.app.JDKAttachApplication;
 
 public class JVMInvokerTest {
 
@@ -30,13 +31,16 @@ public class JVMInvokerTest {
 	{
 		List<VMDescriptor> list = VirtualMachineWrapper.list();
 		boolean iAmInThere=false;
+		boolean JDKApplicationIsFilteredOut=true;
 		String mypid=ManagementFactory.getRuntimeMXBean().getName();
 		for(VMDescriptor d: list)
 		{
 			System.out.println(d.getPID()+" "+d.getDisplayName());
 			if(mypid.contains(d.getPID())) iAmInThere=true;
+			if(d.getDisplayName().contains(JDKAttachApplication.class.getName()+" list")) JDKApplicationIsFilteredOut=false;
 		}
 		assertTrue("The list of VMs returned by testListMachines() doesn't contain the test jvm.",iAmInThere);
+		assertTrue("VirtualMachineWrapper.list() shouldn't include the process that is used to create the list.",JDKApplicationIsFilteredOut);
 	}
 
 	@Test
