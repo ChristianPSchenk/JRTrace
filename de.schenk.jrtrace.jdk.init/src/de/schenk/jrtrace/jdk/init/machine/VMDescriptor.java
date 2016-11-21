@@ -7,11 +7,12 @@ public class VMDescriptor {
 	private String id;
 	public VMDescriptor(String name,String id) {
 		this.displayName=name;
+		this.id=id;
 	}
-	public String displayName() {
+	public String getDisplayName() {
 		return displayName;
 	}
-	public String id() {
+	public String getPID() {
 		return id;
 	}
 

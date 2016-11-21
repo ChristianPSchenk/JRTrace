@@ -17,15 +17,13 @@ import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
+import de.schenk.jrtrace.jdk.init.utils.BundleFilesUtil;
+
 /**
- * A bad hack to avoid to include the tools.jar into de.schenk.toolsjar Every
- * plugin that needs com.sun.tools should include a dependency to this bundle
- * and access the Activator from its start() method in its Activator. This will
- * cause the tools.jar to be located and copied in the de.jrtrace.toolsjar
- * before the bundle is actually started.
+ * 
  */
 
-public class Activator extends Plugin {
+public class JDKInitActivator extends Plugin {
 
 	private static BundleContext context;
 	private static boolean hasJDK = false;
@@ -33,6 +31,8 @@ public class Activator extends Plugin {
 	static BundleContext getContext() {
 		return context;
 	}
+
+	private static File toolsjar;
 
 	/*
 	 * (non-Javadoc)
@@ -42,9 +42,8 @@ public class Activator extends Plugin {
 	 * )
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
-		Activator.context = bundleContext;
-		
-		String target = getFolderOfToolsjarBundle("lib");
+		JDKInitActivator.context = bundleContext;
+
 		File toolsjar = getJDKToolsJar();
 
 		File attachdll = null;
@@ -57,59 +56,39 @@ public class Activator extends Plugin {
 		}
 
 		if (toolsjar == null) {
-
+			
 			hasJDK = false;
+			
 		} else {
 		
-			java.nio.file.Path source = java.nio.file.Paths.get(toolsjar
-					.getAbsolutePath());
-			java.nio.file.Path targetPath = java.nio.file.Paths.get(target
-					+ "/tools.jar");
-			if ((!Files.exists(targetPath))
-					|| Files.size(source) != Files.size(targetPath))
-				Files.copy(source, targetPath,
-						StandardCopyOption.REPLACE_EXISTING);
-
-			if (attachdll != null) {
-				java.nio.file.Path dllsource = java.nio.file.Paths
-						.get(attachdll.getAbsolutePath());
-				java.nio.file.Path dlltarget = java.nio.file.Paths
-						.get(getFolderOfToolsjarBundle("dll") + "/attach.dll");
-				if ((!Files.exists(dlltarget))
-						|| Files.size(dllsource) != Files.size(dlltarget))
-					Files.copy(dllsource, dlltarget,
-							StandardCopyOption.REPLACE_EXISTING);
-
-			}
-
+			this.toolsjar=toolsjar;
 			hasJDK = true;
 		}
 
 	}
+	
+	static public File getToolsJar()
+	{
+		return toolsjar;
+	}
 
-	public String getFolderOfToolsjarBundle(String libfolder) {
-		try {
-			String target = getJar("de.schenk.toolsjar", libfolder);
+	private String getFolderOfToolsjarBundle(String libfolder) {
+	
+			String target = BundleFilesUtil.getFile("de.schenk.toolsjar", libfolder);
 			return target;
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(e);
-		}
+	
 	}
 
 	/**
 	 * Try to locate a file in the version specific folder of the toolsjar
 	 * bundle and return it if successful
 	 * 
-	 * @param alternateToolsJarSources
-	 *            a directory that may contains subdirectories for the various
-	 *            java versions
+	 * 
 	 * @param filename
 	 *            the name of the file to retrieve.
 	 * @return null, if file couldn't be found, the File is it exists
 	 */
-	public File findIncludedJavaSpecificFiles(String filename) {
+	private File findIncludedJavaSpecificFiles(String filename) {
 		String alternateToolsJarSources = getFolderOfToolsjarBundle("lib");
 		final String javaversion = System.getProperty("java.version");
 
@@ -127,7 +106,7 @@ public class Activator extends Plugin {
 	 * @return a file representing the tools.jar jar from the currently executed
 	 *         JDK, null if not run on a JDK.
 	 */
-	public File getJDKToolsJar() {
+	private File getJDKToolsJar() {
 		final String javahome = System.getProperty("java.home");
 		File toolsjar = new File(javahome, "../lib/tools.jar");
 		if (toolsjar.exists())
@@ -137,7 +116,7 @@ public class Activator extends Plugin {
 
 	}
 
-	public File getAttachDll(String alternateToolsJarSource) {
+	private File getAttachDll(String alternateToolsJarSource) {
 		final String javaversion = System.getProperty("java.version");
 		File attachdll = new File(alternateToolsJarSource + "/" + javaversion
 				+ "/attach.dll");
@@ -166,20 +145,9 @@ public class Activator extends Plugin {
 	 * org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
-		Activator.context = null;
+		JDKInitActivator.context = null;
 	}
 
-	static public String getJar(String bundleId, String jarpath)
-			throws URISyntaxException, IOException {
 
-		Bundle bundle = Platform.getBundle(bundleId);
-
-		Path path = new Path(jarpath);
-
-		URL fileURL = FileLocator.find(bundle, path, null);
-
-		return new File(FileLocator.toFileURL(fileURL).toURI())
-				.getAbsolutePath();
-	}
 
 }

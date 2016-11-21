@@ -39,7 +39,7 @@ public class JRTraceClassPathContainer implements IClasspathContainer {
 					new Path(helperlibSource), null);
 
 			return classPaths;
-		} catch (URISyntaxException | IOException e) {
+		} catch (RuntimeException e) {
 			JRTraceUIActivator
 					.getInstance()
 					.getLog()

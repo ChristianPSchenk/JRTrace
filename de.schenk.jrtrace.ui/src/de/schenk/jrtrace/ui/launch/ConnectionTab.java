@@ -35,7 +35,7 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 import de.schenk.jrtrace.helper.NetworkUtil;
-import de.schenk.jrtrace.jdk.init.Activator;
+import de.schenk.jrtrace.jdk.init.JDKInitActivator;
 import de.schenk.jrtrace.service.JarLocator;
 import de.schenk.jrtrace.service.ui.dialogs.PIDSelectionDialog;
 import de.schenk.jrtrace.ui.JRTraceUIActivator;
@@ -81,7 +81,7 @@ public class ConnectionTab extends AbstractLaunchConfigurationTab {
 		GridLayout gl = new GridLayout(3, false);
 		box.setLayout(gl);
 
-		if (!Activator.hasJDK()) {
+		if (!JDKInitActivator.hasJDK()) {
 			createNoJDKWarningText(box);
 		}
 		String[] networkAddressNames = NetworkUtil

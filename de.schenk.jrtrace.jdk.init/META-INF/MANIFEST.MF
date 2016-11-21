@@ -3,13 +3,15 @@ Bundle-ManifestVersion: 2
 Bundle-Name: JDK Tools.jar Copy Bundle
 Bundle-SymbolicName: de.schenk.jrtrace.jdk.init;singleton:=true
 Bundle-Version: 2.0.4.qualifier
-Bundle-Activator: de.schenk.jrtrace.jdk.init.Activator
+Bundle-Activator: de.schenk.jrtrace.jdk.init.JDKInitActivator
 Bundle-Vendor: Christian Schenk
 Require-Bundle: org.eclipse.core.runtime,
- de.schenk.toolsjar
+ de.schenk.toolsjar,
+ de.schenk.jrtrace.jdk.init
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: de.schenk.jrtrace.jdk.init,
  de.schenk.jrtrace.jdk.init.machine,
- de.schenk.jrtrace.jdk.init.machine.jvm;x-friends:=de.schenk.jrtrace.seervice.test
+ de.schenk.jrtrace.jdk.init.machine.jvm;x-friends:="de.schenk.jrtrace.seervice.test",
+ de.schenk.jrtrace.jdk.init.utils
 

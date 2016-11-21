@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import de.schenk.jrtrace.jdk.init.Activator;
+import de.schenk.jrtrace.jdk.init.JDKInitActivator;
 
 public class JRTraceServiceActivator extends Plugin implements BundleActivator {
 
@@ -20,7 +20,7 @@ public class JRTraceServiceActivator extends Plugin implements BundleActivator {
 		// first so
 		// the tools.jar is copied to the toolsjar bundle, which is activated
 		// later.
-		Activator.hasJDK();
+		JDKInitActivator.hasJDK();
 
 		thePlugin = this;
 

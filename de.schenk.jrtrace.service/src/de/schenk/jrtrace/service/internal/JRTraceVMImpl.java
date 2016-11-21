@@ -14,7 +14,7 @@ import de.schenk.jrtrace.service.JarLocator;
 
 public class JRTraceVMImpl extends AbstractVM {
 
-	VirtualMachineWrapper vm;
+
 	private String thePID;
 	private String servernetworkaddress;
 
@@ -37,32 +37,20 @@ public class JRTraceVMImpl extends AbstractVM {
 	 *         getException() if not successful
 	 */
 	public boolean attach(ICancelable stopper) {
-		boolean result = attachVM();
-		if (!result)
-			return result;
 
-		int port = installAgent();
+		int port = installAgent(thePID);
 		if (port == -1)
 			return false;
+
+		
+
 
 		return connectToAgent(port, null, stopper);
 	}
 
-	private boolean attachVM() {
-		VirtualMachineWrapper theVM = null;
-		try {
-			theVM = VirtualMachineWrapper.attach(thePID);
-		} catch (VirtualMachineException e) {
-			lastException = e;
-			return false;
+	
 
-		} 
-
-		vm = theVM;
-		return true;
-	}
-
-	private int installAgent() {
+	private int installAgent(String thePID) {
 
 		port = PortUtil.getFreePort();
 		try {
@@ -70,7 +58,8 @@ public class JRTraceVMImpl extends AbstractVM {
 			String helperPath = JarLocator.getHelperLibJar();
 			String mynetwork = servernetworkaddress == null ? ""
 					: (",server=" + servernetworkaddress);
-			vm.loadAgent(agent, String.format("port=%d,bootjar=%s%s", port,
+			
+			VirtualMachineWrapper.loadAgent(thePID,agent, String.format("port=%d,bootjar=%s%s", port,
 					helperPath, mynetwork));
 
 		} catch (VirtualMachineException e) {
@@ -81,28 +70,14 @@ public class JRTraceVMImpl extends AbstractVM {
 	}
 
 	public boolean detach() {
-		boolean result = true;
-		boolean result2 = true;
+	
 
-		if (!detachVM()) {
-			result2 = false;
-		}
-		result = stopConnection(false);
-		return result & result2;
+		return  stopConnection(false);
+		
 
 	}
 
-	private boolean detachVM() {
-		try {
-			if (vm != null) {
-				vm.detach();
-			}
-		} catch (VirtualMachineException e) {
-			lastException = e;
-			return false;
-		}
-		return true;
-	}
+
 
 	@Override
 	public String getConnectionIdentifier() {

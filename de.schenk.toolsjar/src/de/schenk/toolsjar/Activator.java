@@ -10,6 +10,11 @@ import org.osgi.framework.BundleContext;
 
 public class Activator extends Plugin {
 
+	public static String getBundeId()
+	{
+		return context.getBundle().getSymbolicName();
+	}
+	
 	private static BundleContext context;
 
 	static BundleContext getContext() {

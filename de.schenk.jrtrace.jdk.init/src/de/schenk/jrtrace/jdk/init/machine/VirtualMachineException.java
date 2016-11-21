@@ -7,7 +7,7 @@ public class VirtualMachineException extends RuntimeException {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public VirtualMachineException(Throwable t) {
-	super(t);
+	public VirtualMachineException(String error) {
+	super(error);
 	}
 }

@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 
 
-import de.schenk.jrtrace.jdk.init.Activator;
+import de.schenk.jrtrace.jdk.init.JDKInitActivator;
 import de.schenk.jrtrace.jdk.init.machine.VMDescriptor;
 import de.schenk.jrtrace.jdk.init.machine.VirtualMachineWrapper;
 import de.schenk.jrtrace.service.IJRTraceVM;
@@ -23,7 +23,7 @@ public class JRTraceControllerImpl implements JRTraceController {
 		VMInfo[] vmInfo = new VMInfo[vmds.size()];
 		int i = 0;
 		for (VMDescriptor vmd : vmds) {
-			vmInfo[i++] = new VMInfo(vmd.id(), vmd.displayName());
+			vmInfo[i++] = new VMInfo(vmd.getPID(), vmd.getDisplayName());
 		}
 
 		return vmInfo;
@@ -59,7 +59,7 @@ public class JRTraceControllerImpl implements JRTraceController {
 	@Override
 	public IJRTraceVM getMachine(String pid, String serveraddress) {
 
-		if (Activator.hasJDK())
+		if (JDKInitActivator.hasJDK())
 			return new JRTraceVMImpl(pid, serveraddress);
 		else
 			throw new RuntimeException(
@@ -105,7 +105,7 @@ public class JRTraceControllerImpl implements JRTraceController {
 
 	@Override
 	public boolean supportsAttachToPID() {
-		return Activator.hasJDK();
+		return JDKInitActivator.hasJDK();
 	}
 
 }

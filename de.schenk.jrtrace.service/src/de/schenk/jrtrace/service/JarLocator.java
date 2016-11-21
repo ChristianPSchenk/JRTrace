@@ -13,49 +13,34 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
+import de.schenk.jrtrace.jdk.init.utils.BundleFilesUtil;
+
 public class JarLocator {
 
 	
 
 	static public String getHelperLibJar() {
-		try {
-			return getFile("de.schenk.jrtrace.helperlib", "/lib/HelperLib.jar");
-		} catch (URISyntaxException | IOException e) {
-			throw new RuntimeException(
-					"Exception while trying to get the file for HelperLib.jar",
-					e);
-		}
-	}
-
-	static public String getFile(String bundleId, String jarpath)
-			throws URISyntaxException, IOException {
-
-		Bundle bundle = Platform.getBundle(bundleId);
-		Path path = new Path(jarpath);
-		URL fileURL = FileLocator.find(bundle, path, null);
-
-		return new File(FileLocator.resolve(fileURL).toURI()).getAbsolutePath();
 	
+			return BundleFilesUtil.getFile("de.schenk.jrtrace.helperlib", "/lib/HelperLib.jar");
+		
 	}
+
+	
 
 	static public String getJRTraceHelperAgent() {
 
-		try {
-			return getFile("de.schenk.jrtrace.helperagent",
+	
+			return BundleFilesUtil.getFile("de.schenk.jrtrace.helperagent",
 					"/lib/HelperAgent.jar");
-		} catch (URISyntaxException | IOException e) {
-			throw new RuntimeException(
-					"Problem obtaining the File URI for HelperAgent.jar");
-		}
+	
 	}
 
-	public static String getHelperLibSource() throws URISyntaxException,
-			IOException {
-		return getFile("de.schenk.jrtrace.helperlib", "/src");
+	public static String getHelperLibSource()  {
+		return BundleFilesUtil.getFile("de.schenk.jrtrace.helperlib", "/src");
 	}
 
 	public static String getJRTraceHelperAgentSource()
-			throws URISyntaxException, IOException {
-		return getFile("de.schenk.jrtrace.helperagent", "src");
+			 {
+		return BundleFilesUtil.getFile("de.schenk.jrtrace.helperagent", "src");
 	}
 }

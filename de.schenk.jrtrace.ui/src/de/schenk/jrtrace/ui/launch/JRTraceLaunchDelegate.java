@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 import de.schenk.jrtrace.helperlib.JRLog;
-import de.schenk.jrtrace.jdk.init.Activator;
+import de.schenk.jrtrace.jdk.init.JDKInitActivator;
 import de.schenk.jrtrace.service.ICancelable;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
@@ -41,7 +41,7 @@ public class JRTraceLaunchDelegate implements ILaunchConfigurationDelegate {
 				ConnectionTab.BM_UPLOADAGENT, false);
 		IJRTraceVM vm = null;
 		if (upload) {
-			if (!Activator.hasJDK()) {
+			if (!JDKInitActivator.hasJDK()) {
 				showNoJDKError();
 				throw new CoreException(Status.CANCEL_STATUS);
 			}
