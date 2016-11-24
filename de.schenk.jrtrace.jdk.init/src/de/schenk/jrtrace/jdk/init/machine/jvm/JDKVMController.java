@@ -67,15 +67,30 @@ public class JDKVMController {
 		
 	}
 
-	public JavaCallResult run(String... parameters ) {		
-		String	javaExe=System.getProperty("java.home")+File.separator+"bin"+File.separator+"java";	
+	public JavaCallResult run(String... parameters ) {	
+		String	javaExe=null;
+		ArrayList<String> commandLine=new ArrayList<String>();
+		if(JDKInitActivator.isJava9JDK()){
+			javaExe=JDKInitActivator.getJDK9HomeDir()+File.separator+"bin"+File.separator+"java";	
+			
+			
+			
+			commandLine.add(javaExe);
+			commandLine.add("-cp");
+			commandLine.add(getJDKAttachApplicationClassPath());
+			commandLine.add(JDKAttachApplication.class.getName());
+		} else
+		{
+			
+		javaExe=System.getProperty("java.home")+File.separator+"bin"+File.separator+"java";	
 		String classPath="\""+getJDKAttachApplicationClassPath()+";"+JDKInitActivator.getToolsJar().getAbsolutePath()+"\"";
 		
-		ArrayList<String> commandLine=new ArrayList<String>();
+		
 		commandLine.add(javaExe);
 		commandLine.add("-cp");
 		commandLine.add(classPath);
 		commandLine.add(JDKAttachApplication.class.getName());
+		}
 		for(String parameter:parameters)commandLine.add(parameter);
 		ProcessBuilder pb=new ProcessBuilder(commandLine);
 		

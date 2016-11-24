@@ -16,11 +16,7 @@ public class JRTraceServiceActivator extends Plugin implements BundleActivator {
 
 	@Override
 	public void start(BundleContext context) throws Exception {
-		// important to do the proper startup. Force activation of jdk.init
-		// first so
-		// the tools.jar is copied to the toolsjar bundle, which is activated
-		// later.
-		JDKInitActivator.hasJDK();
+
 
 		thePlugin = this;
 

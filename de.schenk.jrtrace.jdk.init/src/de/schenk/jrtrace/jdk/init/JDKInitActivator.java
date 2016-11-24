@@ -27,12 +27,15 @@ public class JDKInitActivator extends Plugin {
 
 	private static BundleContext context;
 	private static boolean hasJDK = false;
-
+	private static File toolsjar=null;
+	private static boolean isJava9=false;
 	static BundleContext getContext() {
 		return context;
 	}
 
-	private static File toolsjar;
+	private static File java9homedir;
+
+	
 
 	/*
 	 * (non-Javadoc)
@@ -44,7 +47,49 @@ public class JDKInitActivator extends Plugin {
 	public void start(BundleContext bundleContext) throws Exception {
 		JDKInitActivator.context = bundleContext;
 
-		File toolsjar = getJDKToolsJar();
+	
+		
+		File toolsjar = findToolsJar();
+		File java9bin = findJDK9HomeDir();
+
+		if (toolsjar != null)  {
+		
+			this.toolsjar=toolsjar;
+			hasJDK = true;
+			isJava9=false;
+		}
+		if(java9bin!=null)
+		{
+			this.java9homedir=java9bin;
+			isJava9=true;
+			hasJDK=true;
+		}
+		
+
+	}
+
+	/**
+	 * Returns the home directory of a JDK that can be used to use the jdk.attach package.
+	 * 1) First checks the running JVM: if it is a JDK, returns the java.home
+	 * 2) Second checks if the de.schenk.toolsjar\bin\java9 folder contains a valid JDK (java.exe in bin\java.exe) and returns if available.
+	 * 
+	 * @return
+	 */
+	private File findJDK9HomeDir() {
+		final String javahome = System.getProperty("java.home");
+		File jdkbin=new File(javahome+File.separator+"bin");
+		if(new File(jdkbin,"attach.dll").exists() && new File(jdkbin,"java.exe").exists()) return new File(javahome);
+		
+		 File java9dir=new File(BundleFilesUtil.getFile("de.schenk.toolsjar", "java9"));
+		 if(!java9dir.exists()) return null;
+		 File javaexe=new File(java9dir,"bin"+File.separator+"java.exe");
+		 if(!javaexe.exists()) return null;
+		return java9dir;
+				
+	}
+
+	private File findToolsJar() {
+		File toolsjar = getJDKToolsJarFromRunningJVM();
 
 		File attachdll = null;
 		if (toolsjar == null) {
@@ -54,17 +99,7 @@ public class JDKInitActivator extends Plugin {
 				toolsjar = null;
 			}
 		}
-
-		if (toolsjar == null) {
-			
-			hasJDK = false;
-			
-		} else {
-		
-			this.toolsjar=toolsjar;
-			hasJDK = true;
-		}
-
+		return toolsjar;
 	}
 	
 	static public File getToolsJar()
@@ -101,12 +136,13 @@ public class JDKInitActivator extends Plugin {
 
 	}
 
+
 	/**
 	 * 
 	 * @return a file representing the tools.jar jar from the currently executed
 	 *         JDK, null if not run on a JDK.
 	 */
-	private File getJDKToolsJar() {
+	private File getJDKToolsJarFromRunningJVM() {
 		final String javahome = System.getProperty("java.home");
 		File toolsjar = new File(javahome, "../lib/tools.jar");
 		if (toolsjar.exists())
@@ -116,19 +152,20 @@ public class JDKInitActivator extends Plugin {
 
 	}
 
-	private File getAttachDll(String alternateToolsJarSource) {
-		final String javaversion = System.getProperty("java.version");
-		File attachdll = new File(alternateToolsJarSource + "/" + javaversion
-				+ "/attach.dll");
-		if (!attachdll.exists()) {
-			throw new RuntimeException("Expecting the attach.dll in "
-					+ attachdll.toString()
-					+ " when starting JRTrace on a non-JDK JRE");
-		}
-		return attachdll;
-
+	
+	static public File getJDK9HomeDir()
+	{
+		return java9homedir;
 	}
 
+	/**
+	 * Only valid if hasJDK returns true.
+	 * @return true if a JDK9 is available, false if a JDK8 or below is available.
+	 *         
+	 */
+	public static boolean isJava9JDK() {
+		return isJava9;
+	}
 	/**
 	 * 
 	 * @return true, if connecting via the attach API (using the PID) is
@@ -147,6 +184,8 @@ public class JDKInitActivator extends Plugin {
 	public void stop(BundleContext bundleContext) throws Exception {
 		JDKInitActivator.context = null;
 	}
+
+	
 
 
 

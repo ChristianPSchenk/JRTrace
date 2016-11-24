@@ -1,11 +1,20 @@
-The tools.jar from the JDK that runs JRTrace will be copied into this directory during JRTrace startup and will be used by JRTrace.
-The standard source for this jar is the lib directory of the JDK the tool runs on.
+Helper Directory to Support Attaching to JVMs
+=============================================
 
-If the tool shall run on a JRE, to files need to be included:
+This directory is not relevant, if JRTrace runs on a JDK. When running on a JRE, it can support attach with some tricks anyway.
+
+When running JRTrace on Java 8:
+
+If JRTrace or the Eclipse Environment including JRTrace runs on a JRE only (as opposed to a JDK), JRTrace will check this directory if the two files 
+tools.jar and attach.dll are available. If yes, they will be used to support attaching to other JVMs.
 tools.jar
 attach.dll
 [In what situations this is legally permissible should be checked before distributing the tool to anyone.]
+To include those, create a sub-folder named with the name of the Java version e.g. 1.8.0_31 and drop the two files inside. 
 
-To include thosee, create a sub-folder named with the name of the Java version e.g. 1.8.0_31 and drop the two files inside. 
-If the tool is not executed on a JDK, it will try to find these directories and use the copies provided here. Thus one copy can be provided
-for each JRE version around within your organisation/scope.
+
+Not supported yet: When running JRTrace on Java 9:
+
+In this case the directory "java9" can contain a Java custom image created with:
+"<path_to_your_java9_jdk>\bin\jlink.exe" --module-path "<path_to_your_java9_jdk>\jmods" --add-modules jdk.attach --output <path_to_this_folder>/Java9
+The size is approx 18MB and can be used to support the attach functionality.

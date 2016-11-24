@@ -30,7 +30,7 @@ public class Activator extends Plugin {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
-		String version = ManagementFactory.getRuntimeMXBean().getVmVersion();
+	
 
 	}
 
