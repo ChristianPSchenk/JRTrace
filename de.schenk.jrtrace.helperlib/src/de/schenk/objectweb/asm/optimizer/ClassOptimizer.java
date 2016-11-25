@@ -41,7 +41,7 @@ import de.schenk.objectweb.asm.MethodVisitor;
 import de.schenk.objectweb.asm.Opcodes;
 import de.schenk.objectweb.asm.TypePath;
 import de.schenk.objectweb.asm.commons.Remapper;
-import de.schenk.objectweb.asm.commons.RemappingClassAdapter;
+import de.schenk.objectweb.asm.commons.ClassRemapper;
 
 /**
  * A {@link ClassVisitor} that renames fields and methods, and removes debug
@@ -50,7 +50,7 @@ import de.schenk.objectweb.asm.commons.RemappingClassAdapter;
  * @author Eric Bruneton
  * @author Eugene Kuleshov
  */
-public class ClassOptimizer extends RemappingClassAdapter {
+public class ClassOptimizer extends ClassRemapper {
 
     private String pkgName;
     String clsName;
@@ -60,7 +60,7 @@ public class ClassOptimizer extends RemappingClassAdapter {
     List<String> syntheticClassFields = new ArrayList<String>();
 
     public ClassOptimizer(final ClassVisitor cv, final Remapper remapper) {
-        super(Opcodes.ASM5, cv, remapper);
+        super(Opcodes.ASM6, cv, remapper);
     }
 
     FieldVisitor syntheticFieldVisitor(final int access, final String name,
@@ -161,7 +161,7 @@ public class ClassOptimizer extends RemappingClassAdapter {
             hasClinitMethod = true;
             MethodVisitor mv = super.visitMethod(access, name, desc, null,
                     exceptions);
-            return new MethodVisitor(Opcodes.ASM5, mv) {
+            return new MethodVisitor(Opcodes.ASM6, mv) {
                 @Override
                 public void visitCode() {
                     super.visitCode();
@@ -189,9 +189,8 @@ public class ClassOptimizer extends RemappingClassAdapter {
     }
 
     @Override
-    protected MethodVisitor createRemappingMethodAdapter(int access,
-            String newDesc, MethodVisitor mv) {
-        return new MethodOptimizer(this, access, newDesc, mv, remapper);
+    protected MethodVisitor createMethodRemapper(MethodVisitor mv) {
+        return new MethodOptimizer(this, mv, remapper);
     }
 
     @Override

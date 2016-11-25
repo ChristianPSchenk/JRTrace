@@ -36,6 +36,7 @@ import de.schenk.objectweb.asm.Attribute;
 import de.schenk.objectweb.asm.ClassVisitor;
 import de.schenk.objectweb.asm.FieldVisitor;
 import de.schenk.objectweb.asm.MethodVisitor;
+import de.schenk.objectweb.asm.ModuleVisitor;
 import de.schenk.objectweb.asm.Opcodes;
 import de.schenk.objectweb.asm.TypePath;
 
@@ -131,7 +132,7 @@ public final class TraceClassVisitor extends ClassVisitor {
      */
     public TraceClassVisitor(final ClassVisitor cv, final Printer p,
             final PrintWriter pw) {
-        super(Opcodes.ASM5, cv);
+        super(Opcodes.ASM6, cv);
         this.pw = pw;
         this.p = p;
     }
@@ -148,6 +149,13 @@ public final class TraceClassVisitor extends ClassVisitor {
     public void visitSource(final String file, final String debug) {
         p.visitSource(file, debug);
         super.visitSource(file, debug);
+    }
+    
+    @Override
+    public ModuleVisitor visitModule() {
+        Printer p = this.p.visitModule();
+        ModuleVisitor mv =  super.visitModule();
+        return new TraceModuleVisitor(mv, p);
     }
 
     @Override

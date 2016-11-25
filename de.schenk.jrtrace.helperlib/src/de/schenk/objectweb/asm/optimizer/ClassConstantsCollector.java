@@ -34,6 +34,7 @@ import de.schenk.objectweb.asm.Attribute;
 import de.schenk.objectweb.asm.ClassVisitor;
 import de.schenk.objectweb.asm.FieldVisitor;
 import de.schenk.objectweb.asm.MethodVisitor;
+import de.schenk.objectweb.asm.ModuleVisitor;
 import de.schenk.objectweb.asm.Opcodes;
 import de.schenk.objectweb.asm.TypePath;
 
@@ -48,7 +49,7 @@ public class ClassConstantsCollector extends ClassVisitor {
     private final ConstantPool cp;
 
     public ClassConstantsCollector(final ClassVisitor cv, final ConstantPool cp) {
-        super(Opcodes.ASM5, cv);
+        super(Opcodes.ASM6, cv);
         this.cp = cp;
     }
 
@@ -90,6 +91,12 @@ public class ClassConstantsCollector extends ClassVisitor {
         cv.visitSource(source, debug);
     }
 
+    @Override
+    public ModuleVisitor visitModule() {
+        cp.newUTF8("Module");
+        return new ModuleConstantsCollector(cv.visitModule(), cp);
+    }
+    
     @Override
     public void visitOuterClass(final String owner, final String name,
             final String desc) {

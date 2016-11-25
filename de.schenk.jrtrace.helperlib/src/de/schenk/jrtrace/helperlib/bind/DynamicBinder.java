@@ -1,4 +1,4 @@
-package sun.invoke;
+package de.schenk.jrtrace.helperlib.bind;
 
 /**
  * (c) 2014 by Christian Schenk
