@@ -3,8 +3,6 @@
  **/
 package de.schenk.jrtrace.ui.debug;
 
-
-
 import java.io.IOException;
 
 import javax.management.Notification;
@@ -38,8 +36,7 @@ import de.schenk.jrtrace.service.NotificationAndErrorListener;
 import de.schenk.jrtrace.ui.JRTraceUIActivator;
 import de.schenk.jrtrace.ui.handler.RunEngineXHandler;
 
-public class ConsolePageParticipant implements IConsolePageParticipant,
-		IDebugEventSetListener {
+public class ConsolePageParticipant implements IConsolePageParticipant, IDebugEventSetListener {
 
 	private int errorCount = 0;
 	private Action stopAction;
@@ -47,6 +44,8 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 	private JRTraceConsole myConsole;
 	private Action reinstallAction;
 	private Action closeConsoleAction;
+	private boolean deactivated = false;
+	private boolean disposed=false;
 
 	@Override
 	public Object getAdapter(Class adapter) {
@@ -63,7 +62,6 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 
 		createErrorIndicatorAction(bar);
 		createStopAction(bar);
-		
 
 		addReinstallAction(bar);
 		addCloseConsoleAction(bar);
@@ -109,41 +107,33 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 
 			@Override
 			public ImageDescriptor getImageDescriptor() {
-				return PlatformUI.getWorkbench().getSharedImages()
-						.getImageDescriptor(ISharedImages.IMG_ELCL_STOP);
+				return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_STOP);
 			}
 		};
 		stopAction.setToolTipText("Terminate this JRTrace launch.");
-		bar.getToolBarManager().appendToGroup(IConsoleConstants.LAUNCH_GROUP,
-				stopAction);
+		bar.getToolBarManager().appendToGroup(IConsoleConstants.LAUNCH_GROUP, stopAction);
 	}
 
 	public void createErrorIndicatorAction(IActionBars bar) {
 		errorAction = new Action() {
 			@Override
 			public void run() {
-				ErrorDialog
-						.openError(
-								null,
-								"Transmission Problems",
-								String.format(
-										"%d messages from the target JVM to the development environment were lost. This can happen under heavy load conditions, e.g. if 10000nd of messages like big System.out are transmitted to the development machine. Consider using the BLOCKING mode for this launch.",
-										errorCount), new Status(IStatus.ERROR,
-										"de.schenk.jrtracce.ui",
-										"Transmission Problem"));
+				ErrorDialog.openError(null, "Transmission Problems",
+						String.format(
+								"%d messages from the target JVM to the development environment were lost. This can happen under heavy load conditions, e.g. if 10000nd of messages like big System.out are transmitted to the development machine. Consider using the BLOCKING mode for this launch.",
+								errorCount),
+						new Status(IStatus.ERROR, "de.schenk.jrtracce.ui", "Transmission Problem"));
 			}
 
 			@Override
 			public ImageDescriptor getImageDescriptor() {
-				return PlatformUI.getWorkbench().getSharedImages()
-						.getImageDescriptor(ISharedImages.IMG_OBJS_ERROR_TSK);
+				return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJS_ERROR_TSK);
 			}
 		};
 		errorAction.setEnabled(false);
 		errorAction.setDisabledImageDescriptor(null);
 		errorAction.setToolTipText("Status: No Transmission Problems.");
-		bar.getToolBarManager().appendToGroup(IConsoleConstants.LAUNCH_GROUP,
-				errorAction);
+		bar.getToolBarManager().appendToGroup(IConsoleConstants.LAUNCH_GROUP, errorAction);
 		NotificationAndErrorListener errorListener = new NotificationAndErrorListener() {
 
 			@Override
@@ -160,18 +150,14 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 					public void run() {
 						errorAction.setEnabled(true);
 						errorCount++;
-						errorAction
-								.setToolTipText("Error: Messages (Standard Output or others) have been lost.");
+						errorAction.setToolTipText("Error: Messages (Standard Output or others) have been lost.");
 
 					}
 				});
 			}
 		};
-		myConsole
-				.getDebugTarget()
-				.getJRTraceMachine()
-				.addClientListener(NotificationConstants.NOTIFY_MESSAGE,
-						errorListener);
+		myConsole.getDebugTarget().getJRTraceMachine().addClientListener(NotificationConstants.NOTIFY_MESSAGE,
+				errorListener);
 
 	}
 
@@ -188,52 +174,42 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 
 			@Override
 			public ImageDescriptor getImageDescriptor() {
-				return JRTraceUIActivator.getInstance().getDescriptor(
-						"upload_java_16.gif");
+				return JRTraceUIActivator.getInstance().getDescriptor("upload_java_16.gif");
 			}
 
 			@Override
 			public boolean isEnabled() {
 				JRTraceDebugTarget target = myConsole.getDebugTarget();
-				return !target.isDisconnected() && !target.isTerminated()
-						&& !(target.getProject() == null);
+				return !target.isDisconnected() && !target.isTerminated() && !(target.getProject() == null);
 			}
 		};
-		reinstallAction
-				.setToolTipText("Reinstall the JRTrace project connected with this JRTrace session");
+		reinstallAction.setToolTipText("Reinstall the JRTrace project connected with this JRTrace session");
 
-		bar.getToolBarManager().appendToGroup(IConsoleConstants.LAUNCH_GROUP,
-				reinstallAction);
+		bar.getToolBarManager().appendToGroup(IConsoleConstants.LAUNCH_GROUP, reinstallAction);
 	}
 
 	public void addCloseConsoleAction(IActionBars bar) {
 		closeConsoleAction = new Action() {
 			public void run() {
 
-				
-				ConsolePlugin.getDefault().getConsoleManager()
-				.removeConsoles(new IConsole[]{myConsole});
+				ConsolePlugin.getDefault().getConsoleManager().removeConsoles(new IConsole[] { myConsole });
 			};
 
 			@Override
 			public ImageDescriptor getImageDescriptor() {
-				return JRTraceUIActivator.imageDescriptorFromPlugin("org.eclipse.ui", "icons/full/elcl16/progress_rem.png");
+				return JRTraceUIActivator.imageDescriptorFromPlugin("org.eclipse.ui",
+						"icons/full/elcl16/progress_rem.png");
 			}
 
-			
 		};
-		closeConsoleAction
-				.setToolTipText("Close this Console.");
+		closeConsoleAction.setToolTipText("Close this Console.");
 		closeConsoleAction.setEnabled(false);
-		bar.getToolBarManager().appendToGroup(IConsoleConstants.LAUNCH_GROUP,
-				closeConsoleAction);
+		bar.getToolBarManager().appendToGroup(IConsoleConstants.LAUNCH_GROUP, closeConsoleAction);
 	}
 
-	
-	
 	@Override
 	public void dispose() {
-
+			this.disposed=true;
 	}
 
 	@Override
@@ -244,10 +220,12 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 	@Override
 	public void deactivated() {
 
+
 	}
 
 	@Override
 	public void handleDebugEvents(DebugEvent[] events) {
+		
 		for (DebugEvent e : events) {
 			if (e.getSource() == myConsole.getDebugTarget()) {
 				if (myConsole.getDebugTarget().isDisconnected()) {
@@ -256,34 +234,39 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 					stopAction.setEnabled(false);
 					closeConsoleAction.setEnabled(true);
 
-					
 					Display.getDefault().asyncExec(new Runnable() {
 
 						@Override
 						public void run() {
-							MessageConsoleStream stream = myConsole.newMessageStream();
 							try {
-							
-							stream.setColor(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
-							stream.print("The connection to the JRTrace debug taget was lost.\n");
-							stream.flush();
-							stream.close();
-						} catch (IOException e1) {
-							JRTraceUIActivator.getInstance().getLog().log(new Status(IStatus.ERROR,JRTraceUIActivator.BUNDLE_ID,"Exception while closing the stream to the console.",e1));
+								
+								if (!disposed) {
+									MessageConsoleStream stream = myConsole.newMessageStream();
+
+									if (!stream.isClosed()) {
+										stream.setColor(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+										stream.print("The connection to the JRTrace debug target was terminated.\n");
+
+										stream.flush();
+										stream.close();
+									}
+
+								}
+							} catch (IOException e1) {
+								JRTraceUIActivator.getInstance().getLog()
+										.log(new Status(IStatus.ERROR, JRTraceUIActivator.BUNDLE_ID,
+												"Exception while closing the stream to the console.", e1));
+							}
+
 						}
-						
-						}
-		
-						
+
 					});
 
-					
-								
-					
 				}
 			}
 		}
 
+		}
 	}
 
-}
+

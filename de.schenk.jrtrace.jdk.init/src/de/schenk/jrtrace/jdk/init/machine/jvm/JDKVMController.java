@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import de.schenk.jrtrace.jdk.init.JDKInitActivator;
+import de.schenk.jrtrace.jdk.init.machine.VirtualMachineException;
 import de.schenk.jrtrace.jdk.init.utils.BundleFilesUtil;
 import de.schenk.toolsjar.Activator;
 import de.schenk.toolsjar.attach.app.JDKAttachApplication;
@@ -67,7 +68,7 @@ public class JDKVMController {
 		
 	}
 
-	public JavaCallResult run(String... parameters ) {	
+	public String run(String... parameters ) {	
 		String	javaExe=null;
 		ArrayList<String> commandLine=new ArrayList<String>();
 		if(JDKInitActivator.isJava9JDK()){
@@ -118,8 +119,12 @@ public class JDKVMController {
 		{
 			throw new RuntimeException(e);
 		}
-		
-		return new JavaCallResult(stdOutThread.getResult(),stdErrThread.getResult());
+		String error=stdErrThread.getResult();
+		if(error!=null&&!error.isEmpty())
+		{
+			throw new VirtualMachineException(String.format("Error returned from process when starting with\n%s\nErrror:\n%s", commandLine.toString(),error));
+		}
+		return stdOutThread.getResult();
 		
 	}
 

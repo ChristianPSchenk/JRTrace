@@ -15,12 +15,9 @@ public class VirtualMachineWrapper {
 
 	public static void loadAgent(String pid, String agent, String options) throws VirtualMachineException {
 		ArrayList<VMDescriptor> result = new ArrayList<VMDescriptor>();
-		JavaCallResult processResult = JDKVMController.getInstance().run("install",pid,agent,options);
+		JDKVMController.getInstance().run("install",pid,agent,options);
 	
-		String error = processResult.getError();
-		if(!error.isEmpty())
-			
-			throw new VirtualMachineException(error);
+		
 		
 	}
 
@@ -29,13 +26,17 @@ public class VirtualMachineWrapper {
 	public static List<VMDescriptor> list() {
 		
 		ArrayList<VMDescriptor> result = new ArrayList<VMDescriptor>();
-		JavaCallResult processResult = JDKVMController.getInstance().run("list");
-		String[] lines = processResult.getOutput().split("\n");
+		String processResult = JDKVMController.getInstance().run("list");
+		
+		String[] lines = processResult.split("\n");
 		for(String line:lines)
 		{
 			String[] elements=line.split(JDKAttachApplication.DATASEPARATOR);
+			if(elements.length==2)
+			{
 			VMDescriptor desc = new VMDescriptor(elements[1],elements[0]);
 			if(!desc.getDisplayName().contains(JDKAttachApplication.class.getName()+" list")) result.add(desc);
+			}
 			
 		}
 		return result;

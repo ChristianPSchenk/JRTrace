@@ -20,10 +20,10 @@ public class JVMInvokerTest {
 	@Test
 	public void testInvokeJDK() throws Exception
 	{
-		JavaCallResult result=JDKVMController.getInstance().run();
-		System.out.println(result.getOutput());
-		System.out.println(result.getError());
-		assertTrue("Didn't get the help message when invoking the JDKVMController wihtout parameters.",result.getOutput().contains("Usage"));
+		String result=JDKVMController.getInstance().run();
+		System.out.println(result);
+		
+		assertTrue("Didn't get the help message when invoking the JDKVMController wihtout parameters.",result.contains("Usage"));
 	}
 	
 	@Test
