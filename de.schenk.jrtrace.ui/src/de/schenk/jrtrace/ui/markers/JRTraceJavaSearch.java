@@ -3,6 +3,9 @@
 **/
 package de.schenk.jrtrace.ui.markers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IMethod;
@@ -34,19 +37,20 @@ public class JRTraceJavaSearch {
 	 * @return a SearchMatch with the location or null if the class wasn't
 	 *         found.
 	 */
-	public SearchMatch searchClass(String className, IProgressMonitor monitor) {
+	public List<SearchMatch> searchClass(String className, IProgressMonitor monitor) {
 
 		SearchPattern classSearchPattern = SearchPattern.createPattern(
 				className, IJavaSearchConstants.CLASS,
 				IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH);
 
-		final SearchMatch[] result = new SearchMatch[1];
+		final List<SearchMatch> result = new ArrayList<SearchMatch>();
 		SearchRequestor requestor = new SearchRequestor() {
 
 			@Override
 			public void acceptSearchMatch(SearchMatch match)
 					throws CoreException {
-				result[0] = match;
+				result.add(match);
+				
 
 			}
 
@@ -61,7 +65,7 @@ public class JRTraceJavaSearch {
 			throw new RuntimeException(e);
 		}
 
-		return result[0];
+		return result;
 
 	}
 

@@ -57,15 +57,19 @@ public class InstallEngineXCommand {
 				.getMetaInformation(enginexclassbytes);
 
 		String version = System.getProperty("java.version");
-		int maxClassFileVersion = 52;
+		int maxClassFileVersion = 53;
 		if (version.startsWith("1.7")) {
 			maxClassFileVersion = 51;
+		}
+		if(version.startsWith("1.8"))
+		{
+			maxClassFileVersion=52;
 		}
 		if (metadata.getClassVersion() > maxClassFileVersion) {
 			NotificationUtil
 					.sendProblemNotification(
 							String.format(
-									"The JRTrace class has classfile version %d. But a the target JVM is version %s and supports a maximum of classfile version %d.",
+									"The JRTrace class has classfile version %d. But a the target JVM is version %s and supports a maximum of classfile version %d (Java 1.7=51, Java 1.8=52, Java 9=53).",
 									metadata.getClassVersion(), version,
 									maxClassFileVersion), metadata
 									.getExternalClassName(), null, null);

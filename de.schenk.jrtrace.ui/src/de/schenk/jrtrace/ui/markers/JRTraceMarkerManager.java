@@ -4,12 +4,14 @@
 package de.schenk.jrtrace.ui.markers;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.management.AttributeChangeNotification;
 import javax.management.Notification;
 
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -41,8 +43,7 @@ public class JRTraceMarkerManager extends NotificationAndErrorListener {
 		private HashSet<MarkerCreateInfo> createFiles;
 		private HashSet<IResource> deleteResources;
 
-		private JRTraceMarkerCreateJob(String name,
-				HashSet<IResource> deleteResources,
+		private JRTraceMarkerCreateJob(String name, HashSet<IResource> deleteResources,
 				HashSet<MarkerCreateInfo> createFiles) {
 			super(name);
 			this.deleteResources = deleteResources;
@@ -56,8 +57,7 @@ public class JRTraceMarkerManager extends NotificationAndErrorListener {
 
 				for (IResource f : deleteResources) {
 					if (f.exists()) {
-						f.deleteMarkers(JRTRACEPROBLEM, true,
-								IResource.DEPTH_INFINITE);
+						f.deleteMarkers(JRTRACEPROBLEM, true, IResource.DEPTH_INFINITE);
 					}
 				}
 
@@ -69,9 +69,7 @@ public class JRTraceMarkerManager extends NotificationAndErrorListener {
 				}
 
 			} catch (CoreException e1) {
-				logError(
-						"Exception while updating the byteman problem markers",
-						e1);
+				logError("Exception while updating the byteman problem markers", e1);
 				return Status.CANCEL_STATUS;
 			}
 
@@ -87,8 +85,7 @@ public class JRTraceMarkerManager extends NotificationAndErrorListener {
 		 * @return
 		 * @throws CoreException
 		 */
-		private IMarker createMarkerForLocation(IProgressMonitor monitor,
-				MarkerCreateInfo f) {
+		private IMarker createMarkerForLocation(IProgressMonitor monitor, MarkerCreateInfo f) {
 			IMarker marker = null;
 			IType theClass = null;
 
@@ -97,24 +94,33 @@ public class JRTraceMarkerManager extends NotificationAndErrorListener {
 				if (searchName != null && searchName.contains("$")) {
 					searchName = searchName.replace('$', '.');
 				}
-				SearchMatch result = searcher.searchClass(searchName, monitor);
-				if (result != null) {
-					marker = result.getResource().createMarker(JRTRACEPROBLEM);
-					theClass = (IType) result.getElement();
+				List<SearchMatch> results = searcher.searchClass(searchName, monitor);
+
+				if (results.size() > 0) {
+					for (SearchMatch result : results) {
+						IProject matchProject = result.getResource().getProject();
+						if (matchProject.equals(target.getProject())) {
+							marker = result.getResource().createMarker(JRTRACEPROBLEM);
+							theClass = (IType) result.getElement();
+							break;
+						}
+					}
+					if(marker==null)
+					{
+						marker = results.get(0).getResource().createMarker(JRTRACEPROBLEM);
+						theClass = (IType) results.get(0).getElement();
+					}
+
 				} else {
 					if (target.getProject() != null) {
-						marker = target.getProject().createMarker(
-								JRTRACEPROBLEM);
+						marker = target.getProject().createMarker(JRTRACEPROBLEM);
 					} else {
-						ResourcesPlugin.getWorkspace().getRoot()
-								.createMarker(JRTRACEPROBLEM);
+						ResourcesPlugin.getWorkspace().getRoot().createMarker(JRTRACEPROBLEM);
 					}
 				}
 				IMethod method = null;
-				if (theClass != null && f.getMethod() != null
-						&& !f.getMethod().isEmpty()) {
-					method = searcher.searchMethod(theClass, f.getMethod(),
-							f.getMethodDescriptor());
+				if (theClass != null && f.getMethod() != null && !f.getMethod().isEmpty()) {
+					method = searcher.searchMethod(theClass, f.getMethod(), f.getMethodDescriptor());
 				}
 
 				IMember theElement = theClass;
@@ -124,14 +130,11 @@ public class JRTraceMarkerManager extends NotificationAndErrorListener {
 				if (theElement != null) {
 					ISourceRange sourceRange = theElement.getSourceRange();
 
-					marker.setAttribute(IMarker.CHAR_START,
-							sourceRange.getOffset());
-					marker.setAttribute(IMarker.CHAR_END,
-							sourceRange.getOffset() + sourceRange.getLength());
+					marker.setAttribute(IMarker.CHAR_START, sourceRange.getOffset());
+					marker.setAttribute(IMarker.CHAR_END, sourceRange.getOffset() + sourceRange.getLength());
 				}
 				marker.setAttribute(IMarker.LOCATION, "JRTrace Problem");
-				marker.setAttribute(IMarker.MESSAGE,
-						f.getMessage().replaceAll("\n", " "));
+				marker.setAttribute(IMarker.MESSAGE, f.getMessage().replaceAll("\n", " "));
 				marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 			} catch (CoreException e) {
@@ -151,17 +154,12 @@ public class JRTraceMarkerManager extends NotificationAndErrorListener {
 		target = JRTraceDebugTarget;
 
 		this.searcher = new JRTraceJavaSearch();
-		target.getJRTraceMachine().addClientListener(
-				NotificationConstants.NOTIFY_PROBLEM, this);
+		target.getJRTraceMachine().addClientListener(NotificationConstants.NOTIFY_PROBLEM, this);
 
 	}
 
 	private void logError(String msg, Exception e) {
-		JRTraceUIActivator
-				.getInstance()
-				.getLog()
-				.log(new Status(IStatus.ERROR, JRTraceUIActivator.BUNDLE_ID,
-						msg, e));
+		JRTraceUIActivator.getInstance().getLog().log(new Status(IStatus.ERROR, JRTraceUIActivator.BUNDLE_ID, msg, e));
 	}
 
 	private void updateMarkers() {
@@ -169,8 +167,7 @@ public class JRTraceMarkerManager extends NotificationAndErrorListener {
 		HashSet<IResource> copyDeleteResources;
 		HashSet<MarkerCreateInfo> copyCreateFiles;
 		synchronized (this) {
-			nothingToDo = (markerCreateFiles.size() == 0 && markerDeleteResource
-					.size() == 0);
+			nothingToDo = (markerCreateFiles.size() == 0 && markerDeleteResource.size() == 0);
 
 			copyDeleteResources = new HashSet<IResource>();
 			copyDeleteResources.addAll(markerDeleteResource);
@@ -183,8 +180,7 @@ public class JRTraceMarkerManager extends NotificationAndErrorListener {
 
 		if (nothingToDo)
 			return;
-		Job markerJob = new JRTraceMarkerCreateJob("Create ByteMan Markers",
-				copyDeleteResources, copyCreateFiles);
+		Job markerJob = new JRTraceMarkerCreateJob("Create ByteMan Markers", copyDeleteResources, copyCreateFiles);
 
 		markerJob.schedule(100);
 	}
@@ -199,8 +195,7 @@ public class JRTraceMarkerManager extends NotificationAndErrorListener {
 		String descriptor = not.getAttributeName();
 
 		synchronized (this) {
-			markerCreateFiles.add(new MarkerCreateInfo(classname, method, msg,
-					descriptor));
+			markerCreateFiles.add(new MarkerCreateInfo(classname, method, msg, descriptor));
 		}
 		updateMarkers();
 
@@ -209,8 +204,7 @@ public class JRTraceMarkerManager extends NotificationAndErrorListener {
 	public void close() {
 		clearAllMarkers();
 		if (target.getJRTraceMachine() != null)
-			target.getJRTraceMachine().removeClientListener(
-					NotificationConstants.NOTIFY_PROBLEM, this);
+			target.getJRTraceMachine().removeClientListener(NotificationConstants.NOTIFY_PROBLEM, this);
 
 	}
 
