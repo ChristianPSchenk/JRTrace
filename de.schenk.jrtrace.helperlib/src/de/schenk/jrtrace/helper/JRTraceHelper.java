@@ -191,7 +191,7 @@ public class JRTraceHelper {
 		Class<?>[] Allclasses = inst.getAllLoadedClasses();
 
 		for (Class<?> c : Allclasses) {
-
+			
 			if (!inst.isModifiableClass(c))
 				continue;
 			if (c.isInterface())
