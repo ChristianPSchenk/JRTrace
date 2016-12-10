@@ -15,6 +15,7 @@ import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -22,6 +23,14 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class JDTUtil {
 
+	/**
+	 * Try to identify a java method based on the event:</br>
+	 * First check the current selection and see if it corresponds to a Java Method. Second check the selection in the currently
+	 * active Editor.
+	 * 
+	 * @param event the event
+	 * @return an IMember if any can be identified, null if not.
+	 */
 	public static IMember getSelectedFunction(ExecutionEvent event) {
 		IWorkbenchPage page = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage();
@@ -29,9 +38,13 @@ public class JDTUtil {
 		IMember member = getSelectedFunction(currentSelection);
 		if (member != null)
 			return member;
-
-		ITextEditor editor = (ITextEditor) page.getActiveEditor();
-		return getSelectedFunction(editor);
+		
+		IEditorPart editor = page.getActiveEditor();
+		if(editor instanceof ITextEditor)
+			{
+			member=getSelectedFunction((ITextEditor)editor);
+			}
+		return member;
 
 	}
 
@@ -39,6 +52,7 @@ public class JDTUtil {
 		IJavaElement elem = JavaUI.getEditorInputJavaElement(editor
 				.getEditorInput());
 
+		
 		ITextSelection sel = (ITextSelection) editor.getSelectionProvider()
 				.getSelection();
 		if (elem instanceof ClassFile) {
