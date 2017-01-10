@@ -69,7 +69,7 @@ public class JRTraceMarkerManager extends NotificationAndErrorListener {
 				}
 
 			} catch (CoreException e1) {
-				logError("Exception while updating the byteman problem markers", e1);
+				logError("Exception while updating the JRTrace problem markers", e1);
 				return Status.CANCEL_STATUS;
 			}
 
@@ -180,7 +180,7 @@ public class JRTraceMarkerManager extends NotificationAndErrorListener {
 
 		if (nothingToDo)
 			return;
-		Job markerJob = new JRTraceMarkerCreateJob("Create ByteMan Markers", copyDeleteResources, copyCreateFiles);
+		Job markerJob = new JRTraceMarkerCreateJob("Creating JRTrace Markers", copyDeleteResources, copyCreateFiles);
 
 		markerJob.schedule(100);
 	}
