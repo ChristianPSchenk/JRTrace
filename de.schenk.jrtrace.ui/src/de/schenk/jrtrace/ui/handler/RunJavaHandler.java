@@ -27,6 +27,9 @@ public class RunJavaHandler extends AbstractHandler implements IHandler {
 		WizardDialog dialog = new WizardDialog(part.getSite().getShell(),
 				wizard);
 		dialog.create();
+		
+		
+		
 		IMember selectedFunction = JDTUtil.getSelectedFunction(event);
 		if (selectedFunction != null) {
 

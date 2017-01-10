@@ -4,6 +4,9 @@
 package de.schenk.jrtrace.ui.debug;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 
 import javax.management.Notification;
 
@@ -19,22 +22,28 @@ import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.DecorationOverlayIcon;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.console.IConsolePageParticipant;
 import org.eclipse.ui.console.MessageConsoleStream;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.IPageBookViewPage;
+import org.eclipse.jface.viewers.*;
 
 import de.schenk.jrtrace.helperlib.NotificationConstants;
 import de.schenk.jrtrace.service.NotificationAndErrorListener;
 import de.schenk.jrtrace.ui.JRTraceUIActivator;
 import de.schenk.jrtrace.ui.handler.RunEngineXHandler;
+import de.schenk.jrtrace.ui.wizard.RunJavaWizard;
 
 public class ConsolePageParticipant implements IConsolePageParticipant, IDebugEventSetListener {
 
@@ -46,6 +55,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IDebugEv
 	private Action closeConsoleAction;
 	private boolean deactivated = false;
 	private boolean disposed=false;
+	private Action reRunAction;
 
 	@Override
 	public Object getAdapter(Class adapter) {
@@ -63,6 +73,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IDebugEv
 		createErrorIndicatorAction(bar);
 		createStopAction(bar);
 
+		addReRunAction(bar);
 		addReinstallAction(bar);
 		addCloseConsoleAction(bar);
 
@@ -175,12 +186,13 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IDebugEv
 			@Override
 			public ImageDescriptor getImageDescriptor() {
 				return JRTraceUIActivator.getInstance().getDescriptor("upload_java_16.gif");
+				
+			        
 			}
-
+			
 			@Override
 			public boolean isEnabled() {
-				JRTraceDebugTarget target = myConsole.getDebugTarget();
-				return !target.isDisconnected() && !target.isTerminated() && !(target.getProject() == null);
+				return hasActiveConnection();
 			}
 		};
 		reinstallAction.setToolTipText("Reinstall the JRTrace project connected with this JRTrace session");
@@ -188,6 +200,58 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IDebugEv
 		bar.getToolBarManager().appendToGroup(IConsoleConstants.LAUNCH_GROUP, reinstallAction);
 	}
 
+	
+	static private DecorationOverlayIcon rerunLastJavaIcon;
+	public void addReRunAction(IActionBars bar) {
+		reRunAction = new Action() {
+			
+
+			public void run() {
+
+				RunJavaWizard wizard = new RunJavaWizard();
+				WizardDialog dialog = new WizardDialog(			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+						wizard);				
+				dialog.create();
+				if(!wizard.reRunJava())
+				{
+					dialog.open();
+				}
+				
+
+			};
+			
+			
+
+			@Override
+			public ImageDescriptor getImageDescriptor() {
+				if(rerunLastJavaIcon!=null) return rerunLastJavaIcon;
+				ImageDescriptor baseDesc = JRTraceUIActivator.getInstance().getDescriptor("run_java_16.gif");
+				
+				   try {
+					
+					  
+					rerunLastJavaIcon = new DecorationOverlayIcon(
+					            baseDesc.createImage(),ImageDescriptor.createFromURL(new URL("platform:/plugin/org.eclipse.ui.views.log/icons/elcl16/refresh.png"))
+					           , 
+					            IDecoration.TOP_RIGHT);
+					
+					return rerunLastJavaIcon;
+				} catch (MalformedURLException e) {
+
+					throw new RuntimeException(e);
+				}
+			}
+
+			@Override
+			public boolean isEnabled() {
+				return hasActiveConnection();
+			}
+		};
+		reRunAction.setToolTipText("Re-Execute the last executed Java Function.");
+
+		bar.getToolBarManager().appendToGroup(IConsoleConstants.LAUNCH_GROUP, reRunAction);
+	}
+	
 	public void addCloseConsoleAction(IActionBars bar) {
 		closeConsoleAction = new Action() {
 			public void run() {
@@ -267,6 +331,11 @@ public class ConsolePageParticipant implements IConsolePageParticipant, IDebugEv
 		}
 
 		}
+
+	private boolean hasActiveConnection() {
+		JRTraceDebugTarget target = myConsole.getDebugTarget();
+		return !target.isDisconnected() && !target.isTerminated() && !(target.getProject() == null);
+	}
 	}
 
 

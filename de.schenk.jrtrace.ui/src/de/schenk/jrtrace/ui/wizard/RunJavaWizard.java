@@ -14,6 +14,7 @@ public class RunJavaWizard extends Wizard {
 	private String mainClass = "";
 	private String runMethod = "";
 	private JRTraceDebugTarget debugTarget = null;
+	static private boolean didAlreadyRunInThisSession=false;
 
 	String getTheClassLoader() {
 		return theClassLoader;
@@ -43,6 +44,23 @@ public class RunJavaWizard extends Wizard {
 		return false;
 
 	};
+	
+	/**
+	 *  Runs the last java command again. Will only run again if the RunJavaWizard
+	 *  was finished at least once in the same eclipse session already.
+	 *  
+	 *   
+	 * @return true, if the last java command selected from the wizard was run again. false, if no command was selected before and rerun fails.
+	 */
+	public boolean reRunJava()
+	{
+		if(didAlreadyRunInThisSession&&theClassLoader!=null&& mainClass!=null&& runMethod!=null)
+		{
+			debugTarget.runJava(theClassLoader, mainClass, runMethod);
+			return true;
+		}
+		return false;
+	}
 
 	@Override
 	public boolean performFinish() {
@@ -50,7 +68,7 @@ public class RunJavaWizard extends Wizard {
 		scriptPage.storeSettings();
 
 		debugTarget.runJava(theClassLoader, mainClass, runMethod);
-
+		didAlreadyRunInThisSession=true;
 		return true;
 	}
 
