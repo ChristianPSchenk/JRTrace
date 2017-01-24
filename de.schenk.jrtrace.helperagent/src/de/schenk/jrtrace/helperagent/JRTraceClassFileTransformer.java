@@ -3,25 +3,62 @@
  **/
 package de.schenk.jrtrace.helperagent;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
+import java.lang.invoke.LambdaMetafactory;
 import java.security.ProtectionDomain;
 
+import de.schenk.jrtrace.helper.JRTraceNameUtil;
 import de.schenk.jrtrace.helper.JRTraceOneClassTransformer;
+import de.schenk.jrtrace.helperlib.JRLog;
+import de.schenk.jrtrace.helperlib.bootstrap.transform.LambdaMetafactoryTransformer;
 
 public class JRTraceClassFileTransformer implements ClassFileTransformer {
 
 	@Override
-	public byte[] transform(ClassLoader classLoader, String className,
-			Class<?> classObject, ProtectionDomain protectionDomain,
-			byte[] classBytes) throws IllegalClassFormatException {
+	public byte[] transform(ClassLoader classLoader, String className, Class<?> classObject,
+			ProtectionDomain protectionDomain, byte[] classBytes) throws IllegalClassFormatException {
 
-		JRTraceOneClassTransformer oneTransformer = new JRTraceOneClassTransformer(
-				classLoader, className, classObject, classBytes);
+		byte[] transformedBytes = null;
+		if (JRTraceNameUtil.getInternalName(LambdaMetafactory.class.getCanonicalName()).equals(className)) {
+			LambdaMetafactoryTransformer javaLangObjectTransformer = new LambdaMetafactoryTransformer(classBytes);
+			transformedBytes = javaLangObjectTransformer.doTransform();
+		} else {
+			JRTraceOneClassTransformer oneTransformer = new JRTraceOneClassTransformer(classLoader, className,
+					classObject, classBytes);
+			transformedBytes = oneTransformer.doTransform();
+		}
+		if (JRLog.getLogLevel() == JRLog.DEBUG && transformedBytes != null) {
+			logTransformedClassBytes(classBytes, transformedBytes, className);
+		}
+		return transformedBytes;
+	}
 
-		byte[] trasnformedBytes = oneTransformer.doTransform();
+	private void logTransformedClassBytes(byte[] classBytes, byte[] transformedBytes, String className) {
+		String tmpdir = "";
+		try {
+			String classId = className;
+			if (className == null) {
+				classId = String.format("null%d", System.currentTimeMillis());
+			}
+			tmpdir = System.getProperty("java.io.tmpdir");
 
-		return trasnformedBytes;
+			FileOutputStream fileOutputStream = new FileOutputStream(
+					tmpdir + File.separator + classId.replace('/', '_') + "before.class");
+			fileOutputStream.write(classBytes);
+			fileOutputStream.close();
+			FileOutputStream fileOutputStream2 = new FileOutputStream(
+					tmpdir + File.separator + classId.replace('/', '_') + "after.class");
+			fileOutputStream2.write(transformedBytes);
+			fileOutputStream2.close();
+
+			JRLog.debug("Writing bytes before/after transformation of class " + classId + " to directory " + tmpdir);
+		} catch (IOException e) {
+			JRLog.error("Error (" + e.getMessage() + ") when trying to write transformed classbytes to  " + tmpdir);
+		}
 	}
 
 }

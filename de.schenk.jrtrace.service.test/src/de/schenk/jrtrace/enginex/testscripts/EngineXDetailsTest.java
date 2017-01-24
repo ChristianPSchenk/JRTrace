@@ -3,16 +3,19 @@
  **/
 package de.schenk.jrtrace.enginex.testscripts;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
+import java.lang.invoke.CallSite;
+import java.lang.invoke.LambdaMetafactory;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.function.Supplier;
 
 import javax.management.Notification;
 
@@ -29,6 +32,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkEvent;
 
 import de.schenk.jrtrace.commonsuper.test.CSCore;
+import de.schenk.jrtrace.helper.JRTraceMethodVisitor;
 import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.NotificationConstants;
 import de.schenk.jrtrace.helperlib.NotificationMessages;
@@ -654,6 +658,67 @@ public class EngineXDetailsTest {
 						"test43",
 						"The method specifies @XReturn. This is only allowed for the location EXIT. This annotation will be ignored."));
 
+	}
+	
+	
+	static public String test44helper()
+	{
+		return "worked";
+	}
+	/**
+	 *The LambdaMetafactory.altMetafactory method is instrumented by JRTrace to make it possible to use invokedynamic, even 
+	 *if the jrtrace library installed into the bootclassloader are not accessible (because the classloader of the instrumented class
+	 *doesn't permit to access non-java packages from the bootclasspath (e.g. some application servers.)
+	 *
+	 *This test ensures that the altMetafactory still works and calls out to jrtrace DynamicBinder if invoked with the "proper" parameters.
+	 */
+	@Test
+	public void test44EnsureTheLambdaMetafactoryStillWorks() throws Exception
+	{
+		  MethodHandles.Lookup caller = MethodHandles.lookup();
+	        MethodType methodType = MethodType.methodType(Object.class);
+	        MethodType actualMethodType = MethodType.methodType(String.class);
+	        MethodType invokedType = MethodType.methodType(Supplier.class);
+	        CallSite callsite = LambdaMetafactory.altMetafactory(caller, 
+	                                                      "get", 
+	                                                      invokedType, 
+	                                                      methodType, 
+	                                                      caller.findStatic(this.getClass(), "test44helper", actualMethodType), 
+	                                                      methodType,0);
+	        
+		  
+		try {
+			Supplier<String> f = (Supplier<String>) callsite.getTarget().invoke();
+			
+			assertEquals("worked",f.get());
+		} catch (Throwable e1) {
+			e1.printStackTrace();
+			 fail(e1.getMessage());
+		}
+
+		  
+		
+		
+		
+		//only if the first two elements are Boolean and MethodHandles, this call will go to JRTrace...
+		Object[] args=new Object[5];
+		args[0]=new Integer(JRTraceMethodVisitor.VIRTUAL_CALL);
+		MethodHandles.Lookup x=MethodHandles.lookup();
+		args[1]="abc";
+		args[2]=new Integer(0);
+	
+		boolean exception=false;
+		try
+		{
+			CallSite cs=LambdaMetafactory.altMetafactory(x,"ups",MethodType.methodType(String.class),args);
+		} catch(RuntimeException e)
+		{
+			boolean success=e.getMessage().contains("Fatal: Lookup of enginex class abc failed!");
+			if(!success) e.printStackTrace();
+			assertTrue(success);
+			exception=true;
+		}
+		assertTrue(exception);
 	}
 
 }

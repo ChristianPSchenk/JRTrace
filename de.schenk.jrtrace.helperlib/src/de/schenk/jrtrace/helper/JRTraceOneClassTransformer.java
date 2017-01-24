@@ -158,11 +158,7 @@ public class JRTraceOneClassTransformer {
 			}
 		}
 
-		if (JRLog.getLogLevel() == JRLog.DEBUG && transformed) {
-			logTransformedClassBytes(transformedBytes);
-
-		}
-
+		
 		return transformed ? transformedBytes : null;
 	}
 
@@ -195,35 +191,9 @@ public class JRTraceOneClassTransformer {
 			}
 		}
 
-	}
+	
 
-	private void logTransformedClassBytes(byte[] transformedBytes) {
-		String tmpdir = "";
-		try {
-			String classId = className;
-			if (className == null) {
-				classId = String.format("null%d", System.currentTimeMillis());
-			}
-			tmpdir = System.getProperty("java.io.tmpdir");
-
-			FileOutputStream fileOutputStream = new FileOutputStream(tmpdir
-					+ File.separator + classId.replace('/', '_')
-					+ "before.class");
-			fileOutputStream.write(classBytes);
-			fileOutputStream.close();
-			FileOutputStream fileOutputStream2 = new FileOutputStream(tmpdir
-					+ File.separator + classId.replace('/', '_')
-					+ "after.class");
-			fileOutputStream2.write(transformedBytes);
-			fileOutputStream2.close();
-
-			JRLog.debug("Writing bytes before/after transformation of class "
-					+ classId + " to directory " + tmpdir);
-		} catch (IOException e) {
-			JRLog.error("Error (" + e.getMessage()
-					+ ") when trying to write transformed classbytes to  "
-					+ tmpdir);
-		}
+	
 	}
 
 	/**

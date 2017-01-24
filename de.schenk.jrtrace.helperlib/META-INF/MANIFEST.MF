@@ -10,6 +10,7 @@ Eclipse-BundleShape: dir
 Export-Package: de.schenk.jrtrace.annotations,
  de.schenk.jrtrace.helper,
  de.schenk.jrtrace.helperlib,
+ de.schenk.jrtrace.helperlib.bootstrap.transform,
  de.schenk.jrtrace.helperlib.status,
  de.schenk.objectweb.asm,
  de.schenk.objectweb.asm.addons,

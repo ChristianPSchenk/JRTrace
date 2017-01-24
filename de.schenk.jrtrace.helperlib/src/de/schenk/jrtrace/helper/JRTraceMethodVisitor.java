@@ -28,6 +28,8 @@ import de.schenk.objectweb.asm.commons.Method;
 
 public class JRTraceMethodVisitor extends AdviceAdapter {
 
+	public static final int NO_VIRTUAL_CALL = 2377;
+	public static final int VIRTUAL_CALL = 345345;
 	private Map<XLocation, List<JRTraceMethodMetadata>> injectedMethodsMap;
 	private String descriptor;
 	private boolean targetMethodStatic = false; // fixme: target injectedMethod
@@ -722,13 +724,15 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 		}
 
 		String bindingMethodName = "bindEngineXMethods";
+		Integer useVirtual=new Integer(NO_VIRTUAL_CALL);
+		
 
 		Type methodDescriptorType = Type.getMethodType(injectedMethod
 				.getDescriptor());
 
 		if (classVisitor.getInstantiationPolicy() == InstantiationPolicy.METHOD) {
 			bindingMethodName = "bindEngineXMethodsToVirtual";
-
+			useVirtual=new Integer(VIRTUAL_CALL);;
 			Type[] argumentTypes = methodDescriptorType.getArgumentTypes();
 			Type[] newArgumentTypes = new Type[argumentTypes.length + 1];
 			newArgumentTypes[0] = Type.getType("L"
@@ -744,14 +748,14 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 
 		MethodType mt = MethodType.methodType(CallSite.class,
 				MethodHandles.Lookup.class, String.class, MethodType.class,
-				String.class, int.class, String.class, String.class);
+				(new Object[0].getClass()));
 		Handle bootstrap = new Handle(Opcodes.H_INVOKESTATIC,
-				"de/schenk/jrtrace/helperlib/bind/DynamicBinder", bindingMethodName,
-				mt.toMethodDescriptorString());
+				"java/lang/invoke/LambdaMetafactory", "altMetafactory",
+				mt.toMethodDescriptorString(),false);
 
 		visitInvokeDynamicInsn(String.format("%s%d",
 				injectedMethod.getMethodName(), System.nanoTime()),
-				methodDescriptorType.getDescriptor(), bootstrap, injectedMethod
+				methodDescriptorType.getDescriptor(), bootstrap, useVirtual,injectedMethod
 						.getClassMetadata().getExternalClassName(),
 				JRTraceHelper.getCurrentClassSetId(),
 				injectedMethod.getMethodName(), injectedMethod.getDescriptor());

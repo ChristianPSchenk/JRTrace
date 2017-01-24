@@ -19,8 +19,8 @@ public class JRTraceNameUtil {
 	 * Converter:
 	 * 
 	 * @param value
-	 *            the external class name (a.b.Class)
-	 * @return the internal class name (e.g. a/b/Class)
+	 *            the external class name (a.b.Class) as obtained e.g. by Class<?>.getCanonicalName()
+	 * @return the internal class name (e.g. a/b/Class) 
 	 */
 	public static String getInternalName(String value) {
 		return ((String) value).replaceAll("\\.", "/");

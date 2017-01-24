@@ -4,6 +4,8 @@
 package de.schenk.jrtrace.helper;
 
 import java.lang.instrument.Instrumentation;
+import java.lang.instrument.UnmodifiableClassException;
+import java.lang.invoke.LambdaMetafactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -210,6 +212,8 @@ public class JRTraceHelper {
 				modifiableClasses.add(c);
 
 		}
+		
+		transformJavaLangDouble();
 
 		retransformClasses(modifiableClasses);
 
@@ -218,6 +222,17 @@ public class JRTraceHelper {
 				"JRTraceHelper.addEngineXClass() took %d ms.",
 				(ende - start) / 1000 / 1000));
 
+	}
+
+	private static void transformJavaLangDouble() {
+		try {
+			InstrumentationUtil.getInstrumentation().retransformClasses(LambdaMetafactory.class);
+		} catch (UnmodifiableClassException e) {
+			
+			JRLog.error("transforming java.lang.Object to include the DynamicBinder delegate methods failed.");
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
