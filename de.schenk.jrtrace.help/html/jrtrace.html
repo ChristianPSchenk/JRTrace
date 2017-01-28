@@ -314,12 +314,16 @@ be a problem or not. </li>
 application. This will effectively remove all previously deployed JRTrace classes from the target and replace them with the contents of the project.
 There is no restrictions on changes to the classes (e.g. including/removing static fields is always possible).
 
+
 </p>
 
 <h4>Run a Method on a JRTrace Class</h4>
 
 <p>It is possible to explicitly invoke a method without arguments on any 
-JRTrace class using the <img src="pics/run_java_16.gif"/>-menu/toolbar. The dialog shown below will ask for the name of the JRTrace class
+JRTrace class using the <img src="pics/run_java_16.gif"/>-menu/toolbar. 
+The easiest way to use this feature, is to put the cursor inside the method to run in the java editor or in the class outline and press the
+toolbar button. 
+This will show the dialog below, prefilled to invoke that method. Alternatively this dialog can also be used to specify the
 (fully qualified name), the name of the method to invoke (a method without parameters!). Optionally it is also possible to
 specify the name of a class to use to obtain the classloader. This is only relevant if the <code>classloaderpolicy</code> of the specified
 JRTrace class is <code>TARGET</code>. In this case it will be used to determine the classloader to use. For policies <code>BOOT</code> and <code>NAMED</code>
@@ -327,9 +331,11 @@ the classloader is determined from the JRTrace class as specified (boot classloa
 
 <p>The classes/objects on which the code is invoked are created in the manner as for normal JRTrace instrumentations. </p>
 
+<p>For convenience, the console contains a toolbar <img src="pics/reexecute.gif"/> which will allow to invoke the same method again without any dialogs involved.</p>
+
 <img src="pics/runjavadialog.png"></img>
 
- 
+
 
 <h3>JRTrace Helper Class</h3>
 
@@ -442,12 +448,8 @@ To communicate from the developers machine to the JRTrace client, the <code>IJRT
 
 To connect to a remote VM and install agents the VirtualMachine class is required, which is part of the tools.jar of the JDK.
 This is not easily accessible in Eclipse unless special boot parameters etc. are used.
-The workaround is this:
-A wrapper bundle (com.sun.tools) was prepared and exports the packages in tools.jar
-Since it is legally problematic to ship the tools.jar, it is removed from the plugin
-To get it, the plugin structure is such that the jdkinit plugin is activate before the com.sun.tools and will copy the tools.jar from the current jdk to the 
-expected location in com.sun.tools.
-This works only if the jrtrace tool is run with a JDK! 
+The workaround to solve that is, to start a plain java application which is used to invoke the methods to connect to JVMs.
+This works only if the Eclipse into which the JRTrace plugins have been installed runs with a JDK! 
 
 <h3>ClassLoader Topics</h3>
 
