@@ -12,7 +12,7 @@ import de.schenk.objectweb.asm.Opcodes;
 import de.schenk.objectweb.asm.Type;
 
 /*
- * extract the superclass and the super interfaces from a class that is only available as bytecode
+ * extract the classname, the superclass and the super interfaces from a class that is only available as bytecode
  */
 public class SuperClassExtractor {
 
@@ -23,6 +23,7 @@ public class SuperClassExtractor {
 	/* out */
 	private Class<?> superclass;
 	private List<Class<?>> interfaceList = new ArrayList<Class<?>>();
+	private String className;
 
 	public SuperClassExtractor(ClassLoader classLoader, byte[] classbytes) {
 		this.classLoader = classLoader;
@@ -39,6 +40,7 @@ public class SuperClassExtractor {
 			public void visit(int version, int access, String name,
 					String signature, String superName, String[] interfaces) {
 
+				className=name;
 				superclass = getClassFromInternalName(superName);
 
 				for (String iface : interfaces) {
@@ -70,6 +72,11 @@ public class SuperClassExtractor {
 
 	public List<Class<?>> getInterfaces() {
 		return interfaceList;
+	}
+
+	public String getClassname() {
+		return className;
+		
 	}
 
 }

@@ -6,6 +6,7 @@ package de.schenk.jrtrace.enginex.testscripts;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
@@ -23,6 +24,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration;
+import org.eclipse.osgi.internal.loader.ModuleClassLoader;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.actions.OpenResourceAction;
 import org.junit.AfterClass;
@@ -36,6 +38,8 @@ import de.schenk.jrtrace.helper.JRTraceMethodVisitor;
 import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.NotificationConstants;
 import de.schenk.jrtrace.helperlib.NotificationMessages;
+import de.schenk.jrtrace.helperlib.ReflectionUtil;
+import de.schenk.jrtrace.service.ClassUtil;
 import de.schenk.jrtrace.service.IJRTraceVM;
 import de.schenk.jrtrace.service.JRTraceController;
 import de.schenk.jrtrace.service.JRTraceControllerService;
@@ -720,5 +724,68 @@ public class EngineXDetailsTest {
 		}
 		assertTrue(exception);
 	}
+	
+	
+	
+	public class Test45ClassLoader extends ClassLoader
+	{
+		
+		private ClassLoader moduleClassLoader;
+		public Test45ClassLoader(ClassLoader mcl) {			
+			super(null);
+			this.moduleClassLoader=mcl;
+		}
+		
+		@Override
+		public Class<?> loadClass(String name) throws ClassNotFoundException {
+			System.out.println("loadClass:"+name);
+			if(!name.contains("Test45")&&!name.startsWith("java.lang")) throw new ClassNotFoundException(name);
+			return super.loadClass(name);
+		}
+		
+	    @Override
+	    protected Class<?> findClass(String name) throws ClassNotFoundException {
+	    	System.out.println("findClass:"+name);
+	    	if(name.contains("Test45"))
+	    	{
+	    			try {
+						byte[] bytes=ClassUtil.getClassBytes(Test45.class);
+						return defineClass(null,bytes,0,bytes.length);
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+	    	}
+	    	
+	    			return super.findClass(name);
+	    	
+	    }
+	}
+	/**
+	 * Tests, that jrtrace will work even if the class that is instrumented can only load classes from 
+	 * java.lang.* from the bootclasspath
+	 * 
+	 * The test will also test, that a class is also instrumented, if the classLoader calls "defineClass" without specifying the className.
+	 * 
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void test45ensureWorksWithRestrictedClassLoader() throws Exception {
+		
+		ClassLoader clzLoader=new Test45ClassLoader(this.getClass().getClassLoader());
+		
+		
+		Class<?> test45clz = clzLoader.loadClass(Test45.class.getCanonicalName());
+		Object test45=test45clz.newInstance();
+		
+		String result=(String)ReflectionUtil.invokeMethod(test45, "test45",new StringBuffer());
+		/*
+		Test45 test45=new Test45();
+		String result=test45.test45(new StringBuffer());
+		*/
+		
+		assertEquals( "sehrgut",result);
+	}
+	
 
 }

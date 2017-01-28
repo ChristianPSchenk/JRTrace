@@ -27,39 +27,37 @@ public class JRTraceOneClassTransformer {
 
 	final private byte[] classBytes;
 	final private Class<?> classObject;
-	final private String className;
+	private String className;
 	final private ClassLoader classLoader;
 
 	private Class<?> superClass;
 	private Class<?>[] interfaces;
 	private InjectStatus status;
 
-	public JRTraceOneClassTransformer(ClassLoader classLoader,
-			String className, Class<?> classObject, byte[] classBytes) {
+	public JRTraceOneClassTransformer(ClassLoader classLoader, String className, Class<?> classObject,
+			byte[] classBytes) {
 		this.classLoader = classLoader;
 		this.className = className;
 		this.classObject = classObject;
 		this.classBytes = classBytes;
 	}
 
-	private byte[] applyEngineXMethods(JRTraceClassMetadata metadata,
-			byte[] classBytes, InjectStatus classInjectStatus) {
+	private byte[] applyEngineXMethods(JRTraceClassMetadata metadata, byte[] classBytes,
+			InjectStatus classInjectStatus) {
 		ClassReader classReader = new ClassReader(classBytes);
 
 		Type[] theInterfaceTypes = new Type[interfaces.length];
 		for (int i = 0; i < interfaces.length; i++) {
 			theInterfaceTypes[i] = Type.getType(interfaces[i]);
 		}
-		CommonSuperClassUtil superClassUtil = new CommonSuperClassUtil(
-				classLoader, className, Type.getType(superClass)
-						.getInternalName(), theInterfaceTypes);
-		ClassWriter classWriter = new ClassWriterForClassLoader(classReader,
-				superClassUtil, ClassWriter.COMPUTE_FRAMES);
+		CommonSuperClassUtil superClassUtil = new CommonSuperClassUtil(classLoader, className,
+				Type.getType(superClass).getInternalName(), theInterfaceTypes);
+		ClassWriter classWriter = new ClassWriterForClassLoader(classReader, superClassUtil,
+				ClassWriter.COMPUTE_FRAMES);
 
 		ClassVisitor visitor = classWriter;
 
-		JRTraceClassVisitor classVisitor = new JRTraceClassVisitor(
-				superClassUtil, visitor, Opcodes.ASM5, metadata);
+		JRTraceClassVisitor classVisitor = new JRTraceClassVisitor(superClassUtil, visitor, Opcodes.ASM5, metadata);
 		classVisitor.setStatus(classInjectStatus);
 		classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES);
 
@@ -73,16 +71,12 @@ public class JRTraceOneClassTransformer {
 
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
-			ExtendedCheckClassAdapter
-					.verify(new ClassReader(classWriter.toByteArray()),
-							classLoader, pw);
+			ExtendedCheckClassAdapter.verify(new ClassReader(classWriter.toByteArray()), classLoader, pw);
 			String result = sw.getBuffer().toString();
 			if (!result.isEmpty()) {
 
 				throw new RuntimeException(
-						String.format(
-								"Verification failed for transformed bytecode of: %s\n%s",
-								className, result));
+						String.format("Verification failed for transformed bytecode of: %s\n%s", className, result));
 			}
 		}
 
@@ -100,8 +94,10 @@ public class JRTraceOneClassTransformer {
 			allEngineXClasses = JRTraceHelper.getEngineXClasses();
 
 		}
-		String cname = className == null ? null : Type.getType(
-				"L" + className + ";").getClassName();
+		if (className == null) {
+			lazyInitSuperClassAndInterfaces();
+		}
+		String cname = Type.getType("L" + className + ";").getClassName();
 
 		InjectStatus classInjectStatus = null;
 		if (!BuiltInExcludes.isExcludedClassName(cname, status))
@@ -110,20 +106,16 @@ public class JRTraceOneClassTransformer {
 				try {
 
 					if (status != null) {
-						classInjectStatus = new InjectStatus(
-								StatusEntityType.JRTRACE_CLASS);
-						classInjectStatus.setEntityName(entry
-								.getExternalClassName());
+						classInjectStatus = new InjectStatus(StatusEntityType.JRTRACE_CLASS);
+						classInjectStatus.setEntityName(entry.getExternalClassName());
 						status.addChildStatus(classInjectStatus);
 					}
 
 					lazyInitSuperClassAndInterfaces();
-					if (entry.mayMatchClassHierarchy(cname, superClass,
-							interfaces, classInjectStatus)) {
+					if (entry.mayMatchClassHierarchy(cname, superClass, interfaces, classInjectStatus)) {
 						JRLog.verbose("Applying rules to class:" + className);
 
-						byte[] returnBytes = applyEngineXMethods(entry,
-								transformedBytes, classInjectStatus);
+						byte[] returnBytes = applyEngineXMethods(entry, transformedBytes, classInjectStatus);
 						if (returnBytes != null) {
 							transformed = true;
 							transformedBytes = returnBytes;
@@ -133,14 +125,11 @@ public class JRTraceOneClassTransformer {
 
 				} catch (Throwable e) {
 					if (classInjectStatus != null) {
-						classInjectStatus
-								.setMessage(InjectStatus.MSG_EXCEPTION);
+						classInjectStatus.setMessage(InjectStatus.MSG_EXCEPTION);
 						classInjectStatus.removeChildStatus();
-						classInjectStatus
-								.setInjected(StatusState.DOESNT_INJECT);
+						classInjectStatus.setInjected(StatusState.DOESNT_INJECT);
 					}
-					JRLog.error("Skipped applying jrtrace class "
-							+ entry.getClassName() + " to class " + className
+					JRLog.error("Skipped applying jrtrace class " + entry.getClassName() + " to class " + className
 							+ " due to runtime exception");
 					e.printStackTrace();
 					return null;
@@ -158,7 +147,6 @@ public class JRTraceOneClassTransformer {
 			}
 		}
 
-		
 		return transformed ? transformedBytes : null;
 	}
 
@@ -177,23 +165,28 @@ public class JRTraceOneClassTransformer {
 
 				interfaces = classObject.getInterfaces();
 			} else {
-				SuperClassExtractor extractor = new SuperClassExtractor(
-						classLoader, classBytes);
+				SuperClassExtractor extractor = new SuperClassExtractor(classLoader, classBytes);
 				extractor.analyze();
 				superClass = extractor.getSuperclass();
 				interfaces = extractor.getInterfaces().toArray(new Class<?>[0]);
+				if (className == null) {
+					className = extractor.getClassname();
+				} else {
+					if (!className.equals(extractor.getClassname())) {
+						String msg = String.format(
+								"Inconsistency when transforming %s. The bytecode says this is the class %s!",
+								className, extractor.getClassname());
+						JRLog.error(msg);
+						throw new RuntimeException(msg);
+					}
+				}
 			}
 
 			if (superClass == null) {
-				JRLog.error(String
-						.format("Superclass/Interfaces cannot be calculated  for class: "
-								+ className));
+				JRLog.error(String.format("Superclass/Interfaces cannot be calculated  for class: " + className));
 			}
 		}
 
-	
-
-	
 	}
 
 	/**
