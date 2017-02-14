@@ -89,15 +89,7 @@ public class DynamicBinder {
 
 		initHelper();
 		final String callerclassname = caller.toString();
-		if (currentlyProcessed.get().contains(callerclassname)) {
-			danger(callerclassname);
-			/*
-			 * new BootstrapMethodError( "Fatal: Recursive bind for class " +
-			 * caller.getClass().toString() +
-			 * ". This class cannot be instrumented with JRTrace. Add it to the exclude list of the JRTrace class."
-			 * );
-			 */
-		}
+		
 		currentlyProcessed.get().add(callerclassname);
 		MethodHandles.Lookup lookup = MethodHandles.lookup();
 
@@ -114,7 +106,7 @@ public class DynamicBinder {
 		}
 		if (enginexclass == null) {
 
-			throw new RuntimeException("Fatal: Lookup of enginex class "
+			throw new JRTraceClassLookupException("Fatal: Lookup of enginex class "
 					+ enginexclassname + " failed!");
 		}
 
@@ -160,10 +152,7 @@ public class DynamicBinder {
 
 		initHelper();
 		final String callerclassname = caller.toString();
-		if (currentlyProcessed.get().contains(callerclassname)) {
-
-			danger(callerclassname);
-		}
+		
 
 		MethodHandles.Lookup lookup = MethodHandles.lookup();
 
@@ -207,8 +196,5 @@ public class DynamicBinder {
 
 	}
 
-	private static void danger(String classname) {
-		System.out.println(classname);
-
-	}
+	
 }

@@ -5,7 +5,11 @@ package de.schenk.jrtrace.helper;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
+import java.lang.invoke.CallSite;
+import java.lang.invoke.LambdaConversionException;
 import java.lang.invoke.LambdaMetafactory;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,6 +22,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import de.schenk.jrtrace.helperlib.JRLog;
+import de.schenk.jrtrace.helperlib.bind.JRTraceClassLookupException;
 import de.schenk.jrtrace.helperlib.status.InjectStatus;
 import de.schenk.jrtrace.helperlib.status.StatusEntityType;
 import de.schenk.jrtrace.helperlib.status.StatusState;
@@ -176,6 +181,9 @@ public class JRTraceHelper {
 		clearAbortFlag();
 		Set<Class<?>> modifiableClasses = null;
 		long start = System.nanoTime();
+		
+		transformLambdaMetaFactory();
+		
 		synchronized (lock) {
 
 			modifiableClasses = clearEngineXTransformationMap();
@@ -213,7 +221,7 @@ public class JRTraceHelper {
 
 		}
 		
-		transformJavaLangDouble();
+	
 
 		retransformClasses(modifiableClasses);
 
@@ -224,15 +232,47 @@ public class JRTraceHelper {
 
 	}
 
-	private static void transformJavaLangDouble() {
+	private static void transformLambdaMetaFactory() {
 		try {
-			InstrumentationUtil.getInstrumentation().retransformClasses(LambdaMetafactory.class);
+			InstrumentationUtil.getInstrumentation().retransformClasses(LambdaMetafactory.class);	
+			long start=System.currentTimeMillis();
+			while(!isLambdaMetaFactoryTransformed()&&System.currentTimeMillis()<start+5000L) { try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				throw new RuntimeException("Interrupted while waiting for LambdaMetafactory to be transformed",e);
+			}}
+			
+			if(System.currentTimeMillis()>=start+5000L)
+				throw new RuntimeException("Timeout while waiting for LambdaMetafactory to be transformed.");
+			
+			
 		} catch (UnmodifiableClassException e) {
 			
 			JRLog.error("transforming java.lang.Object to include the DynamicBinder delegate methods failed.");
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+	}
+
+	private static boolean isLambdaMetaFactoryTransformed() {
+		try
+		{
+		Object[] args=new Object[5];
+		args[0]=new Integer(JRTraceMethodVisitor.VIRTUAL_CALL);
+		MethodHandles.Lookup x=MethodHandles.lookup();
+		args[1]="definitely_unknown_classname_34853985739857398753498734985973457394";
+		args[2]=new Integer(0);
+		CallSite cs=LambdaMetafactory.altMetafactory(x,"ups",MethodType.methodType(String.class),args);
+		} catch(ClassCastException e)
+		{
+			return false;
+		} catch(JRTraceClassLookupException e)
+		{
+			return true;
+		} catch (LambdaConversionException e) {
+			throw new RuntimeException("Unexpected Exception while testting if LambdaMetaFactory was transformed.",e);
+		} 
+		return false;
 	}
 
 	/**
