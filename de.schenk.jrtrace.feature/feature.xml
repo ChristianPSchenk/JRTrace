@@ -2,7 +2,7 @@
 <feature
       id="de.schenk.jrtrace.feature"
       label="JRTrace Eclipse Plugins"
-      version="1.0.0.qualifier"
+      version="1.0.1.qualifier"
       provider-name="Christian Schenk"
       plugin="de.schenk.jrtrace.ui">
 
