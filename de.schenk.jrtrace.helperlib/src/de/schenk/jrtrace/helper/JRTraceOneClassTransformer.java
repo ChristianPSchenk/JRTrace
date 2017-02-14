@@ -174,10 +174,10 @@ public class JRTraceOneClassTransformer {
 				} else {
 					if (!className.equals(extractor.getClassname())) {
 						String msg = String.format(
-								"Inconsistency when transforming %s. The bytecode says this is the class %s!",
+								"Inconsistency when transforming class %s. The bytecode says that the name of the class is %s. Using the classname from the Bytecode.",
 								className, extractor.getClassname());
-						JRLog.error(msg);
-						throw new RuntimeException(msg);
+						JRLog.error(msg);						
+						className=extractor.getClassname();
 					}
 				}
 			}
