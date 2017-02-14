@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
+ <feature url="features/de.schenk.jrtrace.feature.source_1.0.1.qualifier.jar" id="de.schenk.jrtrace.feature.source" version="1.0.1.qualifier">
+      <category name="JRTrace"/>
+   </feature>
+ <feature url="features/de.schenk.jrtrace.feature.sdk.source_1.0.1.qualifier.jar" id="de.schenk.jrtrace.feature.sdk.source" version="1.0.1.qualifier">
+      <category name="JRTrace"/>
+   </feature>
    <feature url="features/de.schenk.jrtrace.feature_1.0.1.qualifier.jar" id="de.schenk.jrtrace.feature" version="1.0.1.qualifier">
       <category name="JRTrace"/>
    </feature>
