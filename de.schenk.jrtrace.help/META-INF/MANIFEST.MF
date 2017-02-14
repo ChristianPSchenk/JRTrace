@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Help
 Bundle-SymbolicName: de.schenk.jrtrace.help;singleton:=true
-Bundle-Version: 2.0.5.qualifier
+Bundle-Version: 2.0.6.qualifier
 Bundle-Activator: de.schenk.jrtrace.help.Activator
 Bundle-Vendor: Christian Schenk
 Require-Bundle: org.eclipse.ui,

@@ -65,25 +65,25 @@ limitations under the License.
          os="win32"
          download-size="0"
          install-size="0"
-         version="2.0.5.qualifier"/>
+         version="2.0.6.qualifier"/>
 
    <plugin
          id="de.schenk.jrtrace.service.enginex.testclasses"
          download-size="0"
          install-size="0"
-         version="2.0.5.qualifier"/>
+         version="2.0.6.qualifier"/>
 
    <plugin
          id="de.schenk.jrtrace.service.test"
          download-size="0"
          install-size="0"
-         version="2.0.5.qualifier"/>
+         version="2.0.6.qualifier"/>
 
    <plugin
          id="de.schenk.jrtrace.example"
          download-size="0"
          install-size="0"
-         version="2.0.5.qualifier"
+         version="2.0.6.qualifier"
          unpack="false"/>
 
 </feature>
