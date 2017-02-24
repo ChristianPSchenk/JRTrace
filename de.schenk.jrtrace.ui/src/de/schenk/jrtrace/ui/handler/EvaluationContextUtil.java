@@ -46,7 +46,7 @@ public class EvaluationContextUtil {
 		if (obj instanceof IProject) {
 			IProject prj = (IProject) obj;
 			try {
-				if (prj.getNature(JavaCore.NATURE_ID) != null)
+				if (prj.isAccessible() && prj.getNature(JavaCore.NATURE_ID) != null)
 					return true;
 			} catch (CoreException e1) {
 				throw new RuntimeException(e1);
