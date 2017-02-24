@@ -23,6 +23,13 @@ import de.schenk.objectweb.asm.addons.ClassWriterForClassLoader;
 import de.schenk.objectweb.asm.addons.CommonSuperClassUtil;
 import de.schenk.objectweb.asm.addons.ExtendedCheckClassAdapter;
 
+/**
+ * 
+ * A transformer to apply the bytecode modifications required to inject jrtrace method calls.
+ * 
+ * @author Christian Schenk
+ *
+ */
 public class JRTraceOneClassTransformer {
 
 	final private byte[] classBytes;
@@ -34,8 +41,17 @@ public class JRTraceOneClassTransformer {
 	private Class<?>[] interfaces;
 	private InjectStatus status;
 
+	/**
+	 * 
+	 * @param classLoader the classloader that loads the class about to be transformed
+	 * @param className the name of the class to transform
+	 * @param classObject the Class<?> that is being transformed
+	 * @param classBytes the bytes of the class to transform
+	 * @param stat Output: A status object that will report details on the result of the injection process. 
+	 */
 	public JRTraceOneClassTransformer(ClassLoader classLoader, String className, Class<?> classObject,
-			byte[] classBytes) {
+			byte[] classBytes,InjectStatus stat) {
+		this.status = stat;
 		this.classLoader = classLoader;
 		this.className = className;
 		this.classObject = classObject;
@@ -61,33 +77,15 @@ public class JRTraceOneClassTransformer {
 		classVisitor.setStatus(classInjectStatus);
 		classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES);
 
-		/**
-		 * keeping this permanently disabled since the SimpleVerifier of ASM
-		 * still has some gaps
-		 * 
-		 */
-		boolean checkClasses = false;
-		if (checkClasses) {
-
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			ExtendedCheckClassAdapter.verify(new ClassReader(classWriter.toByteArray()), classLoader, pw);
-			String result = sw.getBuffer().toString();
-			if (!result.isEmpty()) {
-
-				throw new RuntimeException(
-						String.format("Verification failed for transformed bytecode of: %s\n%s", className, result));
-			}
-		}
-
+		
 		return classWriter.toByteArray();
 
 	}
-
 	public byte[] doTransform() {
 
+		status.setInjected(StatusState.DOESNT_INJECT);
 		byte[] transformedBytes = classBytes;
-		boolean transformed = false;
+		
 		Collection<JRTraceClassMetadata> allEngineXClasses = null;
 
 		synchronized (JRTraceHelper.lock) {
@@ -115,14 +113,14 @@ public class JRTraceOneClassTransformer {
 					if (entry.mayMatchClassHierarchy(cname, superClass, interfaces, classInjectStatus)) {
 						JRLog.verbose("Applying rules to class:" + className);
 
-						byte[] returnBytes = applyEngineXMethods(entry, transformedBytes, classInjectStatus);
-						if (returnBytes != null) {
-							transformed = true;
-							transformedBytes = returnBytes;
-
+						byte[] returnedBytes = null;
+						returnedBytes=applyEngineXMethods(entry, transformedBytes, classInjectStatus);
+						if(returnedBytes!=null)
+						{
+							transformedBytes=returnedBytes;
 						}
+						
 					}
-
 				} catch (Throwable e) {
 					if (classInjectStatus != null) {
 						classInjectStatus.setMessage(InjectStatus.MSG_EXCEPTION);
@@ -137,17 +135,14 @@ public class JRTraceOneClassTransformer {
 
 			}
 
-		if (transformed) {
-
-			JRTraceHelper.setTransformed(className, classLoader);
-		} else {
-			if (status != null) {
-				status.setInjected(StatusState.DOESNT_INJECT);
-
-			}
+		status.updateStatusFromChildren();
+		if (status.getInjectionState()== StatusState.INJECTS) {			
+			JRTraceHelper.setTransformed(className, classLoader);			
+		} else
+		{
+			transformedBytes=null;
 		}
-
-		return transformed ? transformedBytes : null;
+		return  transformedBytes;
 	}
 
 	private void lazyInitSuperClassAndInterfaces() {
@@ -189,13 +184,6 @@ public class JRTraceOneClassTransformer {
 
 	}
 
-	/**
-	 * 
-	 * @param stat
-	 *            the status to use to report results of the injection
-	 */
-	public void setStatus(InjectStatus stat) {
-		this.status = stat;
 
-	}
+	
 }

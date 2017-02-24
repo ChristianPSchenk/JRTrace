@@ -13,6 +13,11 @@ import de.schenk.jrtrace.enginex.testscripts.Test23;
 @XClass( classes = "de.schenk.jrtrace.enginex.testscripts.Test23", classloaderpolicy = XClassLoaderPolicy.TARGET)
 public class Test23Script {
 
+	@XMethod(names="will_not_apply",location=XLocation.GETFIELD,fieldclass="de.schenk.jrtrace.enginex.testscripts.Test23",fieldname="field")
+	public void testinstrumentation() {	
+	  // same name of jrtrace method used twice with different parameters.
+	}
+	
 	@XMethod(names="test23",location=XLocation.GETFIELD,fieldclass="de.schenk.jrtrace.enginex.testscripts.Test23",fieldname="field")
 	public void testinstrumentation(@XField(name="field") int fieldValue) {	
 	  Test23.hitpoint+=1;

@@ -217,12 +217,14 @@ public class JRTraceHelper {
 			if (BuiltInExcludes.isExcludedClassName(c.getName(), null))
 				continue;
 			if (potentialEngineXCandidate(c, currentenginex))
-				modifiableClasses.add(c);
+				{
+				  modifiableClasses.add(c); 
+				}
 
 		}
 		
-	
 
+	
 		retransformClasses(modifiableClasses);
 
 		long ende = System.nanoTime();
@@ -559,8 +561,8 @@ public class JRTraceHelper {
 
 			JRTraceOneClassTransformer transformer = new JRTraceOneClassTransformer(
 					testClass.getClassLoader(), testClass.getName(), testClass,
-					ClassByteUtil.getBytes(testClass));
-			transformer.setStatus(childStatus);
+					ClassByteUtil.getBytes(testClass),childStatus);
+			
 			transformer.doTransform();
 			if (childStatus.getInjectionState() == StatusState.INJECTS) {
 				sumStatus = StatusState.INJECTS;

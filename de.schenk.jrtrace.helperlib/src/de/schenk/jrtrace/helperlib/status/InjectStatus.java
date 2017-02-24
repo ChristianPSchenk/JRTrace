@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Represents the status of an entity (JRTrace instance, class or method) as to
@@ -154,14 +155,16 @@ public class InjectStatus implements Serializable {
 
 				s.updateStatusFromChildren(methodName);
 
-				if (s.getInjectionState() == StatusState.CANT_CHECK)
+				if (s.getInjectionState() == StatusState.CANT_CHECK)  // TODO: CANT_CHECK seems useless -> remove
 					cantCheck = true;
 				if (s.getInjectionState() == StatusState.INJECTS)
 					canInject = true;
 			}
 		}
 		if (count == 0)
+		{			
 			return;
+		}
 		if (canInject)
 			injectionState = StatusState.INJECTS;
 		else {
@@ -173,15 +176,12 @@ public class InjectStatus implements Serializable {
 	}
 
 	public InjectStatus getChildByEntityName(String methodName) {
-		if (!methodName.startsWith(".*"))
-			methodName = ".*" + methodName;
-		if (!methodName.endsWith(".*"))
-			methodName = methodName + ".*";
+		
 		InjectStatus result = null;
 		for (InjectStatus s : children) {
 			String entityName = s.getEntityName();
-
-			if (entityName.matches(methodName)) {
+			
+			if (entityName.equals(methodName)) {
 				if (result != null)
 					throw new IllegalArgumentException(String.format(
 							"More than one child matched by %s in %s",
@@ -190,6 +190,26 @@ public class InjectStatus implements Serializable {
 
 			}
 		}
+	
+		return result;
+	}
+	
+public InjectStatus getChildByEntityName(Pattern methodName) {
+		
+		InjectStatus result = null;
+		for (InjectStatus s : children) {
+			String entityName = s.getEntityName();
+			System.out.println(entityName);
+			if (methodName.matcher(entityName).matches()) {
+				if (result != null)
+					throw new IllegalArgumentException(String.format(
+							"More than one child matched by %s in %s",
+							methodName, children));
+				result = s;
+
+			}
+		}
+	
 		return result;
 	}
 }

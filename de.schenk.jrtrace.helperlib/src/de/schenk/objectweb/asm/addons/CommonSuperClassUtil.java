@@ -8,6 +8,8 @@ package de.schenk.objectweb.asm.addons;
  **/
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -84,15 +86,15 @@ public class CommonSuperClassUtil {
 	 * 
 	 * Possible options to improve: option a: load resource and parse
 	 * super/subtype hierarchy. option b: skip transformation, and schedule for
-	 * retransformation and hoep the subtypes are available... :-(
+	 * retransformation and hope the subtypes are available... :-(
 	 */
 
 	public String getCommonSuperClass(String type1, String type2) {
 
 		Class<?> type1Class, type2Class;
 
-		type1Class = tryLoadClass(type1);
-		type2Class = tryLoadClass(type2);
+		type1Class = tryGetLoadedClass(type1);
+		type2Class = tryGetLoadedClass(type2);
 
 		if (type1Class == null || type2Class == null) {
 			if (type2Class == null) {
@@ -142,18 +144,25 @@ public class CommonSuperClassUtil {
 	}
 
 	/**
+	 * Checks if the type1 is already loaded and returns the Class<?> if it is.
 	 * 
 	 * @param type1
 	 *            internal name of the object to load
 	 * @return null: if the object is not loadable, the class else.
 	 */
-	private Class<?> tryLoadClass(String type1) {
+	private Class<?> tryGetLoadedClass(String type1) {
 		Class<?> type1Class;
 		type1Class = null;
-		try {
-
-			type1Class = Class.forName(type1.replace('/', '.'), false,
+		try {	
+			
+			String name=type1.replace('/', '.');
+		     Method methodFindLoadedClass = ClassLoader.class.getDeclaredMethod("findLoadedClass", new Class[] { String.class });
+		     methodFindLoadedClass.setAccessible(true);
+		     boolean alreadyloaded=methodFindLoadedClass.invoke(classLoader, name )!=null;
+		     // Avoid getting classes that are not loaded yet. Two reasons: a) don't trigger unwanted classloading. b) classes loaded during transformation will not be transformed, see JDK-6469492. 
+			if(alreadyloaded) type1Class = Class.forName(name, false,
 					classLoader);
+			
 
 		} catch (Throwable e) {
 			// don't do anything, we will handle that later
@@ -171,16 +180,19 @@ public class CommonSuperClassUtil {
 	 */
 	private Set<String> getAllSuperClassNames(String type1) {
 		Set<String> set = new HashSet<String>();
-		while (true) {
+		while (type1!=null) {
 			set.add(type1);
 			if (targetClassName.equals(type1))
 				return set;
 			type1 = getSuperClassName(type1);
 		}
+		set.add("java/lang/Object");
+		return set;
 
 	}
 
 	private String getSuperClassName(String type1) {
+		
 		if (type1.equals(targetClassName))
 			type1 = superOfTargetClass;
 		else
@@ -228,9 +240,10 @@ public class CommonSuperClassUtil {
 
 	public boolean getIsInterface(String internalName) {
 
-		Class<?> theClass = tryLoadClass(internalName);
+		Class<?> theClass = tryGetLoadedClass(internalName);
 		if (theClass != null)
 			return theClass.isInterface();
+		if(internalName.startsWith("[")) return false; // array type is never an interface.
 		SuperClassExtractVisitor readSuperTypeVisitor = readClassFromBytes(internalName);
 
 		return readSuperTypeVisitor.getIsInterface();
@@ -255,7 +268,7 @@ public class CommonSuperClassUtil {
 
 		if (input.equals(output))
 			return true;
-		Class<?> inputClass = tryLoadClass(input.getInternalName());
+		Class<?> inputClass = tryGetLoadedClass(input.getInternalName());
 		Type inputSuperClassType = null;
 		Type[] theInputInterfaces = new Type[0];
 

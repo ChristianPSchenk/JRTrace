@@ -716,7 +716,7 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 		if (status != null) {
 			// InjectStatus m = new InjectStatus(InjectStatus.JRTRACE_METHOD);
 			InjectStatus m = status.getChildByEntityName(injectedMethod
-					.getMethodName());
+					.getMethodName()+"#"+injectedMethod.getDescriptor());
 			m.setEntityName(injectedMethod.getMethodName());
 			m.setInjected(StatusState.INJECTS);
 			m.setMessage("");

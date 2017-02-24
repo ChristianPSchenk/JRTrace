@@ -97,7 +97,7 @@ public class JRTraceClassVisitor extends ClassVisitor {
 				if (checkedMethodStatus != null) {
 					childStatus = new InjectStatus(
 							StatusEntityType.JRTRACE_METHOD);
-					childStatus.setEntityName(method.getMethodName());
+					childStatus.setEntityName(method.getMethodName()+"#"+method.getDescriptor());
 					checkedMethodStatus.addChildStatus(childStatus);
 				}
 

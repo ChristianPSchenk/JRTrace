@@ -13,6 +13,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -72,6 +73,10 @@ public class EngineXDetailsTest {
 	@BeforeClass
 	static public void before() throws Exception {
 
+		// for test46: I need to load this class so I can see that there is no problem during retransformation.
+		Test46 test46=new Test46();  
+		test46.test46(new StringBuffer());
+		
 		bmController = JRTraceControllerService.getInstance();
 		String javaName = ManagementFactory.getRuntimeMXBean().getName();
 		String[] javaSplit = javaName.split("@");
@@ -584,18 +589,22 @@ public class EngineXDetailsTest {
 	@Test
 	public void test27ErrorMessageForXClassWithoutPublicConstructor()
 			throws Exception {
+		System.out.println("in test27");
 		theNotificationListener.reset();
 		try {
 			Test27 test27 = new Test27();
-			test27.test27();
+			String result=test27.test27();
+			assertEquals("instrumented",result);
 		} catch (BootstrapMethodError e) {
+			e.printStackTrace();
 			// today: throws exception. Would be better to inject a dummy method
 			// with fitting signature...
 
 		}
-
+		System.out.println("in test27: waiting");
 		Notification lastNotification = theNotificationListener
 				.waitForNotification();
+		System.out.println("in test27: done waiting");
 		assertNotNull(lastNotification);
 		assertTrue(lastNotification.getMessage().contains(
 				NotificationMessages.MESSAGE_MISSING_NO_ARGUMENT_CONSTRUCTOR));
@@ -738,19 +747,20 @@ public class EngineXDetailsTest {
 		
 		@Override
 		public Class<?> loadClass(String name) throws ClassNotFoundException {
-			System.out.println("loadClass:"+name);
+			
 			if(!name.contains("Test45")&&!name.startsWith("java.lang")) throw new ClassNotFoundException(name);
 			return super.loadClass(name);
 		}
 		
 	    @Override
 	    protected Class<?> findClass(String name) throws ClassNotFoundException {
-	    	System.out.println("findClass:"+name);
+	    	
 	    	if(name.contains("Test45"))
 	    	{
 	    			try {
-						byte[] bytes=ClassUtil.getClassBytes(Test45.class);
-						return defineClass(null,bytes,0,bytes.length);
+						byte[] bytes=ClassUtil.getClassBytes(Test45.class);						
+						return defineClass(Test45.class.getCanonicalName(),bytes,0,bytes.length);
+						
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
@@ -779,13 +789,29 @@ public class EngineXDetailsTest {
 		Object test45=test45clz.newInstance();
 		
 		String result=(String)ReflectionUtil.invokeMethod(test45, "test45",new StringBuffer());
-		/*
-		Test45 test45=new Test45();
-		String result=test45.test45(new StringBuffer());
-		*/
 		
 		assertEquals( "sehrgut",result);
 	}
 	
 
+	/**
+	 * For bug #61: if the signature of any method in the class Test46 contains a yet unloaded class, JRTrace will load this class
+	 * (which may cause undesired sideeffects, such as Eclipse plugin activation...)
+	 * @throws Exception
+	 */
+	@Test
+	public void test46EnsureThatJRTraceDoesntTriggerClassloading() throws Exception
+	{
+		StringBuffer result=new StringBuffer();
+		new Test46().test46(result);
+		assertEquals("instrumented",result.toString());
+		
+        Method m = ClassLoader.class.getDeclaredMethod("findLoadedClass", new Class[] { String.class });
+        m.setAccessible(true);
+        
+        Object test1 = m.invoke(Test46.class.getClassLoader(), "de.schenk.jrtrace.enginex.testscripts.Test46NeverLoadedClass");
+		assertNull(test1);
+		
+		
+	}
 }

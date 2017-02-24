@@ -136,7 +136,7 @@ public class JRTraceClassMetadata {
 			classMatch = mayMatchClassHierarchy(theclass);
 		}
 
-		return classMatch && mayMatchMethods(theclass);
+		return classMatch ;
 
 	}
 
@@ -231,17 +231,7 @@ public class JRTraceClassMetadata {
 		return mayMatchClassHierarchy(superclass);
 	}
 
-	private boolean mayMatchMethods(Class<?> theclass) {
-
-		for (JRTraceMethodMetadata method : methods) {
-
-			if (method.mayMatch(theclass)) {
-				return true;
-			}
-
-		}
-		return false;
-	}
+	
 
 	/**
 	 * 

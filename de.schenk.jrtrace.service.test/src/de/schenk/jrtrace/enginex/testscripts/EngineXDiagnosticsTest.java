@@ -12,6 +12,7 @@ import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -183,10 +184,10 @@ public class EngineXDiagnosticsTest implements testNotConnectedStatus {
 		assertEquals(StatusEntityType.JRTRACE_SESSION, status.getEntityType());
 		assertEquals(StatusState.DOESNT_INJECT, status.getInjectionState());
 		InjectStatus a = status
-				.getChildByEntityName("EngineXDiagnosticsTest\\$ExistingClass");
+				.getChildByEntityName(Pattern.compile(".*EngineXDiagnosticsTest\\$ExistingClass.*"));
 		assertEquals(StatusEntityType.JRTRACE_CHECKED_CLASS, a.getEntityType());
 		assertEquals(StatusState.DOESNT_INJECT, a.getInjectionState());
-		InjectStatus b = a.getChildByEntityName("InjectForDiagnosticsTest$");
+		InjectStatus b = a.getChildByEntityName(Pattern.compile(".*InjectForDiagnosticsTest$.*"));
 		assertEquals(StatusEntityType.JRTRACE_CLASS, b.getEntityType());
 		assertEquals(StatusState.DOESNT_INJECT, b.getInjectionState());
 		assertTrue(b.getMessage().contains(
@@ -209,12 +210,12 @@ public class EngineXDiagnosticsTest implements testNotConnectedStatus {
 		assertEquals(StatusEntityType.JRTRACE_SESSION, status.getEntityType());
 		assertEquals(StatusState.DOESNT_INJECT, status.getInjectionState());
 		InjectStatus a = status
-				.getChildByEntityName("EngineXDiagnosticsTest\\$CandidateForFaultyInjection");
+				.getChildByEntityName(Pattern.compile(".*EngineXDiagnosticsTest\\$CandidateForFaultyInjection.*"));
 		assertEquals(StatusEntityType.JRTRACE_CHECKED_CLASS, a.getEntityType());
 		assertEquals(StatusState.DOESNT_INJECT, a.getInjectionState());
 
 		InjectStatus b = a
-				.getChildByEntityName("InjectForDiagnosticsTestCausingException");
+				.getChildByEntityName(Pattern.compile(".*InjectForDiagnosticsTestCausingException.*"));
 		assertEquals(StatusState.DOESNT_INJECT, b.getInjectionState());
 
 		assertEquals(InjectStatus.MSG_EXCEPTION, b.getMessage());
@@ -231,12 +232,12 @@ public class EngineXDiagnosticsTest implements testNotConnectedStatus {
 		assertEquals(StatusEntityType.JRTRACE_SESSION, status.getEntityType());
 		assertEquals(StatusState.DOESNT_INJECT, status.getInjectionState());
 		InjectStatus a = status
-				.getChildByEntityName("EngineXDiagnosticsTargetForExclude");
+				.getChildByEntityName(Pattern.compile(".*EngineXDiagnosticsTargetForExclude.*"));
 		assertEquals(StatusEntityType.JRTRACE_CHECKED_CLASS, a.getEntityType());
 		assertEquals(StatusState.DOESNT_INJECT, a.getInjectionState());
 		assertEquals("", a.getMessage());
 		InjectStatus b = a
-				.getChildByEntityName("InjectForDiagnosticsTestWithExclude");
+				.getChildByEntityName(Pattern.compile(".*InjectForDiagnosticsTestWithExclude.*"));
 		assertEquals(StatusEntityType.JRTRACE_CLASS, b.getEntityType());
 		assertEquals(StatusState.DOESNT_INJECT, b.getInjectionState());
 
@@ -253,24 +254,24 @@ public class EngineXDiagnosticsTest implements testNotConnectedStatus {
 		assertEquals(StatusEntityType.JRTRACE_SESSION, status.getEntityType());
 		assertEquals(StatusState.INJECTS, status.getInjectionState());
 		InjectStatus a = status
-				.getChildByEntityName("EngineXDiagnosticsTarget ");
+				.getChildByEntityName(Pattern.compile(".*EngineXDiagnosticsTarget .*"));
 		assertEquals(StatusEntityType.JRTRACE_CHECKED_CLASS, a.getEntityType());
 		assertEquals(StatusState.INJECTS, a.getInjectionState());
 		assertEquals("", a.getMessage());
-		InjectStatus b = a.getChildByEntityName("InjectForDiagnosticsTest$");
+		InjectStatus b = a.getChildByEntityName(Pattern.compile(".*InjectForDiagnosticsTest$.*"));
 		assertEquals(StatusEntityType.JRTRACE_CLASS, b.getEntityType());
 		assertEquals(StatusState.INJECTS, b.getInjectionState());
 		assertEquals("", b.getMessage());
 
-		InjectStatus c = b.getChildByEntityName("matchingMethod");
+		InjectStatus c = b.getChildByEntityName(Pattern.compile(".*matchingMethod.*"));
 		assertEquals(StatusEntityType.JRTRACE_CHECKED_METHOD, c.getEntityType());
 		assertEquals(StatusState.INJECTS, c.getInjectionState());
 
-		InjectStatus d = b.getChildByEntityName("someOtherMethod");
+		InjectStatus d = b.getChildByEntityName(Pattern.compile(".*someOtherMethod.*"));
 		assertEquals(StatusEntityType.JRTRACE_CHECKED_METHOD, d.getEntityType());
 		assertEquals(StatusState.DOESNT_INJECT, d.getInjectionState());
 
-		InjectStatus d2 = d.getChildByEntityName("injector1");
+		InjectStatus d2 = d.getChildByEntityName(Pattern.compile(".*injector1.*"));
 		assertEquals(StatusEntityType.JRTRACE_METHOD, d2.getEntityType());
 		assertEquals(StatusState.DOESNT_INJECT, d2.getInjectionState());
 		assertTrue(d2.getMessage().contains(

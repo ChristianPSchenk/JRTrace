@@ -11,10 +11,15 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.lang.invoke.LambdaMetafactory;
 import java.security.ProtectionDomain;
 
+import javax.print.attribute.standard.MediaSize.Engineering;
+
 import de.schenk.jrtrace.helper.JRTraceNameUtil;
 import de.schenk.jrtrace.helper.JRTraceOneClassTransformer;
 import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.jrtrace.helperlib.bootstrap.transform.LambdaMetafactoryTransformer;
+import de.schenk.jrtrace.helperlib.status.InjectStatus;
+import de.schenk.jrtrace.helperlib.status.StatusEntityType;
+import de.schenk.jrtrace.helperlib.status.StatusState;
 
 public class JRTraceClassFileTransformer implements ClassFileTransformer {
 
@@ -22,14 +27,18 @@ public class JRTraceClassFileTransformer implements ClassFileTransformer {
 	public byte[] transform(ClassLoader classLoader, String className, Class<?> classObject,
 			ProtectionDomain protectionDomain, byte[] classBytes) throws IllegalClassFormatException {
 
+	
+		
 		byte[] transformedBytes = null;
 		if (JRTraceNameUtil.getInternalName(LambdaMetafactory.class.getCanonicalName()).equals(className)) {
 			LambdaMetafactoryTransformer javaLangObjectTransformer = new LambdaMetafactoryTransformer(classBytes);
 			transformedBytes = javaLangObjectTransformer.doTransform();
 		} else {
+			InjectStatus injectStatus = new InjectStatus(
+					StatusEntityType.JRTRACE_CHECKED_CLASS);
 			JRTraceOneClassTransformer oneTransformer = new JRTraceOneClassTransformer(classLoader, className,
-					classObject, classBytes);
-			transformedBytes = oneTransformer.doTransform();
+					classObject, classBytes,injectStatus);
+			transformedBytes=oneTransformer.doTransform();
 		}
 		if (JRLog.getLogLevel() == JRLog.DEBUG && transformedBytes != null) {
 			logTransformedClassBytes(classBytes, transformedBytes, className);

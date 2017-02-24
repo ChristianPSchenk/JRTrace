@@ -31,7 +31,6 @@ import de.schenk.jrtrace.enginex.testclasses.Script5;
 import de.schenk.jrtrace.enginex.testclasses.Script6;
 import de.schenk.jrtrace.enginex.testclasses.TestClass1;
 import de.schenk.jrtrace.enginex.testclasses.TestClass2;
-import de.schenk.jrtrace.enginex.testclasses.TestClass3;
 import de.schenk.jrtrace.enginex.testclasses.TestClass4;
 import de.schenk.jrtrace.enginex.testclasses.TestClass6;
 import de.schenk.jrtrace.enginex.testclasses.TestClass6b;
@@ -65,7 +64,7 @@ public class EngineXAnnotationReaderTest {
 				.getMetaInformation(classBytes);
 		assertTrue(metadata.mayMatch(TestClass1.class));
 		assertFalse(metadata.mayMatch(TestClass2.class));
-		assertFalse(metadata.mayMatch(TestClass3.class));
+		
 
 	}
 

@@ -8,6 +8,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import de.schenk.jrtrace.enginex.reinstall.SimpleReinstallTest;
+import de.schenk.jrtrace.enginex.testscripts.CommonSuperClassUtilTest;
 import de.schenk.jrtrace.enginex.testscripts.EngineXAnnotationReaderTest;
 import de.schenk.jrtrace.enginex.testscripts.EngineXDetailsTest;
 import de.schenk.jrtrace.enginex.testscripts.EngineXDiagnosticsTest;
@@ -20,6 +21,7 @@ import de.schenk.jrtrace.service.CommunicationLayerTest;
 import de.schenk.jrtrace.service.JRTraceConnectToLaunchedAgentTest;
 import de.schenk.jrtrace.service.JRTraceControllerTest;
 import de.schenk.jrtrace.service.test.utils.JavaUtilTest;
+import de.schenk.objectweb.asm.addons.CommonSuperClassUtil;
 
 @RunWith(Suite.class)
 @SuiteClasses({ JRTraceConnectToLaunchedAgentTest.class,
@@ -27,7 +29,7 @@ import de.schenk.jrtrace.service.test.utils.JavaUtilTest;
 		JRTraceControllerTest.class, JavaUtilTest.class, InspectUtilTest.class,
 		EngineXDetailsTest.class, TypeCheckUtilTest.class,
 		SimpleReinstallTest.class, ReflectionUtilTest.class,
-		EngineXDiagnosticsTest.class, CommunicationLayerTest.class,JVMInvokerTest.class })
+		EngineXDiagnosticsTest.class, CommunicationLayerTest.class,JVMInvokerTest.class,CommonSuperClassUtilTest.class })
 public class AllTests {
 
 }
