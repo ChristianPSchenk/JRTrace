@@ -8,6 +8,7 @@
   <packaging>pom</packaging>
   
   <properties>
+  <usedjdk>1.8</usedjdk>
 		<tycho-version>0.25.0</tycho-version>
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -101,7 +102,7 @@
     <configuration>
       <toolchains>
         <jdk>
-          <version>1.9</version>
+          <version>{usedjdk}</version>
           <vendor>oracle</vendor>
         </jdk>
       </toolchains>
