@@ -102,7 +102,7 @@
     <configuration>
       <toolchains>
         <jdk>
-          <version>{usedjdk}</version>
+          <version>${usedjdk}</version>
           <vendor>oracle</vendor>
         </jdk>
       </toolchains>
