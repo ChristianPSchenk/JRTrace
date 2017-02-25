@@ -16,9 +16,13 @@ public class CommonSuperClassUtilTest {
 	public void testGetAllSuperClasses()
 	{
 		ClassLoader ldr = this.getClass().getClassLoader();
-		CommonSuperClassUtil util = new CommonSuperClassUtil(ldr,"does/really/not/matter","does/not/matter",new Type[0]);
+		CommonSuperClassUtil util = new CommonSuperClassUtil(ldr,"de/schenk/jrtrace/enginex/testscripts/NotLoadedType","java/lang/Object",new Type[0]);
 		String commonSuperClass = util.getCommonSuperClass("de/schenk/jrtrace/enginex/testscripts/NotLoadedType", "de/schenk/jrtrace/enginex/testscripts/NotLoadedType2");
 		assertEquals("java/lang/Object",commonSuperClass);
+
+		CommonSuperClassUtil util2 = new CommonSuperClassUtil(ldr,"de/schenk/jrtrace/enginex/testscripts/NotLoadedType2","java/lang/Object",new Type[0]);
+		String commonSuperClass2 = util2.getCommonSuperClass("de/schenk/jrtrace/enginex/testscripts/NotLoadedType", "de/schenk/jrtrace/enginex/testscripts/NotLoadedType2");
+		assertEquals("java/lang/Object",commonSuperClass2);
 		
 		
 	}
