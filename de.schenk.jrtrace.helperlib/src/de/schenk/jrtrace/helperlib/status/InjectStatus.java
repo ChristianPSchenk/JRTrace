@@ -199,7 +199,7 @@ public InjectStatus getChildByEntityName(Pattern methodName) {
 		InjectStatus result = null;
 		for (InjectStatus s : children) {
 			String entityName = s.getEntityName();
-			System.out.println(entityName);
+			
 			if (methodName.matcher(entityName).matches()) {
 				if (result != null)
 					throw new IllegalArgumentException(String.format(

@@ -182,8 +182,7 @@ public class CommonSuperClassUtil {
 		Set<String> set = new HashSet<String>();
 		while (type1!=null) {
 			set.add(type1);
-			if (targetClassName.equals(type1))
-				return set;
+		
 			type1 = getSuperClassName(type1);
 		}
 		set.add("java/lang/Object");
