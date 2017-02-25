@@ -2,7 +2,7 @@ package de.schenk.jrtrace.enginex.testscripts;
 
 import static org.junit.Assert.*;
 
-import org.eclipse.equinox.internal.p2.engine.ProfilePreferences;
+
 import org.eclipse.swt.SWT;
 import org.junit.Test;
 
