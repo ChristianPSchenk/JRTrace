@@ -714,13 +714,13 @@ public class JRTraceMethodVisitor extends AdviceAdapter {
 				+ " method: " + injectedMethod.getMethodName());
 
 		if (status != null) {
-			// InjectStatus m = new InjectStatus(InjectStatus.JRTRACE_METHOD);
+			
 			InjectStatus m = status.getChildByEntityName(injectedMethod
 					.getMethodName()+"#"+injectedMethod.getDescriptor());
-			m.setEntityName(injectedMethod.getMethodName());
+			
 			m.setInjected(StatusState.INJECTS);
 			m.setMessage("");
-			status.addChildStatus(m);
+			
 		}
 
 		String bindingMethodName = "bindEngineXMethods";
