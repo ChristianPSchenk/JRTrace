@@ -62,11 +62,12 @@ public class JRTraceClassAndObjectCache {
 			try {
 
 				if (metadata.hasXClassAnnotation()) {
-					Object mainInstance = mainClass.newInstance();
+					Object mainInstance =   mainClass.newInstance(); 
 					objectCache.put(classLoader, mainInstance);
 				}
 
-			} catch (IllegalAccessException | InstantiationException e) {
+			} catch (Throwable e) {
+				e.printStackTrace();
 				NotificationUtil
 						.sendProblemNotification(
 								NotificationMessages.MESSAGE_MISSING_NO_ARGUMENT_CONSTRUCTOR,

@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import de.schenk.jrtrace.helper.InstrumentationUtil;
 import de.schenk.objectweb.asm.AnnotationVisitor;
 import de.schenk.objectweb.asm.Attribute;
 import de.schenk.objectweb.asm.ClassVisitor;
@@ -508,6 +509,7 @@ public class MethodNode extends MethodVisitor {
     @Override
     public void visitMultiANewArrayInsn(final String desc, final int dims) {
         instructions.add(new MultiANewArrayInsnNode(desc, dims));
+       
     }
 
     @Override

@@ -21,7 +21,7 @@ import de.schenk.objectweb.asm.Opcodes;
 import de.schenk.objectweb.asm.Type;
 import de.schenk.objectweb.asm.addons.ClassWriterForClassLoader;
 import de.schenk.objectweb.asm.addons.CommonSuperClassUtil;
-import de.schenk.objectweb.asm.addons.ExtendedCheckClassAdapter;
+
 
 /**
  * 

@@ -17,7 +17,7 @@ public class ClassByteUtil {
 	 *            an internal class name (a/b/C)
 	 * @param classLoader
 	 *            the classloader
-	 * @return the inputstream for the class
+	 * @return the inputstream for the class, null if not found
 	 */
 	static InputStream getClassBytesStream(String theClassName,
 			ClassLoader classLoader) {

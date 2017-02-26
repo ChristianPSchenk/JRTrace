@@ -8,11 +8,15 @@ package de.schenk.objectweb.asm.addons;
  **/
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.schenk.jrtrace.helper.InstrumentationUtil;
+import de.schenk.jrtrace.helperlib.JRLog;
 import de.schenk.objectweb.asm.ClassReader;
 import de.schenk.objectweb.asm.Opcodes;
 import de.schenk.objectweb.asm.Type;
@@ -144,23 +148,44 @@ public class CommonSuperClassUtil {
 	}
 
 	/**
+	 * 
+	 * Check if a particular Type is already loaded by the classloader
+	 * 
+	 * @param type1 the Type name a.b.C of the class 
+	 * @return
+	 */
+	private boolean  isAlreadyLoaded(String type1)
+	{
+		if("java.lang.Object".equals(type1)) return true;
+	     Method methodFindLoadedClass;
+		try {
+			methodFindLoadedClass = ClassLoader.class.getDeclaredMethod("findLoadedClass", new Class[] { String.class });
+		
+	     methodFindLoadedClass.setAccessible(true);
+	 
+	     boolean x= methodFindLoadedClass.invoke(classLoader, type1 )!=null;
+
+	     return x;
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			throw new RuntimeException("Problem while checking if class "+type1+" is already loaded.",e);
+		}
+		
+	}
+	/**
 	 * Checks if the type1 is already loaded and returns the Class<?> if it is.
 	 * 
 	 * @param type1
 	 *            internal name of the object to load
-	 * @return null: if the object is not loadable, the class else.
+	 * @return null: if the object is already loaded or cannot be loaded for any reason
 	 */
 	private Class<?> tryGetLoadedClass(String type1) {
 		Class<?> type1Class;
 		type1Class = null;
 		try {	
-			
 			String name=type1.replace('/', '.');
-		     Method methodFindLoadedClass = ClassLoader.class.getDeclaredMethod("findLoadedClass", new Class[] { String.class });
-		     methodFindLoadedClass.setAccessible(true);
-		     boolean alreadyloaded=methodFindLoadedClass.invoke(classLoader, name )!=null;
+			
 		     // Avoid getting classes that are not loaded yet. Two reasons: a) don't trigger unwanted classloading. b) classes loaded during transformation will not be transformed, see JDK-6469492. 
-			if(alreadyloaded) type1Class = Class.forName(name, false,
+			if(isAlreadyLoaded(name)) type1Class = Class.forName(name, false,
 					classLoader);
 			
 
@@ -195,30 +220,45 @@ public class CommonSuperClassUtil {
 		if (type1.equals(targetClassName))
 			type1 = superOfTargetClass;
 		else
-			type1 = getSuperAndInterfacesFromBytes(type1).getSuperClass();
+		{
+			
+			Class<?> tryLoad=tryGetLoadedClass(type1);
+			if(tryLoad!=null)
+			{
+				Class<?> superClass=tryLoad.getSuperclass();
+				if(superClass!=null)
+				{
+					return superClass.getName().replace(".","/");
+				} else
+				{
+					return null;
+				}
+			}
+			
+			SuperClassExtractVisitor visitor = createSuperClassVisitorFromBytes(type1);
+					if(visitor!=null) type1=visitor.getSuperClass(); else
+						type1= null;
+					
+		}
 
 		return type1;
 	}
 
+
 	/**
-	 * read the classbytes of the type with ASM and extract the supertype from
-	 * it.
+	 * Tries to create a visitor and extract superclass/interface information from the byte's of the class.
 	 * 
-	 * @param theType
-	 * @return the sueprtype of theType
+	 * Returns the SuperClassExtractVisitor that can be used to access the extracted information
+	 * 
+	 * @param theType,
+	 * @return the visitor or null if the bytes cannot be accessed by the classloader.
 	 */
-	public SuperClassExtractVisitor getSuperAndInterfacesFromBytes(
-			String theType) {
-		SuperClassExtractVisitor readSuperTypeVisitor = readClassFromBytes(theType);
-
-		return readSuperTypeVisitor;
-	}
-
-	private SuperClassExtractVisitor readClassFromBytes(String theType) {
+	private SuperClassExtractVisitor createSuperClassVisitorFromBytes(String theType) {
 		SuperClassExtractVisitor readSuperTypeVisitor = null;
 		InputStream stream = null;
 		try {
-			stream = ClassByteUtil.getClassBytesStream(theType, classLoader);
+			stream = ClassByteUtil.getClassBytesStream(theType, classLoader); 
+			
 
 			ClassReader reader = new ClassReader(stream);
 
@@ -231,8 +271,8 @@ public class CommonSuperClassUtil {
 
 			stream.close();
 		} catch (IOException e) {
-			throw new RuntimeException("Failed reading classbytes for "
-					+ theType);
+			JRLog.error(String.format("classloader:%s, targetclass:%s, superOfTarget:%s",classLoader,targetClassName,superOfTargetClass));
+			return null;
 		}
 		return readSuperTypeVisitor;
 	}
@@ -243,8 +283,8 @@ public class CommonSuperClassUtil {
 		if (theClass != null)
 			return theClass.isInterface();
 		if(internalName.startsWith("[")) return false; // array type is never an interface.
-		SuperClassExtractVisitor readSuperTypeVisitor = readClassFromBytes(internalName);
-
+		SuperClassExtractVisitor readSuperTypeVisitor = createSuperClassVisitorFromBytes(internalName);
+		if(readSuperTypeVisitor==null) return false;
 		return readSuperTypeVisitor.getIsInterface();
 	}
 
@@ -295,10 +335,17 @@ public class CommonSuperClassUtil {
 
 		else {
 
-			SuperClassExtractVisitor superAndInterfaces = getSuperAndInterfacesFromBytes(input
+			SuperClassExtractVisitor superAndInterfaces = createSuperClassVisitorFromBytes(input
 					.getInternalName());
-			inputSuperClassType = superAndInterfaces.getSuperClassAsType();
-			theInputInterfaces = superAndInterfaces.getInterfacesAsTypes();
+			if(superAndInterfaces!=null)
+			{
+				inputSuperClassType = superAndInterfaces.getSuperClassAsType();
+				theInputInterfaces = superAndInterfaces.getInterfacesAsTypes();
+			} else
+			{
+				inputSuperClassType=Type.getType("Ljava/lang/Object;");
+				theInputInterfaces=new Type[0];
+			}
 
 		}
 

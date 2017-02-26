@@ -28,7 +28,7 @@ public class JRTraceClassFileTransformer implements ClassFileTransformer {
 			ProtectionDomain protectionDomain, byte[] classBytes) throws IllegalClassFormatException {
 
 	
-		
+	
 		byte[] transformedBytes = null;
 		if (JRTraceNameUtil.getInternalName(LambdaMetafactory.class.getCanonicalName()).equals(className)) {
 			LambdaMetafactoryTransformer javaLangObjectTransformer = new LambdaMetafactoryTransformer(classBytes);
