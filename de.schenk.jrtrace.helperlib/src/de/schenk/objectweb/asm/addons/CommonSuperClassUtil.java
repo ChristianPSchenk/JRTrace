@@ -118,6 +118,7 @@ public class CommonSuperClassUtil {
 					return "java/lang/Object";
 				}
 				type1 = getSuperClassName(type1);
+				if(type1==null) return "java/lang/Object";
 				return getCommonSuperClass(type1, type2);
 
 			}
@@ -125,6 +126,7 @@ public class CommonSuperClassUtil {
 			Set<String> allSuperTypesOfType1 = getAllSuperClassNames(type1);
 			while (!allSuperTypesOfType1.contains(type2)) {
 				type2 = getSuperClassName(type2);
+				if(type2==null) return "java/lang/Object";
 			}
 			return type2;
 
