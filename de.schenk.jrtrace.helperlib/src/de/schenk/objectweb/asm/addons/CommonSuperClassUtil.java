@@ -209,7 +209,7 @@ public class CommonSuperClassUtil {
 		Set<String> set = new HashSet<String>();
 		while (type1!=null) {
 			set.add(type1);
-		
+
 			type1 = getSuperClassName(type1);
 		}
 		set.add("java/lang/Object");
@@ -273,7 +273,7 @@ public class CommonSuperClassUtil {
 
 			stream.close();
 		} catch (IOException e) {
-			JRLog.error(String.format("classloader:%s, targetclass:%s, superOfTarget:%s",classLoader,targetClassName,superOfTargetClass));
+			JRLog.error(String.format("It was not possible determine the superclass of %s. It is not loaded and the classloader %s doesn't provide access to the classbytes. Assuming superclass java/lang/Object.",theType,classLoader));
 			return null;
 		}
 		return readSuperTypeVisitor;
