@@ -84,7 +84,7 @@ public class JDKVMController {
 		{
 			
 		javaExe=System.getProperty("java.home")+File.separator+"bin"+File.separator+"java";	
-		String classPath="\""+getJDKAttachApplicationClassPath()+";"+JDKInitActivator.getToolsJar().getAbsolutePath()+"\"";
+		String classPath=getJDKAttachApplicationClassPath()+System.getProperty("path.separator")+JDKInitActivator.getToolsJar().getAbsolutePath();
 		
 		
 		commandLine.add(javaExe);
