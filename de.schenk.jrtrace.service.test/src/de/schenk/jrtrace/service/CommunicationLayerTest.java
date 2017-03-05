@@ -87,9 +87,9 @@ public class CommunicationLayerTest {
 
 		System.out
 				.println(String.format(
-						"Took: %d",
-						(startTime - dummySender.getLastMessageReceivedTime()) / 1000 / 1000));
-		assertTrue(dummySender.getLastMessageReceivedTime() < startTime + 2000 * 1000 * 1000);
+						"Sending 1000 messages took: %d ms",
+						(dummySender.getLastMessageReceivedTime()-startTime) / 1000 / 1000));
+		assertTrue(dummySender.getLastMessageReceivedTime() < startTime + 4000L * 1000 * 1000);
 		assertTrue(!error);
 	}
 
@@ -150,7 +150,7 @@ public class CommunicationLayerTest {
 				.println(String.format(
 						"Took: %d",
 						(startTime - dummySender.getLastMessageReceivedTime()) / 1000 / 1000));
-		assertTrue(dummySender.getLastMessageReceivedTime() < startTime + 2000 * 1000 * 1000);
+		assertTrue(dummySender.getLastMessageReceivedTime() < startTime + 4000L * 1000 * 1000);
 		assertTrue(!error);
 	}
 
